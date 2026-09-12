@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>رحلة عالم العلوم - منصة الطالب</title>
+<style>
+html,body{margin:0;width:100%;height:100%;background:#07111f;overflow:hidden}
+#loading{position:fixed;inset:0;display:grid;place-items:center;background:#07111f;color:#fff;
+font-family:Tahoma,Arial,sans-serif;z-index:5;text-align:center;padding:24px}
+#loading b{font-size:1.35rem} #loading span{display:block;margin-top:10px;color:#9fb2c8;line-height:1.8}
+iframe{border:0;width:100%;height:100%;display:block;background:#07111f}
+</style>
+</head>
+<body>
+<div id="loading"><div><b>🧪 منصة الطالب</b><span>جاري تجهيز رحلة عالم العلوم...</span></div></div>
+<iframe id="app" title="منصة الطالب" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+<script>
+const ROSTERS={"1/1": ["حيدر عيسي عبدالوهاب الاحمد", "محمد احمد بن سلمان العبدالله", "قاسم محمد بن ياسين القطان", "زكرياء جمال علي عبدالله", "علي حسين كاظم العيد", "علي انور بن حسين الراشد", "محمد فيصل علي المشرف", "علي احمد علي الدليم", "سجاد حسين صالح السعيد", "نواف احمد شاكر الرويشد", "احمد مصطفي محمد الشهيب", "حسين فاضل حسين البراهيم", "حسن علي حسين بوشاجع", "احمد ناصر بن حبيب البراهيم", "عمار محمد حبيب الابوي", "طاهر عبدالله طاهر بوشاجع", "حسن محمد طاهر المحمد", "حسن هاني عبدالله بوشاجع", "محمد سامي عبدالله الدليم", "محمد حسام صالح الحسن", "راكان رايد مبارك القعيد", "علي عبدالحميد محمد الشهيب", "حسن علي احمد الفحل", "كرار حسين راضي العطافي", "جاسم حسين جاسم الاحمد", "رضا حسين بن احمد الموسي", "جواد محمد بن راشد الغانم", "حسين جميل بن طاهر بوشاجع", "حسن علي بن سلمان القويلي", "علي حسين علي البراهيم", "عبدالعزيز محمد بن حسين البريه", "حسن حسين بن يوسف الحسن", "مهدي حجي جاسم العيد", "مصطفي احمد علي الخليفه", "علي حسين جاسم بوشاجع", "محمد احمد بن خليفه الفرحان", "الرضا محمد بن خليفه الدليم"], "2/1": ["احمد حسين بن ابراهيم الجعفر", "حسين احمد حسين الحسين", "محمد صادق جاسم البراهيم", "علي سامي بن هاني الموسي", "محمد جاسم بن طاهر المحمد علي", "قاسم نعيم ابراهيم الكاظم", "حسين علي بن عبدالله البراهيم", "حسين محمد بن علي الصالح", "محمد علي بن حسين العبدالله", "رضا فخري بن حسين العليو", "حسين علي كاظم الدليم", "عبدالعزيز ميثم محمد الحماد", "هادي علي محمد الدليم", "كرار عدنان بن طاهر بوشاجع", "عبدالله فيصل ناصر الحسن", "محمد جاسم حسين الموسي", "سلمان بدر سلمان الخليفه", "علي احمد بن عبدالجليل الحجي", "علي محمد علي الدباني", "حسن عيسي عبدرب الرسول العمران", "مهدي محمد بن علي البراهيم", "علي يوسف بن يونس البحر", "ناصر عبدالجليل بن ناصر العيد", "حسين رايد علي البراهيم", "حسين علي عيسي البراهيم", "علي فخري عبدرب الرسول العبدالله", "عبدالله علي بن طاهر الخليفه", "احمد عبدالعزيز بن احمد الهاجري", "عبدالله بدر مسفر الجباري", "تركي بن محمد بن ناصر الشوملي", "عباس توفيق بن حسن المحمد", "ميثم حسين علي الشهيب", "قاسم احمد بن علي العبيدان", "ريان حبيب عبدالله الوعل", "قاسم خالد ابراهيم الدليم", "عقيل حسين خليفه الشهيب", "علي احمد بن محمد البوشاجع"], "3/1": ["حسن عبدالله عيسي البراهيم", "حسن نجيب حجي الموسي", "حسن جمال بن عبدالله العيسي", "مهدي صادق بن احمد المطاوعه", "قاسم محمد علي الباشه", "صالح يوسف صالح الخليفه", "محمد عماد بن علي الدليم", "طاهر محمد بن كاظم العواد", "محمد رايد يوسف الحيدان", "حسين عباس حسين الخليفه", "ناصر محمد ناصر الحسن", "حسين علي احمد الزعقان", "رضا حبيب عباس الزوير", "طاهر علي طاهر الهزيم", "عبدالله فتحي بن عبدالله الخليفه", "محمد صادق عبدالملك العيد", "ريان احمد بن صالح العميرين", "علي حسن عبدالله السيف", "محمد مصطفي صالح الدليم", "عبدالله زكي بن عبدالله البراهيم", "محمد مصطفي صالح الرويشد", "علي عبدالله بن محمد المعيكم", "عبدالرحمن فاضل يوسف الاحمد", "علي خالد بن علي النباط", "مهدي رضا طه العيد", "قاسم احمد طاهر العبدالمحسن", "حسين علي حسين الدليم", "حسن يوسف بن احمد الدليم", "حسين عبدالله بن كاظم البراهيم", "علي محمد علي الدليم", "الحسن هاشم بن محمد الحاجي", "علي زكي بن عبدالله الحرز", "حاتم بدر بن جاسم الدليم", "مهدي حسن شاكر الرويشد", "عبدالرحمن بدر طاهر الدليم", "محمد فاضل خليفه الدليم", "علي حسين احمد البحر", "حسن عبدالجليل صالح الخليفه", "علي عبدالله بن محمد السلطان"], "4/1": ["حسين محمد بن حسين البراهيم", "عبدالعزيز علي عبدالله الاحمد", "عمار حسين بن علي الدليم", "علي جمال بن حجي اسماعيل", "عبدالله ناصر احمد الناصر", "احمد حسن بن ناصر الياسين", "عباس عيسي احمد العصفور", "مجتبي واصل طاهر بوشاجع", "محمد عيسي بن يوسف الاحمد", "جواد المقداد ابراهيم الكاظم", "عبدالله جعفر بن حسين الدليم", "مجتبي حسين بن ابراهيم السعيد", "سلمان رايد مبارك القعيد", "علي احمد جاسم الشهيب", "كيان امين بن عبدالله الصالح", "ابراهيم احمد حبيب الهزيم", "فراس عباس حسين الخليفه", "عبدالله عادل حسن الداود", "محمد محمد سلمان المطاوعه", "فارس عبدالهادي يوسف الاحمد", "حسن علي عبدالله الباشه", "رضا محمد بن موسي السليمان", "حسين يحيي عبدرب الرسول المطاوعه", "عبدالله هادي بن علي الرجب", "عبدالعزيز محمد ابن ابراهيم الرويشد", "العباس يوسف محمد الجاسم", "رضا علي بن احمد المهيني", "علي محمد بن عبدالله المطيع", "محمود محمد علي الدليم", "مجتبي محمد بن احمد بوشاجع", "قاسم محمد حبيب الخليفه", "مهدي راضي بن صالح العطافي", "علي ماجد محمد الجاسم", "منتظر احمد عبدالله المكينه", "حيدر وافي بن حسن الصالح", "فيصل جمعه بن صالح العميرين", "رضا ابراهيم عبدالعزيز البريه", "احمد جاسم بن احمد العطافي", "حسين يوسف بن احمد السالم"]};
+const app=document.getElementById('app');
+const loading=document.getElementById('loading');
+
+function cleanStudentUI(d){
+  d.querySelectorAll('a[href="index.html"],a[href*="journey-teacher.html"]').forEach(a=>a.remove());
+  const actions=d.querySelector('.actions');
+  if(actions) [...actions.querySelectorAll('a')].forEach(a=>a.remove());
+  const state=d.getElementById('linkState');
+  if(state){state.textContent='منصة الطالب';state.className='pill good';}
+}
+
+function installStandaloneMode(w,d){
+  try{ if(w.CFG) w.CFG.apiUrl=''; }catch(e){}
+  try{ w.localStorage.removeItem('science_api_url'); }catch(e){}
+
+  w.loadStudentsForClass=function(){
+    const classSel=d.getElementById('studentClass');
+    const nameSel=d.getElementById('studentName');
+    const status=d.getElementById('studentsStatus');
+    if(!classSel||!nameSel) return;
+    const className=classSel.value;
+    if(!className){
+      nameSel.innerHTML='<option value="">اختر الفصل أولًا</option>';
+      nameSel.disabled=true;
+      if(status) status.textContent='اختر الفصل لتظهر أسماء الطلاب.';
+      return;
+    }
+    const names=ROSTERS[className]||[];
+    nameSel.innerHTML='<option value="">اختر اسمك</option>'+names.map((name,i)=>{
+      const code=className.replace('/','_')+'_'+String(i+1).padStart(2,'0');
+      return '<option value="'+code+'">'+name.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</option>';
+    }).join('');
+    nameSel.disabled=false;
+    if(status){
+      status.textContent=names.length?'تم تحميل '+names.length+' طالبًا من الفصل '+className+'.':'لا توجد أسماء مسجلة لهذا الفصل.';
+      if(names.length) status.classList.add('good');
+    }
+  };
+
+  const classSel=d.getElementById('studentClass');
+  if(classSel){
+    classSel.onchange=w.loadStudentsForClass;
+    if(classSel.value) w.loadStudentsForClass();
+  }
+
+  // استبدال بدء النشاط بوضع مستقل دون Apps Script.
+  try{
+    w.eval(`
+      startActivity = async function(){
+        const className=$('studentClass').value,
+              select=$('studentName'),
+              code=select.value,
+              name=select.options[select.selectedIndex]?.text||'';
+        if(!className){alert('اختر الفصل أولًا.');return}
+        if(!code){alert('اختر اسمك من القائمة.');return}
+        state.student={name,className,code};
+        if(state.mode==='exam'||state.task?.mode==='exam'){
+          const k='science_exam_once_'+className+'_'+code;
+          if(localStorage.getItem(k)==='1'){alert('تم استخدام محاولة الاختبار لهذا الطالب على هذا الجهاز.');return}
+          localStorage.setItem(k,'1');
+        }
+        buildQuiz();
+        state.startedAt=Date.now();
+        screen('quizScreen');
+        renderQuestion();
+      }
+    `);
+    const startBtn=d.getElementById('startActivity');
+    if(startBtn) startBtn.onclick=w.startActivity;
+  }catch(e){console.error(e)}
+
+  // منع أي محاولة انتقال إداري من داخل صفحة الطالب.
+  d.addEventListener('click',function(e){
+    const a=e.target.closest&&e.target.closest('a');
+    if(!a) return;
+    const href=(a.getAttribute('href')||'').toLowerCase();
+    if(href.includes('journey-teacher')||href==='index.html'){
+      e.preventDefault(); e.stopPropagation();
+    }
+  },true);
+
+  try{
+    new w.MutationObserver(()=>cleanStudentUI(d)).observe(d.documentElement,{childList:true,subtree:true});
+  }catch(e){}
+}
+
+app.addEventListener('load',()=>{
+  try{
+    const w=app.contentWindow,d=app.contentDocument;
+    cleanStudentUI(d);
+    installStandaloneMode(w,d);
+    cleanStudentUI(d);
+    loading.style.display='none';
+  }catch(e){
+    console.error(e);
+    loading.innerHTML='<div><b>تعذر تجهيز منصة الطالب</b><span>تأكد من رفع هذا الملف بجانب journey-student.html في نفس المستودع ثم أعد المحاولة.</span></div>';
+  }
+});
+
+// لا نمرر أي تكليف أو رابط خلفي: المنصة تعمل كتدريب/اختبار مستقل فقط.
+app.src='journey-student.html?v=standalone-20260912-1';
+</script>
+</body>
+</html>
