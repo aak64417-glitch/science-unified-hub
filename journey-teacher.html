@@ -105,7 +105,7 @@ const LESSONS={
  'all':'جميع الدروس'
 };
 const $=id=>document.getElementById(id);
-const DEFAULT_API_URL='https://script.google.com/macros/s/AKfycbxp-t4JgGO5WiK6hoacjTyBqFnG-9bSWClplOpVV4VDuTV7T4tY0swB1Ll36kr_djJ7nQ/exec';
+const DEFAULT_API_URL='https://script.google.com/macros/s/AKfycbz6-iPHp20-ZWMhgZA6WsAnZM-WPoCgPgFMyjbAHwg6xvGPGZhMDluhqOZGd20I6InDuw/exec';
 let tasks=[];
 let results=[];
 const CLASSES=['1/1','2/1','3/1','4/1'];
@@ -147,21 +147,20 @@ function readTrackerRoster(){
 function getApi(){return $('apiUrl').value.trim()}
 function getKey(){return $('teacherKey').value.trim()}
 function setStatus(text,good=false){$('status').className=good?'note good':'note';$('status').textContent=text}
-function jsonp(params){
+function bridgeRequest(params){
  return new Promise((resolve,reject)=>{
-  const api=getApi();
-  if(!api){reject(new Error('أدخل رابط Apps Script أولًا.'));return}
-  const cb='sjcb_'+Date.now()+'_'+Math.floor(Math.random()*100000);
-  const script=document.createElement('script');
-  const q=new URLSearchParams({...params,callback:cb});
-  const timer=setTimeout(()=>{cleanup();reject(new Error('انتهت مهلة الاتصال بالخادم.'))},15000);
-  function cleanup(){clearTimeout(timer);try{delete window[cb]}catch{};script.remove()}
-  window[cb]=data=>{cleanup();resolve(data)};
-  script.onerror=()=>{cleanup();reject(new Error('تعذر الاتصال بـ Apps Script. تأكد من رابط /exec وصلاحية النشر.'))};
-  script.src=api+(api.includes('?')?'&':'?')+q.toString();
-  document.body.appendChild(script);
+  const endpoint=getApi(); if(!endpoint){reject(new Error('أدخل رابط Apps Script أولًا.'));return}
+  const requestId='req_'+Date.now()+'_'+Math.floor(Math.random()*1000000), frame=document.createElement('iframe');
+  frame.style.display='none'; frame.setAttribute('aria-hidden','true');
+  const u=new URL(endpoint); Object.entries({...params,transport:'bridge',requestId:requestId,_:Date.now()}).forEach(([k,v])=>u.searchParams.set(k,String(v)));
+  let done=false; const to=setTimeout(()=>finish(new Error('انتهت مهلة الاتصال بالخادم.')),30000);
+  function clean(){clearTimeout(to);window.removeEventListener('message',onMessage);try{frame.remove()}catch(e){}}
+  function finish(err,data){if(done)return;done=true;clean();err?reject(err):resolve(data)}
+  function onMessage(ev){const m=ev.data;if(!m||m.type!=='science-apps-script-bridge'||m.requestId!==requestId)return;finish(null,m.data)}
+  window.addEventListener('message',onMessage); frame.onerror=()=>finish(new Error('تعذر فتح قناة الاتصال مع Apps Script.')); frame.src=u.toString(); document.body.appendChild(frame);
  });
 }
+function jsonp(params){return bridgeRequest(params)}
 function normalizeResult(r){
  const weak=Array.isArray(r.weakConcepts)?r.weakConcepts.join('، '):(r.weakConcepts||'—');
  return {...r,studentName:String(r.studentName||''),className:String(r.className||''),taskTitle:String(r.taskTitle||''),type:String(r.type||''),weakConcepts:weak};
@@ -204,7 +203,7 @@ function init(){
  $('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام 1448هـ';
  CLASSES.forEach(c=>{$('classFilter').insertAdjacentHTML('beforeend',`<option>${c}</option>`);$('taskClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('portfolioClass')) $('portfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentsClass')) $('studentsClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`)});
  $('taskLesson').innerHTML='<option value="all">جميع الدروس</option>'+Object.entries(LESSONS).filter(([k])=>k!=='all').map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
- $('apiUrl').value=localStorage.getItem('sj_teacher_api')||DEFAULT_API_URL;
+ $('apiUrl').value=DEFAULT_API_URL; localStorage.setItem('sj_teacher_api',DEFAULT_API_URL);
  $('teacherKey').value=localStorage.getItem('sj_teacher_key')||'';
  $('lastUpdate').textContent='غير محمّل بعد';
  setStatus('أدخل مفتاح المعلم ثم اضغط «تحميل لوحة المعلم».');
@@ -218,7 +217,7 @@ function init(){
  $('exportBtn').onclick=exportCsv;
  if($('studentsClass')) $('studentsClass').onchange=renderStudentsAdmin;
  if($('addStudentBtn')) $('addStudentBtn').onclick=addStudentAdmin;
- if($('reloadStudentsBtn')) $('reloadStudentsBtn').onclick=async()=>{try{await loadAllStudents();renderStudentsAdmin()}catch(e){alert(e.message||e)}};
+ if($('reloadStudentsBtn')) $('reloadStudentsBtn').onclick=async()=>{const b=$('reloadStudentsBtn');try{b.disabled=true;b.textContent='جارٍ التحديث...';await loadAllStudents();renderStudentsAdmin();alert('تم تحديث قوائم الطلاب بنجاح.')}catch(e){alert(e.message||e)}finally{b.disabled=false;b.textContent='تحديث القوائم'}};
  document.querySelectorAll('[data-report]').forEach(b=>b.onclick=()=>generatePortfolioReport(b.dataset.report));
  $('closeReport').onclick=()=>$('reportModal').classList.add('hidden');
  $('printReport').onclick=()=>window.print();
@@ -240,15 +239,13 @@ function renderTasks(){
 }
 
 async function loadAllStudents(){
+ const r=await jsonp({action:'getAllStudents'});
+ if(!r||r.ok===false) throw new Error(r?.message||'تعذر تحميل قوائم الطلاب');
  const roster={};
- for(const className of CLASSES){
-  const r=await jsonp({action:'getStudents',className});
-  if(!r||r.ok===false) throw new Error(r?.message||`تعذر تحميل طلاب ${className}`);
-  roster[className]=Array.isArray(r.students)?r.students.map(s=>({code:String(s.code),name:String(s.name)})):[];
- }
- studentRoster=roster;
- return roster;
+ CLASSES.forEach(className=>{const list=Array.isArray(r.roster?.[className])?r.roster[className]:[];roster[className]=list.map(s=>({code:String(s.code),name:String(s.name)}));});
+ studentRoster=roster; return roster;
 }
+
 function currentStudentsClass(){return $('studentsClass')?.value||CLASSES[0]}
 function renderStudentsAdmin(){
  if(!$('studentsBody')||!$('studentsClass'))return;
