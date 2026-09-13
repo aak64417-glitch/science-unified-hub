@@ -303,48 +303,34 @@ async function syncStudentsFromTracker(){
  let source;
  try{source=readTrackerRoster()}catch(e){alert(e.message||e);return}
  const counts=CLASSES.map(c=>`${c}: ${source.roster[c].length}`).join(' — ');
- const ok=confirm(`تم العثور على قوائم سجل المتابعة (${source.semester}${source.year?' — '+source.year:''}).\n${counts}\n\nهل تريد اعتمادها الآن؟\nسيتم إخفاء أي طالب نشط غير موجود في سجل المتابعة، وتبقى نتائجه السابقة محفوظة.`);
+ const ok=confirm(`تم العثور على قوائم سجل المتابعة (${source.semester}${source.year?' — '+source.year:''}).\n${counts}\n\nهل تريد اعتمادها الآن؟\nستتم المزامنة على أربع دفعات سريعة، فصلًا بعد فصل. وتبقى النتائج السابقة محفوظة.`);
  if(!ok)return;
  const btn=$('syncTrackerBtn'); btn.disabled=true;
+ let added=0,updated=0,reactivated=0,removed=0;
  try{
    $('studentsAdminStatus').className='note';
-   $('studentsAdminStatus').textContent='جاري مزامنة أسماء سجل المتابعة...';
+   for(let i=0;i<CLASSES.length;i++){
+     const cls=CLASSES[i];
+     $('studentsAdminStatus').textContent=`جاري مزامنة الفصل ${cls} (${i+1} من ${CLASSES.length})...`;
+     const r=await apiAction('syncClassStudents',{
+       className:cls,
+       names:JSON.stringify(source.roster[cls]||[])
+     });
+     added+=Number(r.added||0);
+     updated+=Number(r.updated||0);
+     reactivated+=Number(r.reactivated||0);
+     removed+=Number(r.removed||0);
+   }
    await loadAllStudents();
-   const existing=[];
-   CLASSES.forEach(cls=>(studentRoster[cls]||[]).forEach(s=>existing.push({className:cls,code:String(s.code),name:String(s.name),used:false})));
-   let added=0,renamed=0,moved=0,removed=0;
-
-   for(const targetClass of CLASSES){
-     for(const targetName of source.roster[targetClass]){
-       const key=normalizeStudentNameKey(targetName);
-       // الأولوية لطالب مطابق داخل الفصل نفسه، ثم البحث في بقية الفصول.
-       let match=existing.find(x=>!x.used&&x.className===targetClass&&normalizeStudentNameKey(x.name)===key);
-       if(!match) match=existing.find(x=>!x.used&&normalizeStudentNameKey(x.name)===key);
-       if(match){
-         match.used=true;
-         let currentClass=match.className,currentCode=match.code,currentName=match.name;
-         if(currentName!==targetName){
-           const r=await apiAction('renameStudent',{className:currentClass,studentCode:currentCode,studentName:targetName});
-           currentName=String(r.studentName||targetName); renamed++;
-         }
-         if(currentClass!==targetClass){
-           const r=await apiAction('moveStudent',{className:currentClass,studentCode:currentCode,newClassName:targetClass});
-           currentClass=targetClass; currentCode=String(r.studentCode||currentCode); moved++;
-         }
-       }else{
-         await apiAction('addStudent',{className:targetClass,studentName:targetName}); added++;
-       }
-     }
-   }
-   for(const old of existing.filter(x=>!x.used)){
-     await apiAction('deleteStudent',{className:old.className,studentCode:old.code}); removed++;
-   }
-   await loadAllStudents(); renderStudentsAdmin();
+   renderStudentsAdmin();
    $('studentsAdminStatus').className='note good';
-   $('studentsAdminStatus').textContent=`تم اعتماد سجل المتابعة: إضافة ${added}، تعديل ${renamed}، نقل ${moved}، حذف من القائمة ${removed}.`;
-   alert('تمت مزامنة أسماء سجل المتابعة بنجاح. ستظهر القائمة الجديدة للطلاب عند فتح الفصل أو تحديث صفحة الطالب.');
+   $('studentsAdminStatus').textContent=`تم اعتماد سجل المتابعة بنجاح: إضافة ${added}، تحديث ${updated}، إعادة تفعيل ${reactivated}، إخفاء ${removed}.`;
+   alert('تمت مزامنة أسماء سجل المتابعة بنجاح. ستظهر القوائم الجديدة في صفحة الطالب عند فتح الفصل أو تحديث الصفحة.');
  }catch(e){
-   console.error(e); alert('تعذر إكمال المزامنة: '+(e.message||e));
+   console.error(e);
+   $('studentsAdminStatus').className='note';
+   $('studentsAdminStatus').textContent='تعذر إكمال المزامنة: '+(e.message||e);
+   alert('تعذر إكمال المزامنة: '+(e.message||e));
    try{await loadAllStudents();renderStudentsAdmin()}catch(_){}
  }finally{btn.disabled=false}
 }
