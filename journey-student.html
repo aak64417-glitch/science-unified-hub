@@ -305,34 +305,37 @@ async function loadStudentsForClass(){
    status.textContent='اختر الفصل لتظهر أسماء الطلاب.';
    return;
  }
-
- // اعرض الأسماء المحلية فورًا حتى لا تعتمد واجهة الطالب على نجاح الاتصال بالشبكة.
- const localNames=Array.isArray(ROSTERS[className])?ROSTERS[className]:[];
- const showStudents=(students,source)=>{
+ const showStudents=students=>{
    select.innerHTML='<option value="">اختر اسمك</option>'+students.map(s=>`<option value="${esc(s.code)}">${esc(s.name)}</option>`).join('');
-   select.disabled=false;
-   status.textContent=students.length?`تم تحميل ${students.length} طالبًا من الفصل ${className}.`:'لا توجد أسماء مسجلة لهذا الفصل.';
-   if(source==='local' && api()) status.textContent+=' سيتم إرسال النتائج إلى المعلم عند توفر الاتصال.';
+   select.disabled=!students.length;
+   status.textContent=students.length
+     ?`تم تحميل ${students.length} طالبًا من الفصل ${className} من قائمة المعلم المعتمدة.`
+     :'لا توجد أسماء نشطة مسجلة لهذا الفصل.';
  };
 
- if(localNames.length){
-   showStudents(localNames.map((name,i)=>({code:String(i+1),name})), 'local');
- }else{
-   select.innerHTML='<option value="">لا توجد أسماء لهذا الفصل</option>';
-   select.disabled=true;
-   status.textContent='لا توجد أسماء مسجلة لهذا الفصل.';
- }
-
- // إذا كان الربط الخلفي متاحًا، حدّث القائمة من قاعدة البيانات لضمان تطابق الأسماء والأكواد.
+ // عند وجود الربط، تكون قاعدة المعلم هي المصدر الوحيد حتى تنعكس الإضافة والحذف والنقل والتعديل فورًا.
  if(api()){
+   select.innerHTML='<option value="">جاري تحميل الأسماء...</option>';
+   select.disabled=true;
+   status.textContent='جاري تحميل قائمة الفصل المعتمدة...';
    try{
      const r=await jsonp({action:'getStudents',className});
-     const students=(r?.ok && Array.isArray(r.students))?r.students:[];
-     if(students.length) showStudents(students,'api');
+     if(!r?.ok) throw new Error(r?.message||'تعذر تحميل قائمة الطلاب');
+     const students=Array.isArray(r.students)?r.students:[];
+     showStudents(students);
    }catch(e){
-     console.warn('تعذر تحديث قائمة الطلاب من الخادم؛ تم استخدام القائمة المحلية.',e);
+     console.error(e);
+     select.innerHTML='<option value="">تعذر تحميل الأسماء</option>';
+     select.disabled=true;
+     status.textContent='تعذر تحميل قائمة المعلم الآن. تحقق من الاتصال ثم أعد اختيار الفصل.';
    }
+   return;
  }
+
+ // احتياط فقط إذا لم يتم ضبط الربط الخلفي أصلًا.
+ const localNames=Array.isArray(ROSTERS[className])?ROSTERS[className]:[];
+ showStudents(localNames.map((name,i)=>({code:String(i+1),name})));
+ if(localNames.length) status.textContent+=' (قائمة احتياطية غير متزامنة)';
 }
 
 async function startActivity(){

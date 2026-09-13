@@ -17,59 +17,53 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 .result{text-align:center}.ring{width:150px;height:150px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--teal) var(--pct,0%),#18314e 0);position:relative}.ring:after{content:"";position:absolute;inset:12px;background:#0b1c30;border-radius:50%}.ring strong{position:relative;z-index:2;font-size:2rem}.level{display:inline-block;padding:8px 12px;border-radius:999px;background:#18304d;font-weight:900}.breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.break{padding:14px;border-radius:15px;background:#0c1d32;border:1px solid var(--line)}.break span{display:block;color:var(--muted);font-size:.82rem}.break strong{display:block;margin-top:5px}.recommend{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;text-align:right}.rec{padding:15px;border-radius:15px;background:rgba(255,255,255,.035);border:1px solid var(--line)}.rec h4{margin:0 0 7px}.rec p{margin:0;color:var(--muted);line-height:1.75}
 .teacher-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:16px;border-radius:16px;background:#0c1d32;border:1px solid var(--line)}.stat strong{display:block;font-size:1.55rem}.stat span{color:var(--muted);font-size:.83rem}.tabs{display:flex;gap:7px;margin:16px 0;flex-wrap:wrap}.tab{border:1px solid var(--line);background:#10243e;color:white;padding:9px 13px;border-radius:12px;font-weight:800}.tab.active{background:var(--teal);color:#07111f}.toolbar{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;margin-top:14px}table{width:100%;border-collapse:collapse;min-width:950px}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:right;font-size:.88rem;vertical-align:top}th{background:#132944;position:sticky;top:0}tbody tr:hover td{background:rgba(255,255,255,.025)}.smallbtn{padding:7px 9px;border-radius:9px;border:0;font-weight:800;cursor:pointer}.copy{background:var(--teal);color:#07111f}.toggle{background:#294363;color:white}.remove{background:var(--red);color:white}.task-status{padding:5px 8px;border-radius:999px;font-size:.75rem;display:inline-block}.task-status.on{background:rgba(91,227,139,.12);color:#c6ffd8}.task-status.off{background:rgba(255,124,142,.12);color:#ffd3da}.modal{position:fixed;inset:0;background:rgba(2,8,16,.78);display:grid;place-items:center;padding:16px;z-index:80}.modal-card{width:min(760px,100%);max-height:90vh;overflow:auto;padding:22px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
 @media(max-width:900px){.hero,.lesson-hero{grid-template-columns:1fr}.grid3,.grid2,.choice-row,.form-grid,.teacher-cards,.breakdown,.recommend,.live{grid-template-columns:1fr}.topbar{position:static}.brand p{display:none}.toolbar{grid-template-columns:1fr}.lesson-card p{min-height:0}.hero-main{padding:24px}}
+
+.student-admin-toolbar{display:grid;grid-template-columns:180px 1fr auto;gap:10px;align-items:end;margin-bottom:14px}
+.student-admin-note{margin:0 0 14px}
+.student-admin-table table{min-width:720px}
+.student-admin-table td.actions-cell{white-space:nowrap}
+.student-count-badge{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:4px 9px;border-radius:999px;background:rgba(66,222,212,.10);border:1px solid rgba(66,222,212,.25);color:#b8fff9;font-weight:900}
+@media(max-width:700px){.student-admin-toolbar{grid-template-columns:1fr}.student-admin-toolbar .btn{width:100%}}
+
 @media(max-width:520px){.wrap{padding:10px}.topbar{padding:11px}.logo{width:44px;height:44px}.brand h1{font-size:.9rem}.hero{padding-top:18px}.hero-main,.panel{padding:17px}.hero h2{font-size:2.2rem}.hero-actions,.quiz-actions{flex-direction:column}.hero-actions .btn,.quiz-actions .btn{width:100%}.route-grid{grid-template-columns:1fr 1fr}.timer{min-width:78px}.quiz-top{align-items:flex-start;flex-direction:column}.timer{align-self:stretch}}
 
 .portfolio-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 16px}.report-cards .feature{align-items:stretch}.report-card>div:last-child{display:flex;flex-direction:column;flex:1}.report-card .btn{margin-top:auto;align-self:flex-start}.report-modal-card{width:min(920px,96vw);max-height:92vh;overflow:auto}.report-paper{background:white;color:#172033;border-radius:18px;padding:28px;direction:rtl;line-height:1.9}.report-paper h1,.report-paper h2,.report-paper h3{color:#0b3553}.report-paper .report-head{text-align:center;border-bottom:3px solid #0b6c76;padding-bottom:14px;margin-bottom:18px}.report-paper .report-head h1{margin:0 0 4px;font-size:1.55rem}.report-paper .report-head p{margin:3px 0;color:#4b6072}.report-paper .report-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}.report-paper .meta-box{background:#f3f7fa;border:1px solid #dce6ed;border-radius:12px;padding:9px 12px}.report-paper .report-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}.report-paper .kpi{background:#f6fafb;border:1px solid #dce8ea;border-radius:12px;text-align:center;padding:12px}.report-paper .kpi b{display:block;font-size:1.3rem;color:#0b6c76}.report-paper table{min-width:0;color:#172033;border:1px solid #dfe7ec}.report-paper th{position:static;background:#eaf3f5;color:#14384a}.report-paper th,.report-paper td{border:1px solid #dfe7ec;padding:8px}.report-paper .report-section{margin-top:17px}.report-paper .report-section h3{margin:0 0 8px}.report-paper .evidence-note{background:#fff8e5;border:1px solid #f1d89b;border-radius:12px;padding:10px 12px}.report-paper ul{margin-top:6px}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}@media(max-width:700px){.portfolio-controls,.report-paper .report-meta,.report-paper .report-kpis{grid-template-columns:1fr}.report-paper{padding:18px}}
 @media print{body *{visibility:hidden!important}#reportModal,#reportModal *{visibility:visible!important}#reportModal{position:absolute!important;inset:0!important;background:white!important;padding:0!important;display:block!important}#reportModal .modal-card{box-shadow:none!important;border:0!important;max-height:none!important;width:100%!important;background:white!important;padding:0!important}#reportModal .section-head,#reportModal .modal-actions{display:none!important}.report-paper{border-radius:0!important;padding:16mm!important}.report-paper table{font-size:10pt!important}}
 </style></head>
 <body><div class="wrap">
-<header class="topbar glass"><div class="brand"><div class="logo">📊</div><div><h1>لوحة المعلم</h1><p id="teacherSub"></p></div></div><div class="actions"><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="student.html">معاينة منصة الطالب</a></div></header>
+<header class="topbar glass"><div class="brand"><div class="logo">📊</div><div><h1>لوحة المعلم</h1><p id="teacherSub"></p></div></div><div class="actions"><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="journey-student.html">معاينة منصة الطالب</a></div></header>
 <main class="screen">
 <section class="panel glass"><div class="section-head" style="margin-top:0"><div><h3>الربط</h3><p>أدخل رابط Apps Script ومفتاح المعلم. يحفظ الرابط على هذا الجهاز.</p></div></div><div class="form-grid"><div class="field"><label>رابط Apps Script /exec</label><input id="apiUrl" dir="ltr" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="field"><label>مفتاح المعلم</label><input id="teacherKey" type="password" placeholder="مفتاح المعلم"></div><div class="field" style="align-self:end"><button id="loadBtn" class="btn" style="width:100%">تحميل لوحة المعلم</button></div></div><div id="status" class="note" style="margin-top:12px">وضع المعاينة: يمكنك استعراض لوحة المعلم الآن. الربط الفعلي مع النتائج سيتم بعد إضافة رابط Apps Script.</div></section>
 
 <section id="dashboard">
 <div class="section-head"><div><h3>ملخص المنصة</h3><p id="lastUpdate"></p></div><div class="actions"><button id="newTaskBtn" class="btn">+ تكليف منزلي جديد</button><button id="refreshBtn" class="btn secondary">تحديث</button></div></div>
 <div class="teacher-cards"><div class="stat"><strong id="sTasks">0</strong><span>التكليفات</span></div><div class="stat"><strong id="sStudents">0</strong><span>طلاب شاركوا</span></div><div class="stat"><strong id="sTraining">0</strong><span>تقارير التدريب</span></div><div class="stat"><strong id="sTests">0</strong><span>نتائج الاختبار</span></div></div>
-<div class="tabs"><button class="tab active" data-tab="tasks">مركز التكليفات المنزلية</button><button class="tab" data-tab="students">إدارة الطلاب</button><button class="tab" data-tab="results">نتائج الطلاب</button><button class="tab" data-tab="portfolio">تقارير ملف الإنجاز</button></div>
+<div class="tabs"><button class="tab active" data-tab="tasks">مركز التكليفات المنزلية</button><button class="tab" data-tab="results">نتائج الطلاب</button><button class="tab" data-tab="students">إدارة الطلاب</button><button class="tab" data-tab="portfolio">تقارير ملف الإنجاز</button></div>
 
 <section id="tasksTab" class="panel glass"><div class="section-head" style="margin-top:0"><div><h3>الروابط الذكية</h3><p>فعّل أو أوقف الرابط بعد إرساله للطلاب، وانسخ رابط النشاط من هنا.</p></div></div><div class="table-wrap"><table><thead><tr><th>التكليف</th><th>النوع</th><th>الدرس</th><th>الفصل</th><th>الفترة</th><th>الحالة</th><th>الرابط</th><th>إجراءات</th></tr></thead><tbody id="tasksBody"></tbody></table></div></section>
+
+<section id="resultsTab" class="panel glass hidden"><div class="toolbar"><div class="field"><label>الفصل</label><select id="classFilter"><option value="">كل الفصول</option></select></div><div class="field"><label>بحث باسم الطالب</label><input id="nameFilter" placeholder="اكتب جزءًا من الاسم"></div><button id="exportBtn" class="btn secondary">تصدير CSV</button></div><div class="note good" style="margin-top:12px">النتائج مرتبة تلقائيًا حسب الفصل 1/1 ثم 2/1 ثم 3/1 ثم 4/1، وداخل كل فصل حسب الاسم أبجديًا.</div><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>الطالب</th><th>الفصل</th><th>النشاط</th><th>الدرجة</th><th>النسبة</th><th>المستوى</th><th>المدة</th><th>المفاهيم الضعيفة</th></tr></thead><tbody id="resultsBody"></tbody></table></div></section>
 
 
 <section id="studentsTab" class="panel glass hidden">
   <div class="section-head" style="margin-top:0">
-    <div>
-      <h3>إدارة الطلاب</h3>
-      <p>إضافة طالب، تعديل الاسم، النقل بين الفصول، الحذف من قائمة الاختيار، أو إعادة الطالب لاحقًا. تبقى النتائج السابقة محفوظة.</p>
-    </div>
-    <div class="actions">
-      <button id="seedStudentsBtn" class="btn gold">تحميل القوائم الأساسية</button>
-      <button id="refreshStudentsBtn" class="btn secondary">تحديث الأسماء</button>
-    </div>
+    <div><h3>إدارة الطلاب</h3><p>المصدر الأساسي للأسماء هو سجل المتابعة. بعد المزامنة يمكنك إضافة طالب، تعديل اسمه، نقله أو حذفه، ويظهر التغيير مباشرة في صفحة الطالب.</p></div>
+    <div class="actions"><button id="syncTrackerBtn" class="btn gold">مزامنة من سجل المتابعة</button><button id="reloadStudentsBtn" class="btn secondary">تحديث الأسماء</button></div>
   </div>
-
-  <div class="form-grid" style="grid-template-columns:1fr 2fr auto">
-    <div class="field"><label>الفصل</label><select id="studentAdminClass"></select></div>
+  <div class="note student-admin-note">تقرأ المزامنة أسماء طلاب <b>الأول المتوسط</b> من سجل المتابعة المحفوظ على هذا الجهاز/المتصفح، ولا تغيّر درجات السجل. بعد المزامنة تصبح هذه القائمة هي المصدر المركزي لصفحة الطالب.</div>
+  <div class="student-admin-toolbar">
+    <div class="field"><label>الفصل</label><select id="studentsClass"></select></div>
     <div class="field"><label>اسم الطالب المستجد</label><input id="newStudentName" placeholder="اكتب الاسم الرباعي أو كما تريد ظهوره للطالب"></div>
-    <div class="field" style="align-self:end"><button id="addStudentBtn" class="btn" style="width:100%">+ إضافة الطالب</button></div>
+    <button id="addStudentBtn" class="btn">+ إضافة الطالب</button>
   </div>
-
-  <div class="toolbar" style="margin-top:14px;grid-template-columns:1fr auto auto">
-    <div class="field"><label>بحث</label><input id="studentSearch" placeholder="ابحث باسم الطالب"></div>
-    <label class="pill" style="align-self:end"><input id="showInactiveStudents" type="checkbox"> إظهار المحذوفين</label>
-    <div id="studentAdminCount" class="pill" style="align-self:end">0 طالب</div>
-  </div>
-
-  <div id="studentsAdminStatus" class="note" style="margin-top:13px">اختر الفصل ثم اضغط «تحديث الأسماء».</div>
-
-  <div class="table-wrap">
+  <div id="studentsAdminStatus" class="note good">اختر الفصل لعرض الطلاب.</div>
+  <div class="table-wrap student-admin-table">
     <table>
-      <thead><tr><th>#</th><th>اسم الطالب</th><th>رمز الطالب</th><th>الفصل</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
-      <tbody id="studentsAdminBody"><tr><td colspan="6">لم يتم تحميل الأسماء بعد.</td></tr></tbody>
+      <thead><tr><th>#</th><th>اسم الطالب</th><th>رمز الطالب</th><th>الفصل</th><th>الإجراءات</th></tr></thead>
+      <tbody id="studentsBody"></tbody>
     </table>
   </div>
 </section>
-
-<section id="resultsTab" class="panel glass hidden"><div class="toolbar"><div class="field"><label>الفصل</label><select id="classFilter"><option value="">كل الفصول</option></select></div><div class="field"><label>بحث باسم الطالب</label><input id="nameFilter" placeholder="اكتب جزءًا من الاسم"></div><button id="exportBtn" class="btn secondary">تصدير CSV</button></div><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>الطالب</th><th>الفصل</th><th>النشاط</th><th>الدرجة</th><th>النسبة</th><th>المستوى</th><th>المدة</th><th>المفاهيم الضعيفة</th></tr></thead><tbody id="resultsBody"></tbody></table></div></section>
 
 <section id="portfolioTab" class="panel glass hidden">
       <div class="section-head" style="margin-top:0"><div><h3>تقارير ملف الإنجاز</h3><p>أنشئ التقرير مباشرة من نتائج الطلاب، ثم اطبعه أو احفظه PDF من نافذة الطباعة.</p></div></div>
@@ -93,20 +87,6 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
       <div class="modal-actions"><button id="printReport" class="btn">طباعة / حفظ PDF</button><button id="copyReport" class="btn secondary">نسخ نص التقرير</button></div>
     </div></div>
 
-
-<div id="studentEditModal" class="modal hidden"><div class="modal-card glass">
-  <div class="section-head" style="margin-top:0">
-    <div><h3>تعديل / نقل الطالب</h3><p>يمكنك تعديل الاسم أو اختيار فصل آخر. عند النقل تنتقل نتائج الطالب السابقة معه.</p></div>
-    <button id="closeStudentEdit" class="btn secondary">إغلاق</button>
-  </div>
-  <input id="editOldClass" type="hidden"><input id="editStudentCode" type="hidden">
-  <div class="form-grid" style="grid-template-columns:2fr 1fr">
-    <div class="field"><label>اسم الطالب</label><input id="editStudentName"></div>
-    <div class="field"><label>الفصل الجديد</label><select id="editStudentClass"></select></div>
-  </div>
-  <div class="modal-actions"><button id="saveStudentEdit" class="btn">حفظ التعديل</button></div>
-</div></div>
-
 <div id="taskModal" class="modal hidden"><div class="modal-card glass"><div class="section-head" style="margin-top:0"><div><h3>إنشاء تكليف منزلي</h3><p>بعد الحفظ سيظهر رابط جاهز للإرسال للطلاب.</p></div><button id="closeTask" class="btn secondary">إغلاق</button></div><div class="form-grid"><div class="field"><label>اسم التكليف</label><input id="taskTitle" placeholder="مثال: تدريب النماذج العلمية"></div><div class="field"><label>النوع</label><select id="taskMode"><option value="training">تدريب</option><option value="exam">اختبار</option><option value="remedial">خطة علاجية</option><option value="enrich">إثراء</option></select></div><div class="field"><label>الدرس</label><select id="taskLesson"></select></div><div class="field"><label>الفصل المستهدف</label><select id="taskClass"><option>الكل</option></select></div><div class="field"><label>عدد الأسئلة</label><input id="taskCount" type="number" min="3" max="20" value="10"></div><div class="field"><label>زمن السؤال (للاختبار)</label><input id="taskTime" type="number" min="10" max="120" value="30"></div><div class="field"><label>عدد المحاولات</label><input id="taskAttempts" type="number" min="1" max="10" value="1"></div><div class="field"><label>بداية التكليف</label><input id="taskStart" type="datetime-local"></div><div class="field"><label>نهاية التكليف</label><input id="taskEnd" type="datetime-local"></div></div><div class="modal-actions"><button id="saveTask" class="btn">إنشاء التكليف والرابط</button></div></div></div>
 
 <script>
@@ -120,7 +100,41 @@ const $=id=>document.getElementById(id);
 const DEFAULT_API_URL='https://script.google.com/macros/s/AKfycbxp-t4JgGO5WiK6hoacjTyBqFnG-9bSWClplOpVV4VDuTV7T4tY0swB1LI36kr_djJ7nQ/exec';
 let tasks=[];
 let results=[];
-let studentsAdmin=[];
+const CLASSES=['1/1','2/1','3/1','4/1'];
+let studentRoster={};
+const TRACKER_STORAGE_KEY='st_track_v1';
+const TRACKER_GRADE='الأول المتوسط';
+
+function normalizeStudentNameKey(name){
+ return String(name||'').normalize('NFKC')
+   .replace(/[\u064B-\u065F\u0670]/g,'')
+   .replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي')
+   .replace(/\s+/g,' ').trim().toLowerCase();
+}
+function readTrackerRoster(){
+ const raw=localStorage.getItem(TRACKER_STORAGE_KEY);
+ if(!raw) throw new Error('لم أجد بيانات سجل المتابعة على هذا الجهاز. افتح سجل المتابعة مرة واحدة في نفس المتصفح ثم ارجع واضغط المزامنة.');
+ let st;
+ try{st=JSON.parse(raw)}catch(e){throw new Error('تعذر قراءة بيانات سجل المتابعة المحفوظة.')}
+ const semester=String(st?.meta?.semester||'الفصل الدراسي الأول');
+ let classes=st?.grades?.[TRACKER_GRADE]?.[semester];
+ if(!classes && (!st?.meta?.grade || st.meta.grade===TRACKER_GRADE)) classes=st?.classes;
+ if(!classes) throw new Error(`لم أجد قوائم ${TRACKER_GRADE} في ${semester} داخل سجل المتابعة.`);
+ const roster={};
+ CLASSES.forEach(cls=>{
+   const students=Array.isArray(classes?.[cls]?.students)?classes[cls].students:[];
+   const names=[]; const seen=new Set();
+   students.forEach(s=>{
+     const name=String((s&&typeof s==='object')?s.name:s||'').replace(/\s+/g,' ').trim();
+     const key=normalizeStudentNameKey(name);
+     if(name && key && !seen.has(key)){seen.add(key);names.push(name)}
+   });
+   roster[cls]=names;
+ });
+ const total=CLASSES.reduce((n,c)=>n+roster[c].length,0);
+ if(!total) throw new Error('قوائم سجل المتابعة لا تحتوي أسماء في الفصول 1/1 إلى 4/1.');
+ return {roster,semester,year:String(st?.meta?.year||'')};
+}
 
 function getApi(){return $('apiUrl').value.trim()}
 function getKey(){return $('teacherKey').value.trim()}
@@ -158,9 +172,9 @@ async function loadTeacher(){
   results=Array.isArray(data.results)?data.results.map(normalizeResult):[];
   $('lastUpdate').textContent='آخر تحديث: '+new Date().toLocaleString('ar-SA');
   setStatus(`تم الربط بنجاح — ${tasks.length} تكليف و${results.length} نتيجة.`,true);
+  await loadAllStudents();
   renderAll();
   updatePortfolioTasks();
-  await loadStudentsAdmin();
  }catch(err){
   console.error(err);
   setStatus('تعذر تحميل لوحة المعلم: '+(err.message||err));
@@ -180,7 +194,7 @@ function typeName(m){return({training:'تدريب',exam:'اختبار',remedial:
 function init(){
  $('teacherSub').textContent='مدرسة أبي الدرداء المتوسطة | المعلم: علي البقاشي';
  $('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام 1448هـ';
- ['1/1','2/1','3/1','4/1'].forEach(c=>{$('classFilter').insertAdjacentHTML('beforeend',`<option>${c}</option>`);$('taskClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('portfolioClass')) $('portfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentAdminClass')) $('studentAdminClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('editStudentClass')) $('editStudentClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`)});
+ CLASSES.forEach(c=>{$('classFilter').insertAdjacentHTML('beforeend',`<option>${c}</option>`);$('taskClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('portfolioClass')) $('portfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentsClass')) $('studentsClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`)});
  $('taskLesson').innerHTML='<option value="all">جميع الدروس</option>'+Object.entries(LESSONS).filter(([k])=>k!=='all').map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
  $('apiUrl').value=localStorage.getItem('sj_teacher_api')||DEFAULT_API_URL;
  $('teacherKey').value=localStorage.getItem('sj_teacher_key')||'';
@@ -194,14 +208,10 @@ function init(){
  $('classFilter').onchange=renderResults;
  $('nameFilter').oninput=renderResults;
  $('exportBtn').onclick=exportCsv;
- $('refreshStudentsBtn').onclick=loadStudentsAdmin;
- $('addStudentBtn').onclick=addStudentAdmin;
- $('seedStudentsBtn').onclick=seedStudentsAdmin;
- $('studentAdminClass').onchange=loadStudentsAdmin;
- $('studentSearch').oninput=renderStudentsAdmin;
- $('showInactiveStudents').onchange=loadStudentsAdmin;
- $('closeStudentEdit').onclick=()=>$('studentEditModal').classList.add('hidden');
- $('saveStudentEdit').onclick=saveStudentEdit;
+ if($('studentsClass')) $('studentsClass').onchange=renderStudentsAdmin;
+ if($('addStudentBtn')) $('addStudentBtn').onclick=addStudentAdmin;
+ if($('reloadStudentsBtn')) $('reloadStudentsBtn').onclick=async()=>{try{await loadAllStudents();renderStudentsAdmin()}catch(e){alert(e.message||e)}};
+ if($('syncTrackerBtn')) $('syncTrackerBtn').onclick=syncStudentsFromTracker;
  document.querySelectorAll('[data-report]').forEach(b=>b.onclick=()=>generatePortfolioReport(b.dataset.report));
  $('closeReport').onclick=()=>$('reportModal').classList.add('hidden');
  $('printReport').onclick=()=>window.print();
@@ -212,15 +222,133 @@ function init(){
  renderAll();
  if(getKey()) setTimeout(loadTeacher,150);
 }
-function switchTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));['tasks','students','results','portfolio'].forEach(x=>$(x+'Tab').classList.toggle('hidden',x!==tab));if(tab==='students'&&getKey())loadStudentsAdmin()}
-function renderAll(){stats();renderTasks();renderResults()}
+function switchTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));['tasks','results','students','portfolio'].forEach(x=>$(x+'Tab').classList.toggle('hidden',x!==tab));if(tab==='students')renderStudentsAdmin()}
+function renderAll(){stats();renderTasks();renderResults();renderStudentsAdmin()}
 function stats(){const students=new Set(results.map(x=>x.className+'-'+x.studentName)).size;$('sTasks').textContent=tasks.length;$('sStudents').textContent=students;$('sTraining').textContent=results.filter(x=>x.type!=='test'&&x.type!=='exam').length;$('sTests').textContent=results.filter(x=>x.type==='test'||x.type==='exam').length}
 function renderTasks(){
- $('tasksBody').innerHTML=tasks.map(t=>{const link=new URL('student.html',location.href).href+'?task='+encodeURIComponent(t.id);return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(LESSONS[t.lesson]||t.lesson)}</td><td>${esc(t.className)}</td><td>${esc(fmt(t.startAt))}<br>${esc(fmt(t.endAt))}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td><button class="smallbtn copy" data-copy="${link}">نسخ الرابط</button></td><td><button class="smallbtn toggle" data-toggle="${t.id}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${t.id}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
+ $('tasksBody').innerHTML=tasks.map(t=>{const link=new URL('journey-student.html',location.href).href+'?task='+encodeURIComponent(t.id);return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(LESSONS[t.lesson]||t.lesson)}</td><td>${esc(t.className)}</td><td>${esc(fmt(t.startAt))}<br>${esc(fmt(t.endAt))}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td><button class="smallbtn copy" data-copy="${link}">نسخ الرابط</button></td><td><button class="smallbtn toggle" data-toggle="${t.id}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${t.id}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);alert('تم نسخ رابط التكليف.')}catch{prompt('انسخ رابط التكليف:',b.dataset.copy)}});
  document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=async()=>{const t=tasks.find(x=>String(x.id)===String(b.dataset.toggle));if(!t)return;try{b.disabled=true;await apiAction('toggleTask',{id:t.id,active:String(!t.active)});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}});
  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('هل تريد حذف هذا التكليف؟'))return;try{b.disabled=true;await apiAction('deleteTask',{id:b.dataset.del});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}})
 }
+
+async function loadAllStudents(){
+ const roster={};
+ for(const className of CLASSES){
+  const r=await jsonp({action:'getStudents',className});
+  if(!r||r.ok===false) throw new Error(r?.message||`تعذر تحميل طلاب ${className}`);
+  roster[className]=Array.isArray(r.students)?r.students.map(s=>({code:String(s.code),name:String(s.name)})):[];
+ }
+ studentRoster=roster;
+ return roster;
+}
+function currentStudentsClass(){return $('studentsClass')?.value||CLASSES[0]}
+function renderStudentsAdmin(){
+ if(!$('studentsBody')||!$('studentsClass'))return;
+ if(!$('studentsClass').value) $('studentsClass').value=CLASSES[0];
+ const cls=currentStudentsClass();
+ const rows=studentRoster[cls]||[];
+ $('studentsAdminStatus').className='note '+(rows.length?'good':'');
+ $('studentsAdminStatus').innerHTML=`الفصل <b>${esc(cls)}</b> — <span class="student-count-badge">${rows.length}</span> طالبًا مسجلًا ونشطًا.`;
+ $('studentsBody').innerHTML=rows.map((s,i)=>`<tr>
+   <td>${i+1}</td>
+   <td><b>${esc(s.name)}</b></td>
+   <td>${esc(s.code)}</td>
+   <td>${esc(cls)}</td>
+   <td class="actions-cell">
+     <button class="smallbtn toggle" data-stu-edit="${esc(s.code)}">تعديل الاسم</button>
+     <button class="smallbtn copy" data-stu-move="${esc(s.code)}">نقل</button>
+     <button class="smallbtn remove" data-stu-del="${esc(s.code)}">حذف</button>
+   </td></tr>`).join('')||'<tr><td colspan="5">لا يوجد طلاب مسجلون في هذا الفصل.</td></tr>';
+ document.querySelectorAll('[data-stu-edit]').forEach(b=>b.onclick=()=>renameStudentAdmin(cls,b.dataset.stuEdit));
+ document.querySelectorAll('[data-stu-move]').forEach(b=>b.onclick=()=>moveStudentAdmin(cls,b.dataset.stuMove));
+ document.querySelectorAll('[data-stu-del]').forEach(b=>b.onclick=()=>deleteStudentAdmin(cls,b.dataset.stuDel));
+}
+async function addStudentAdmin(){
+ const cls=currentStudentsClass(),name=$('newStudentName').value.trim();
+ if(name.length<3){alert('اكتب اسم الطالب أولًا.');return}
+ const btn=$('addStudentBtn');btn.disabled=true;
+ try{
+  const r=await apiAction('addStudent',{className:cls,studentName:name});
+  $('newStudentName').value='';
+  await loadAllStudents();renderStudentsAdmin();
+  alert(`تمت إضافة ${r.studentName||name} إلى الفصل ${cls}.`);
+ }catch(e){alert(e.message||e)}finally{btn.disabled=false}
+}
+async function renameStudentAdmin(cls,code){
+ const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
+ const name=prompt('اكتب الاسم الجديد للطالب:',s.name);
+ if(name===null)return;
+ const clean=name.trim();if(clean.length<3){alert('الاسم قصير جدًا.');return}
+ try{await apiAction('renameStudent',{className:cls,studentCode:code,studentName:clean});await loadAllStudents();renderStudentsAdmin();alert('تم تعديل اسم الطالب.')}catch(e){alert(e.message||e)}
+}
+async function moveStudentAdmin(cls,code){
+ const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
+ const target=prompt(`نقل الطالب: ${s.name}\nاكتب الفصل الجديد: ${CLASSES.filter(x=>x!==cls).join(' أو ')}`,'');
+ if(target===null)return;
+ const to=target.trim();
+ if(!CLASSES.includes(to)){alert('الفصل غير صحيح. استخدم 1/1 أو 2/1 أو 3/1 أو 4/1.');return}
+ if(to===cls){alert('الطالب موجود بالفعل في هذا الفصل.');return}
+ if(!confirm(`هل تريد نقل ${s.name} من ${cls} إلى ${to}؟`))return;
+ try{await apiAction('moveStudent',{className:cls,studentCode:code,newClassName:to});await loadAllStudents();renderStudentsAdmin();alert(`تم نقل الطالب إلى ${to}.`)}catch(e){alert(e.message||e)}
+}
+async function deleteStudentAdmin(cls,code){
+ const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
+ if(!confirm(`حذف ${s.name} من قائمة الفصل ${cls}؟\nستبقى نتائجه السابقة محفوظة في التقارير.`))return;
+ try{await apiAction('deleteStudent',{className:cls,studentCode:code});await loadAllStudents();renderStudentsAdmin();alert('تم حذف الطالب من القائمة النشطة.')}catch(e){alert(e.message||e)}
+}
+
+async function syncStudentsFromTracker(){
+ if(!getKey()){alert('حمّل لوحة المعلم أولًا وأدخل مفتاح المعلم.');return}
+ let source;
+ try{source=readTrackerRoster()}catch(e){alert(e.message||e);return}
+ const counts=CLASSES.map(c=>`${c}: ${source.roster[c].length}`).join(' — ');
+ const ok=confirm(`تم العثور على قوائم سجل المتابعة (${source.semester}${source.year?' — '+source.year:''}).\n${counts}\n\nهل تريد اعتمادها الآن؟\nسيتم إخفاء أي طالب نشط غير موجود في سجل المتابعة، وتبقى نتائجه السابقة محفوظة.`);
+ if(!ok)return;
+ const btn=$('syncTrackerBtn'); btn.disabled=true;
+ try{
+   $('studentsAdminStatus').className='note';
+   $('studentsAdminStatus').textContent='جاري مزامنة أسماء سجل المتابعة...';
+   await loadAllStudents();
+   const existing=[];
+   CLASSES.forEach(cls=>(studentRoster[cls]||[]).forEach(s=>existing.push({className:cls,code:String(s.code),name:String(s.name),used:false})));
+   let added=0,renamed=0,moved=0,removed=0;
+
+   for(const targetClass of CLASSES){
+     for(const targetName of source.roster[targetClass]){
+       const key=normalizeStudentNameKey(targetName);
+       // الأولوية لطالب مطابق داخل الفصل نفسه، ثم البحث في بقية الفصول.
+       let match=existing.find(x=>!x.used&&x.className===targetClass&&normalizeStudentNameKey(x.name)===key);
+       if(!match) match=existing.find(x=>!x.used&&normalizeStudentNameKey(x.name)===key);
+       if(match){
+         match.used=true;
+         let currentClass=match.className,currentCode=match.code,currentName=match.name;
+         if(currentName!==targetName){
+           const r=await apiAction('renameStudent',{className:currentClass,studentCode:currentCode,studentName:targetName});
+           currentName=String(r.studentName||targetName); renamed++;
+         }
+         if(currentClass!==targetClass){
+           const r=await apiAction('moveStudent',{className:currentClass,studentCode:currentCode,newClassName:targetClass});
+           currentClass=targetClass; currentCode=String(r.studentCode||currentCode); moved++;
+         }
+       }else{
+         await apiAction('addStudent',{className:targetClass,studentName:targetName}); added++;
+       }
+     }
+   }
+   for(const old of existing.filter(x=>!x.used)){
+     await apiAction('deleteStudent',{className:old.className,studentCode:old.code}); removed++;
+   }
+   await loadAllStudents(); renderStudentsAdmin();
+   $('studentsAdminStatus').className='note good';
+   $('studentsAdminStatus').textContent=`تم اعتماد سجل المتابعة: إضافة ${added}، تعديل ${renamed}، نقل ${moved}، حذف من القائمة ${removed}.`;
+   alert('تمت مزامنة أسماء سجل المتابعة بنجاح. ستظهر القائمة الجديدة للطلاب عند فتح الفصل أو تحديث صفحة الطالب.');
+ }catch(e){
+   console.error(e); alert('تعذر إكمال المزامنة: '+(e.message||e));
+   try{await loadAllStudents();renderStudentsAdmin()}catch(_){}
+ }finally{btn.disabled=false}
+}
+
 async function createTask(){
  const title=$('taskTitle').value.trim();
  if(!title){alert('اكتب اسم التكليف.');return}
@@ -232,108 +360,22 @@ async function createTask(){
   alert('تم إنشاء التكليف وحفظه في قاعدة البيانات.');
  }catch(e){alert(e.message||e)}finally{btn.disabled=false}
 }
-
-function studentAdminStatus(text,good=false){
- const el=$('studentsAdminStatus'); if(!el)return;
- el.className=good?'note good':'note'; el.textContent=text;
+const RESULT_CLASS_ORDER={'1/1':1,'2/1':2,'3/1':3,'4/1':4};
+const AR_NAME_COLLATOR=new Intl.Collator('ar',{sensitivity:'base',numeric:true,ignorePunctuation:true});
+function filteredResults(){
+ const c=$('classFilter').value,n=$('nameFilter').value.trim().toLowerCase();
+ return results
+  .filter(x=>(!c||x.className===c)&&(!n||x.studentName.toLowerCase().includes(n)))
+  .slice()
+  .sort((a,b)=>{
+    const ca=RESULT_CLASS_ORDER[a.className]??99,cb=RESULT_CLASS_ORDER[b.className]??99;
+    if(ca!==cb)return ca-cb;
+    const byName=AR_NAME_COLLATOR.compare(String(a.studentName||''),String(b.studentName||''));
+    if(byName!==0)return byName;
+    const ta=new Date(a.timestamp||0).getTime()||0,tb=new Date(b.timestamp||0).getTime()||0;
+    return tb-ta;
+  });
 }
-async function loadStudentsAdmin(){
- if(!getKey()){studentAdminStatus('حمّل لوحة المعلم أولًا حتى يتم التحقق من مفتاح المعلم.');return}
- const cls=$('studentAdminClass')?.value||'1/1';
- try{
-  $('refreshStudentsBtn').disabled=true;
-  studentAdminStatus('جاري تحميل أسماء الطلاب...');
-  const data=await apiAction('listStudents',{className:cls,includeInactive:String(!!$('showInactiveStudents')?.checked)});
-  studentsAdmin=Array.isArray(data.students)?data.students:[];
-  renderStudentsAdmin();
-  studentAdminStatus(`تم تحميل ${studentsAdmin.length} طالبًا من الفصل ${cls}.`,true);
- }catch(e){
-  studentsAdmin=[];
-  renderStudentsAdmin();
-  studentAdminStatus('تعذر تحميل الأسماء: '+(e.message||e));
- }finally{$('refreshStudentsBtn').disabled=false}
-}
-function filteredStudentsAdmin(){
- const q=($('studentSearch')?.value||'').trim().toLowerCase();
- return studentsAdmin.filter(s=>!q||String(s.studentName||'').toLowerCase().includes(q));
-}
-function renderStudentsAdmin(){
- const rows=filteredStudentsAdmin();
- $('studentAdminCount').textContent=`${rows.length} طالب`;
- $('studentsAdminBody').innerHTML=rows.map((s,i)=>`<tr>
-   <td>${i+1}</td>
-   <td><b>${esc(s.studentName)}</b></td>
-   <td>${esc(s.studentCode)}</td>
-   <td>${esc(s.className)}</td>
-   <td><span class="task-status ${s.active?'on':'off'}">${s.active?'نشط':'محذوف من القائمة'}</span></td>
-   <td>
-     <button class="smallbtn toggle" data-edit-student="${esc(s.studentCode)}" data-edit-class="${esc(s.className)}">تعديل / نقل</button>
-     ${s.active
-       ?`<button class="smallbtn remove" data-student-active="false" data-student-code="${esc(s.studentCode)}" data-student-class="${esc(s.className)}">حذف من القائمة</button>`
-       :`<button class="smallbtn copy" data-student-active="true" data-student-code="${esc(s.studentCode)}" data-student-class="${esc(s.className)}">إعادة الطالب</button>`}
-   </td>
- </tr>`).join('')||'<tr><td colspan="6">لا توجد أسماء مطابقة.</td></tr>';
-
- document.querySelectorAll('[data-edit-student]').forEach(b=>b.onclick=()=>{
-  const s=studentsAdmin.find(x=>String(x.studentCode)===String(b.dataset.editStudent)&&String(x.className)===String(b.dataset.editClass));
-  if(!s)return;
-  $('editOldClass').value=s.className;
-  $('editStudentCode').value=s.studentCode;
-  $('editStudentName').value=s.studentName;
-  $('editStudentClass').value=s.className;
-  $('studentEditModal').classList.remove('hidden');
- });
- document.querySelectorAll('[data-student-active]').forEach(b=>b.onclick=async()=>{
-  const active=b.dataset.studentActive==='true';
-  const msg=active?'إعادة الطالب إلى قائمة الأسماء؟':'حذف الطالب من قائمة الاختيار؟ ستبقى نتائجه السابقة محفوظة.';
-  if(!confirm(msg))return;
-  try{
-   b.disabled=true;
-   const r=await apiAction('setStudentActive',{className:b.dataset.studentClass,studentCode:b.dataset.studentCode,active:String(active)});
-   studentAdminStatus(r.message||'تم التحديث.',true);
-   await loadStudentsAdmin();
-  }catch(e){alert(e.message||e)}finally{b.disabled=false}
- });
-}
-async function addStudentAdmin(){
- const className=$('studentAdminClass').value;
- const studentName=$('newStudentName').value.trim();
- if(!studentName){alert('اكتب اسم الطالب أولًا.');return}
- const btn=$('addStudentBtn');btn.disabled=true;
- try{
-  const r=await apiAction('addStudent',{className,studentName});
-  $('newStudentName').value='';
-  studentAdminStatus(r.message||'تمت إضافة الطالب.',true);
-  await loadStudentsAdmin();
- }catch(e){alert(e.message||e)}finally{btn.disabled=false}
-}
-async function seedStudentsAdmin(){
- if(!confirm('تحميل القوائم الأساسية؟ لن تتم الإضافة إذا كانت ورقة الطلاب تحتوي أسماء بالفعل.'))return;
- const btn=$('seedStudentsBtn');btn.disabled=true;
- try{
-  const r=await apiAction('seedStudents',{});
-  studentAdminStatus(r.message||'تم تحميل القوائم الأساسية.',true);
-  await loadStudentsAdmin();
- }catch(e){alert(e.message||e)}finally{btn.disabled=false}
-}
-async function saveStudentEdit(){
- const oldClassName=$('editOldClass').value;
- const studentCode=$('editStudentCode').value;
- const studentName=$('editStudentName').value.trim();
- const newClassName=$('editStudentClass').value;
- if(!studentName){alert('اسم الطالب مطلوب.');return}
- const btn=$('saveStudentEdit');btn.disabled=true;
- try{
-  const r=await apiAction('updateStudent',{oldClassName,studentCode,studentName,newClassName});
-  $('studentEditModal').classList.add('hidden');
-  $('studentAdminClass').value=newClassName;
-  studentAdminStatus(r.message||'تم تحديث الطالب.',true);
-  await loadStudentsAdmin();
-  await loadTeacher();
- }catch(e){alert(e.message||e)}finally{btn.disabled=false}
-}
-
-function filteredResults(){const c=$('classFilter').value,n=$('nameFilter').value.trim().toLowerCase();return results.filter(x=>(!c||x.className===c)&&(!n||x.studentName.toLowerCase().includes(n)))}
 function renderResults(){$('resultsBody').innerHTML=filteredResults().map(x=>`<tr><td>${esc(fmt(x.timestamp))}</td><td>${esc(x.studentName)}</td><td>${esc(x.className)}</td><td>${esc(x.taskTitle)}</td><td>${x.score}/${x.total}</td><td><b>${x.percent}%</b></td><td>${esc(x.level)}</td><td>${x.durationSec}ث</td><td>${esc(x.weakConcepts)}</td></tr>`).join('')||'<tr><td colspan="9">لا توجد نتائج مطابقة.</td></tr>'}
 function exportCsv(){const rows=filteredResults();const h=['timestamp','studentName','className','taskTitle','score','total','percent','level','durationSec','weakConcepts'];const csv='\ufeff'+[h.join(','),...rows.map(r=>h.map(k=>'"'+String(r[k]??'').replaceAll('"','""')+'"').join(','))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='معاينة_نتائج_رحلة_عالم_العلوم.csv';a.click();URL.revokeObjectURL(a.href)}
 
