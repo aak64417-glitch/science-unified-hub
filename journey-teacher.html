@@ -29,6 +29,13 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 
 .portfolio-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 16px}.report-cards .feature{align-items:stretch}.report-card>div:last-child{display:flex;flex-direction:column;flex:1}.report-card .btn{margin-top:auto;align-self:flex-start}.report-modal-card{width:min(920px,96vw);max-height:92vh;overflow:auto}.report-paper{background:white;color:#172033;border-radius:18px;padding:28px;direction:rtl;line-height:1.9}.report-paper h1,.report-paper h2,.report-paper h3{color:#0b3553}.report-paper .report-head{text-align:center;border-bottom:3px solid #0b6c76;padding-bottom:14px;margin-bottom:18px}.report-paper .report-head h1{margin:0 0 4px;font-size:1.55rem}.report-paper .report-head p{margin:3px 0;color:#4b6072}.report-paper .report-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}.report-paper .meta-box{background:#f3f7fa;border:1px solid #dce6ed;border-radius:12px;padding:9px 12px}.report-paper .report-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}.report-paper .kpi{background:#f6fafb;border:1px solid #dce8ea;border-radius:12px;text-align:center;padding:12px}.report-paper .kpi b{display:block;font-size:1.3rem;color:#0b6c76}.report-paper table{min-width:0;color:#172033;border:1px solid #dfe7ec}.report-paper th{position:static;background:#eaf3f5;color:#14384a}.report-paper th,.report-paper td{border:1px solid #dfe7ec;padding:8px}.report-paper .report-section{margin-top:17px}.report-paper .report-section h3{margin:0 0 8px}.report-paper .evidence-note{background:#fff8e5;border:1px solid #f1d89b;border-radius:12px;padding:10px 12px}.report-paper ul{margin-top:6px}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}@media(max-width:700px){.portfolio-controls,.report-paper .report-meta,.report-paper .report-kpis{grid-template-columns:1fr}.report-paper{padding:18px}}
 @media print{body *{visibility:hidden!important}#reportModal,#reportModal *{visibility:visible!important}#reportModal{position:absolute!important;inset:0!important;background:white!important;padding:0!important;display:block!important}#reportModal .modal-card{box-shadow:none!important;border:0!important;max-height:none!important;width:100%!important;background:white!important;padding:0!important}#reportModal .section-head,#reportModal .modal-actions{display:none!important}.report-paper{border-radius:0!important;padding:16mm!important}.report-paper table{font-size:10pt!important}}
+
+.student-class-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.student-class-card{border:1px solid var(--line);background:#0d2139;color:#fff;border-radius:14px;padding:12px;cursor:pointer;text-align:center;font-weight:900}
+.student-class-card b{display:block;font-size:1.15rem;margin-bottom:3px}.student-class-card span{color:var(--muted);font-size:.82rem}
+.student-class-card.active{outline:2px solid var(--teal);background:#12304a}
+.replace{background:#f0b84a;color:#07111f}
+@media(max-width:700px){.student-class-overview{grid-template-columns:repeat(2,1fr)}}
 </style></head>
 <body><div class="wrap">
 <header class="topbar glass"><div class="brand"><div class="logo">📊</div><div><h1>لوحة المعلم</h1><p id="teacherSub"></p></div></div><div class="actions"><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="journey-student.html">معاينة منصة الطالب</a></div></header>
@@ -47,10 +54,11 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 
 <section id="studentsTab" class="panel glass hidden">
   <div class="section-head" style="margin-top:0">
-    <div><h3>إدارة الطلاب</h3><p>المصدر الأساسي للأسماء هو سجل المتابعة. بعد المزامنة يمكنك إضافة طالب، تعديل اسمه، نقله أو حذفه، ويظهر التغيير مباشرة في صفحة الطالب.</p></div>
-    <div class="actions"><button id="syncTrackerBtn" class="btn gold">مزامنة من سجل المتابعة</button><button id="reloadStudentsBtn" class="btn secondary">تحديث الأسماء</button></div>
+    <div><h3>إدارة الطلاب</h3><p>قائمة مركزية للفصول 1/1 إلى 4/1. يمكنك إضافة طالب، تصحيح اسمه، نقله، استبداله أو حذفه، ويظهر التغيير في صفحة الطالب مباشرة.</p></div>
+    <div class="actions"><button id="reloadStudentsBtn" class="btn secondary">تحديث القوائم</button></div>
   </div>
-  <div class="note student-admin-note">تقرأ المزامنة أسماء طلاب <b>الأول المتوسط</b> من سجل المتابعة المحفوظ على هذا الجهاز/المتصفح، ولا تغيّر درجات السجل. بعد المزامنة تصبح هذه القائمة هي المصدر المركزي لصفحة الطالب.</div>
+  <div class="note student-admin-note"><b>الفرق بين التعديل والاستبدال:</b> «تعديل الاسم» لتصحيح اسم الطالب الحالي مع تحديث اسمه في نتائجه السابقة، أما «استبدال الطالب» فيُبقي نتائج الطالب القديم محفوظة ويضيف الطالب الجديد بهوية مستقلة.</div>
+  <div id="studentsOverview" class="student-class-overview"></div>
   <div class="student-admin-toolbar">
     <div class="field"><label>الفصل</label><select id="studentsClass"></select></div>
     <div class="field"><label>اسم الطالب المستجد</label><input id="newStudentName" placeholder="اكتب الاسم الرباعي أو كما تريد ظهوره للطالب"></div>
@@ -211,7 +219,6 @@ function init(){
  if($('studentsClass')) $('studentsClass').onchange=renderStudentsAdmin;
  if($('addStudentBtn')) $('addStudentBtn').onclick=addStudentAdmin;
  if($('reloadStudentsBtn')) $('reloadStudentsBtn').onclick=async()=>{try{await loadAllStudents();renderStudentsAdmin()}catch(e){alert(e.message||e)}};
- if($('syncTrackerBtn')) $('syncTrackerBtn').onclick=syncStudentsFromTracker;
  document.querySelectorAll('[data-report]').forEach(b=>b.onclick=()=>generatePortfolioReport(b.dataset.report));
  $('closeReport').onclick=()=>$('reportModal').classList.add('hidden');
  $('printReport').onclick=()=>window.print();
@@ -248,8 +255,12 @@ function renderStudentsAdmin(){
  if(!$('studentsClass').value) $('studentsClass').value=CLASSES[0];
  const cls=currentStudentsClass();
  const rows=studentRoster[cls]||[];
+ if($('studentsOverview')){
+   $('studentsOverview').innerHTML=CLASSES.map(c=>`<button type="button" class="student-class-card ${c===cls?'active':''}" data-class-card="${esc(c)}"><b>الفصل ${esc(c)}</b><span>${(studentRoster[c]||[]).length} طالبًا</span></button>`).join('');
+   document.querySelectorAll('[data-class-card]').forEach(b=>b.onclick=()=>{$('studentsClass').value=b.dataset.classCard;renderStudentsAdmin()});
+ }
  $('studentsAdminStatus').className='note '+(rows.length?'good':'');
- $('studentsAdminStatus').innerHTML=`الفصل <b>${esc(cls)}</b> — <span class="student-count-badge">${rows.length}</span> طالبًا مسجلًا ونشطًا.`;
+ $('studentsAdminStatus').innerHTML=`الفصل <b>${esc(cls)}</b> — <span class="student-count-badge">${rows.length}</span> طالبًا في القائمة النشطة.`;
  $('studentsBody').innerHTML=rows.map((s,i)=>`<tr>
    <td>${i+1}</td>
    <td><b>${esc(s.name)}</b></td>
@@ -258,10 +269,12 @@ function renderStudentsAdmin(){
    <td class="actions-cell">
      <button class="smallbtn toggle" data-stu-edit="${esc(s.code)}">تعديل الاسم</button>
      <button class="smallbtn copy" data-stu-move="${esc(s.code)}">نقل</button>
+     <button class="smallbtn replace" data-stu-replace="${esc(s.code)}">استبدال الطالب</button>
      <button class="smallbtn remove" data-stu-del="${esc(s.code)}">حذف</button>
    </td></tr>`).join('')||'<tr><td colspan="5">لا يوجد طلاب مسجلون في هذا الفصل.</td></tr>';
  document.querySelectorAll('[data-stu-edit]').forEach(b=>b.onclick=()=>renameStudentAdmin(cls,b.dataset.stuEdit));
  document.querySelectorAll('[data-stu-move]').forEach(b=>b.onclick=()=>moveStudentAdmin(cls,b.dataset.stuMove));
+ document.querySelectorAll('[data-stu-replace]').forEach(b=>b.onclick=()=>replaceStudentAdmin(cls,b.dataset.stuReplace));
  document.querySelectorAll('[data-stu-del]').forEach(b=>b.onclick=()=>deleteStudentAdmin(cls,b.dataset.stuDel));
 }
 async function addStudentAdmin(){
@@ -277,10 +290,13 @@ async function addStudentAdmin(){
 }
 async function renameStudentAdmin(cls,code){
  const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
- const name=prompt('اكتب الاسم الجديد للطالب:',s.name);
+ const name=prompt('اكتب الاسم الصحيح للطالب:',s.name);
  if(name===null)return;
  const clean=name.trim();if(clean.length<3){alert('الاسم قصير جدًا.');return}
- try{await apiAction('renameStudent',{className:cls,studentCode:code,studentName:clean});await loadAllStudents();renderStudentsAdmin();alert('تم تعديل اسم الطالب.')}catch(e){alert(e.message||e)}
+ try{
+   await apiAction('updateStudent',{oldClassName:cls,className:cls,studentCode:code,newClassName:cls,studentName:clean});
+   await loadAllStudents();renderStudentsAdmin();alert('تم تعديل اسم الطالب وتحديث اسمه في نتائجه السابقة.');
+ }catch(e){alert(e.message||e)}
 }
 async function moveStudentAdmin(cls,code){
  const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
@@ -289,15 +305,33 @@ async function moveStudentAdmin(cls,code){
  const to=target.trim();
  if(!CLASSES.includes(to)){alert('الفصل غير صحيح. استخدم 1/1 أو 2/1 أو 3/1 أو 4/1.');return}
  if(to===cls){alert('الطالب موجود بالفعل في هذا الفصل.');return}
- if(!confirm(`هل تريد نقل ${s.name} من ${cls} إلى ${to}؟`))return;
- try{await apiAction('moveStudent',{className:cls,studentCode:code,newClassName:to});await loadAllStudents();renderStudentsAdmin();alert(`تم نقل الطالب إلى ${to}.`)}catch(e){alert(e.message||e)}
+ if(!confirm(`هل تريد نقل ${s.name} من ${cls} إلى ${to}؟\nسيظهر في قائمة الفصل الجديد وتُحدّث نتائجه السابقة إلى الفصل الجديد.`))return;
+ try{
+   await apiAction('updateStudent',{oldClassName:cls,className:cls,studentCode:code,newClassName:to,studentName:s.name});
+   await loadAllStudents();$('studentsClass').value=to;renderStudentsAdmin();alert(`تم نقل الطالب إلى ${to}.`);
+ }catch(e){alert(e.message||e)}
+}
+async function replaceStudentAdmin(cls,code){
+ const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
+ const name=prompt(`استبدال الطالب: ${s.name}\nاكتب اسم الطالب الجديد:`, '');
+ if(name===null)return;
+ const clean=name.trim();if(clean.length<3){alert('اكتب اسم الطالب الجديد كاملًا.');return}
+ if(!confirm(`سيتم إخفاء ${s.name} من قائمة الاختيار مع بقاء نتائجه السابقة محفوظة، ثم إضافة ${clean} كطالب جديد في الفصل ${cls}. هل تريد المتابعة؟`))return;
+ try{
+   await apiAction('replaceStudent',{className:cls,studentCode:code,studentName:clean});
+   await loadAllStudents();renderStudentsAdmin();alert('تم استبدال الطالب. بقيت نتائج الطالب السابق محفوظة، وظهر الطالب الجديد في القائمة.');
+ }catch(e){alert(e.message||e)}
 }
 async function deleteStudentAdmin(cls,code){
  const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
- if(!confirm(`حذف ${s.name} من قائمة الفصل ${cls}؟\nستبقى نتائجه السابقة محفوظة في التقارير.`))return;
- try{await apiAction('deleteStudent',{className:cls,studentCode:code});await loadAllStudents();renderStudentsAdmin();alert('تم حذف الطالب من القائمة النشطة.')}catch(e){alert(e.message||e)}
+ if(!confirm(`حذف ${s.name} من قائمة الفصل ${cls}؟\nلن تُحذف نتائجه السابقة.`))return;
+ try{
+   await apiAction('setStudentActive',{className:cls,studentCode:code,active:'false'});
+   await loadAllStudents();renderStudentsAdmin();alert('تم حذف الطالب من قائمة الاختيار مع الاحتفاظ بنتائجه السابقة.');
+ }catch(e){alert(e.message||e)}
 }
 
+// أبقينا هذه الدالة للتوافق مع النسخ السابقة فقط، ولا تعتمد النسخة الحالية عليها.
 async function syncStudentsFromTracker(){
  if(!getKey()){alert('حمّل لوحة المعلم أولًا وأدخل مفتاح المعلم.');return}
  let source;
