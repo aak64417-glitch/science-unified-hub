@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07111f"><title>لوحة المعلم | رحلة عالم العلوم</title><style>:root{
 --bg:#07111f;--bg2:#0a1728;--card:#102039;--card2:#132944;--text:#f7fbff;--muted:#9fb2c8;
@@ -73,7 +74,7 @@ if(!api){reject(new Error('أدخل رابط Apps Script أولًا.'));return}
 const cb='sjcb_'+Date.now()+'_'+Math.floor(Math.random()*100000);
 const script=document.createElement('script');
 const q=new URLSearchParams({...params,callback:cb});
-const timer=setTimeout(()=>{cleanup();reject(new Error('انتهت مهلة الاتصال بالخادم.'))},
+const timer=setTimeout(()=>{cleanup();reject(new Error('انتهت مهلة الاتصال بالخادم.'))},30000);
 function cleanup(){clearTimeout(timer);try{delete window[cb]}catch{};script.remove()}
 window[cb]=data=>{cleanup();resolve(data)};
 script.onerror=()=>{cleanup();reject(new Error('تعذر الاتصال بـ Apps Script. تأكد من رابط /exec وصلاحية النشر.'))};
