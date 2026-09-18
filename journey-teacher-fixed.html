@@ -397,7 +397,7 @@ async function apiAction(action,params={}){
 
 function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function fmt(v){try{return new Date(v).toLocaleString('ar-SA')}catch{return v||'—'}}
-function typeName(m){return({training:'تدريب',exam:'اختبار',remedial:'علاجي',enrich:'إثراء',test:'اختبار'}[m]||m)}
+function typeName(m){return({training:'تدريب',exam:'اختبار',remedial:'علاجي',enrich:'إثراء',test:'اختبار',mixed:'متنوع'}[m]||m)}
 function init(){
  $('teacherSub').textContent='مدرسة أبي الدرداء المتوسطة | المعلم: علي البقاشي';
  $('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام 1448هـ';
@@ -601,19 +601,62 @@ function filteredRawResults(){
 }
 function aggregateResults(){
  const map=new Map();
+ const selectedTask=$('resultTaskFilter')?.value||'';
+ const selectedType=$('resultTypeFilter')?.value||'';
+
  filteredRawResults().forEach(r=>{
-  const key=[r.className,String(r.studentCode||''),String(r.studentName||''),String(r.taskId||''),resultTitle(r),String(r.type||'')].join('|');
-  if(!map.has(key))map.set(key,{studentName:r.studentName,className:r.className,studentCode:r.studentCode||'',title:resultTitle(r),type:r.type||'training',rows:[]});
+  // صف واحد فقط لكل طالب داخل الفصل، وتُجمع تحته جميع محاولاته الظاهرة.
+  const key=[r.className,String(r.studentCode||''),String(r.studentName||'')].join('|');
+  if(!map.has(key)){
+   map.set(key,{
+    studentName:r.studentName,
+    className:r.className,
+    studentCode:r.studentCode||'',
+    rows:[]
+   });
+  }
   map.get(key).rows.push(r);
  });
+
  return [...map.values()].map(g=>{
   g.rows.sort((a,b)=>(new Date(resultTime(a)).getTime()||0)-(new Date(resultTime(b)).getTime()||0));
-  const first=g.rows[0],last=g.rows[g.rows.length-1],vals=g.rows.map(resultPercent);
-  return {...g,attempts:g.rows.length,firstPct:resultPercent(first),lastPct:resultPercent(last),bestPct:Math.max(...vals),improve:resultPercent(last)-resultPercent(first),level:last.level||'',lastTime:resultTime(last)};
+
+  const first=g.rows[0];
+  const last=g.rows[g.rows.length-1];
+  const vals=g.rows.map(resultPercent);
+
+  const titles=[...new Set(g.rows.map(resultTitle).filter(Boolean))];
+  const types=[...new Set(g.rows.map(r=>String(r.type||'training')))];
+
+  const title=selectedTask
+   ? selectedTask
+   : titles.length===1
+    ? titles[0]
+    : `الفصل الأول — ${titles.length} أنشطة`;
+
+  const type=selectedType
+   ? selectedType
+   : types.length===1
+    ? types[0]
+    : 'mixed';
+
+  return {
+   ...g,
+   title,
+   type,
+   activityCount:titles.length,
+   attempts:g.rows.length,
+   firstPct:resultPercent(first),
+   lastPct:resultPercent(last),
+   bestPct:Math.max(...vals),
+   improve:resultPercent(last)-resultPercent(first),
+   level:last.level||'',
+   lastTime:resultTime(last)
+  };
  }).sort((a,b)=>{
-  const ca=RESULT_CLASS_ORDER[a.className]??99,cb=RESULT_CLASS_ORDER[b.className]??99;if(ca!==cb)return ca-cb;
-  const byName=AR_NAME_COLLATOR.compare(String(a.studentName||''),String(b.studentName||''));if(byName)return byName;
-  return AR_NAME_COLLATOR.compare(a.title,b.title);
+  const ca=RESULT_CLASS_ORDER[a.className]??99,cb=RESULT_CLASS_ORDER[b.className]??99;
+  if(ca!==cb)return ca-cb;
+  return AR_NAME_COLLATOR.compare(String(a.studentName||''),String(b.studentName||''));
  });
 }
 function renderResults(){
