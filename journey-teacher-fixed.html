@@ -74,15 +74,111 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 .student-portfolio-builder{margin:0 0 18px;padding:18px;border-radius:20px;border:1px solid rgba(66,222,212,.28);background:linear-gradient(135deg,rgba(66,222,212,.08),rgba(129,144,255,.08))}
 .student-portfolio-builder .sp-builder-head{display:flex;gap:12px;align-items:center;margin-bottom:14px}.student-portfolio-builder .sp-builder-icon{width:54px;height:54px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,var(--teal),var(--indigo));color:#07111f;font-size:28px;box-shadow:0 12px 30px rgba(66,222,212,.16)}.student-portfolio-builder h4{margin:0 0 3px;font-size:1.18rem}.student-portfolio-builder p{margin:0;color:var(--muted);line-height:1.7}.student-portfolio-controls{display:grid;grid-template-columns:180px 1fr auto;gap:10px;align-items:end}.student-portfolio-controls .btn{min-width:190px}
 @media(max-width:760px){.student-portfolio-controls{grid-template-columns:1fr}.student-portfolio-controls .btn{width:100%}}
-.report-paper.student-portfolio-paper{--sp-blue:#1769aa;--sp-deep:#0f3760;--sp-sky:#eaf5ff;--sp-line:#d5e5f2;--sp-green:#1f9d67;--sp-gold:#d9a11e;max-width:1000px;margin:auto;background:#fff;color:#173047}
-.student-portfolio-paper .sp-page{min-height:1040px;padding:34px 42px;position:relative;background:linear-gradient(180deg,#fff,#fbfdff)}
-.student-portfolio-paper .sp-page+.sp-page{break-before:page;page-break-before:always;border-top:1px dashed #d7e3ec}
-.student-portfolio-paper .sp-cover{display:flex;flex-direction:column;justify-content:center;text-align:center;overflow:hidden;background:radial-gradient(circle at 8% 10%,rgba(64,154,231,.18),transparent 30%),radial-gradient(circle at 95% 85%,rgba(71,199,171,.12),transparent 27%),linear-gradient(180deg,#fafdff,#eef8ff)}
-.student-portfolio-paper .sp-cover:before,.student-portfolio-paper .sp-cover:after{content:"";position:absolute;border-radius:50%;border:28px solid rgba(36,123,190,.10);width:300px;height:300px}.student-portfolio-paper .sp-cover:before{right:-165px;top:-120px}.student-portfolio-paper .sp-cover:after{left:-175px;bottom:-120px}
-.student-portfolio-paper .sp-badge{display:inline-flex;align-self:center;padding:8px 16px;border-radius:999px;background:#e5f4ff;color:var(--sp-deep);font-weight:900;border:1px solid #c6e3f6}.student-portfolio-paper .sp-logo{font-size:64px;margin:24px 0 6px}.student-portfolio-paper .sp-cover h1{font-size:2.45rem;margin:4px 0 6px;color:var(--sp-deep)}.student-portfolio-paper .sp-cover .subtitle{font-size:1.15rem;color:#46667e}.student-portfolio-paper .sp-student-card{width:min(650px,92%);margin:34px auto 18px;padding:24px;border-radius:22px;background:rgba(255,255,255,.92);box-shadow:0 20px 50px rgba(24,78,120,.12);border:1px solid #d5e7f4;text-align:right}.student-portfolio-paper .sp-student-card div{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid #edf3f7}.student-portfolio-paper .sp-student-card div:last-child{border-bottom:0}.student-portfolio-paper .sp-student-card span{color:#688096}.student-portfolio-paper .sp-student-card b{color:#193f60}.student-portfolio-paper .sp-motto{margin:20px auto 0;padding:14px 24px;border-radius:14px;background:#dff2ff;color:#164f7b;font-weight:900;max-width:600px}
-.student-portfolio-paper .sp-page-head{display:flex;justify-content:space-between;gap:16px;align-items:center;padding-bottom:14px;border-bottom:3px solid #287ab4;margin-bottom:18px}.student-portfolio-paper .sp-page-head h2{margin:0;color:var(--sp-deep);font-size:1.65rem}.student-portfolio-paper .sp-page-head small{color:#6b8091}.student-portfolio-paper .sp-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}.student-portfolio-paper .sp-kpi{border-radius:16px;padding:16px 10px;text-align:center;background:#f4f9fd;border:1px solid var(--sp-line)}.student-portfolio-paper .sp-kpi b{display:block;font-size:1.65rem;color:var(--sp-blue)}.student-portfolio-paper .sp-kpi span{font-size:.84rem;color:#657a8b}.student-portfolio-paper .sp-section{margin-top:20px}.student-portfolio-paper .sp-section h3{margin:0 0 9px;color:var(--sp-deep);font-size:1.15rem}.student-portfolio-paper .sp-panel{background:#f7fbfe;border:1px solid var(--sp-line);border-radius:16px;padding:16px}.student-portfolio-paper .sp-progress-track{height:16px;background:#e5edf3;border-radius:999px;overflow:hidden}.student-portfolio-paper .sp-progress-track i{display:block;height:100%;background:linear-gradient(90deg,#2d8fd0,#205eae);border-radius:999px}.student-portfolio-paper .sp-progress-label{display:flex;justify-content:space-between;margin-top:6px;color:#5f788c}.student-portfolio-paper .sp-chart{width:100%;height:250px;background:#fff;border:1px solid #ddeaf3;border-radius:14px;padding:8px}.student-portfolio-paper .sp-level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.student-portfolio-paper .sp-level{padding:13px;text-align:center;border-radius:13px;background:#fff;border:1px solid var(--sp-line)}.student-portfolio-paper .sp-level b{display:block;font-size:1.25rem;color:var(--sp-blue)}.student-portfolio-paper table{width:100%;min-width:0;border-collapse:collapse;font-size:.86rem}.student-portfolio-paper th{position:static;background:#e8f3fb;color:#173f60}.student-portfolio-paper th,.student-portfolio-paper td{border:1px solid #d8e5ee;padding:8px;text-align:center}.student-portfolio-paper .sp-positive{color:#128754;font-weight:900}.student-portfolio-paper .sp-negative{color:#ba3c4d;font-weight:900}.student-portfolio-paper .sp-feedback{display:grid;grid-template-columns:1fr 1fr;gap:12px}.student-portfolio-paper .sp-note{border-radius:15px;padding:15px;background:#f7fbff;border:1px solid var(--sp-line)}.student-portfolio-paper .sp-note h4{margin:0 0 7px;color:var(--sp-deep)}.student-portfolio-paper .sp-signatures{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}.student-portfolio-paper .sp-sign{border-top:1px solid #b9cad6;padding-top:10px;text-align:center;color:#435e72}.student-portfolio-paper .sp-footer{position:absolute;bottom:20px;right:42px;left:42px;display:flex;justify-content:space-between;color:#7890a2;font-size:.76rem;border-top:1px solid #e4edf3;padding-top:7px}
-@media(max-width:700px){.student-portfolio-paper .sp-page{min-height:auto;padding:24px 18px}.student-portfolio-paper .sp-kpis,.student-portfolio-paper .sp-level-grid,.student-portfolio-paper .sp-feedback,.student-portfolio-paper .sp-signatures{grid-template-columns:1fr 1fr}.student-portfolio-paper .sp-student-card div{grid-template-columns:1fr}.student-portfolio-paper .sp-footer{position:static;margin-top:24px}}
-@media print{.student-portfolio-paper .sp-page{min-height:auto;height:277mm;padding:12mm 14mm!important;break-after:page;page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact}.student-portfolio-paper .sp-page:last-child{break-after:auto;page-break-after:auto}.student-portfolio-paper .sp-page+.sp-page{border-top:0}.student-portfolio-paper .sp-footer{bottom:8mm;right:14mm;left:14mm}.student-portfolio-paper .sp-chart{height:58mm}.student-portfolio-paper .sp-kpis,.student-portfolio-paper .sp-level-grid,.student-portfolio-paper .sp-feedback{break-inside:avoid}}
+
+
+.report-paper.student-portfolio-paper{
+  --sp-blue:#2d73b4;--sp-blue-dark:#164e82;--sp-ink:#17324d;--sp-muted:#657d92;
+  --sp-line:#d6e3ed;--sp-soft:#f3f8fc;--sp-green:#49b978;--sp-yellow:#f3bd43;--sp-red:#e45b68;
+  max-width:940px;margin:0 auto;background:#eef4f8!important;color:var(--sp-ink)!important;
+  border-radius:18px;padding:18px!important;box-shadow:none!important;overflow:visible!important
+}
+.student-portfolio-paper .sp-page{
+  width:min(100%,820px);min-height:1120px;margin:0 auto 24px;background:#fff;position:relative;overflow:hidden;
+  padding:34px 38px 54px;border:1px solid #d8e4ed;box-shadow:0 10px 30px rgba(25,70,105,.09)
+}
+.student-portfolio-paper .sp-cover{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  background:linear-gradient(180deg,#fff 0%,#fcfeff 100%)
+}
+.student-portfolio-paper .sp-cover-wave{
+  position:absolute;right:-20px;top:-20px;bottom:-20px;width:180px;
+  background:
+   linear-gradient(180deg,rgba(120,196,241,.9),rgba(47,117,181,.95)),
+   linear-gradient(180deg,#d4eeff,#7fc5ef);
+  clip-path:polygon(36% 0,100% 0,100% 100%,20% 100%,38% 87%,26% 75%,44% 60%,26% 45%,43% 28%,30% 14%)
+}
+.student-portfolio-paper .sp-cover-wave:before{
+  content:"";position:absolute;inset:0 20px 0 40px;background:rgba(255,255,255,.38);
+  clip-path:polygon(43% 0,100% 0,100% 100%,34% 100%,51% 88%,40% 75%,59% 60%,39% 46%,60% 29%,45% 14%)
+}
+.student-portfolio-paper .sp-cover-icons{
+  position:absolute;right:34px;top:250px;z-index:2;display:grid;gap:36px;color:#0f4c83
+}
+.student-portfolio-paper .sp-cover-icons svg{width:48px;height:48px;stroke:currentColor;fill:none;stroke-width:2.4}
+.student-portfolio-paper .sp-book-icon{width:80px;height:80px;margin-bottom:18px;color:#2b73b4}
+.student-portfolio-paper .sp-book-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2.4}
+.student-portfolio-paper .sp-cover h1{font-size:2.45rem;margin:0 0 8px;color:#123e70}
+.student-portfolio-paper .sp-cover .subtitle{font-size:1.16rem;color:#244e75;font-weight:800}
+.student-portfolio-paper .sp-tagline{margin-top:25px;color:#214c78;font-size:1.03rem;font-weight:900}
+.student-portfolio-paper .sp-student-card{
+  width:min(610px,82%);margin:34px auto 0;padding:22px 28px;background:#eff7fd;border:1px solid #d8e8f4;
+  border-radius:19px;text-align:right;box-shadow:0 8px 24px rgba(28,82,125,.07)
+}
+.student-portfolio-paper .sp-student-card div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:7px 0}
+.student-portfolio-paper .sp-student-card span{color:#648097}.student-portfolio-paper .sp-student-card b{color:#173d65}
+.student-portfolio-paper .sp-motto{margin-top:20px;padding:13px 24px;border-radius:12px;background:#dcefff;color:#174e7c;font-weight:900}
+.student-portfolio-paper .sp-titlebar{
+  background:linear-gradient(90deg,#2d73b4,#2c6dad);color:#fff;text-align:center;border-radius:10px;
+  font-size:1.48rem;font-weight:900;padding:10px 16px;margin:0 0 18px
+}
+.student-portfolio-paper .sp-subline{text-align:center;color:#708699;font-size:.84rem;margin:-7px 0 16px}
+.student-portfolio-paper .sp-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 18px}
+.student-portfolio-paper .sp-kpi{border-radius:12px;padding:18px 9px;text-align:center;border:1px solid #d9e6ef}
+.student-portfolio-paper .sp-kpi:nth-child(1){background:#f3eafe;border-color:#dbcdf7}
+.student-portfolio-paper .sp-kpi:nth-child(2){background:#eaf5ff;border-color:#cce5f8}
+.student-portfolio-paper .sp-kpi:nth-child(3){background:#edf9ee;border-color:#cde9d1}
+.student-portfolio-paper .sp-kpi:nth-child(4){background:#fff5df;border-color:#efdba9}
+.student-portfolio-paper .sp-kpi b{display:block;font-size:1.72rem;color:#163f69}
+.student-portfolio-paper .sp-kpi span{display:block;margin-top:7px;color:#435c72;font-weight:800;font-size:.84rem}
+.student-portfolio-paper .sp-section{margin-top:21px}.student-portfolio-paper .sp-section h3{margin:0 0 9px;color:#163e67;font-size:1.15rem}
+.student-portfolio-paper .sp-panel,.student-portfolio-paper .sp-notes{
+  background:#f3f8fc;border:1px solid #d9e5ee;border-radius:14px;padding:16px 18px
+}
+.student-portfolio-paper .sp-progress-track{height:18px;background:#dfe8ef;border-radius:999px;overflow:hidden}
+.student-portfolio-paper .sp-progress-track i{display:block;height:100%;background:linear-gradient(90deg,#2f8fce,#235ea7);border-radius:999px}
+.student-portfolio-paper .sp-progress-label{display:flex;justify-content:space-between;margin-top:8px;color:#5c7488;font-weight:900}
+.student-portfolio-paper .sp-notes ul{margin:0;padding-right:20px;line-height:2}
+.student-portfolio-paper .sp-encourage{text-align:center;margin-top:18px}
+.student-portfolio-paper .sp-encourage span{display:inline-block;padding:11px 26px;border-radius:12px;background:#e4f1fc;color:#1f5e94;font-weight:900}
+.student-portfolio-paper table{width:100%;min-width:0;border-collapse:collapse;font-size:.84rem}
+.student-portfolio-paper th{position:static;background:#e8f2fa;color:#163d66}
+.student-portfolio-paper th,.student-portfolio-paper td{border:1px solid #d4e0ea;padding:8px;text-align:center}
+.student-portfolio-paper .sp-positive{color:#169553;font-weight:900}.student-portfolio-paper .sp-negative{color:#c34351;font-weight:900}
+.student-portfolio-paper .sp-topbox{margin-top:18px;border:1px solid #d9e5ee;background:#f7fbfe;border-radius:14px;padding:14px 18px}
+.student-portfolio-paper .sp-topbox h4{margin:0 0 8px;color:#173f68}
+.student-portfolio-paper .sp-topbox ol{margin:0;padding-right:24px;line-height:1.9}
+.student-portfolio-paper .sp-charts-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+.student-portfolio-paper .sp-chart-card{background:#fbfdff;border:1px solid #d9e5ee;border-radius:14px;padding:14px}
+.student-portfolio-paper .sp-chart-card h4{margin:0 0 8px;text-align:center;color:#173f68}
+.student-portfolio-paper .sp-chart{width:100%;height:255px;background:#fff;border:0}
+.student-portfolio-paper .sp-donut-wrap{display:grid;place-items:center;min-height:235px}
+.student-portfolio-paper .sp-donut{width:160px;height:160px;border-radius:50%;position:relative}
+.student-portfolio-paper .sp-donut:after{content:"";position:absolute;inset:36px;background:white;border-radius:50%}
+.student-portfolio-paper .sp-legend{display:grid;gap:7px;margin-top:8px}
+.student-portfolio-paper .sp-legend div{display:flex;justify-content:space-between;align-items:center;font-size:.8rem}
+.student-portfolio-paper .sp-legend i{width:11px;height:11px;border-radius:2px;display:inline-block;margin-left:6px}
+.student-portfolio-paper .sp-teacher-note{margin-top:18px;background:#f4f9fd;border:1px solid #d8e5ef;border-radius:14px;padding:16px 18px}
+.student-portfolio-paper .sp-teacher-note h4{margin:0 0 8px;color:#173f68}.student-portfolio-paper .sp-teacher-note p{margin:0;line-height:1.9;color:#435d72}
+.student-portfolio-paper .sp-signatures{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:24px}
+.student-portfolio-paper .sp-sign{border-top:1px solid #b7c9d6;padding-top:10px;text-align:center;color:#435c70}
+.student-portfolio-paper .sp-page-number{position:absolute;bottom:16px;left:0;right:0;text-align:center;color:#4f6578;font-weight:900}
+.student-portfolio-paper .sp-footer-note{position:absolute;bottom:14px;right:38px;color:#8899a8;font-size:.72rem}
+@media(max-width:700px){
+ .report-paper.student-portfolio-paper{padding:8px!important}
+ .student-portfolio-paper .sp-page{min-height:auto;padding:22px 15px 44px}
+ .student-portfolio-paper .sp-cover-wave,.student-portfolio-paper .sp-cover-icons{display:none}
+ .student-portfolio-paper .sp-student-card{width:100%}.student-portfolio-paper .sp-student-card div{grid-template-columns:1fr}
+ .student-portfolio-paper .sp-kpis{grid-template-columns:1fr 1fr}.student-portfolio-paper .sp-charts-grid,.student-portfolio-paper .sp-signatures{grid-template-columns:1fr}
+}
+@media print{
+ .report-paper.student-portfolio-paper{background:white!important;padding:0!important}
+ .student-portfolio-paper .sp-page{
+   width:210mm;height:297mm;min-height:297mm;margin:0!important;padding:12mm 14mm 16mm!important;
+   box-shadow:none!important;border:0!important;page-break-after:always;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact
+ }
+ .student-portfolio-paper .sp-page:last-child{page-break-after:auto;break-after:auto}
+ .student-portfolio-paper .sp-chart{height:64mm}
+}
 
 </style></head>
 <body><div class="wrap">
@@ -606,40 +702,96 @@ function generateStudentPortfolio(){
  const bestPct=rows.length?Math.max(...rows.map(resultPercent)):0;
  const repeated=groups.filter(g=>g.attempts>1);
  const avgImprove=repeated.length?Math.round(repeated.reduce((s,g)=>s+g.improve,0)/repeated.length):0;
+ const fb=studentPortfolioFeedback(avgPct,bestPct,avgImprove,attempts);
+ const weak=studentPortfolioWeak(rows);
  const levels={excellent:0,mastered:0,good:0,support:0};
  rows.forEach(r=>{const p=resultPercent(r);if(p>=90)levels.excellent++;else if(p>=80)levels.mastered++;else if(p>=70)levels.good++;else levels.support++});
- const weak=studentPortfolioWeak(rows),fb=studentPortfolioFeedback(avgPct,bestPct,avgImprove,attempts);
- const now=new Date(),date=now.toLocaleDateString('ar-SA');
- const activityRows=groups.length?groups.map((g,i)=>`<tr><td>${i+1}</td><td>${esc(g.title)}</td><td>${esc(typeName(g.type))}</td><td>${g.attempts}</td><td>${g.first}%</td><td>${g.last}%</td><td><b>${g.best}%</b></td><td class="${g.improve>0?'sp-positive':g.improve<0?'sp-negative':''}">${g.attempts>1?(g.improve>0?'+':'')+g.improve+'%':'—'}</td></tr>`).join(''):'<tr><td colspan="8">لا توجد نتائج مسجلة لهذا الطالب حتى الآن.</td></tr>';
- const weakText=weak.length?weak.map(([x,n])=>`${esc(x)} (${n})`).join('، '):'لم تظهر مفاهيم ضعيفة متكررة في النتائج الحالية.';
- const paper=`
+ const total=Math.max(1,levels.excellent+levels.mastered+levels.good+levels.support);
+ const p1=Math.round(levels.excellent/total*100),p2=p1+Math.round(levels.mastered/total*100),p3=p2+Math.round(levels.good/total*100);
+ const weakText=weak.length?weak.map(([x,n])=>`${esc(x)} (${n})`).join('، '):'لا توجد جوانب ضعف متكررة واضحة في النتائج الحالية.';
+ const top=[...groups].sort((a,b)=>b.best-a.best).slice(0,3);
+ const topList=top.length?top.map((g,i)=>`<li>${i+1}. ${esc(g.title)} — ${g.best}%</li>`).join(''):'<li>لا توجد نتائج كافية بعد.</li>';
+ const details=groups.length?groups.map((g,i)=>`<tr><td>${i+1}</td><td>${esc(g.title)}</td><td>${g.attempts}</td><td>${g.first}%</td><td>${g.last}%</td><td><b>${g.best}%</b></td><td class="${g.improve>0?'sp-positive':g.improve<0?'sp-negative':''}">${g.attempts>1?(g.improve>0?'+':'')+g.improve+'%':'—'}</td></tr>`).join(''):'<tr><td colspan="7">لا توجد نتائج مسجلة لهذا الطالب حتى الآن.</td></tr>';
+ const notes=[
+   attempts?`يبدي الطالب اهتمامًا جيدًا في التدريبات، ولديه ${attempts} محاولة مسجلة.`:'لا توجد محاولات مسجلة حتى الآن.',
+   avgImprove>0?`هناك تحسن ملحوظ في النتائج مع تكرار المحاولة بمتوسط +${avgImprove}%.`:'يُنصح بتكرار التدريبات لقياس التحسن بصورة أدق.',
+   avgPct>=80?'المستوى العام جيد ويشير إلى تحقق الإتقان في معظم النتائج.':'يُنصح بالاستمرار في الممارسة والمراجعة لرفع مستوى الإتقان.',
+   weak.length?`يحتاج إلى مزيد من التركيز في: ${weakText}`:'لا تظهر مفاهيم ضعيفة متكررة في البيانات الحالية.'
+ ].map(x=>`<li>${x}</li>`).join('');
+
+ const iconBook=`<svg viewBox="0 0 64 64"><path d="M7 13c9-4 17-3 25 2v36c-8-5-16-6-25-2z"/><path d="M57 13c-9-4-17-3-25 2v36c8-5 16-6 25-2z"/><path d="M32 15v36"/></svg>`;
+ const iconAtom=`<svg viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="25" ry="9"/><ellipse cx="32" cy="32" rx="25" ry="9" transform="rotate(60 32 32)"/><ellipse cx="32" cy="32" rx="25" ry="9" transform="rotate(120 32 32)"/><circle cx="32" cy="32" r="3" fill="currentColor" stroke="none"/></svg>`;
+ const iconFlask=`<svg viewBox="0 0 64 64"><path d="M24 8h16M28 8v17L14 50c-2 4 1 7 5 7h26c4 0 7-3 5-7L36 25V8"/><path d="M21 43h22"/></svg>`;
+ const iconPlant=`<svg viewBox="0 0 64 64"><path d="M32 55V30"/><path d="M32 37c-12 0-18-7-18-16 11 0 18 5 18 16z"/><path d="M32 31c10 0 17-6 17-15-10 0-17 5-17 15z"/><path d="M17 56h30"/></svg>`;
+
+ const html=`
  <div class="sp-page sp-cover">
-  <div class="sp-badge">رحلة عالم العلوم • ملف إنجاز رقمي</div><div class="sp-logo">📘⚛️</div>
-  <h1>ملف إنجاز الطالب</h1><div class="subtitle">مادة العلوم — الصف الأول المتوسط</div>
-  <div class="sp-student-card"><div><span>اسم الطالب</span><b>${esc(name)}</b></div><div><span>الفصل</span><b>${esc(cls)}</b></div><div><span>المدرسة</span><b>أبي الدرداء المتوسطة</b></div><div><span>العام الدراسي</span><b>1448هـ</b></div><div><span>المعلم</span><b>علي طاهر البقاشي</b></div></div>
-  <div class="sp-motto">خطوات صغيرة في التعلم تصنع فرقًا كبيرًا في الإنجاز.</div>
-  <div class="sp-footer"><span>منصة رحلة عالم العلوم</span><span>${esc(date)}</span></div>
+   <div class="sp-cover-wave"></div>
+   <div class="sp-cover-icons"><span>${iconAtom}</span><span>${iconFlask}</span><span>${iconPlant}</span></div>
+   <div class="sp-book-icon">${iconBook}</div>
+   <h1>ملف إنجاز الطالب</h1>
+   <div class="subtitle">في مادة العلوم — الصف الأول المتوسط</div>
+   <div class="sp-tagline">خطوات صغيرة… تصنع فرقًا كبيرًا</div>
+   <div class="sp-student-card">
+     <div><span>اسم الطالب:</span><b>${esc(name)}</b></div>
+     <div><span>الفصل:</span><b>${esc(cls)}</b></div>
+     <div><span>العام الدراسي:</span><b>1448هـ</b></div>
+   </div>
+   <div class="sp-motto">التعلم رحلة مستمرة… وأنت على الطريق الصحيح</div>
  </div>
+
  <div class="sp-page">
-  <div class="sp-page-head"><div><h2>الملخص العام</h2><small>${esc(name)} • الفصل ${esc(cls)}</small></div><b>📊</b></div>
-  <div class="sp-kpis"><div class="sp-kpi"><b>${activities}</b><span>عدد الأنشطة</span></div><div class="sp-kpi"><b>${attempts}</b><span>عدد المحاولات</span></div><div class="sp-kpi"><b>${avgPct}%</b><span>متوسط الأداء</span></div><div class="sp-kpi"><b>${bestPct}%</b><span>أفضل نتيجة</span></div></div>
-  <div class="sp-section"><h3>مستوى الأداء العام</h3><div class="sp-panel"><div class="sp-progress-track"><i style="width:${avgPct}%"></i></div><div class="sp-progress-label"><b>${esc(fb.level)}</b><b>${avgPct}%</b></div></div></div>
-  <div class="sp-section"><h3>تطور النتائج عبر المحاولات</h3>${studentProgressSvg(rows)}</div>
-  <div class="sp-section"><h3>توزيع مستويات النتائج</h3><div class="sp-level-grid"><div class="sp-level"><b>${levels.excellent}</b><span>متميز 90% فأعلى</span></div><div class="sp-level"><b>${levels.mastered}</b><span>متقن 80–89%</span></div><div class="sp-level"><b>${levels.good}</b><span>جيد 70–79%</span></div><div class="sp-level"><b>${levels.support}</b><span>يحتاج تعزيزًا</span></div></div></div>
-  <div class="sp-footer"><span>الملخص العام</span><span>2</span></div>
+   <div class="sp-titlebar">الملخص العام</div>
+   <div class="sp-kpis">
+     <div class="sp-kpi"><b>${activities}</b><span>عدد التدريبات</span></div>
+     <div class="sp-kpi"><b>${attempts}</b><span>عدد المحاولات</span></div>
+     <div class="sp-kpi"><b>${avgPct}%</b><span>متوسط الدقة</span></div>
+     <div class="sp-kpi"><b>${bestPct}%</b><span>أفضل نتيجة</span></div>
+   </div>
+   <div class="sp-section"><h3>مستوى الأداء العام</h3>
+     <div class="sp-panel">
+       <div class="sp-progress-track"><i style="width:${avgPct}%"></i></div>
+       <div class="sp-progress-label"><span>${esc(fb.level)}</span><b>${avgPct}%</b></div>
+     </div>
+   </div>
+   <div class="sp-section"><h3>ملاحظات عامة</h3><div class="sp-notes"><ul>${notes}</ul></div></div>
+   <div class="sp-encourage"><span>☆ واصل التقدم… فأنت قادر على المزيد</span></div>
+   <div class="sp-page-number">1</div>
  </div>
+
  <div class="sp-page">
-  <div class="sp-page-head"><div><h2>تفاصيل الإنجاز</h2><small>المحاولات والنتائج والتحسن لكل نشاط</small></div><b>🧪</b></div>
-  <div class="sp-section"><table><thead><tr><th>#</th><th>الدرس / النشاط</th><th>النوع</th><th>المحاولات</th><th>أول نتيجة</th><th>آخر نتيجة</th><th>أفضل نتيجة</th><th>التحسن</th></tr></thead><tbody>${activityRows}</tbody></table></div>
-  <div class="sp-section"><h3>قراءة تعليمية للنتائج</h3><div class="sp-feedback"><div class="sp-note"><h4>⭐ نقاط القوة</h4><p>أفضل نتيجة مسجلة: <b>${bestPct}%</b>. ${avgPct>=80?'يظهر الطالب مستوى إتقان جيدًا في معظم المحاولات المسجلة.':'يمكن رفع مستوى الإتقان من خلال تكرار التدريب الموجّه.'}</p></div><div class="sp-note"><h4>🎯 ما يحتاج إلى تعزيز</h4><p>${weakText}</p></div></div></div>
-  <div class="sp-section"><h3>رأي المعلم والتوصية</h3><div class="sp-panel"><p>${esc(fb.note)}</p></div></div>
-  <div class="sp-signatures"><div class="sp-sign"><b>معلم المادة</b><br>علي طاهر البقاشي</div><div class="sp-sign"><b>مدير المدرسة</b><br>فوزي محمد الهلال</div></div>
-  <div class="sp-footer"><span>تفاصيل الإنجاز والتوصيات</span><span>3</span></div>
+   <div class="sp-titlebar">تفاصيل النتائج</div>
+   <table><thead><tr><th>م</th><th>الدرس / التدريب</th><th>المحاولات</th><th>أول نتيجة</th><th>آخر نتيجة</th><th>أفضل نتيجة</th><th>نسبة التحسن</th></tr></thead><tbody>${details}</tbody></table>
+   <div class="sp-topbox"><h4>📊 أعلى ثلاث نتائج</h4><ol>${topList}</ol></div>
+   <div class="sp-topbox"><h4>🎯 أبرز الجوانب التي تحتاج تعزيزًا</h4><div>${weakText}</div></div>
+   <div class="sp-page-number">2</div>
+ </div>
+
+ <div class="sp-page">
+   <div class="sp-titlebar">الرسوم البيانية</div>
+   <div class="sp-charts-grid">
+     <div class="sp-chart-card"><h4>تطور نتائج الطالب</h4>${studentProgressSvg(rows)}</div>
+     <div class="sp-chart-card"><h4>توزيع مستويات النتائج</h4>
+       <div class="sp-donut-wrap"><div class="sp-donut" style="background:conic-gradient(#49b978 0 ${p1}%,#3b7bd5 ${p1}% ${p2}%,#f3bd43 ${p2}% ${p3}%,#e45b68 ${p3}% 100%)"></div></div>
+       <div class="sp-legend">
+         <div><span><i style="background:#49b978"></i>من 90–100%</span><b>${levels.excellent}</b></div>
+         <div><span><i style="background:#3b7bd5"></i>من 80–89%</span><b>${levels.mastered}</b></div>
+         <div><span><i style="background:#f3bd43"></i>من 70–79%</span><b>${levels.good}</b></div>
+         <div><span><i style="background:#e45b68"></i>أقل من 70%</span><b>${levels.support}</b></div>
+       </div>
+     </div>
+   </div>
+   <div class="sp-teacher-note"><h4>رأي المعلم</h4><p>${esc(fb.note)}</p></div>
+   <div class="sp-encourage"><span>🏆 الالتزام اليوم… يحقق النجاح غدًا</span></div>
+   <div class="sp-signatures"><div class="sp-sign"><b>المعلم</b><br>علي طاهر البقاشي</div><div class="sp-sign"><b>مدير المدرسة</b><br>فوزي محمد الهلال</div></div>
+   <div class="sp-page-number">3</div>
  </div>`;
+
  $('reportModalTitle').textContent='ملف إنجاز الطالب — '+name;
  $('reportPaper').classList.add('student-portfolio-paper');
- $('reportPaper').innerHTML=paper;
+ $('reportPaper').innerHTML=html;
  $('reportModal').classList.remove('hidden');
+ const card=$('reportModal')?.querySelector('.modal-card'); if(card) card.scrollTop=0;
 }
 
 function updatePortfolioTasks(){
