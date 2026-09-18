@@ -38,6 +38,52 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 .student-class-card.active{outline:2px solid var(--teal);background:#12304a}
 .replace{background:#f0b84a;color:#07111f}
 @media(max-width:700px){.student-class-overview{grid-template-columns:repeat(2,1fr)}}
+
+/* ===== تصميم احترافي لتقارير ملف الإنجاز ===== */
+.report-paper{
+  --rp-navy:#0b2744;--rp-teal:#0f7f87;--rp-teal2:#14a7a4;--rp-gold:#d6a84b;--rp-ink:#17324a;--rp-muted:#607387;--rp-soft:#f4f8fa;
+  max-width:900px;margin:0 auto;background:#fff;color:var(--rp-ink);border-radius:22px;padding:0!important;overflow:hidden;box-shadow:0 22px 60px rgba(8,35,61,.18);direction:rtl;line-height:1.8
+}
+.report-paper .pro-head{position:relative;padding:28px 34px 24px;background:linear-gradient(135deg,var(--rp-navy),#103a60 56%,#0d6872);color:#fff;overflow:hidden}
+.report-paper .pro-head:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;left:-65px;top:-90px;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%)}
+.report-paper .pro-topline{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;position:relative;z-index:1}
+.report-paper .pro-brand{display:flex;gap:14px;align-items:center}
+.report-paper .pro-mark{width:58px;height:58px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(135deg,#49ded3,#87a0ff);font-size:29px;box-shadow:0 10px 25px rgba(0,0,0,.18)}
+.report-paper .pro-eyebrow{display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.22);font-size:.76rem;font-weight:900;margin-bottom:8px}
+.report-paper .pro-head h1{color:#fff!important;margin:0;font-size:1.72rem;line-height:1.4}.report-paper .pro-head p{margin:4px 0;color:#dcebf4}
+.report-paper .pro-date{text-align:left;min-width:150px}.report-paper .pro-date b{display:block;font-size:1.05rem}.report-paper .pro-date span{font-size:.8rem;color:#dcebf4}
+.report-paper .report-body{padding:24px 30px 28px}
+.report-paper .report-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:0 0 16px}
+.report-paper .meta-box{background:#f6f9fb;border:1px solid #dfe9ef;border-radius:14px;padding:11px 12px;min-height:70px}.report-paper .meta-box span{display:block;color:var(--rp-muted);font-size:.76rem;font-weight:800}.report-paper .meta-box b{display:block;margin-top:4px;color:var(--rp-ink);font-size:.92rem}
+.report-paper .report-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 18px}.report-paper .kpi{position:relative;background:linear-gradient(180deg,#fbfefe,#f0f7f7);border:1px solid #d9e7e8;border-radius:16px;text-align:center;padding:15px 10px 13px;overflow:hidden}.report-paper .kpi:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(var(--rp-teal2),#78c6c2)}.report-paper .kpi b{display:block;font-size:1.55rem;color:var(--rp-teal);line-height:1.2}.report-paper .kpi span{display:block;margin-top:6px;color:#41596e;font-size:.8rem;font-weight:800}
+.report-paper .pro-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:14px}.report-paper .pro-card{border:1px solid #dfe8ee;background:#fff;border-radius:16px;padding:15px 16px}.report-paper .pro-card h3{margin:0 0 9px;color:var(--rp-navy);font-size:1rem;display:flex;align-items:center;gap:7px}.report-paper .pro-card p{margin:0;color:#40566b;font-size:.88rem}.report-paper .pro-card ul{margin:6px 0 0;padding-right:20px;color:#40566b;font-size:.87rem}
+.report-paper .report-section{margin-top:16px}.report-paper .report-section>h3{margin:0 0 9px;padding-right:11px;border-right:4px solid var(--rp-teal2);color:var(--rp-navy);font-size:1.04rem}
+.report-paper .level-bars{display:grid;gap:8px}.report-paper .level-row{display:grid;grid-template-columns:90px 1fr 54px;gap:8px;align-items:center;font-size:.82rem}.report-paper .level-track{height:10px;border-radius:999px;background:#e9eff3;overflow:hidden}.report-paper .level-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--rp-teal2),#6bc7c3)}.report-paper .level-num{text-align:left;font-weight:900;color:var(--rp-navy)}
+.report-paper .insight{padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#edf8f7,#f6fbfb);border:1px solid #d5e8e6;color:#355164;font-size:.86rem}.report-paper .insight strong{color:var(--rp-teal)}
+.report-paper table{width:100%;border-collapse:separate;border-spacing:0;min-width:0;color:#233a50;border:1px solid #dce6ec;border-radius:13px;overflow:hidden}.report-paper th{position:static;background:#eaf3f5;color:#173a50;font-size:.78rem}.report-paper th,.report-paper td{border:0;border-bottom:1px solid #e4ebef;padding:8px 9px;font-size:.78rem}.report-paper tr:last-child td{border-bottom:0}
+.report-paper .evidence-note{background:#fff9ea;border:1px solid #efdaaa;border-radius:13px;padding:11px 13px;color:#775c24}.report-paper .sign-row{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:22px;padding-top:16px;border-top:1px dashed #cbd7df}.report-paper .sign{text-align:center;color:#51687b}.report-paper .sign b{display:block;color:#1e3e58;margin-bottom:18px}.report-paper .report-footer{text-align:center;margin-top:16px;color:#8090a0;font-size:.72rem}
+@media(max-width:700px){.report-paper .pro-topline{display:block}.report-paper .pro-date{text-align:right;margin-top:12px}.report-paper .report-body{padding:18px}.report-paper .report-meta,.report-paper .report-kpis,.report-paper .pro-grid,.report-paper .sign-row{grid-template-columns:1fr 1fr}.report-paper .level-row{grid-template-columns:78px 1fr 45px}}
+@media(max-width:480px){.report-paper .report-meta,.report-paper .report-kpis,.report-paper .pro-grid,.report-paper .sign-row{grid-template-columns:1fr}}
+@media print{
+ #reportModal .modal-card{width:100%!important}.report-paper{box-shadow:none!important;border-radius:0!important;max-width:none!important}.report-paper .pro-head{padding:12mm 14mm 8mm!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.report-paper .report-body{padding:8mm 12mm 10mm!important}.report-paper .report-kpis,.report-paper .report-meta,.report-paper .pro-grid{break-inside:avoid}.report-paper .details-page{break-before:page}.report-paper table{font-size:9pt!important}.report-paper th,.report-paper td{font-size:8.5pt!important;padding:6px!important}
+}
+
+
+
+/* ملف إنجاز الطالب */
+.student-portfolio-builder{margin:0 0 18px;padding:18px;border-radius:20px;border:1px solid rgba(66,222,212,.28);background:linear-gradient(135deg,rgba(66,222,212,.08),rgba(129,144,255,.08))}
+.student-portfolio-builder .sp-builder-head{display:flex;gap:12px;align-items:center;margin-bottom:14px}.student-portfolio-builder .sp-builder-icon{width:54px;height:54px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,var(--teal),var(--indigo));color:#07111f;font-size:28px;box-shadow:0 12px 30px rgba(66,222,212,.16)}.student-portfolio-builder h4{margin:0 0 3px;font-size:1.18rem}.student-portfolio-builder p{margin:0;color:var(--muted);line-height:1.7}.student-portfolio-controls{display:grid;grid-template-columns:180px 1fr auto;gap:10px;align-items:end}.student-portfolio-controls .btn{min-width:190px}
+@media(max-width:760px){.student-portfolio-controls{grid-template-columns:1fr}.student-portfolio-controls .btn{width:100%}}
+.report-paper.student-portfolio-paper{--sp-blue:#1769aa;--sp-deep:#0f3760;--sp-sky:#eaf5ff;--sp-line:#d5e5f2;--sp-green:#1f9d67;--sp-gold:#d9a11e;max-width:1000px;margin:auto;background:#fff;color:#173047}
+.student-portfolio-paper .sp-page{min-height:1040px;padding:34px 42px;position:relative;background:linear-gradient(180deg,#fff,#fbfdff)}
+.student-portfolio-paper .sp-page+.sp-page{break-before:page;page-break-before:always;border-top:1px dashed #d7e3ec}
+.student-portfolio-paper .sp-cover{display:flex;flex-direction:column;justify-content:center;text-align:center;overflow:hidden;background:radial-gradient(circle at 8% 10%,rgba(64,154,231,.18),transparent 30%),radial-gradient(circle at 95% 85%,rgba(71,199,171,.12),transparent 27%),linear-gradient(180deg,#fafdff,#eef8ff)}
+.student-portfolio-paper .sp-cover:before,.student-portfolio-paper .sp-cover:after{content:"";position:absolute;border-radius:50%;border:28px solid rgba(36,123,190,.10);width:300px;height:300px}.student-portfolio-paper .sp-cover:before{right:-165px;top:-120px}.student-portfolio-paper .sp-cover:after{left:-175px;bottom:-120px}
+.student-portfolio-paper .sp-badge{display:inline-flex;align-self:center;padding:8px 16px;border-radius:999px;background:#e5f4ff;color:var(--sp-deep);font-weight:900;border:1px solid #c6e3f6}.student-portfolio-paper .sp-logo{font-size:64px;margin:24px 0 6px}.student-portfolio-paper .sp-cover h1{font-size:2.45rem;margin:4px 0 6px;color:var(--sp-deep)}.student-portfolio-paper .sp-cover .subtitle{font-size:1.15rem;color:#46667e}.student-portfolio-paper .sp-student-card{width:min(650px,92%);margin:34px auto 18px;padding:24px;border-radius:22px;background:rgba(255,255,255,.92);box-shadow:0 20px 50px rgba(24,78,120,.12);border:1px solid #d5e7f4;text-align:right}.student-portfolio-paper .sp-student-card div{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid #edf3f7}.student-portfolio-paper .sp-student-card div:last-child{border-bottom:0}.student-portfolio-paper .sp-student-card span{color:#688096}.student-portfolio-paper .sp-student-card b{color:#193f60}.student-portfolio-paper .sp-motto{margin:20px auto 0;padding:14px 24px;border-radius:14px;background:#dff2ff;color:#164f7b;font-weight:900;max-width:600px}
+.student-portfolio-paper .sp-page-head{display:flex;justify-content:space-between;gap:16px;align-items:center;padding-bottom:14px;border-bottom:3px solid #287ab4;margin-bottom:18px}.student-portfolio-paper .sp-page-head h2{margin:0;color:var(--sp-deep);font-size:1.65rem}.student-portfolio-paper .sp-page-head small{color:#6b8091}.student-portfolio-paper .sp-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}.student-portfolio-paper .sp-kpi{border-radius:16px;padding:16px 10px;text-align:center;background:#f4f9fd;border:1px solid var(--sp-line)}.student-portfolio-paper .sp-kpi b{display:block;font-size:1.65rem;color:var(--sp-blue)}.student-portfolio-paper .sp-kpi span{font-size:.84rem;color:#657a8b}.student-portfolio-paper .sp-section{margin-top:20px}.student-portfolio-paper .sp-section h3{margin:0 0 9px;color:var(--sp-deep);font-size:1.15rem}.student-portfolio-paper .sp-panel{background:#f7fbfe;border:1px solid var(--sp-line);border-radius:16px;padding:16px}.student-portfolio-paper .sp-progress-track{height:16px;background:#e5edf3;border-radius:999px;overflow:hidden}.student-portfolio-paper .sp-progress-track i{display:block;height:100%;background:linear-gradient(90deg,#2d8fd0,#205eae);border-radius:999px}.student-portfolio-paper .sp-progress-label{display:flex;justify-content:space-between;margin-top:6px;color:#5f788c}.student-portfolio-paper .sp-chart{width:100%;height:250px;background:#fff;border:1px solid #ddeaf3;border-radius:14px;padding:8px}.student-portfolio-paper .sp-level-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.student-portfolio-paper .sp-level{padding:13px;text-align:center;border-radius:13px;background:#fff;border:1px solid var(--sp-line)}.student-portfolio-paper .sp-level b{display:block;font-size:1.25rem;color:var(--sp-blue)}.student-portfolio-paper table{width:100%;min-width:0;border-collapse:collapse;font-size:.86rem}.student-portfolio-paper th{position:static;background:#e8f3fb;color:#173f60}.student-portfolio-paper th,.student-portfolio-paper td{border:1px solid #d8e5ee;padding:8px;text-align:center}.student-portfolio-paper .sp-positive{color:#128754;font-weight:900}.student-portfolio-paper .sp-negative{color:#ba3c4d;font-weight:900}.student-portfolio-paper .sp-feedback{display:grid;grid-template-columns:1fr 1fr;gap:12px}.student-portfolio-paper .sp-note{border-radius:15px;padding:15px;background:#f7fbff;border:1px solid var(--sp-line)}.student-portfolio-paper .sp-note h4{margin:0 0 7px;color:var(--sp-deep)}.student-portfolio-paper .sp-signatures{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}.student-portfolio-paper .sp-sign{border-top:1px solid #b9cad6;padding-top:10px;text-align:center;color:#435e72}.student-portfolio-paper .sp-footer{position:absolute;bottom:20px;right:42px;left:42px;display:flex;justify-content:space-between;color:#7890a2;font-size:.76rem;border-top:1px solid #e4edf3;padding-top:7px}
+@media(max-width:700px){.student-portfolio-paper .sp-page{min-height:auto;padding:24px 18px}.student-portfolio-paper .sp-kpis,.student-portfolio-paper .sp-level-grid,.student-portfolio-paper .sp-feedback,.student-portfolio-paper .sp-signatures{grid-template-columns:1fr 1fr}.student-portfolio-paper .sp-student-card div{grid-template-columns:1fr}.student-portfolio-paper .sp-footer{position:static;margin-top:24px}}
+@media print{.student-portfolio-paper .sp-page{min-height:auto;height:277mm;padding:12mm 14mm!important;break-after:page;page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact}.student-portfolio-paper .sp-page:last-child{break-after:auto;page-break-after:auto}.student-portfolio-paper .sp-page+.sp-page{border-top:0}.student-portfolio-paper .sp-footer{bottom:8mm;right:14mm;left:14mm}.student-portfolio-paper .sp-chart{height:58mm}.student-portfolio-paper .sp-kpis,.student-portfolio-paper .sp-level-grid,.student-portfolio-paper .sp-feedback{break-inside:avoid}}
+
 </style></head>
 <body><div class="wrap">
 <header class="topbar glass"><div class="brand"><div class="logo">📊</div><div><h1>لوحة المعلم</h1><p id="teacherSub"></p></div></div><div class="actions"><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="journey-student.html">معاينة منصة الطالب</a></div></header>
@@ -96,6 +142,15 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 
 <section id="portfolioTab" class="panel glass hidden">
       <div class="section-head" style="margin-top:0"><div><h3>تقارير ملف الإنجاز</h3><p>أنشئ التقرير مباشرة من نتائج الطلاب، ثم اطبعه أو احفظه PDF من نافذة الطباعة.</p></div></div>
+
+      <div class="student-portfolio-builder">
+        <div class="sp-builder-head"><div class="sp-builder-icon">📚</div><div><h4>ملف إنجاز الطالب</h4><p>أنشئ ملفًا فرديًا لكل طالب من نتائجه الحقيقية: عدد التدريبات والمحاولات، متوسط الأداء، أفضل نتيجة، التحسن، تفاصيل الأنشطة والرسوم البيانية.</p></div></div>
+        <div class="student-portfolio-controls">
+          <div class="field"><label>الفصل</label><select id="studentPortfolioClass"><option value="">اختر الفصل</option></select></div>
+          <div class="field"><label>الطالب</label><select id="studentPortfolioStudent"><option value="">اختر الطالب</option></select></div>
+          <button id="studentPortfolioBtn" class="btn">فتح ملف إنجاز الطالب</button>
+        </div>
+      </div>
       <div class="portfolio-controls">
         <div class="field"><label>الفصل</label><select id="portfolioClass"><option value="">كل الفصول</option></select></div>
         <div class="field"><label>عنوان النشاط / التكليف</label><select id="portfolioTask"><option value="">كل الأنشطة</option></select></div>
@@ -168,31 +223,47 @@ function readTrackerRoster(){
 function getApi(){return $('apiUrl').value.trim()}
 function getKey(){return $('teacherKey').value.trim()}
 function setStatus(text,good=false){$('status').className=good?'note good':'note';$('status').textContent=text}
-let __scienceHubJsonpQueue=Promise.resolve();
+// اتصال موثوق داخل التطبيق المثبّت عبر iframe bridge.
 function jsonp(params){
- const run=()=>new Promise((resolve,reject)=>{
+ return new Promise((resolve,reject)=>{
   const api=getApi();
   if(!api){reject(new Error('أدخل رابط Apps Script أولًا.'));return}
-  const callbackName='scienceHubCallback';
-  const script=document.createElement('script');
-  const q=new URLSearchParams({...params,callback:callbackName,_:Date.now()});
+
+  const requestId='sj_bridge_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+  const iframe=document.createElement('iframe');
+  iframe.style.display='none';
+  iframe.setAttribute('aria-hidden','true');
+
   let finished=false;
-  const timer=setTimeout(()=>{finish();reject(new Error('انتهت مهلة الاتصال بالخادم.'))},20000);
-  function finish(){
+  const timer=setTimeout(()=>finish(new Error('انتهت مهلة الاتصال بالخادم.')),30000);
+
+  function cleanup(){
+   clearTimeout(timer);
+   window.removeEventListener('message',onMessage);
+   try{iframe.remove()}catch(e){}
+  }
+  function finish(err,data){
    if(finished)return;
    finished=true;
-   clearTimeout(timer);
-   try{script.remove()}catch(e){}
+   cleanup();
+   if(err) reject(err); else resolve(data);
   }
-  window[callbackName]=data=>{finish();resolve(data)};
-  script.onerror=()=>{finish();reject(new Error('تعذر تحميل استجابة Apps Script من داخل الصفحة.'))};
-  script.src=api+(api.includes('?')?'&':'?')+q.toString();
-  document.body.appendChild(script);
+  function onMessage(ev){
+   if(ev.source!==iframe.contentWindow)return;
+   const msg=ev.data;
+   if(!msg||msg.type!=='science-apps-script-bridge')return;
+   if(String(msg.requestId)!==requestId)return;
+   finish(null,msg.data);
+  }
+
+  window.addEventListener('message',onMessage);
+  const q=new URLSearchParams({...params,transport:'bridge',requestId,_:Date.now()});
+  iframe.src=api+(api.includes('?')?'&':'?')+q.toString();
+  iframe.onerror=()=>finish(new Error('تعذر الاتصال بخادم Apps Script من داخل التطبيق.'));
+  document.body.appendChild(iframe);
  });
- const p=__scienceHubJsonpQueue.then(run,run);
- __scienceHubJsonpQueue=p.catch(()=>{});
- return p;
 }
+
 const CLASS_ORDER_FOR_RESULTS={'1/1':1,'2/1':2,'3/1':3,'4/1':4};
 function normalizeClassName(value){
  const raw=String(value??'').trim();
@@ -229,6 +300,7 @@ async function loadTeacher(){
   renderAll();
   updatePortfolioTasks();
   updateResultFilters();
+  updateStudentPortfolioStudents();
  }catch(err){
   console.error(err);
   setStatus('تعذر تحميل لوحة المعلم: '+(err.message||err));
@@ -248,7 +320,7 @@ function typeName(m){return({training:'تدريب',exam:'اختبار',remedial:
 function init(){
  $('teacherSub').textContent='مدرسة أبي الدرداء المتوسطة | المعلم: علي البقاشي';
  $('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام 1448هـ';
- CLASSES.forEach(c=>{$('classFilter').insertAdjacentHTML('beforeend',`<option>${c}</option>`);$('taskClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('portfolioClass')) $('portfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentsClass')) $('studentsClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`)});
+ CLASSES.forEach(c=>{$('classFilter').insertAdjacentHTML('beforeend',`<option>${c}</option>`);$('taskClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('portfolioClass')) $('portfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentsClass')) $('studentsClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentPortfolioClass')) $('studentPortfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`)});
  $('taskLesson').innerHTML='<option value="all">جميع الدروس</option>'+Object.entries(LESSONS).filter(([k])=>k!=='all').map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
  $('apiUrl').value=DEFAULT_API_URL; localStorage.setItem('sj_teacher_api',DEFAULT_API_URL);
  $('teacherKey').value=localStorage.getItem('sj_teacher_key')||'';
@@ -273,6 +345,9 @@ function init(){
  $('copyReport').onclick=copyReportText;
  if($('portfolioClass')) $('portfolioClass').onchange=updatePortfolioTasks;
  if($('portfolioTask')) updatePortfolioTasks();
+ if($('studentPortfolioClass')) $('studentPortfolioClass').onchange=updateStudentPortfolioStudents;
+ if($('studentPortfolioBtn')) $('studentPortfolioBtn').onclick=generateStudentPortfolio;
+ updateStudentPortfolioStudents();
  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
  renderAll();
  if(getKey()) setTimeout(loadTeacher,150);
@@ -482,6 +557,106 @@ function exportCsv(){
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='نتائج_رحلة_عالم_العلوم.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
 
+
+
+function updateStudentPortfolioStudents(){
+ const cls=$('studentPortfolioClass')?.value||'';
+ const sel=$('studentPortfolioStudent'); if(!sel)return;
+ const current=sel.value;
+ if(!cls){sel.innerHTML='<option value="">اختر الفصل أولًا</option>';return}
+ const fromRoster=(studentRoster[cls]||[]).map(s=>String(s.name||'').trim()).filter(Boolean);
+ const fromResults=results.filter(r=>r.className===cls).map(r=>String(r.studentName||'').trim()).filter(Boolean);
+ const seen=new Set(),names=[];
+ [...fromRoster,...fromResults].forEach(n=>{const k=normalizeStudentNameKey(n);if(k&&!seen.has(k)){seen.add(k);names.push(n)}});
+ names.sort((a,b)=>AR_NAME_COLLATOR.compare(a,b));
+ sel.innerHTML='<option value="">اختر الطالب</option>'+names.map(n=>`<option value="${esc(n)}" ${n===current?'selected':''}>${esc(n)}</option>`).join('');
+}
+function studentPortfolioGroups(rows){
+ const m=new Map();
+ rows.forEach(r=>{
+  const title=resultTitle(r),type=String(r.type||'training');
+  const key=[String(r.taskId||''),title,type].join('|');
+  if(!m.has(key))m.set(key,{title,type,rows:[]});
+  m.get(key).rows.push(r);
+ });
+ return [...m.values()].map(g=>{
+  g.rows.sort((a,b)=>(new Date(resultTime(a)).getTime()||0)-(new Date(resultTime(b)).getTime()||0));
+  const first=g.rows[0],last=g.rows[g.rows.length-1],vals=g.rows.map(resultPercent);
+  return {...g,attempts:g.rows.length,first:resultPercent(first),last:resultPercent(last),best:Math.max(...vals),improve:resultPercent(last)-resultPercent(first),lastTime:resultTime(last)};
+ }).sort((a,b)=>AR_NAME_COLLATOR.compare(a.title,b.title));
+}
+function studentProgressSvg(rows){
+ const ordered=[...rows].sort((a,b)=>(new Date(resultTime(a)).getTime()||0)-(new Date(resultTime(b)).getTime()||0));
+ if(!ordered.length)return '<div class="sp-panel">لا توجد محاولات مسجلة حتى الآن.</div>';
+ const w=760,h=220,pad=38,n=ordered.length;
+ const x=i=>n===1?w/2:pad+i*(w-2*pad)/(n-1);
+ const y=v=>h-pad-(Math.max(0,Math.min(100,v))*(h-2*pad)/100);
+ const pts=ordered.map((r,i)=>`${x(i).toFixed(1)},${y(resultPercent(r)).toFixed(1)}`).join(' ');
+ const grid=[0,25,50,75,100].map(v=>`<line x1="${pad}" y1="${y(v)}" x2="${w-pad}" y2="${y(v)}" stroke="#dce8f1" stroke-width="1"/><text x="8" y="${y(v)+4}" font-size="12" fill="#6c8294">${v}%</text>`).join('');
+ const dots=ordered.map((r,i)=>`<circle cx="${x(i)}" cy="${y(resultPercent(r))}" r="5" fill="#1f76b5"><title>${esc(resultTitle(r))}: ${resultPercent(r)}%</title></circle>`).join('');
+ return `<svg class="sp-chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="تطور نتائج الطالب">${grid}<polyline points="${pts}" fill="none" stroke="#276fb5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>${dots}</svg>`;
+}
+function studentPortfolioWeak(rows){
+ const map={};
+ rows.forEach(r=>String(r.weakConcepts||'').split(/[،,|]/).map(x=>x.trim()).filter(x=>x&&x!=='—').forEach(x=>map[x]=(map[x]||0)+1));
+ return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,5);
+}
+function studentPortfolioFeedback(avgPct,bestPct,avgImprove,attempts){
+ let level='يحتاج إلى متابعة منتظمة',note='الاستمرار في التدريب القصير مع مراجعة المفاهيم الأساسية بعد كل محاولة.';
+ if(avgPct>=90){level='أداء متميز';note='المحافظة على مستوى الإتقان مع الانتقال تدريجيًا إلى أنشطة إثرائية وتطبيقية.'}
+ else if(avgPct>=80){level='أداء متقن';note='الاستمرار في الممارسة مع التركيز على الأسئلة التي تتطلب تطبيقًا وحلًا.'}
+ else if(avgPct>=70){level='أداء جيد';note='زيادة التكرار الموجّه للمفاهيم الأقل إتقانًا مع متابعة التحسن بين المحاولات.'}
+ else if(avgPct>=60){level='أداء مقبول يحتاج تعزيزًا';note='يوصى بتدريب علاجي قصير ومتدرج، ثم إعادة المحاولة للتحقق من الإتقان.'}
+ const trend=avgImprove>0?`ويظهر تحسن متوسط قدره +${avgImprove}% في الأنشطة التي تكررت محاولاتها.`:avgImprove<0?`وتظهر حاجة لمراجعة الأداء لأن متوسط التغير في المحاولات المتكررة بلغ ${avgImprove}%.`:'ولا توجد حتى الآن محاولات متكررة كافية لقياس التحسن بصورة واضحة.';
+ return {level,note:`${note} ${trend} إجمالي المحاولات المسجلة: ${attempts}.`};
+}
+function generateStudentPortfolio(){
+ const cls=$('studentPortfolioClass')?.value||'',name=$('studentPortfolioStudent')?.value||'';
+ if(!cls){alert('اختر الفصل أولًا.');return}
+ if(!name){alert('اختر الطالب أولًا.');return}
+ const rows=results.filter(r=>r.className===cls&&normalizeStudentNameKey(r.studentName)===normalizeStudentNameKey(name));
+ const groups=studentPortfolioGroups(rows);
+ const attempts=rows.length,activities=groups.length;
+ const avgPct=rows.length?Math.round(rows.reduce((s,r)=>s+resultPercent(r),0)/rows.length):0;
+ const bestPct=rows.length?Math.max(...rows.map(resultPercent)):0;
+ const repeated=groups.filter(g=>g.attempts>1);
+ const avgImprove=repeated.length?Math.round(repeated.reduce((s,g)=>s+g.improve,0)/repeated.length):0;
+ const levels={excellent:0,mastered:0,good:0,support:0};
+ rows.forEach(r=>{const p=resultPercent(r);if(p>=90)levels.excellent++;else if(p>=80)levels.mastered++;else if(p>=70)levels.good++;else levels.support++});
+ const weak=studentPortfolioWeak(rows),fb=studentPortfolioFeedback(avgPct,bestPct,avgImprove,attempts);
+ const now=new Date(),date=now.toLocaleDateString('ar-SA');
+ const activityRows=groups.length?groups.map((g,i)=>`<tr><td>${i+1}</td><td>${esc(g.title)}</td><td>${esc(typeName(g.type))}</td><td>${g.attempts}</td><td>${g.first}%</td><td>${g.last}%</td><td><b>${g.best}%</b></td><td class="${g.improve>0?'sp-positive':g.improve<0?'sp-negative':''}">${g.attempts>1?(g.improve>0?'+':'')+g.improve+'%':'—'}</td></tr>`).join(''):'<tr><td colspan="8">لا توجد نتائج مسجلة لهذا الطالب حتى الآن.</td></tr>';
+ const weakText=weak.length?weak.map(([x,n])=>`${esc(x)} (${n})`).join('، '):'لم تظهر مفاهيم ضعيفة متكررة في النتائج الحالية.';
+ const paper=`
+ <div class="sp-page sp-cover">
+  <div class="sp-badge">رحلة عالم العلوم • ملف إنجاز رقمي</div><div class="sp-logo">📘⚛️</div>
+  <h1>ملف إنجاز الطالب</h1><div class="subtitle">مادة العلوم — الصف الأول المتوسط</div>
+  <div class="sp-student-card"><div><span>اسم الطالب</span><b>${esc(name)}</b></div><div><span>الفصل</span><b>${esc(cls)}</b></div><div><span>المدرسة</span><b>أبي الدرداء المتوسطة</b></div><div><span>العام الدراسي</span><b>1448هـ</b></div><div><span>المعلم</span><b>علي طاهر البقاشي</b></div></div>
+  <div class="sp-motto">خطوات صغيرة في التعلم تصنع فرقًا كبيرًا في الإنجاز.</div>
+  <div class="sp-footer"><span>منصة رحلة عالم العلوم</span><span>${esc(date)}</span></div>
+ </div>
+ <div class="sp-page">
+  <div class="sp-page-head"><div><h2>الملخص العام</h2><small>${esc(name)} • الفصل ${esc(cls)}</small></div><b>📊</b></div>
+  <div class="sp-kpis"><div class="sp-kpi"><b>${activities}</b><span>عدد الأنشطة</span></div><div class="sp-kpi"><b>${attempts}</b><span>عدد المحاولات</span></div><div class="sp-kpi"><b>${avgPct}%</b><span>متوسط الأداء</span></div><div class="sp-kpi"><b>${bestPct}%</b><span>أفضل نتيجة</span></div></div>
+  <div class="sp-section"><h3>مستوى الأداء العام</h3><div class="sp-panel"><div class="sp-progress-track"><i style="width:${avgPct}%"></i></div><div class="sp-progress-label"><b>${esc(fb.level)}</b><b>${avgPct}%</b></div></div></div>
+  <div class="sp-section"><h3>تطور النتائج عبر المحاولات</h3>${studentProgressSvg(rows)}</div>
+  <div class="sp-section"><h3>توزيع مستويات النتائج</h3><div class="sp-level-grid"><div class="sp-level"><b>${levels.excellent}</b><span>متميز 90% فأعلى</span></div><div class="sp-level"><b>${levels.mastered}</b><span>متقن 80–89%</span></div><div class="sp-level"><b>${levels.good}</b><span>جيد 70–79%</span></div><div class="sp-level"><b>${levels.support}</b><span>يحتاج تعزيزًا</span></div></div></div>
+  <div class="sp-footer"><span>الملخص العام</span><span>2</span></div>
+ </div>
+ <div class="sp-page">
+  <div class="sp-page-head"><div><h2>تفاصيل الإنجاز</h2><small>المحاولات والنتائج والتحسن لكل نشاط</small></div><b>🧪</b></div>
+  <div class="sp-section"><table><thead><tr><th>#</th><th>الدرس / النشاط</th><th>النوع</th><th>المحاولات</th><th>أول نتيجة</th><th>آخر نتيجة</th><th>أفضل نتيجة</th><th>التحسن</th></tr></thead><tbody>${activityRows}</tbody></table></div>
+  <div class="sp-section"><h3>قراءة تعليمية للنتائج</h3><div class="sp-feedback"><div class="sp-note"><h4>⭐ نقاط القوة</h4><p>أفضل نتيجة مسجلة: <b>${bestPct}%</b>. ${avgPct>=80?'يظهر الطالب مستوى إتقان جيدًا في معظم المحاولات المسجلة.':'يمكن رفع مستوى الإتقان من خلال تكرار التدريب الموجّه.'}</p></div><div class="sp-note"><h4>🎯 ما يحتاج إلى تعزيز</h4><p>${weakText}</p></div></div></div>
+  <div class="sp-section"><h3>رأي المعلم والتوصية</h3><div class="sp-panel"><p>${esc(fb.note)}</p></div></div>
+  <div class="sp-signatures"><div class="sp-sign"><b>معلم المادة</b><br>علي طاهر البقاشي</div><div class="sp-sign"><b>مدير المدرسة</b><br>فوزي محمد الهلال</div></div>
+  <div class="sp-footer"><span>تفاصيل الإنجاز والتوصيات</span><span>3</span></div>
+ </div>`;
+ $('reportModalTitle').textContent='ملف إنجاز الطالب — '+name;
+ $('reportPaper').classList.add('student-portfolio-paper');
+ $('reportPaper').innerHTML=paper;
+ $('reportModal').classList.remove('hidden');
+}
+
 function updatePortfolioTasks(){
  const sel=$('portfolioTask'); if(!sel)return;
  const current=sel.value; const cls=$('portfolioClass')?.value||'';
@@ -501,24 +676,42 @@ function reportWeak(rows){const m={};rows.forEach(r=>String(r.weakConcepts||'').
 function avg(rows){return rows.length?Math.round(rows.reduce((a,r)=>a+(+r.percent||0),0)/rows.length):0}
 function kpiHtml(items){return `<div class="report-kpis">${items.map(([l,v])=>`<div class="kpi"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('')}</div>`}
 function reportRowsTable(rows){if(!rows.length)return '<div class="evidence-note">لا توجد نتائج مطابقة للمرشح المحدد حتى الآن.</div>';return `<table><thead><tr><th>الطالب</th><th>الفصل</th><th>النشاط</th><th>الدرجة</th><th>النسبة</th><th>المستوى</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.studentName)}</td><td>${esc(r.className)}</td><td>${esc(r.taskTitle)}</td><td>${r.score}/${r.total}</td><td>${r.percent}%</td><td>${esc(r.level)}</td></tr>`).join('')}</tbody></table>`}
-function baseHead(title){const cls=$('portfolioClass')?.value||'جميع الفصول',task=$('portfolioTask')?.value||'جميع الأنشطة';return `<div class="report-head"><h1>${esc(title)}</h1><p>مدرسة أبي الدرداء المتوسطة — مادة العلوم — الصف الأول المتوسط</p><p>المعلم: علي البقاشي | العام الدراسي 1448هـ</p></div><div class="report-meta"><div class="meta-box"><b>الفصل المستهدف:</b> ${esc(cls)}</div><div class="meta-box"><b>النشاط:</b> ${esc(task)}</div><div class="meta-box"><b>تاريخ التقرير:</b> ${esc(new Date().toLocaleDateString('ar-SA'))}</div><div class="meta-box"><b>نوع الشاهد:</b> تعلم رقمي وتدريب منزلي</div></div>`}
+function baseHead(title){
+ const cls=$('portfolioClass')?.value||'جميع الفصول',task=$('portfolioTask')?.value||'جميع الأنشطة';
+ const now=new Date();
+ const g=now.toLocaleDateString('ar-SA');
+ let h=''; try{h=now.toLocaleDateString('ar-SA-u-ca-islamic-umalqura',{year:'numeric',month:'long',day:'numeric'})}catch(e){}
+ return `<div class="pro-head"><div class="pro-topline"><div class="pro-brand"><div class="pro-mark">📊</div><div><div class="pro-eyebrow">شاهد رقمي موثق • ملف الإنجاز</div><h1>${esc(title)}</h1><p>مدرسة أبي الدرداء المتوسطة — مادة العلوم — الصف الأول المتوسط</p><p>المعلم: علي طاهر البقاشي • العام الدراسي 1448هـ</p></div></div><div class="pro-date"><b>${esc(g)}</b><span>${esc(h)}</span></div></div></div><div class="report-body"><div class="report-meta"><div class="meta-box"><span>الفصل المستهدف</span><b>${esc(cls)}</b></div><div class="meta-box"><span>النشاط / التكليف</span><b>${esc(task)}</b></div><div class="meta-box"><span>نوع الشاهد</span><b>تعلم رقمي تفاعلي</b></div><div class="meta-box"><span>منصة التنفيذ</span><b>رحلة عالم العلوم</b></div></div>`
+}
+function levelBarsHtml(levels,total){
+ const items=[['متميز',levels['متميز']],['متقن',levels['متقن']],['جيد',levels['جيد']],['يحتاج تعزيزًا',levels['يحتاج تعزيزًا']]];
+ return `<div class="level-bars">${items.map(([n,v])=>{const p=total?Math.round(v/total*100):0;return `<div class="level-row"><span>${esc(n)}</span><div class="level-track"><div class="level-fill" style="width:${p}%"></div></div><span class="level-num">${v} (${p}%)</span></div>`}).join('')}</div>`
+}
+function reportClose(){return `<div class="sign-row"><div class="sign"><b>معلم المادة</b>علي طاهر البقاشي</div><div class="sign"><b>مدير المدرسة</b>فوزي محمد الهلال</div></div><div class="report-footer">مدرسة أبي الدرداء المتوسطة • توثيق إلكتروني لمنصة رحلة عالم العلوم</div></div>`}
+
 function generatePortfolioReport(kind){
  let rows=portfolioRows(kind), title='', body='';
  if(kind==='training'){
-  title='تقرير تنفيذ التدريب التفاعلي'; const levels=reportLevelCounts(rows), weak=reportWeak(rows), a=avg(rows), top=rows.length?Math.max(...rows.map(r=>+r.percent||0)):0;
-  body=baseHead(title)+kpiHtml([['عدد المشاركات',rows.length],['متوسط الأداء',a+'%'],['أعلى نتيجة',top+'%'],['نسبة الإتقان',rows.length?Math.round(rows.filter(r=>(+r.percent||0)>=80).length/rows.length*100)+'%':'0%']])+`<div class="report-section"><h3>وصف التنفيذ</h3><p>تم تنفيذ تدريب تفاعلي منزلي عبر منصة «رحلة عالم العلوم»، بهدف تثبيت المفاهيم العلمية وإتاحة تغذية راجعة فورية للطلاب ومتابعة مستوى التقدم.</p></div><div class="report-section"><h3>تحليل مستويات الأداء</h3><p>متميز: ${levels['متميز']} — متقن: ${levels['متقن']} — جيد: ${levels['جيد']} — يحتاج تعزيزًا: ${levels['يحتاج تعزيزًا']}.</p></div><div class="report-section"><h3>أبرز الجوانب التي تحتاج تعزيزًا</h3><p>${weak.length?weak.slice(0,5).map(([x,n])=>`${esc(x)} (${n})`).join('، '):'لم تظهر مفاهيم ضعيفة متكررة في البيانات الحالية.'}</p></div><div class="report-section"><h3>النتائج</h3>${reportRowsTable(rows)}</div><div class="report-section"><h3>التوصيات</h3><ul><li>إعادة التدريب للطلاب الأقل من 80%.</li><li>توجيه تدريب علاجي للمفاهيم الأكثر تكرارًا في الأخطاء.</li><li>الاستمرار في التكليفات المنزلية القصيرة مع متابعة التحسن.</li></ul></div>`;
+  title='تقرير تنفيذ التدريب التفاعلي';
+  const levels=reportLevelCounts(rows), weak=reportWeak(rows), a=avg(rows), top=rows.length?Math.max(...rows.map(r=>+r.percent||0)):0;
+  const mastery=rows.length?Math.round(rows.filter(r=>(+r.percent||0)>=80).length/rows.length*100):0;
+  const low=rows.filter(r=>(+r.percent||0)<60).length;
+  body=baseHead(title)+kpiHtml([['عدد المشاركات',rows.length],['متوسط الأداء',a+'%'],['أعلى نتيجة',top+'%'],['نسبة الإتقان',mastery+'%']])+`<div class="pro-grid"><div class="pro-card"><h3>🎯 ملخص تنفيذي</h3><p>نُفّذ التدريب عبر منصة «رحلة عالم العلوم» بهدف تثبيت المفاهيم، إتاحة التغذية الراجعة الفورية، ومتابعة تقدم الطلاب بصورة رقمية قابلة للقياس. بلغ متوسط الأداء <b>${a}%</b>، وحقق <b>${mastery}%</b> من المشاركات مستوى الإتقان فأعلى.</p></div><div class="pro-card"><h3>📌 مؤشر المتابعة</h3><p>${low?`يوجد ${low} مشاركة دون 60% وتحتاج متابعة علاجية مركزة.`:'لا توجد مشاركات دون 60% ضمن النطاق المحدد، وهو مؤشر إيجابي على تحقق الحد الأدنى من الإتقان.'}</p></div></div><div class="report-section"><h3>تحليل مستويات الأداء</h3>${levelBarsHtml(levels,rows.length)}</div><div class="report-section"><h3>أبرز المفاهيم التي تحتاج تعزيزًا</h3><div class="insight">${weak.length?`تكررت الحاجة إلى المراجعة في: <strong>${weak.slice(0,5).map(([x,n])=>`${esc(x)} (${n})`).join('، ')}</strong>.`:'لم تظهر مفاهيم ضعيفة متكررة في البيانات الحالية.'}</div></div><div class="report-section"><h3>التوصيات والإجراء التالي</h3><div class="pro-grid"><div class="pro-card"><h3>🧭 دعم علاجي</h3><ul><li>إعادة التدريب للطلاب الأقل من 80%.</li><li>توجيه أسئلة قصيرة للمفاهيم الأكثر تكرارًا في الأخطاء.</li><li>إعادة قياس بعدي للتحقق من التحسن.</li></ul></div><div class="pro-card"><h3>🚀 إثراء واستمرار</h3><ul><li>تقديم نشاط إثرائي للطلاب المتقنين.</li><li>الاستمرار في التكليفات القصيرة المنتظمة.</li><li>مقارنة الأداء بين أول وآخر محاولة.</li></ul></div></div></div><div class="report-section details-page"><h3>تفاصيل النتائج</h3>${reportRowsTable(rows)}</div>`+reportClose();
  } else if(kind==='test'){
-  title='تقرير نتائج الاختبار الإلكتروني'; const levels=reportLevelCounts(rows), a=avg(rows), top=rows.length?Math.max(...rows.map(r=>+r.percent||0)):0, low=rows.length?Math.min(...rows.map(r=>+r.percent||0)):0, weak=reportWeak(rows);
-  body=baseHead(title)+kpiHtml([['عدد المختبرين',rows.length],['متوسط الاختبار',a+'%'],['أعلى نتيجة',top+'%'],['أقل نتيجة',low+'%']])+`<div class="report-section"><h3>ملخص الأداء</h3><p>متميز: ${levels['متميز']} — متقن: ${levels['متقن']} — جيد: ${levels['جيد']} — يحتاج تعزيزًا: ${levels['يحتاج تعزيزًا']}.</p></div><div class="report-section"><h3>المفاهيم الأكثر حاجة للمراجعة</h3><p>${weak.length?weak.slice(0,5).map(([x,n])=>`${esc(x)} (${n})`).join('، '):'لا توجد أخطاء مفاهيمية متكررة ظاهرة في البيانات الحالية.'}</p></div><div class="report-section"><h3>نتائج الطلاب</h3>${reportRowsTable(rows)}</div><div class="report-section"><h3>التوصيات</h3><ul><li>إلحاق الطلاب الأقل من 60% بخطة علاجية.</li><li>تقديم أنشطة إثرائية للطلاب المتقنين.</li><li>إعادة شرح المفاهيم التي ظهر فيها ضعف جماعي.</li></ul></div>`;
+  title='تقرير نتائج الاختبار الإلكتروني';
+  const levels=reportLevelCounts(rows), a=avg(rows), top=rows.length?Math.max(...rows.map(r=>+r.percent||0)):0, lowv=rows.length?Math.min(...rows.map(r=>+r.percent||0)):0, weak=reportWeak(rows);
+  const mastery=rows.length?Math.round(rows.filter(r=>(+r.percent||0)>=80).length/rows.length*100):0;
+  body=baseHead(title)+kpiHtml([['عدد المختبرين',rows.length],['متوسط الاختبار',a+'%'],['أعلى نتيجة',top+'%'],['نسبة الإتقان',mastery+'%']])+`<div class="pro-grid"><div class="pro-card"><h3>🧪 قراءة سريعة للنتائج</h3><p>بلغ متوسط الاختبار <b>${a}%</b>، وأعلى نتيجة <b>${top}%</b>، وأقل نتيجة <b>${lowv}%</b>. تعكس النتائج مستوى تحقق نواتج التعلم ضمن النطاق المحدد.</p></div><div class="pro-card"><h3>📍 قرار تعليمي</h3><p>${mastery>=80?'تشير البيانات إلى مستوى إتقان مرتفع، مع توجيه الدعم للطلاب ذوي النتائج المنخفضة.':'تحتاج النتائج إلى تعزيز إضافي ومراجعة مركزة قبل الانتقال إلى تقويم لاحق.'}</p></div></div><div class="report-section"><h3>توزيع مستويات الأداء</h3>${levelBarsHtml(levels,rows.length)}</div><div class="report-section"><h3>المفاهيم الأكثر حاجة للمراجعة</h3><div class="insight">${weak.length?`الأكثر تكرارًا: <strong>${weak.slice(0,5).map(([x,n])=>`${esc(x)} (${n})`).join('، ')}</strong>.`:'لا توجد أخطاء مفاهيمية متكررة ظاهرة في البيانات الحالية.'}</div></div><div class="report-section"><h3>التوصيات</h3><div class="pro-grid"><div class="pro-card"><h3>🩺 علاج</h3><ul><li>إلحاق الطلاب الأقل من 60% بخطة علاجية.</li><li>إعادة شرح المفاهيم ذات الضعف الجماعي.</li></ul></div><div class="pro-card"><h3>⭐ إثراء</h3><ul><li>تقديم مهام إثرائية للطلاب المتقنين.</li><li>استخدام أسئلة تطبيقية أعلى قليلًا في المستوى.</li></ul></div></div></div><div class="report-section details-page"><h3>نتائج الطلاب</h3>${reportRowsTable(rows)}</div>`+reportClose();
  } else if(kind==='remedial'){
   title='تقرير الخطة العلاجية'; const source=portfolioRows('impact').filter(r=>(+r.percent||0)<60); const weak=reportWeak(source); rows=source;
-  body=baseHead(title)+kpiHtml([['الطلاب المستهدفون',rows.length],['متوسط الأداء قبل العلاج',avg(rows)+'%'],['المفاهيم المستهدفة',weak.length],['حالة المتابعة',rows.length?'قيد التنفيذ':'لا توجد حالات']])+`<div class="report-section"><h3>هدف الخطة</h3><p>رفع إتقان الطلاب الذين ظهرت لديهم فجوات مفاهيمية من خلال تدريب موجه، وأسئلة متدرجة، وإعادة قياس بعدي.</p></div><div class="report-section"><h3>المفاهيم العلاجية</h3><p>${weak.length?weak.map(([x,n])=>`${esc(x)} (${n})`).join('، '):'لا توجد حاليًا نتائج أقل من 60% ضمن المرشح المحدد.'}</p></div><div class="report-section"><h3>الطلاب المستهدفون</h3>${reportRowsTable(rows)}</div><div class="report-section"><h3>الإجراءات المقترحة</h3><ul><li>شرح مصغر للمفهوم الضعيف.</li><li>تدريب علاجي متدرج من السهل إلى التطبيق.</li><li>اختبار متابعة قصير للتحقق من الإتقان.</li></ul></div>`;
+  body=baseHead(title)+kpiHtml([['الطلاب المستهدفون',rows.length],['متوسط الأداء قبل العلاج',avg(rows)+'%'],['المفاهيم المستهدفة',weak.length],['حالة المتابعة',rows.length?'قيد التنفيذ':'لا توجد حالات']])+`<div class="pro-grid"><div class="pro-card"><h3>🎯 هدف الخطة</h3><p>رفع مستوى إتقان الطلاب الذين ظهرت لديهم فجوات مفاهيمية من خلال تدريب موجه، أسئلة متدرجة، ثم إعادة قياس بعدي للتحقق من التحسن.</p></div><div class="pro-card"><h3>🧠 المفاهيم المستهدفة</h3><p>${weak.length?weak.map(([x,n])=>`${esc(x)} (${n})`).join('، '):'لا توجد حاليًا نتائج أقل من 60% ضمن المرشح المحدد.'}</p></div></div><div class="report-section"><h3>الإجراءات العلاجية</h3><div class="pro-grid"><div class="pro-card"><h3>1️⃣ إعادة بناء المفهوم</h3><ul><li>شرح مصغر ومباشر للمفهوم الضعيف.</li><li>مثال محلول ثم سؤال مشابه.</li></ul></div><div class="pro-card"><h3>2️⃣ تحقق من الإتقان</h3><ul><li>تدريب قصير متدرج.</li><li>اختبار متابعة قصير.</li><li>مقارنة النتيجة قبل وبعد.</li></ul></div></div></div><div class="report-section details-page"><h3>الطلاب المستهدفون</h3>${reportRowsTable(rows)}</div>`+reportClose();
  } else {
   title='تقرير الأثر التعليمي للمنصة'; const tr=portfolioRows('training'), te=portfolioRows('test'), at=avg(tr), ae=avg(te), diff=ae-at;
-  body=baseHead(title)+kpiHtml([['متوسط التدريب',at+'%'],['متوسط الاختبار',ae+'%'],['فرق الأداء',(diff>=0?'+':'')+diff+' نقطة'],['إجمالي المشاركات',tr.length+te.length]])+`<div class="report-section"><h3>مؤشر الأثر</h3><p>${tr.length&&te.length?(diff>=0?`يشير الفرق الحالي إلى تحسن قدره ${diff} نقطة مئوية بين متوسط التدريب ومتوسط الاختبار.`:`متوسط الاختبار أقل من التدريب بمقدار ${Math.abs(diff)} نقطة، ويستحسن تعزيز المراجعة قبل الاختبارات القادمة.`):'يلزم توفر نتائج تدريب واختبار معًا لقياس الأثر بصورة أدق.'}</p></div><div class="report-section"><h3>آلية التنفيذ</h3><p>أُرسلت الأنشطة والتدريبات للطلاب منزليًا من خلال روابط التكليفات الذكية، مع متابعة نتائج التدريب والاختبارات إلكترونيًا وتحليل مستوى الأداء.</p></div><div class="report-section"><h3>شواهد مقترحة للإرفاق</h3><ul><li>صورة من واجهة المنصة أو رابط التكليف.</li><li>لقطة من لوحة نتائج الطلاب.</li><li>تقرير التدريب وتقرير الاختبار.</li><li>الخطة العلاجية للطلاب المحتاجين للدعم.</li></ul></div>`;
+  body=baseHead(title)+kpiHtml([['متوسط التدريب',at+'%'],['متوسط الاختبار',ae+'%'],['فرق الأداء',(diff>=0?'+':'')+diff+' نقطة'],['إجمالي المشاركات',tr.length+te.length]])+`<div class="pro-grid"><div class="pro-card"><h3>📈 مؤشر الأثر</h3><p>${tr.length&&te.length?(diff>=0?`تظهر البيانات تحسنًا قدره <b>${diff} نقطة مئوية</b> بين متوسط التدريب ومتوسط الاختبار.`:`متوسط الاختبار أقل من التدريب بمقدار <b>${Math.abs(diff)} نقطة</b>، مما يشير إلى الحاجة إلى مراجعة مركزة قبل التقويمات القادمة.`):'يلزم توفر نتائج تدريب واختبار معًا لقياس الأثر بصورة أدق.'}</p></div><div class="pro-card"><h3>🔎 آلية التنفيذ</h3><p>تم توظيف روابط التكليفات الذكية، التدريب المنزلي، والمتابعة الإلكترونية للنتائج بهدف تحسين الاستمرارية ورفع جودة التغذية الراجعة.</p></div></div><div class="report-section"><h3>شواهد مقترحة للإرفاق</h3><div class="pro-grid"><div class="pro-card"><ul><li>صورة من واجهة منصة رحلة عالم العلوم.</li><li>لقطة من نتائج الطلاب ومؤشرات التحسن.</li></ul></div><div class="pro-card"><ul><li>رابط أو صورة من التكليف المنزلي.</li><li>الخطة العلاجية والتقرير الختامي.</li></ul></div></div></div><div class="report-section"><h3>القيمة المضافة</h3><div class="insight">يوفر النظام شاهدًا رقميًا يجمع بين <strong>التنفيذ، القياس، التحليل، والمتابعة</strong> في مسار واحد، بما يدعم توثيق الممارسة التعليمية في ملف الإنجاز.</div></div>`+reportClose();
  }
- $('reportModalTitle').textContent=title; $('reportPaper').innerHTML=body; $('reportModal').classList.remove('hidden');
+ $('reportModalTitle').textContent=title; $('reportPaper').classList.remove('student-portfolio-paper'); $('reportPaper').innerHTML=body; $('reportModal').classList.remove('hidden');
 }
+
 async function copyReportText(){const text=$('reportPaper').innerText;try{await navigator.clipboard.writeText(text);alert('تم نسخ نص التقرير.')}catch{prompt('انسخ نص التقرير:',text)}}
 
 document.addEventListener('DOMContentLoaded',init);
