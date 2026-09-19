@@ -964,10 +964,18 @@ function init(){
  const taskId=new URLSearchParams(location.search).get("task");
  if(taskId)loadTask(taskId);
 }
-
 function renderLessons(){
+
+ const allowedLessons =
+  Array.isArray(state.task?.lessonIds) &&
+  state.task.lessonIds.length
+  ? DATA.lessons.filter(l =>
+      state.task.lessonIds.includes(l.id)
+    )
+  : DATA.lessons;
+
  $("lessonCards").innerHTML=
- DATA.lessons.map(l=>`
+ allowedLessons.map(l=>`
  <article class="lesson-card glass ${l.color}">
   <span class="status">جاهز</span>
   <div class="icon">${l.icon}</div>
@@ -980,9 +988,19 @@ function renderLessons(){
 }
 
 function openLesson(id){
+ 
  const l=lessonBy(id);
  if(!l)return;
+ const allowed =
+  Array.isArray(state.task?.lessonIds) &&
+  state.task.lessonIds.length
+  ? state.task.lessonIds
+  : null;
 
+ if(allowed && !allowed.includes(id)){
+  alert("هذا الدرس غير ضمن التكليف المحدد.");
+  return;
+ }
  state.lesson=id;
 
  $("lessonIcon").textContent=l.icon;
@@ -1125,6 +1143,61 @@ async function loadStudentsForClass(){
 }
 
 async function loadTask(id){
+ try{
+  const r=await requestApi({
+   action:"getTask",
+   id
+  });
+
+  if(!r?.ok) throw new Error("task");
+
+  const t=r.task;
+
+  if(t.status!=="open"){
+   alert(t.message||"هذا التكليف غير متاح حاليًا.");
+   return;
+  }
+
+  let lessonIds=[];
+  const raw=t.lesson;
+
+  if(Array.isArray(raw)){
+   lessonIds=raw.map(String).map(x=>x.trim()).filter(Boolean);
+  }else{
+   try{
+    const parsed=JSON.parse(String(raw||""));
+
+    if(Array.isArray(parsed)){
+     lessonIds=parsed
+      .map(String)
+      .map(x=>x.trim())
+      .filter(Boolean);
+    }
+   }catch(e){}
+
+   if(!lessonIds.length && raw && raw!=="all"){
+    lessonIds=[String(raw).trim()];
+   }
+  }
+
+  t.lessonIds=lessonIds;
+state.task=t;
+renderLessons();
+  const firstLesson=
+   lessonIds.length
+   ?lessonIds[0]
+   :"all";
+
+  openIdentity(
+   t.mode||"training",
+   firstLesson,
+   t
+  );
+
+ }catch(e){
+  alert("تعذر فتح التكليف الآن.");
+ }
+}
  try{
   const r=await requestApi({
    action:"getTask",
@@ -1297,11 +1370,21 @@ function buildQuiz(){
  state.streak=0;
  state.bestStreak=0;
  state.logs=[];
+const taskLessons =
+  Array.isArray(state.task?.lessonIds)
+  ? state.task.lessonIds
+  : [];
 
- let pool=
-  state.lesson==="all"
-  ?DATA.questions
-  :DATA.questions.filter(q=>q.lesson===state.lesson);
+let pool =
+  taskLessons.length
+  ? DATA.questions.filter(q =>
+      taskLessons.includes(q.lesson)
+    )
+  : state.lesson==="all"
+    ? DATA.questions
+    : DATA.questions.filter(q =>
+        q.lesson===state.lesson
+      );
 
  let n=
   state.mode==="exam"
