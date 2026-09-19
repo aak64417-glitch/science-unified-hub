@@ -7,32 +7,33 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>رحلة عالم العلوم | منصة الطالب</title>
+<title>رحلة عالم العلوم | نشاط الطالب</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07111f;font-family:Tahoma,Arial,sans-serif}
 #studentFrame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#07111f;visibility:hidden}
-#gate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:
-radial-gradient(circle at 15% 0%,rgba(129,144,255,.20),transparent 35%),
-radial-gradient(circle at 90% 10%,rgba(66,222,212,.14),transparent 30%),
-#07111f;color:#f7fbff;text-align:center;padding:22px;box-sizing:border-box}
-.card{width:min(520px,92vw);padding:30px 24px;border-radius:24px;
-background:linear-gradient(180deg,#102039,#0a192b);border:1px solid rgba(255,255,255,.12);
-box-shadow:0 24px 70px rgba(0,0,0,.30)}
-.logo{width:68px;height:68px;margin:0 auto 16px;border-radius:22px;display:grid;place-items:center;
-font-size:34px;background:linear-gradient(135deg,#42ded4,#8190ff)}
-h1{font-size:1.35rem;margin:0 0 10px}p{margin:0;color:#b9c9d9;line-height:1.85}
-.loader{width:42px;height:42px;margin:20px auto 0;border:4px solid rgba(255,255,255,.14);
-border-top-color:#42ded4;border-radius:50%;animation:spin .8s linear infinite}
+#gate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:22px;box-sizing:border-box;
+background:radial-gradient(circle at 15% 0%,rgba(129,144,255,.20),transparent 35%),
+radial-gradient(circle at 90% 10%,rgba(66,222,212,.14),transparent 30%),#07111f;color:#f7fbff;text-align:center}
+.card{width:min(540px,92vw);padding:30px 24px;border-radius:24px;background:linear-gradient(180deg,#102039,#0a192b);
+border:1px solid rgba(255,255,255,.12);box-shadow:0 24px 70px rgba(0,0,0,.30)}
+.logo{width:68px;height:68px;margin:0 auto 16px;border-radius:22px;display:grid;place-items:center;font-size:34px;
+background:linear-gradient(135deg,#42ded4,#8190ff)}
+h1{font-size:1.35rem;margin:0 0 10px}
+p{margin:0;color:#b9c9d9;line-height:1.85}
+.loader{width:42px;height:42px;margin:20px auto 0;border:4px solid rgba(255,255,255,.14);border-top-color:#42ded4;
+border-radius:50%;animation:spin .8s linear infinite}
+.error{color:#ffd0d7}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
+
 <div id="gate">
  <div class="card">
    <div class="logo">🧪</div>
    <h1>رحلة عالم العلوم</h1>
-   <p id="gateText">جاري تحميل النشاط المخصص للطالب والتحقق من الفصل...</p>
-   <div class="loader"></div>
+   <p id="gateText">جاري تحميل النشاط المخصص لك...</p>
+   <div id="loader" class="loader"></div>
  </div>
 </div>
 
@@ -40,84 +41,213 @@ border-top-color:#42ded4;border-radius:50%;animation:spin .8s linear infinite}
 
 <script>
 (function(){
-  const gate = document.getElementById('gate');
-  const gateText = document.getElementById('gateText');
-  const frame = document.getElementById('studentFrame');
-  const params = new URLSearchParams(location.search);
-  const taskId = params.get('task');
-  const target = 'student_final.html' + location.search + location.hash;
+  const API='https://script.google.com/macros/s/AKfycbz6-iPHp20-ZWMhgZA6WsAnZM-WPoCgPgFMyjbAHwg6xvGPGZhMDluhqOZGd20I6InDuw/exec';
+  const params=new URLSearchParams(location.search);
+  const taskId=params.get('task')||'';
 
-  let revealed = false;
-  let timer = null;
-  let attempts = 0;
+  const gate=document.getElementById('gate');
+  const gateText=document.getElementById('gateText');
+  const loader=document.getElementById('loader');
+  const frame=document.getElementById('studentFrame');
 
-  function reveal(message){
-    if(revealed) return;
-    revealed = true;
-    if(message) gateText.textContent = message;
-    frame.style.visibility = 'visible';
-    gate.style.display = 'none';
-    if(timer) clearInterval(timer);
+  let task=null;
+  let childReady=false;
+  let taskReady=false;
+  let applied=false;
+
+  function fail(msg){
+    gateText.textContent=msg;
+    gateText.className='error';
+    loader.style.display='none';
   }
 
-  function secureChild(){
-    let doc;
+  function jsonp(query){
+    return new Promise((resolve,reject)=>{
+      const cb='task_cb_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+      const s=document.createElement('script');
+      const timer=setTimeout(()=>{cleanup();reject(new Error('timeout'));},15000);
+
+      function cleanup(){
+        clearTimeout(timer);
+        try{delete window[cb]}catch(e){}
+        try{s.remove()}catch(e){}
+      }
+
+      window[cb]=data=>{cleanup();resolve(data)};
+      const u=new URL(API);
+      Object.entries({...query,callback:cb,_:Date.now()}).forEach(([k,v])=>u.searchParams.set(k,String(v)));
+      s.src=u.toString();
+      s.onerror=()=>{cleanup();reject(new Error('network'))};
+      document.body.appendChild(s);
+    });
+  }
+
+  function lessonOf(t){
+    if(t.lesson && t.lesson!=='') return t.lesson;
+    if(Array.isArray(t.lessonIds) && t.lessonIds.length) return t.lessonIds[0];
+    return 'all';
+  }
+
+  function isClosed(t){
+    if(t.active===false) return true;
+    const s=String(t.status||'').toLowerCase().trim();
+    return ['closed','inactive','stopped','off','disabled'].includes(s);
+  }
+
+  function protectChild(w,doc,t){
+    // لا تظهر أي روابط أو مداخل إدارية للطالب.
+    doc.querySelectorAll(
+      'a[href="index.html"],a[href*="journey-teacher"],a[href*="teacher.html"],a[href*="teacher_"]'
+    ).forEach(el=>el.remove());
+
+    const linkState=doc.getElementById('linkState');
+    if(linkState) linkState.style.display='none';
+
+    // عند رابط التكليف لا نعرض الواجهة العامة مطلقًا.
+    const home=doc.getElementById('homeScreen');
+    if(home) home.style.display='none';
+
+    // منع أزرار "الرئيسية/إلغاء" من كشف بقية المسارات.
+    const assignedMode=t.mode||'training';
+    const assignedLesson=lessonOf(t);
+    w.goHome=function(){
+      try{w.openIdentity(assignedMode,assignedLesson,t)}catch(e){}
+      setTimeout(()=>lockClass(doc,t),50);
+    };
+
+    // بعد النتيجة يبقى الطالب في نفس النشاط، ولا ينتقل تلقائيًا إلى علاجي/إثرائي.
+    const resultAction=doc.getElementById('resultAction');
+    if(resultAction){
+      resultAction.onclick=function(){
+        w.openIdentity(assignedMode,assignedLesson,t);
+        setTimeout(()=>lockClass(doc,t),50);
+      };
+    }
+  }
+
+  function lockClass(doc,t){
+    const className=String(t.className||'').trim();
+    if(!className || className==='الكل') return;
+
+    const sel=doc.getElementById('studentClass');
+    if(!sel) return;
+
+    // الإبقاء على الفصل المحدد فقط.
+    let option=[...sel.options].find(o=>o.value===className);
+    if(!option){
+      option=document.createElement('option');
+      option.value=className;
+      option.textContent=className;
+      sel.appendChild(option);
+    }
+    [...sel.options].forEach(o=>{if(o.value!==className)o.remove()});
+    sel.value=className;
+    sel.disabled=true;
+    sel.style.pointerEvents='none';
+    sel.style.opacity='1';
+
+    const label=sel.closest('.field')?.querySelector('label');
+    if(label) label.textContent='الفصل المخصص لهذا النشاط';
+
+    // إذا لم تكن الأسماء قد بدأت بالتحميل، شغّل تحميل الفصل مرة واحدة.
+    const studentSel=doc.getElementById('studentName');
+    if(studentSel && (!studentSel.options.length || studentSel.options[0]?.textContent.includes('الفصل أولًا'))){
+      try{
+        sel.disabled=false;
+        sel.value=className;
+        if(typeof frame.contentWindow.loadStudentsForClass==='function'){
+          frame.contentWindow.loadStudentsForClass();
+        }else{
+          sel.dispatchEvent(new Event('change',{bubbles:true}));
+        }
+      }catch(e){}
+      setTimeout(()=>{
+        sel.value=className;
+        sel.disabled=true;
+        sel.style.pointerEvents='none';
+        sel.style.opacity='1';
+      },100);
+    }
+  }
+
+  function applyTask(){
+    if(applied || !childReady || !taskReady || !task) return;
+
+    let w,doc;
     try{
-      doc = frame.contentDocument || frame.contentWindow.document;
+      w=frame.contentWindow;
+      doc=frame.contentDocument||w.document;
     }catch(e){
-      reveal();
+      fail('تعذر فتح النشاط على هذا الجهاز.');
       return;
     }
-    if(!doc) return;
 
-    // حماية إضافية: لا تظهر أي روابط إدارية حتى لو أضيفت إلى النسخة الداخلية مستقبلًا.
-    doc.querySelectorAll('a[href="index.html"],a[href*="journey-teacher"],a[href*="teacher.html"],a[href*="teacher_"]')
-      .forEach(el => el.remove());
+    if(!w || !doc || typeof w.openIdentity!=='function'){
+      setTimeout(applyTask,150);
+      return;
+    }
 
-    // التكليفات المرسلة برابط يجب أن تُقفل على الفصل المحفوظ داخل التكليف.
-    if(taskId){
-      const classSelect = doc.getElementById('studentClass');
-      if(classSelect && classSelect.value && classSelect.value !== 'الكل'){
-        const lockedClass = classSelect.value;
+    applied=true;
+    protectChild(w,doc,task);
 
-        // إزالة كل الفصول الأخرى من الواجهة.
-        [...classSelect.options].forEach(opt=>{
-          if(opt.value !== lockedClass) opt.remove();
-        });
-        classSelect.value = lockedClass;
-        classSelect.disabled = true;
-        classSelect.setAttribute('aria-disabled','true');
-        classSelect.style.pointerEvents = 'none';
-        classSelect.style.opacity = '1';
+    try{
+      const mode=task.mode||'training';
+      const lesson=lessonOf(task);
 
-        // إضافة بيان واضح للطالب.
-        const label = classSelect.closest('.field')?.querySelector('label');
-        if(label) label.textContent = 'الفصل المخصص لهذا النشاط';
+      // فتح النشاط المحدد مباشرة، دون الصفحة الرئيسية.
+      w.openIdentity(mode,lesson,task);
 
-        reveal();
+      setTimeout(()=>lockClass(doc,task),100);
+      setTimeout(()=>lockClass(doc,task),600);
+      setTimeout(()=>lockClass(doc,task),1600);
+
+      // مراقبة مستمرة لإخفاء أي مدخل إداري والمحافظة على قفل الفصل.
+      setInterval(()=>{
+        protectChild(w,doc,task);
+        lockClass(doc,task);
+      },1200);
+
+      frame.style.visibility='visible';
+      gate.style.display='none';
+    }catch(e){
+      console.error(e);
+      applied=false;
+      fail('تعذر تجهيز النشاط المحدد. أعد فتح الرابط.');
+    }
+  }
+
+  async function loadAssignedTask(){
+    if(!taskId){
+      fail('هذا الرابط لا يحتوي على رقم نشاط. استخدم رابط النشاط المرسل من المعلم.');
+      return;
+    }
+    try{
+      const r=await jsonp({action:'getTask',id:taskId});
+      if(!r || r.ok===false || !r.task){
+        throw new Error((r&&r.message)||'task_not_found');
+      }
+      task=r.task;
+      if(isClosed(task)){
+        fail(task.message||'هذا النشاط متوقف حاليًا من قبل المعلم.');
         return;
       }
-    }else{
-      // فتح المنصة دون رابط تكليف: لا حاجة لقفل فصل.
-      reveal();
-      return;
+      taskReady=true;
+      applyTask();
+    }catch(e){
+      console.error(e);
+      fail('تعذر تحميل النشاط المخصص. تحقق من الاتصال ثم أعد فتح الرابط.');
     }
-
-    attempts++;
-    // مهلة احتياطية حتى تظهر رسالة الخطأ الأصلية إذا كان التكليف متوقفًا/غير صالح.
-    if(attempts >= 60) reveal();
   }
 
-  frame.addEventListener('load', function(){
-    attempts = 0;
-    secureChild();
-    timer = setInterval(secureChild, 200);
+  frame.addEventListener('load',()=>{
+    childReady=true;
+    applyTask();
   });
 
-  // يمنع فتح أي عنوان إداري من الإطار في النافذة العليا.
-  window.addEventListener('message', function(){}, false);
+  // مهم: لا نمرر ?task للصفحة الداخلية، لأن هذه الصفحة الخارجية هي التي تتحكم بالتكليف.
+  frame.src='student_final.html?student_task_shell=2&v=20260919_2';
 
-  frame.src = target;
+  loadAssignedTask();
 })();
 </script>
 </body>
