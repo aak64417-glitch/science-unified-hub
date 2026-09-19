@@ -468,6 +468,43 @@ function syncTaskModeFields(){
  if($('taskAttemptsField'))$('taskAttemptsField').classList.toggle('hidden',!isTest);
 }
 function typeName(m){return({training:'تدريب',exam:'اختبار',remedial:'علاجي',enrich:'إثراء',test:'اختبار',mixed:'متنوع'}[m]||m)}
+
+const CONCEPT_LABELS={
+ 'science':'العلم',
+ 'method':'الطريقة العلمية',
+ 'hypothesis':'الفرضية',
+ 'testing':'اختبار الفرضية',
+ 'observe-infer':'الملاحظة والاستنتاج',
+ 'variables':'المتغيرات',
+ 'data':'البيانات',
+ 'communication':'التواصل العلمي',
+ 'types':'أنواع النماذج',
+ 'change':'تغير النماذج',
+ 'benefits':'فوائد النماذج',
+ 'theory-law':'النظرية والقانون العلمي',
+ 'claims':'الادعاءات العلمية',
+ 'evidence':'الأدلة العلمية',
+ 'evaluate':'تقويم التفسيرات العلمية',
+ 'critical':'التفكير الناقد',
+ 'repeatability':'قابلية تكرار النتائج',
+ 'motion':'الحركة',
+ 'speed':'السرعة',
+ 'velocity':'السرعة المتجهة',
+ 'acceleration':'التسارع',
+ 'first':'قانون نيوتن الأول',
+ 'second':'قانون نيوتن الثاني',
+ 'third':'قانون نيوتن الثالث',
+ 'force':'القوة',
+ 'net':'القوة المحصلة',
+ 'work':'الشغل',
+ 'work-law':'قانون الشغل',
+ 'simple-machines':'الآلات البسيطة',
+ 'ma':'الفائدة الآلية'
+};
+function conceptLabel(value){
+ const raw=String(value||'').trim();
+ return CONCEPT_LABELS[raw]||raw;
+}
 function init(){
  $('teacherSub').textContent='مدرسة أبي الدرداء المتوسطة | المعلم: علي البقاشي';
  $('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام 1448هـ';
@@ -513,7 +550,7 @@ function renderAll(){stats();renderTasks();renderResults();renderStudentsAdmin()
 function stats(){const students=new Set(results.map(x=>x.className+'-'+x.studentName)).size;$('sTasks').textContent=tasks.length;$('sStudents').textContent=students;$('sTraining').textContent=results.filter(x=>x.type!=='test'&&x.type!=='exam').length;$('sTests').textContent=results.filter(x=>x.type==='test'||x.type==='exam').length}
 function renderTasks(){
  const ordered=[...tasks].sort((a,b)=>taskSortTime(b)-taskSortTime(a));
- $('tasksBody').innerHTML=ordered.map(t=>{const link=new URL('journey-student.html',location.href).href+'?task='+encodeURIComponent(t.id);return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(taskLessonsLabel(t))}</td><td>${esc(t.className)}</td><td>${taskPeriod(t)}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td><button class="smallbtn copy" data-copy="${link}">نسخ الرابط</button></td><td><button class="smallbtn toggle" data-toggle="${t.id}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${t.id}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
+ $('tasksBody').innerHTML=ordered.map(t=>{const link=new URL('journey-student.html',location.href).href+'?task='+encodeURIComponent(t.id);return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(taskLessonsLabel(t))}</td><td>${esc(normalizeClassName(t.className)||'الكل')}</td><td>${taskPeriod(t)}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td><button class="smallbtn copy" data-copy="${link}">نسخ الرابط</button></td><td><button class="smallbtn toggle" data-toggle="${t.id}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${t.id}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);alert('تم نسخ رابط التكليف.')}catch{prompt('انسخ رابط التكليف:',b.dataset.copy)}});
  document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=async()=>{const t=tasks.find(x=>String(x.id)===String(b.dataset.toggle));if(!t)return;try{b.disabled=true;await apiAction('toggleTask',{id:t.id,active:String(!t.active)});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}});
  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('هل تريد حذف هذا التكليف؟'))return;try{b.disabled=true;await apiAction('deleteTask',{id:b.dataset.del});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}})
@@ -671,13 +708,21 @@ function selectedLessonIds(task){
  if(Array.isArray(raw)) return raw.map(String).map(x=>x.trim()).filter(Boolean);
  if(raw){
    try{
-     const parsed=JSON.parse(raw);
+     const parsed=JSON.parse(String(raw));
      if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean);
    }catch(_){}
    return String(raw).split(',').map(x=>x.trim()).filter(Boolean);
  }
+
  const legacy=String(task?.lesson||'').trim();
- return legacy&&legacy!=='all'?[legacy]:[];
+ if(!legacy || legacy==='all') return [];
+
+ try{
+   const parsed=JSON.parse(legacy);
+   if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean);
+ }catch(_){}
+
+ return legacy.split(',').map(x=>x.trim()).filter(Boolean);
 }
 function taskLessonsLabel(task){
  const ids=selectedLessonIds(task);
@@ -873,7 +918,11 @@ function studentProgressSvg(rows){
 }
 function studentPortfolioWeak(rows){
  const map={};
- rows.forEach(r=>String(r.weakConcepts||'').split(/[،,|]/).map(x=>x.trim()).filter(x=>x&&x!=='—').forEach(x=>map[x]=(map[x]||0)+1));
+ rows.forEach(r=>String(r.weakConcepts||'')
+   .split(/[،,|]/)
+   .map(x=>conceptLabel(x.trim()))
+   .filter(x=>x&&x!=='—')
+   .forEach(x=>map[x]=(map[x]||0)+1));
  return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,5);
 }
 function studentPortfolioFeedback(avgPct,bestPct,avgImprove,attempts){
@@ -1010,7 +1059,15 @@ function portfolioRows(kind){
  return rows;
 }
 function reportLevelCounts(rows){const bins={'متميز':0,'متقن':0,'جيد':0,'يحتاج تعزيزًا':0};rows.forEach(r=>{const p=+r.percent||0;if(p>=90)bins['متميز']++;else if(p>=80)bins['متقن']++;else if(p>=70)bins['جيد']++;else bins['يحتاج تعزيزًا']++});return bins}
-function reportWeak(rows){const m={};rows.forEach(r=>String(r.weakConcepts||'').split(/[،,|]/).map(x=>x.trim()).filter(x=>x&&x!=='—').forEach(x=>m[x]=(m[x]||0)+1));return Object.entries(m).sort((a,b)=>b[1]-a[1])}
+function reportWeak(rows){
+ const m={};
+ rows.forEach(r=>String(r.weakConcepts||'')
+   .split(/[،,|]/)
+   .map(x=>conceptLabel(x.trim()))
+   .filter(x=>x&&x!=='—')
+   .forEach(x=>m[x]=(m[x]||0)+1));
+ return Object.entries(m).sort((a,b)=>b[1]-a[1]);
+}
 function avg(rows){return rows.length?Math.round(rows.reduce((a,r)=>a+(+r.percent||0),0)/rows.length):0}
 function kpiHtml(items){return `<div class="report-kpis">${items.map(([l,v])=>`<div class="kpi"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('')}</div>`}
 function reportRowsTable(rows){if(!rows.length)return '<div class="evidence-note">لا توجد نتائج مطابقة للمرشح المحدد حتى الآن.</div>';return `<table><thead><tr><th>الطالب</th><th>الفصل</th><th>النشاط</th><th>الدرجة</th><th>النسبة</th><th>المستوى</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.studentName)}</td><td>${esc(r.className)}</td><td>${esc(r.taskTitle)}</td><td>${r.score}/${r.total}</td><td>${r.percent}%</td><td>${esc(r.level)}</td></tr>`).join('')}</tbody></table>`}
