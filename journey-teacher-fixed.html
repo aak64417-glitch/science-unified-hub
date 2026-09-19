@@ -317,6 +317,9 @@ const LESSONS={
  'science-processes':'العلم وعملياته',
  'scientific-models':'النماذج العلمية',
  'evaluate-explanations':'تقويم التفسيرات العلمية',
+ 'motion':'الحركة',
+ 'newton-laws':'قوانين نيوتن للحركة',
+ 'work-machines':'الشغل والآلات البسيطة',
  'all':'جميع الدروس'
 };
 const $=id=>document.getElementById(id);
@@ -641,13 +644,18 @@ function selectedLessonIds(task){
  if(Array.isArray(raw)) return raw.map(String).map(x=>x.trim()).filter(Boolean);
  if(raw){
    try{
-     const parsed=JSON.parse(raw);
+     const parsed=JSON.parse(String(raw));
      if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean);
    }catch(_){}
    return String(raw).split(',').map(x=>x.trim()).filter(Boolean);
  }
  const legacy=String(task?.lesson||'').trim();
- return legacy&&legacy!=='all'?[legacy]:[];
+ if(!legacy||legacy==='all') return [];
+ try{
+   const parsed=JSON.parse(legacy);
+   if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean);
+ }catch(_){}
+ return legacy.split(',').map(x=>x.trim()).filter(Boolean);
 }
 function taskLessonsLabel(task){
  const ids=selectedLessonIds(task);

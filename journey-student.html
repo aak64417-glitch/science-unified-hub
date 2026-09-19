@@ -1,1929 +1,1568 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07111f">
-<title>رحلة عالم العلوم</title>
-
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f"><title>رحلة عالم العلوم</title>
 <style>
 :root{
- --bg:#07111f;--bg2:#0a1728;--card:#102039;--card2:#132944;
- --text:#f7fbff;--muted:#9fb2c8;--teal:#42ded4;
- --indigo:#8190ff;--gold:#ffd166;--green:#5be38b;
- --red:#ff7c8e;--line:rgba(255,255,255,.10);
+ --bg:#07111f;--bg2:#0a1728;--card:#102039;--card2:#132944;--text:#f7fbff;--muted:#9fb2c8;
+ --teal:#42ded4;--indigo:#8190ff;--gold:#ffd166;--green:#5be38b;--red:#ff7c8e;--line:rgba(255,255,255,.10);
  --shadow:0 24px 70px rgba(0,0,0,.28);--r:24px;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
- margin:0;
- font-family:Tahoma,"Noto Sans Arabic",Arial,sans-serif;
- color:var(--text);
- min-height:100vh;
- background:
- radial-gradient(circle at 8% 0%,rgba(129,144,255,.20),transparent 34%),
- radial-gradient(circle at 95% 8%,rgba(66,222,212,.14),transparent 28%),
- linear-gradient(180deg,#06101d,#0a1728 45%,#07111f)
-}
-button,input,select{font:inherit}
-button{cursor:pointer}
-a{text-decoration:none;color:inherit}
-.hidden{display:none!important}
-.wrap{max-width:1200px;margin:auto;padding:18px}
-.glass{
- background:linear-gradient(180deg,rgba(18,40,65,.94),rgba(10,25,43,.96));
- border:1px solid var(--line);
- box-shadow:var(--shadow);
- border-radius:var(--r)
-}
-.topbar{
- display:flex;justify-content:space-between;align-items:center;
- gap:14px;padding:14px 16px;position:sticky;top:10px;
- z-index:30;backdrop-filter:blur(15px)
-}
-.brand{display:flex;gap:12px;align-items:center;min-width:0}
-.logo{
- width:54px;height:54px;border-radius:18px;
- background:linear-gradient(135deg,var(--teal),var(--indigo));
- display:grid;place-items:center;font-size:27px;
- box-shadow:0 12px 35px rgba(66,222,212,.23)
-}
-.brand h1{font-size:1.05rem;margin:0}
-.brand p{font-size:.82rem;color:var(--muted);margin:4px 0 0}
-.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.btn{
- border:0;padding:11px 16px;border-radius:14px;font-weight:900;
- background:var(--teal);color:#07111f;
- transition:.18s transform,.18s box-shadow,.18s opacity;
- box-shadow:0 12px 28px rgba(66,222,212,.18)
-}
-.btn:hover{transform:translateY(-1px)}
-.btn.secondary{
- background:#203652;color:var(--text);box-shadow:none;
- border:1px solid var(--line)
-}
-.btn.gold{background:var(--gold)}
-.btn.indigo{background:var(--indigo);color:white}
-.btn.danger{background:var(--red);color:white}
-.btn:disabled{opacity:.45;transform:none;cursor:not-allowed}
-.pill{
- display:inline-flex;align-items:center;gap:6px;padding:7px 10px;
- border:1px solid var(--line);border-radius:999px;
- background:rgba(255,255,255,.04);font-size:.8rem;color:#d8e5f2
-}
-.pill.good{border-color:rgba(91,227,139,.35);color:#c8ffd9}
-.pill.off{border-color:rgba(255,124,142,.35);color:#ffd2d9}
-.hero{
- display:grid;grid-template-columns:1.18fr .82fr;
- gap:18px;padding:34px 0 20px
-}
-.hero-main{padding:34px;position:relative;overflow:hidden}
-.hero-main:after{
- content:"";position:absolute;width:260px;height:260px;
- border-radius:50%;left:-70px;bottom:-110px;
- background:radial-gradient(circle,rgba(66,222,212,.18),transparent 70%)
-}
-.eyebrow{
- display:inline-flex;padding:8px 12px;border-radius:999px;
- background:rgba(66,222,212,.10);color:#aefef8;
- border:1px solid rgba(66,222,212,.22);font-weight:900;font-size:.82rem
-}
-.hero h2{font-size:clamp(2.2rem,5vw,4.3rem);line-height:1.08;margin:16px 0}
-.hero h2 span{
- background:linear-gradient(90deg,#b7fff9,#aab5ff,#ffe299);
- -webkit-background-clip:text;background-clip:text;color:transparent
-}
-.hero p{margin:0;color:#d5e1ed;line-height:1.95;font-size:1.02rem}
-.hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
-.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
-.hero-side{padding:20px;display:grid;gap:12px}
-.route-card{
- padding:17px;border-radius:18px;border:1px solid var(--line);
- background:rgba(255,255,255,.04)
-}
-.route-card strong{font-size:1.45rem;display:block}
-.route-card span{color:#dfe9f5;font-size:.92rem}
-.route-card small{color:var(--muted);display:block;line-height:1.65;margin-top:5px}
-.route-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.route-mini{
- padding:14px;border-radius:16px;background:#0c1d32;
- border:1px solid var(--line)
-}
-.route-mini b{display:block;font-size:1.2rem}
-.route-mini span{font-size:.78rem;color:var(--muted)}
-.section-head{
- display:flex;align-items:end;justify-content:space-between;
- gap:10px;margin:24px 2px 13px
-}
-.section-head h3{margin:0;font-size:1.45rem}
-.section-head p{margin:5px 0 0;color:var(--muted)}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
-.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
-.lesson-card{
- padding:22px;position:relative;overflow:hidden;
- transition:.2s transform,.2s border-color
-}
-.lesson-card:hover{transform:translateY(-3px);border-color:rgba(66,222,212,.28)}
-.lesson-card .icon{font-size:35px}
-.lesson-card h4{font-size:1.22rem;margin:10px 0}
-.lesson-card p{color:var(--muted);line-height:1.75;min-height:84px}
-.lesson-card .status{
- font-size:.78rem;padding:6px 9px;border-radius:999px;
- background:rgba(255,255,255,.06);border:1px solid var(--line);
- position:absolute;left:17px;top:17px
-}
-.lesson-card.teal{background:linear-gradient(180deg,rgba(21,66,68,.65),rgba(10,25,43,.96))}
-.lesson-card.indigo{background:linear-gradient(180deg,rgba(42,45,92,.62),rgba(10,25,43,.96))}
-.lesson-card.gold{background:linear-gradient(180deg,rgba(85,63,22,.45),rgba(10,25,43,.96))}
-.lesson-card .btn{width:100%;margin-top:10px}
-.feature{padding:20px;display:flex;gap:14px;align-items:flex-start}
-.feature .ficon{
- width:52px;height:52px;border-radius:17px;display:grid;
- place-items:center;
- background:linear-gradient(135deg,rgba(66,222,212,.16),rgba(129,144,255,.16));
- border:1px solid var(--line);font-size:25px;flex:0 0 auto
-}
-.feature h4{margin:0 0 7px}
-.feature p{margin:0;color:var(--muted);line-height:1.75}
-.footer{text-align:center;padding:32px 10px;color:#7990a8;font-size:.83rem}
-.screen{padding-top:24px}
-.panel{padding:23px}
-.backline{
- display:flex;justify-content:space-between;align-items:center;
- gap:10px;margin-bottom:16px
-}
-.lesson-hero{display:grid;grid-template-columns:1fr .65fr;gap:14px}
-.lesson-summary h2{margin:6px 0 10px;font-size:2rem}
-.lesson-summary p{color:#d6e2ee;line-height:1.85}
-.objective-box h4,.concept-box h4{margin:0 0 10px}
-.objective-list,.concept-list{
- margin:0;padding:0 18px 0 0;color:#dce7f2;line-height:2
-}
-.concept-list{display:grid;gap:9px;list-style:none;padding:0}
-.concept-list li{
- padding:12px 13px;border-radius:14px;
- background:#0c1b2f;border:1px solid var(--line)
-}
-.concept-list b{display:block;margin-bottom:4px}
-.concept-list span{color:var(--muted);line-height:1.65;font-size:.9rem}
-.choice-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-.mode-card{
- padding:17px;border-radius:17px;background:#0d2037;
- border:1px solid var(--line)
-}
-.mode-card strong{display:block;margin-bottom:7px}
-.mode-card p{font-size:.86rem;color:var(--muted);line-height:1.65;min-height:58px}
-.mode-card .btn{width:100%}
-.field label{
- display:block;color:var(--muted);font-size:.84rem;
- font-weight:800;margin-bottom:7px
-}
-.field input,.field select{
- width:100%;padding:13px 14px;border-radius:14px;
- background:#09182a;border:1px solid var(--line);
- color:white;outline:none
-}
-.field input:focus,.field select:focus{
- border-color:var(--teal);
- box-shadow:0 0 0 4px rgba(66,222,212,.08)
-}
-.note{
- padding:12px 14px;border-radius:14px;
- background:rgba(255,209,102,.10);
- border:1px solid rgba(255,209,102,.28);
- color:#ffe8ab;line-height:1.65
-}
-.note.good{
- background:rgba(91,227,139,.09);
- border-color:rgba(91,227,139,.28);color:#caffda
-}
-.quiz-top{display:flex;align-items:center;gap:14px}
-.progress-wrap{flex:1}
-.progress{
- height:11px;border-radius:999px;background:#071321;
- border:1px solid var(--line);overflow:hidden
-}
-.progress i{
- height:100%;display:block;width:0;
- background:linear-gradient(90deg,var(--teal),var(--indigo));
- transition:.25s width
-}
-.meta{
- display:flex;gap:7px;flex-wrap:wrap;color:var(--muted);
- font-size:.86rem;margin-top:7px
-}
-.timer{
- min-width:92px;text-align:center;padding:10px;
- border-radius:15px;border:1px solid var(--line);background:#09182a
-}
-.timer strong{font-size:1.4rem;display:block}
-.timer.warn{color:#ffe198;border-color:rgba(255,209,102,.45)}
-.timer.danger{
- color:#ffb7c1;border-color:rgba(255,124,142,.5);
- animation:pulse 1s infinite
-}
-@keyframes pulse{50%{transform:scale(1.05)}}
-.live{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0}
-.live div{
- padding:12px;text-align:center;border-radius:14px;
- background:#0c1d32;border:1px solid var(--line)
-}
-.live span{display:block;color:var(--muted);font-size:.78rem}
-.live b{font-size:1.12rem}
-.question{
- padding:20px;border-radius:18px;
- background:rgba(255,255,255,.035);border:1px solid var(--line)
-}
-.q-tags{
- display:flex;justify-content:space-between;gap:8px;
- flex-wrap:wrap;margin-bottom:10px
-}
-.q-tag{
- padding:6px 9px;border-radius:999px;
- background:rgba(129,144,255,.10);color:#d0d7ff;
- border:1px solid var(--line);font-size:.78rem;font-weight:900
-}
-.question h3{line-height:1.85;font-size:1.22rem;margin:0 0 14px}
-.answers{display:grid;gap:10px}
-.answer{
- width:100%;text-align:right;padding:14px;border-radius:15px;
- border:1px solid var(--line);background:#10243e;
- color:white;font-weight:800;transition:.18s
-}
-.answer:hover{transform:translateY(-1px);border-color:#587ba3}
-.answer.selected{background:rgba(66,222,212,.10);border-color:var(--teal)}
-.answer.correct{background:rgba(91,227,139,.12);border-color:var(--green)}
-.answer.wrong{background:rgba(255,124,142,.12);border-color:var(--red)}
-.order{display:grid;gap:9px}
-.order-row{
- display:flex;gap:8px;align-items:center;padding:11px;
- border-radius:14px;background:#10243e;border:1px solid var(--line)
-}
-.order-row span{
- width:28px;height:28px;border-radius:9px;
- display:grid;place-items:center;background:#203b5e
-}
-.order-row b{flex:1}
-.order-row button{
- border:0;border-radius:8px;background:#284566;
- color:white;padding:6px 9px
-}
-.feedback{padding:13px 14px;border-radius:14px;margin-top:13px;line-height:1.7}
-.feedback.ok{background:rgba(91,227,139,.10);border:1px solid rgba(91,227,139,.3)}
-.feedback.no{background:rgba(255,124,142,.10);border:1px solid rgba(255,124,142,.3)}
-.quiz-actions{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
-.result{text-align:center}
-.ring{
- width:150px;height:150px;margin:0 auto 14px;border-radius:50%;
- display:grid;place-items:center;
- background:conic-gradient(var(--teal) var(--pct,0%),#18314e 0);
- position:relative
-}
-.ring:after{
- content:"";position:absolute;inset:12px;
- background:#0b1c30;border-radius:50%
-}
-.ring strong{position:relative;z-index:2;font-size:2rem}
-.level{
- display:inline-block;padding:8px 12px;border-radius:999px;
- background:#18304d;font-weight:900
-}
-.breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
-.break{
- padding:14px;border-radius:15px;background:#0c1d32;
- border:1px solid var(--line)
-}
-.break span{display:block;color:var(--muted);font-size:.82rem}
-.break strong{display:block;margin-top:5px}
-.recommend{
- display:grid;grid-template-columns:repeat(2,1fr);
- gap:10px;margin-top:14px;text-align:right
-}
-.rec{
- padding:15px;border-radius:15px;
- background:rgba(255,255,255,.035);border:1px solid var(--line)
-}
-.rec h4{margin:0 0 7px}
-.rec p{margin:0;color:var(--muted);line-height:1.75}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,"Noto Sans Arabic",Arial,sans-serif;color:var(--text);min-height:100vh;background:radial-gradient(circle at 8% 0%,rgba(129,144,255,.20),transparent 34%),radial-gradient(circle at 95% 8%,rgba(66,222,212,.14),transparent 28%),linear-gradient(180deg,#06101d,#0a1728 45%,#07111f)}
+button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.hidden{display:none!important}.wrap{max-width:1200px;margin:auto;padding:18px}.glass{background:linear-gradient(180deg,rgba(18,40,65,.94),rgba(10,25,43,.96));border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--r)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 16px;position:sticky;top:10px;z-index:30;backdrop-filter:blur(15px)}.brand{display:flex;gap:12px;align-items:center;min-width:0}.logo{width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,var(--teal),var(--indigo));display:grid;place-items:center;font-size:27px;box-shadow:0 12px 35px rgba(66,222,212,.23)}.brand h1{font-size:1.05rem;margin:0}.brand p{font-size:.82rem;color:var(--muted);margin:4px 0 0}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:0;padding:11px 16px;border-radius:14px;font-weight:900;background:var(--teal);color:#07111f;transition:.18s transform,.18s box-shadow,.18s opacity;box-shadow:0 12px 28px rgba(66,222,212,.18)}.btn:hover{transform:translateY(-1px)}.btn.secondary{background:#203652;color:var(--text);box-shadow:none;border:1px solid var(--line)}.btn.gold{background:var(--gold)}.btn.indigo{background:var(--indigo);color:white}.btn.danger{background:var(--red);color:white}.btn:disabled{opacity:.45;transform:none;cursor:not-allowed}.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);font-size:.8rem;color:#d8e5f2}.pill.good{border-color:rgba(91,227,139,.35);color:#c8ffd9}.pill.off{border-color:rgba(255,124,142,.35);color:#ffd2d9}
+.hero{display:grid;grid-template-columns:1.18fr .82fr;gap:18px;padding:34px 0 20px}.hero-main{padding:34px;position:relative;overflow:hidden}.hero-main:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;left:-70px;bottom:-110px;background:radial-gradient(circle,rgba(66,222,212,.18),transparent 70%)}.eyebrow{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(66,222,212,.10);color:#aefef8;border:1px solid rgba(66,222,212,.22);font-weight:900;font-size:.82rem}.hero h2{font-size:clamp(2.2rem,5vw,4.3rem);line-height:1.08;margin:16px 0}.hero h2 span{background:linear-gradient(90deg,#b7fff9,#aab5ff,#ffe299);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{margin:0;color:#d5e1ed;line-height:1.95;font-size:1.02rem}.hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.hero-side{padding:20px;display:grid;gap:12px}.route-card{padding:17px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.04)}.route-card strong{font-size:1.45rem;display:block}.route-card span{color:#dfe9f5;font-size:.92rem}.route-card small{color:var(--muted);display:block;line-height:1.65;margin-top:5px}.route-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.route-mini{padding:14px;border-radius:16px;background:#0c1d32;border:1px solid var(--line)}.route-mini b{display:block;font-size:1.2rem}.route-mini span{font-size:.78rem;color:var(--muted)}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:24px 2px 13px}.section-head h3{margin:0;font-size:1.45rem}.section-head p{margin:5px 0 0;color:var(--muted)}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.lesson-card{padding:22px;position:relative;overflow:hidden;transition:.2s transform,.2s border-color}.lesson-card:hover{transform:translateY(-3px);border-color:rgba(66,222,212,.28)}.lesson-card .icon{font-size:35px}.lesson-card h4{font-size:1.22rem;margin:10px 0}.lesson-card p{color:var(--muted);line-height:1.75;min-height:84px}.lesson-card .status{font-size:.78rem;padding:6px 9px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);position:absolute;left:17px;top:17px}.lesson-card.teal{background:linear-gradient(180deg,rgba(21,66,68,.65),rgba(10,25,43,.96))}.lesson-card.indigo{background:linear-gradient(180deg,rgba(42,45,92,.62),rgba(10,25,43,.96))}.lesson-card.gold{background:linear-gradient(180deg,rgba(85,63,22,.45),rgba(10,25,43,.96))}.lesson-card .btn{width:100%;margin-top:10px}
+.feature{padding:20px;display:flex;gap:14px;align-items:flex-start}.feature .ficon{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(66,222,212,.16),rgba(129,144,255,.16));border:1px solid var(--line);font-size:25px;flex:0 0 auto}.feature h4{margin:0 0 7px}.feature p{margin:0;color:var(--muted);line-height:1.75}.footer{text-align:center;padding:32px 10px;color:#7990a8;font-size:.83rem}
+.screen{padding-top:24px}.panel{padding:23px}.backline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}.lesson-hero{display:grid;grid-template-columns:1fr .65fr;gap:14px}.lesson-summary h2{margin:6px 0 10px;font-size:2rem}.lesson-summary p{color:#d6e2ee;line-height:1.85}.objective-box h4,.concept-box h4{margin:0 0 10px}.objective-list,.concept-list{margin:0;padding:0 18px 0 0;color:#dce7f2;line-height:2}.concept-list{display:grid;gap:9px;list-style:none;padding:0}.concept-list li{padding:12px 13px;border-radius:14px;background:#0c1b2f;border:1px solid var(--line)}.concept-list b{display:block;margin-bottom:4px}.concept-list span{color:var(--muted);line-height:1.65;font-size:.9rem}.choice-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.mode-card{padding:17px;border-radius:17px;background:#0d2037;border:1px solid var(--line)}.mode-card strong{display:block;margin-bottom:7px}.mode-card p{font-size:.86rem;color:var(--muted);line-height:1.65;min-height:58px}.mode-card .btn{width:100%}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.field label{display:block;color:var(--muted);font-size:.84rem;font-weight:800;margin-bottom:7px}.field input,.field select{width:100%;padding:13px 14px;border-radius:14px;background:#09182a;border:1px solid var(--line);color:white;outline:none}.field input:focus,.field select:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(66,222,212,.08)}.note{padding:12px 14px;border-radius:14px;background:rgba(255,209,102,.10);border:1px solid rgba(255,209,102,.28);color:#ffe8ab;line-height:1.65}.note.good{background:rgba(91,227,139,.09);border-color:rgba(91,227,139,.28);color:#caffda}
+.quiz-top{display:flex;align-items:center;gap:14px}.progress-wrap{flex:1}.progress{height:11px;border-radius:999px;background:#071321;border:1px solid var(--line);overflow:hidden}.progress i{height:100%;display:block;width:0;background:linear-gradient(90deg,var(--teal),var(--indigo));transition:.25s width}.meta{display:flex;gap:7px;flex-wrap:wrap;color:var(--muted);font-size:.86rem;margin-top:7px}.timer{min-width:92px;text-align:center;padding:10px;border-radius:15px;border:1px solid var(--line);background:#09182a}.timer strong{font-size:1.4rem;display:block}.timer.warn{color:#ffe198;border-color:rgba(255,209,102,.45)}.timer.danger{color:#ffb7c1;border-color:rgba(255,124,142,.5);animation:pulse 1s infinite}@keyframes pulse{50%{transform:scale(1.05)}}.live{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0}.live div{padding:12px;text-align:center;border-radius:14px;background:#0c1d32;border:1px solid var(--line)}.live span{display:block;color:var(--muted);font-size:.78rem}.live b{font-size:1.12rem}.question{padding:20px;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid var(--line)}.q-tags{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}.q-tag{padding:6px 9px;border-radius:999px;background:rgba(129,144,255,.10);color:#d0d7ff;border:1px solid var(--line);font-size:.78rem;font-weight:900}.question h3{line-height:1.85;font-size:1.22rem;margin:0 0 14px}.answers{display:grid;gap:10px}.answer{width:100%;text-align:right;padding:14px;border-radius:15px;border:1px solid var(--line);background:#10243e;color:white;font-weight:800;transition:.18s}.answer:hover{transform:translateY(-1px);border-color:#587ba3}.answer.selected{background:rgba(66,222,212,.10);border-color:var(--teal)}.answer.correct{background:rgba(91,227,139,.12);border-color:var(--green)}.answer.wrong{background:rgba(255,124,142,.12);border-color:var(--red)}.order{display:grid;gap:9px}.order-row{display:flex;gap:8px;align-items:center;padding:11px;border-radius:14px;background:#10243e;border:1px solid var(--line)}.order-row span{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:#203b5e}.order-row b{flex:1}.order-row button{border:0;border-radius:8px;background:#284566;color:white;padding:6px 9px}.feedback{padding:13px 14px;border-radius:14px;margin-top:13px;line-height:1.7}.feedback.ok{background:rgba(91,227,139,.10);border:1px solid rgba(91,227,139,.3)}.feedback.no{background:rgba(255,124,142,.10);border:1px solid rgba(255,124,142,.3)}.quiz-actions{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.result{text-align:center}.ring{width:150px;height:150px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--teal) var(--pct,0%),#18314e 0);position:relative}.ring:after{content:"";position:absolute;inset:12px;background:#0b1c30;border-radius:50%}.ring strong{position:relative;z-index:2;font-size:2rem}.level{display:inline-block;padding:8px 12px;border-radius:999px;background:#18304d;font-weight:900}.breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.break{padding:14px;border-radius:15px;background:#0c1d32;border:1px solid var(--line)}.break span{display:block;color:var(--muted);font-size:.82rem}.break strong{display:block;margin-top:5px}.recommend{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;text-align:right}.rec{padding:15px;border-radius:15px;background:rgba(255,255,255,.035);border:1px solid var(--line)}.rec h4{margin:0 0 7px}.rec p{margin:0;color:var(--muted);line-height:1.75}
+.teacher-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:16px;border-radius:16px;background:#0c1d32;border:1px solid var(--line)}.stat strong{display:block;font-size:1.55rem}.stat span{color:var(--muted);font-size:.83rem}.tabs{display:flex;gap:7px;margin:16px 0;flex-wrap:wrap}.tab{border:1px solid var(--line);background:#10243e;color:white;padding:9px 13px;border-radius:12px;font-weight:800}.tab.active{background:var(--teal);color:#07111f}.toolbar{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;margin-top:14px}table{width:100%;border-collapse:collapse;min-width:950px}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:right;font-size:.88rem;vertical-align:top}th{background:#132944;position:sticky;top:0}tbody tr:hover td{background:rgba(255,255,255,.025)}.smallbtn{padding:7px 9px;border-radius:9px;border:0;font-weight:800;cursor:pointer}.copy{background:var(--teal);color:#07111f}.toggle{background:#294363;color:white}.remove{background:var(--red);color:white}.task-status{padding:5px 8px;border-radius:999px;font-size:.75rem;display:inline-block}.task-status.on{background:rgba(91,227,139,.12);color:#c6ffd8}.task-status.off{background:rgba(255,124,142,.12);color:#ffd3da}.modal{position:fixed;inset:0;background:rgba(2,8,16,.78);display:grid;place-items:center;padding:16px;z-index:80}.modal-card{width:min(760px,100%);max-height:90vh;overflow:auto;padding:22px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+@media(max-width:900px){.hero,.lesson-hero{grid-template-columns:1fr}.grid3,.grid2,.choice-row,.form-grid,.teacher-cards,.breakdown,.recommend,.live{grid-template-columns:1fr}.topbar{position:static}.brand p{display:none}.toolbar{grid-template-columns:1fr}.lesson-card p{min-height:0}.hero-main{padding:24px}}
+@media(max-width:520px){.wrap{padding:10px}.topbar{padding:11px}.logo{width:44px;height:44px}.brand h1{font-size:.9rem}.hero{padding-top:18px}.hero-main,.panel{padding:17px}.hero h2{font-size:2.2rem}.hero-actions,.quiz-actions{flex-direction:column}.hero-actions .btn,.quiz-actions .btn{width:100%}.route-grid{grid-template-columns:1fr 1fr}.timer{min-width:78px}.quiz-top{align-items:flex-start;flex-direction:column}.timer{align-self:stretch}}
+
+
 .identity-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-
-@media(max-width:900px){
- .hero,.lesson-hero{grid-template-columns:1fr}
- .grid3,.grid2,.choice-row,.breakdown,.recommend,.live{grid-template-columns:1fr}
- .identity-grid{grid-template-columns:1fr}
- .topbar{position:static}
- .brand p{display:none}
- .lesson-card p{min-height:0}
- .hero-main{padding:24px}
-}
-
-@media(max-width:520px){
- .wrap{padding:10px}
- .topbar{padding:11px}
- .logo{width:44px;height:44px}
- .brand h1{font-size:.9rem}
- .hero{padding-top:18px}
- .hero-main,.panel{padding:17px}
- .hero h2{font-size:2.2rem}
- .hero-actions,.quiz-actions{flex-direction:column}
- .hero-actions .btn,.quiz-actions .btn{width:100%}
- .route-grid{grid-template-columns:1fr 1fr}
- .timer{min-width:78px}
- .quiz-top{align-items:flex-start;flex-direction:column}
- .timer{align-self:stretch}
-}
-
-/* منصة الطلاب فقط */
-a[href="index.html"],
-a[href*="journey-teacher"],
-a[href*="teacher.html"]{
- display:none!important
-}
+@media(max-width:900px){.identity-grid{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
 <div class="wrap">
-
 <header class="topbar glass">
-  <div class="brand">
-    <div class="logo">🧪</div>
-    <div>
-      <h1 id="schoolName">مدرسة أبي الدرداء المتوسطة</h1>
-      <p id="subTitle">العلوم – الصف الأول المتوسط | المعلم: علي البقاشي</p>
-    </div>
-  </div>
-  <div class="actions">
-    <span id="linkState" class="pill off">غير مرتبط بالمعلم</span>
-  </div>
+  <div class="brand"><div class="logo">🧪</div><div><h1 id="schoolName">مدرسة أبي الدرداء المتوسطة</h1><p id="subTitle">العلوم – الصف الأول المتوسط | المعلم: علي البقاشي</p></div></div>
+  <div class="actions"><span id="linkState" class="pill off">غير مرتبط بالمعلم</span><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="journey-teacher.html">لوحة المعلم</a></div>
 </header>
 
 <main id="homeScreen">
-
 <section class="hero">
   <div class="hero-main glass">
     <span class="eyebrow">🚀 رحلة عالم العلوم</span>
     <h2>تعلّم <span>وتدرّب وأتقن</span></h2>
-    <p>
-      منصة منزلية تفاعلية مبنية على دروس منهج العلوم للصف الأول المتوسط.
-      تدرب على المفاهيم، اكتشف نقاط قوتك، انتقل للمسار العلاجي عند الحاجة،
-      ثم اختبر نفسك في اختبار شامل.
-    </p>
-
-    <div class="hero-chips">
-      <span class="pill">3 دروس جاهزة</span>
-      <span class="pill">تدريب قابل للإعادة</span>
-      <span class="pill">اختبار شامل</span>
-      <span class="pill">خطة علاجية</span>
-    </div>
-
-    <div class="hero-actions">
-      <button class="btn" onclick="scrollToLessons()">ابدأ رحلة التعلم</button>
-      <button class="btn gold" onclick="openIdentity('exam','all')">الاختبار الشامل</button>
-    </div>
+    <p>منصة منزلية تفاعلية مبنية على دروس منهج العلوم للصف الأول المتوسط. تدرب على المفاهيم، اكتشف نقاط قوتك، انتقل للمسار العلاجي عند الحاجة، ثم اختبر نفسك في اختبار شامل من 20 سؤالًا.</p>
+    <div class="hero-chips"><span class="pill">6 دروس جاهزة</span><span class="pill">72 سؤالًا في بنك الأسئلة</span><span class="pill">تدريب قابل للإعادة</span><span class="pill">اختبار 20 سؤالًا متوازنًا</span><span class="pill">خطة علاجية ذكية</span></div>
+    <div class="hero-actions"><button class="btn" onclick="scrollToLessons()">ابدأ رحلة التعلم</button><button class="btn gold" onclick="openIdentity('exam','all')">الاختبار الشامل</button></div>
   </div>
-
   <aside class="hero-side glass">
-    <div class="route-card">
-      <strong>مسار الطالب</strong>
-      <span>تعلّم ← تدرّب ← أتقن ← اختبر ← عالج ← أثرِ معرفتك</span>
-      <small>ترسل نتيجة النشاط إلى منصة المعلم عند توفر الاتصال.</small>
-    </div>
-
-    <div class="route-grid">
-      <div class="route-mini"><b>🔁</b><span>تدريب متكرر</span></div>
-      <div class="route-mini"><b>20</b><span>سؤالًا في الاختبار</span></div>
-      <div class="route-mini"><b>🩺</b><span>مسار علاجي</span></div>
-      <div class="route-mini"><b>🏅</b><span>مسار إثرائي</span></div>
-    </div>
+    <div class="route-card"><strong>مسار الطالب</strong><span>تعلّم ← تدرّب ← أتقن ← اختبر ← عالج ← أثرِ معرفتك</span><small>تتحول نتائج كل مرحلة إلى تقرير يمكن للمعلم متابعته عند ربط المنصة.</small></div>
+    <div class="route-grid"><div class="route-mini"><b>🔁</b><span>التدريب قابل للإعادة</span></div><div class="route-mini"><b>20</b><span>سؤالًا في الاختبار</span></div><div class="route-mini"><b>🩺</b><span>علاج حسب الضعف</span></div><div class="route-mini"><b>🏅</b><span>إثراء للمتقنين</span></div></div>
   </aside>
 </section>
 
 <section id="lessonsSection">
-  <div class="section-head">
-    <div>
-      <h3>الدروس الحالية</h3>
-      <p>اختر الدرس ثم ابدأ التدريب.</p>
-    </div>
-  </div>
+  <div class="section-head"><div><h3>الدروس الحالية</h3><p>أضيفت الدروس الثلاثة من الملف المرفق، ويمكن إضافة بقية الكتاب لاحقًا دون تغيير بنية المنصة.</p></div></div>
   <div id="lessonCards" class="grid3"></div>
 </section>
 
+<div class="section-head"><div><h3>ماذا تقدم المنصة؟</h3><p>صُممت للاستخدام المنزلي عبر رابط يرسله المعلم للطلاب.</p></div></div>
+<section class="grid3">
+  <article class="feature glass"><div class="ficon">🔗</div><div><h4>تكليف منزلي برابط</h4><p>يفتح الطالب النشاط المطلوب مباشرة من الرابط المرسل عبر واتساب أو مدرستي دون البحث داخل المنصة.</p></div></article>
+  <article class="feature glass"><div class="ficon">📊</div><div><h4>تحليل المهارات</h4><p>النتيجة لا تقتصر على الدرجة، بل توضح الدرس والمفهوم الذي أتقنه الطالب والجوانب التي تحتاج إلى تعزيز.</p></div></article>
+  <article class="feature glass"><div class="ficon">📁</div><div><h4>تقارير ملف الإنجاز</h4><p>هيكل المنصة مهيأ لإنتاج تقارير التدريب والاختبار والخطة العلاجية والأثر التعليمي لاحقًا.</p></div></article>
+</section>
 </main>
 
 <section id="lessonScreen" class="screen hidden">
-  <div class="backline">
-    <button class="btn secondary" onclick="goHome()">← الرئيسية</button>
-    <span id="lessonStatus" class="pill">درس</span>
-  </div>
-
+  <div class="backline"><button class="btn secondary" onclick="goHome()">← الرئيسية</button><span id="lessonStatus" class="pill">درس</span></div>
   <div class="lesson-hero">
-    <article class="panel glass lesson-summary">
-      <div id="lessonIcon" style="font-size:42px"></div>
-      <h2 id="lessonTitle"></h2>
-      <p id="lessonSummary"></p>
-
-      <div class="choice-row">
-        <div class="mode-card">
-          <strong>🎯 تدريب الدرس</strong>
-          <p>أسئلة عشوائية مع تغذية راجعة.</p>
-          <button class="btn" id="lessonTrainBtn">ابدأ التدريب</button>
-        </div>
-
-        <div class="mode-card">
-          <strong>🩺 المسار العلاجي</strong>
-          <p>تدريب على المفاهيم التي تحتاج إلى تعزيز.</p>
-          <button class="btn secondary" id="lessonRemedialBtn">ابدأ العلاج</button>
-        </div>
-
-        <div class="mode-card">
-          <strong>🏅 المسار الإثرائي</strong>
-          <p>أسئلة إضافية للطلاب المتقنين.</p>
-          <button class="btn gold" id="lessonEnrichBtn">ابدأ الإثراء</button>
-        </div>
-      </div>
-    </article>
-
-    <aside class="panel glass objective-box">
-      <h4>أهداف الدرس</h4>
-      <ul id="lessonObjectives" class="objective-list"></ul>
-    </aside>
+    <article class="panel glass lesson-summary"><div id="lessonIcon" style="font-size:42px"></div><h2 id="lessonTitle"></h2><p id="lessonSummary"></p><div class="choice-row">
+      <div class="mode-card"><strong>🎯 تدريب الدرس</strong><p>10 أسئلة عشوائية من بنك موسع مع شرح فوري وتحليل للمفاهيم.</p><button class="btn" id="lessonTrainBtn">ابدأ التدريب</button></div>
+      <div class="mode-card"><strong>🩺 المسار العلاجي</strong><p>تدريب مركز على المفاهيم التي تحتاج إلى تعزيز.</p><button class="btn secondary" id="lessonRemedialBtn">ابدأ العلاج</button></div>
+      <div class="mode-card"><strong>🏅 المسار الإثرائي</strong><p>أسئلة تطبيقية للطالب الذي وصل إلى مستوى الإتقان.</p><button class="btn gold" id="lessonEnrichBtn">ابدأ الإثراء</button></div>
+    </div></article>
+    <aside class="panel glass objective-box"><h4>أهداف الدرس</h4><ul id="lessonObjectives" class="objective-list"></ul></aside>
   </div>
-
-  <div class="section-head">
-    <div>
-      <h3>مفاهيم الدرس</h3>
-      <p>مراجعة مختصرة.</p>
-    </div>
-  </div>
-
-  <div class="panel glass concept-box">
-    <ul id="lessonConcepts" class="concept-list"></ul>
-  </div>
+  <div class="section-head"><div><h3>مفاهيم الدرس</h3><p>بطاقات مراجعة قصيرة قبل التدريب.</p></div></div>
+  <div class="panel glass concept-box"><ul id="lessonConcepts" class="concept-list"></ul></div>
 </section>
 
 <section id="identityScreen" class="screen hidden">
   <div class="panel glass">
-
-    <div class="backline">
-      <div>
-        <h2 id="identityTitle" style="margin:0">بيانات الطالب</h2>
-        <p style="color:var(--muted);margin:5px 0 0">
-          اختر الفصل ثم اسمك.
-        </p>
-      </div>
-      <button class="btn secondary" onclick="goHome()">إلغاء</button>
-    </div>
-
+    <div class="backline"><div><h2 id="identityTitle" style="margin:0">بيانات الطالب</h2><p style="color:var(--muted);margin:5px 0 0">أدخل البيانات ثم ابدأ النشاط.</p></div><button class="btn secondary" onclick="goHome()">إلغاء</button></div>
     <div class="identity-grid">
-      <div class="field">
-        <label>الفصل</label>
-        <select id="studentClass">
-          <option value="">اختر الفصل</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>اسم الطالب</label>
-        <select id="studentName" disabled>
-          <option value="">اختر الفصل أولًا</option>
-        </select>
-      </div>
+      <div class="field"><label>الفصل</label><select id="studentClass"><option value="">اختر الفصل</option></select></div>
+      <div class="field"><label>اسم الطالب</label><select id="studentName" disabled><option value="">اختر الفصل أولًا</option></select></div>
     </div>
-
-    <div id="studentsStatus" class="note" style="margin-top:13px">
-      اختر الفصل لتظهر أسماء الطلاب.
-    </div>
-
+    <div id="studentsStatus" class="note" style="margin-top:13px">اختر الفصل لتظهر أسماء الطلاب.</div>
     <div id="taskNotice" class="note" style="margin-top:13px"></div>
-
-    <div style="display:flex;justify-content:flex-end;margin-top:15px">
-      <button id="startActivity" class="btn">ابدأ الآن</button>
-    </div>
-
+    <div style="display:flex;justify-content:flex-end;margin-top:15px"><button id="startActivity" class="btn">ابدأ الآن</button></div>
   </div>
 </section>
 
 <section id="quizScreen" class="screen hidden">
   <div class="panel glass">
-
-    <div class="quiz-top">
-      <div class="progress-wrap">
-        <div class="progress"><i id="progressBar"></i></div>
-        <div class="meta">
-          <span id="quizMode"></span>
-          <span>•</span>
-          <span id="quizCount"></span>
-          <span>•</span>
-          <span id="quizLesson"></span>
-        </div>
-      </div>
-
-      <div id="timerBox" class="timer hidden">
-        <span>الوقت</span>
-        <strong id="timerText">30</strong>
-      </div>
-    </div>
-
-    <div class="live">
-      <div><span>النقاط</span><b id="liveScore">0</b></div>
-      <div><span>الصحيحة</span><b id="liveCorrect">0</b></div>
-      <div><span>الدقة</span><b id="liveAccuracy">0%</b></div>
-      <div><span>السلسلة</span><b id="liveStreak">0</b></div>
-    </div>
-
-    <div class="question">
-      <div class="q-tags">
-        <span id="qType" class="q-tag"></span>
-        <span id="qConcept" class="q-tag"></span>
-      </div>
-
-      <h3 id="questionText"></h3>
-      <div id="answers" class="answers"></div>
-      <div id="feedback" class="feedback hidden"></div>
-    </div>
-
-    <div class="quiz-actions">
-      <button class="btn secondary" onclick="quitQuiz()">إنهاء</button>
-      <button id="checkBtn" class="btn">تحقق من الإجابة</button>
-      <button id="nextBtn" class="btn hidden">السؤال التالي</button>
-    </div>
-
+    <div class="quiz-top"><div class="progress-wrap"><div class="progress"><i id="progressBar"></i></div><div class="meta"><span id="quizMode"></span><span>•</span><span id="quizCount"></span><span>•</span><span id="quizLesson"></span></div></div><div id="timerBox" class="timer hidden"><span>الوقت</span><strong id="timerText">30</strong></div></div>
+    <div class="live"><div><span>النقاط</span><b id="liveScore">0</b></div><div><span>الصحيحة</span><b id="liveCorrect">0</b></div><div><span>الدقة</span><b id="liveAccuracy">0%</b></div><div><span>السلسلة</span><b id="liveStreak">0</b></div></div>
+    <div class="question"><div class="q-tags"><span id="qType" class="q-tag"></span><span id="qConcept" class="q-tag"></span></div><h3 id="questionText"></h3><div id="answers" class="answers"></div><div id="feedback" class="feedback hidden"></div></div>
+    <div class="quiz-actions"><button class="btn secondary" onclick="quitQuiz()">إنهاء</button><button id="checkBtn" class="btn">تحقق من الإجابة</button><button id="nextBtn" class="btn hidden">السؤال التالي</button></div>
   </div>
 </section>
 
 <section id="resultScreen" class="screen hidden">
-  <div class="panel glass result">
-
-    <div id="scoreRing" class="ring">
-      <strong id="scorePct">0%</strong>
-    </div>
-
-    <h2 id="resultTitle">نتيجة التدريب</h2>
-    <span id="resultLevel" class="level"></span>
-    <p id="resultText" style="color:var(--muted);line-height:1.8"></p>
-
-    <div id="breakdown" class="breakdown"></div>
-    <div id="recommendations" class="recommend"></div>
-
-    <div id="sendStatus" class="note good" style="margin-top:14px"></div>
-
-    <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:16px">
-      <button id="resultAction" class="btn">الخطوة التالية</button>
-      <button class="btn secondary" onclick="goHome()">الرئيسية</button>
-    </div>
-
-  </div>
+  <div class="panel glass result"><div id="scoreRing" class="ring"><strong id="scorePct">0%</strong></div><h2 id="resultTitle">نتيجة التدريب</h2><span id="resultLevel" class="level"></span><p id="resultText" style="color:var(--muted);line-height:1.8"></p><div id="breakdown" class="breakdown"></div><div id="recommendations" class="recommend"></div><div id="sendStatus" class="note good" style="margin-top:14px"></div><div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:16px"><button id="resultAction" class="btn">الخطوة التالية</button><button class="btn secondary" onclick="goHome()">الرئيسية</button></div></div>
 </section>
 
-<footer class="footer">
-  <span id="footerText"></span>
-</footer>
-
+<footer class="footer"><span id="footerText"></span></footer>
 </div>
-
 <script>
-window.SCIENCE_CONFIG={
- schoolName:"مدرسة أبي الدرداء المتوسطة",
- teacherName:"علي البقاشي",
- subject:"العلوم – الصف الأول المتوسط",
- year:"1448هـ",
- classes:["1/1","2/1","3/1","4/1"],
- apiUrl:"https://script.google.com/macros/s/AKfycbxp-t4JgGO5WiK6hoacjTyBqFnG-9bSWClplOpVV4VDuTV7T4tY0swB1Ll36kr_djJ7nQ/exec"
+window.SCIENCE_CONFIG = {
+  schoolName: "مدرسة أبي الدرداء المتوسطة",
+  teacherName: "علي البقاشي",
+  subject: "العلوم – الصف الأول المتوسط",
+  year: "1448هـ",
+  classes: ["1/1","2/1","3/1","4/1"],
+  apiUrl: "https://script.google.com/macros/s/AKfycbxp-t4JgGO5WiK6hoacjTyBqFnG-9bSWClplOpVV4VDuTV7T4tY0swB1Ll36kr_djJ7nQ/exec",
+  teacherKey: ""
 };
-</script>
 
-<script>
-const ROSTERS={
-"1/1":[
-"حيدر عيسي عبدالوهاب الاحمد",
-"محمد احمد بن سلمان العبدالله",
-"قاسم محمد بن ياسين القطان",
-"زكرياء جمال علي عبدالله",
-"علي حسين كاظم العيد",
-"علي انور بن حسين الراشد",
-"محمد فيصل علي المشرف",
-"علي احمد علي الدليم",
-"سجاد حسين صالح السعيد",
-"نواف احمد شاكر الرويشد",
-"احمد مصطفي محمد الشهيب",
-"حسين فاضل حسين البراهيم",
-"حسن علي حسين بوشاجع",
-"احمد ناصر بن حبيب البراهيم",
-"عمار محمد حبيب الابوي",
-"طاهر عبدالله طاهر بوشاجع",
-"حسن محمد طاهر المحمد",
-"حسن هاني عبدالله بوشاجع",
-"محمد سامي عبدالله الدليم",
-"محمد حسام صالح الحسن",
-"راكان رايد مبارك القعيد",
-"علي عبدالحميد محمد الشهيب",
-"حسن علي احمد الفحل",
-"كرار حسين راضي العطافي",
-"جاسم حسين جاسم الاحمد",
-"رضا حسين بن احمد الموسي",
-"جواد محمد بن راشد الغانم",
-"حسين جميل بن طاهر بوشاجع",
-"حسن علي بن سلمان القويلي",
-"علي حسين علي البراهيم",
-"عبدالعزيز محمد بن حسين البريه",
-"حسن حسين بن يوسف الحسن",
-"مهدي حجي جاسم العيد",
-"مصطفي احمد علي الخليفه",
-"علي حسين جاسم بوشاجع",
-"محمد احمد بن خليفه الفرحان",
-"الرضا محمد بن خليفه الدليم"
-],
-
-"2/1":[
-"احمد حسين بن ابراهيم الجعفر",
-"حسين احمد حسين الحسين",
-"محمد صادق جاسم البراهيم",
-"علي سامي بن هاني الموسي",
-"محمد جاسم بن طاهر المحمد علي",
-"قاسم نعيم ابراهيم الكاظم",
-"حسين علي بن عبدالله البراهيم",
-"حسين محمد بن علي الصالح",
-"محمد علي بن حسين العبدالله",
-"رضا فخري بن حسين العليو",
-"حسين علي كاظم الدليم",
-"عبدالعزيز ميثم محمد الحماد",
-"هادي علي محمد الدليم",
-"كرار عدنان بن طاهر بوشاجع",
-"عبدالله فيصل ناصر الحسن",
-"محمد جاسم حسين الموسي",
-"سلمان بدر سلمان الخليفه",
-"علي احمد بن عبدالجليل الحجي",
-"علي محمد علي الدباني",
-"حسن عيسي عبدرب الرسول العمران",
-"مهدي محمد بن علي البراهيم",
-"علي يوسف بن يونس البحر",
-"ناصر عبدالجليل بن ناصر العيد",
-"حسين رايد علي البراهيم",
-"حسين علي عيسي البراهيم",
-"علي فخري عبدرب الرسول العبدالله",
-"عبدالله علي بن طاهر الخليفه",
-"احمد عبدالعزيز بن احمد الهاجري",
-"عبدالله بدر مسفر الجباري",
-"تركي بن محمد بن ناصر الشوملي",
-"عباس توفيق بن حسن المحمد",
-"ميثم حسين علي الشهيب",
-"قاسم احمد بن علي العبيدان",
-"ريان حبيب عبدالله الوعل",
-"قاسم خالد ابراهيم الدليم",
-"عقيل حسين خليفه الشهيب",
-"علي احمد بن محمد البوشاجع"
-],
-
-"3/1":[
-"حسن عبدالله عيسي البراهيم",
-"حسن نجيب حجي الموسي",
-"حسن جمال بن عبدالله العيسي",
-"مهدي صادق بن احمد المطاوعه",
-"قاسم محمد علي الباشه",
-"صالح يوسف صالح الخليفه",
-"محمد عماد بن علي الدليم",
-"طاهر محمد بن كاظم العواد",
-"محمد رايد يوسف الحيدان",
-"حسين عباس حسين الخليفه",
-"ناصر محمد ناصر الحسن",
-"حسين علي احمد الزعقان",
-"رضا حبيب عباس الزوير",
-"طاهر علي طاهر الهزيم",
-"عبدالله فتحي بن عبدالله الخليفه",
-"محمد صادق عبدالملك العيد",
-"ريان احمد بن صالح العميرين",
-"علي حسن عبدالله السيف",
-"محمد مصطفي صالح الدليم",
-"عبدالله زكي بن عبدالله البراهيم",
-"محمد مصطفي صالح الرويشد",
-"علي عبدالله بن محمد المعيكم",
-"عبدالرحمن فاضل يوسف الاحمد",
-"علي خالد بن علي النباط",
-"مهدي رضا طه العيد",
-"قاسم احمد طاهر العبدالمحسن",
-"حسين علي حسين الدليم",
-"حسن يوسف بن احمد الدليم",
-"حسين عبدالله بن كاظم البراهيم",
-"علي محمد علي الدليم",
-"الحسن هاشم بن محمد الحاجي",
-"علي زكي بن عبدالله الحرز",
-"حاتم بدر بن جاسم الدليم",
-"مهدي حسن شاكر الرويشد",
-"عبدالرحمن بدر طاهر الدليم",
-"محمد فاضل خليفه الدليم",
-"علي حسين احمد البحر",
-"حسن عبدالجليل صالح الخليفه",
-"علي عبدالله بن محمد السلطان"
-],
-
-"4/1":[
-"حسين محمد بن حسين البراهيم",
-"عبدالعزيز علي عبدالله الاحمد",
-"عمار حسين بن علي الدليم",
-"علي جمال بن حجي اسماعيل",
-"عبدالله ناصر احمد الناصر",
-"احمد حسن بن ناصر الياسين",
-"عباس عيسي احمد العصفور",
-"مجتبي واصل طاهر بوشاجع",
-"محمد عيسي بن يوسف الاحمد",
-"جواد المقداد ابراهيم الكاظم",
-"عبدالله جعفر بن حسين الدليم",
-"مجتبي حسين بن ابراهيم السعيد",
-"سلمان رايد مبارك القعيد",
-"علي احمد جاسم الشهيب",
-"كيان امين بن عبدالله الصالح",
-"ابراهيم احمد حبيب الهزيم",
-"فراس عباس حسين الخليفه",
-"عبدالله عادل حسن الداود",
-"محمد محمد سلمان المطاوعه",
-"فارس عبدالهادي يوسف الاحمد",
-"حسن علي عبدالله الباشه",
-"رضا محمد بن موسي السليمان",
-"حسين يحيي عبدرب الرسول المطاوعه",
-"عبدالله هادي بن علي الرجب",
-"عبدالعزيز محمد ابن ابراهيم الرويشد",
-"العباس يوسف محمد الجاسم",
-"رضا علي بن احمد المهيني",
-"علي محمد بن عبدالله المطيع",
-"محمود محمد علي الدليم",
-"مجتبي محمد بن احمد بوشاجع",
-"قاسم محمد حبيب الخليفه",
-"مهدي راضي بن صالح العطافي",
-"علي ماجد محمد الجاسم",
-"منتظر احمد عبدالله المكينه",
-"حيدر وافي بن حسن الصالح",
-"فيصل جمعه بن صالح العميرين",
-"رضا ابراهيم عبدالعزيز البريه",
-"احمد جاسم بن احمد العطافي",
-"حسين يوسف بن احمد السالم"
-]
+</script><script>
+window.SCIENCE_DATA = {
+  "lessons": [
+    {
+      "id": "science-processes",
+      "title": "العلم وعملياته",
+      "short": "العلم وعملياته",
+      "icon": "🔬",
+      "color": "teal",
+      "summary": "مراجعة سهلة ومباشرة لمفاهيم العلم وعملياته، مع التركيز على التعريفات الأساسية والمصطلحات المهمة.",
+      "objectives": [
+        "تعريف العلم والملاحظة والاستنتاج",
+        "تعريف الفرضية وخطوات الطريقة العلمية",
+        "التمييز بين النظرية والقانون العلمي",
+        "التعرف إلى المتغير المستقل والتابع والثوابت"
+      ],
+      "concepts": [
+        {
+          "id": "science",
+          "name": "العلم",
+          "note": "طريقة منظمة لدراسة العالم الطبيعي والحصول على المعرفة."
+        },
+        {
+          "id": "observe-infer",
+          "name": "الملاحظة والاستنتاج",
+          "note": "الملاحظة وصف لما نراه أو نقيسه، والاستنتاج تفسير يعتمد على الملاحظات."
+        },
+        {
+          "id": "hypothesis",
+          "name": "الفرضية",
+          "note": "تفسير أو توقع يمكن اختباره."
+        },
+        {
+          "id": "method",
+          "name": "الطريقة العلمية",
+          "note": "مشكلة، معلومات، فرضية، اختبار، تحليل، استنتاج."
+        },
+        {
+          "id": "theory-law",
+          "name": "النظرية والقانون",
+          "note": "القانون يصف نمطًا، والنظرية تفسر ما يحدث اعتمادًا على الأدلة."
+        },
+        {
+          "id": "variables",
+          "name": "متغيرات التجربة",
+          "note": "المستقل يغيره الباحث، والتابع يقاس، والثوابت تبقى دون تغيير."
+        }
+      ]
+    },
+    {
+      "id": "scientific-models",
+      "title": "النماذج العلمية",
+      "short": "النماذج العلمية",
+      "icon": "🧩",
+      "color": "indigo",
+      "summary": "أسئلة سهلة للتعرف إلى معنى النموذج العلمي وأنواعه وفوائده الأساسية.",
+      "objectives": [
+        "تعريف النموذج العلمي",
+        "التعرف إلى النماذج المادية والحاسوبية والفكرية",
+        "ذكر فوائد النماذج",
+        "معرفة أن النماذج تتغير مع الأدلة الجديدة"
+      ],
+      "concepts": [
+        {
+          "id": "types",
+          "name": "أنواع النماذج",
+          "note": "مادية، حاسوبية، وفكرية."
+        },
+        {
+          "id": "communication",
+          "name": "التواصل العلمي",
+          "note": "توضح النماذج الأفكار والأشياء التي يصعب دراستها مباشرة."
+        },
+        {
+          "id": "testing",
+          "name": "اختبار التوقعات",
+          "note": "يمكن استخدام النماذج لاختبار الأفكار والتوقعات."
+        },
+        {
+          "id": "benefits",
+          "name": "فوائد النماذج",
+          "note": "توفر الوقت والمال وتقلل المخاطر في بعض الحالات."
+        },
+        {
+          "id": "change",
+          "name": "تطور النماذج",
+          "note": "قد تتغير النماذج عند ظهور معلومات وأدلة جديدة."
+        }
+      ]
+    },
+    {
+      "id": "evaluate-explanations",
+      "title": "تقويم التفسيرات العلمية",
+      "short": "تقويم التفسيرات",
+      "icon": "🧠",
+      "color": "gold",
+      "summary": "مراجعة مبسطة لكيفية فحص البيانات والأدلة والادعاءات والوصول إلى استنتاج صحيح.",
+      "objectives": [
+        "تعريف الدليل والادعاء",
+        "معرفة طرق عرض البيانات",
+        "توضيح أهمية تكرار النتائج",
+        "ربط الاستنتاج بالأدلة"
+      ],
+      "concepts": [
+        {
+          "id": "evaluate",
+          "name": "تقويم التفسير",
+          "note": "نقارن الاستنتاج بالأدلة والبيانات المتاحة."
+        },
+        {
+          "id": "data",
+          "name": "البيانات",
+          "note": "يمكن عرض البيانات في جداول ورسوم بيانية."
+        },
+        {
+          "id": "claims",
+          "name": "الادعاءات",
+          "note": "الادعاء العلمي يحتاج إلى دليل موثوق."
+        },
+        {
+          "id": "critical",
+          "name": "التفكير الناقد",
+          "note": "طرح الأسئلة وفحص الأدلة قبل قبول الاستنتاج."
+        },
+        {
+          "id": "repeatability",
+          "name": "قابلية التكرار",
+          "note": "تكرار النتائج يزيد الثقة بها."
+        }
+      ]
+    },
+    {
+      "id": "motion",
+      "title": "الحركة",
+      "short": "الحركة",
+      "icon": "🏃",
+      "color": "teal",
+      "summary": "مفاهيم الحركة والسرعة والمسافة والزمن والتسارع بصياغة مباشرة ومسائل حسابية قصيرة جدًا.",
+      "objectives": [
+        "تعريف الحركة والسرعة",
+        "تذكر قانون السرعة والمسافة والزمن",
+        "تعريف السرعة المتجهة والتسارع",
+        "حل مسائل مباشرة بخطوة واحدة"
+      ],
+      "concepts": [
+        {
+          "id": "motion",
+          "name": "الحركة",
+          "note": "تغير موضع الجسم مع الزمن بالنسبة إلى نقطة مرجعية."
+        },
+        {
+          "id": "speed",
+          "name": "السرعة",
+          "note": "السرعة = المسافة ÷ الزمن."
+        },
+        {
+          "id": "velocity",
+          "name": "السرعة المتجهة",
+          "note": "سرعة الجسم مع تحديد اتجاه الحركة."
+        },
+        {
+          "id": "acceleration",
+          "name": "التسارع",
+          "note": "معدل تغير السرعة المتجهة مع الزمن."
+        }
+      ]
+    },
+    {
+      "id": "newton-laws",
+      "title": "قوانين نيوتن للحركة",
+      "short": "قوانين نيوتن",
+      "icon": "⚽",
+      "color": "indigo",
+      "summary": "تعريف القوة والقصور الذاتي وقوانين نيوتن الثلاثة والقوة المحصلة بمستوى سهل ومباشر.",
+      "objectives": [
+        "تعريف القوة ووحدتها",
+        "تذكر قوانين نيوتن الثلاثة",
+        "تذكر قانون القوة",
+        "التعرف إلى القوة المحصلة والقوى المتزنة"
+      ],
+      "concepts": [
+        {
+          "id": "force",
+          "name": "القوة",
+          "note": "دفع أو سحب، وتقاس بالنيوتن."
+        },
+        {
+          "id": "first",
+          "name": "قانون نيوتن الأول",
+          "note": "يبقى الجسم على حالته ما لم تؤثر فيه قوة محصلة."
+        },
+        {
+          "id": "second",
+          "name": "قانون نيوتن الثاني",
+          "note": "القوة = الكتلة × التسارع."
+        },
+        {
+          "id": "third",
+          "name": "قانون نيوتن الثالث",
+          "note": "لكل فعل رد فعل مساوٍ له في المقدار ومعاكس له في الاتجاه."
+        },
+        {
+          "id": "net",
+          "name": "القوة المحصلة",
+          "note": "المجموع الكلي للقوى المؤثرة في الجسم."
+        }
+      ]
+    },
+    {
+      "id": "work-machines",
+      "title": "الشغل والآلات البسيطة",
+      "short": "الشغل والآلات البسيطة",
+      "icon": "⚙️",
+      "color": "gold",
+      "summary": "مراجعة سهلة لتعريف الشغل وقانونه والآلات البسيطة والفائدة الميكانيكية مع تطبيقات قصيرة.",
+      "objectives": [
+        "تعريف الشغل ووحدته",
+        "تذكر قانون الشغل",
+        "التعرف إلى الآلات البسيطة",
+        "تذكر معنى الفائدة الميكانيكية"
+      ],
+      "concepts": [
+        {
+          "id": "work",
+          "name": "الشغل",
+          "note": "يحدث عندما تؤثر قوة فتحرك جسمًا في اتجاه القوة."
+        },
+        {
+          "id": "work-law",
+          "name": "قانون الشغل",
+          "note": "الشغل = القوة × المسافة."
+        },
+        {
+          "id": "simple-machines",
+          "name": "الآلات البسيطة",
+          "note": "أدوات تسهّل أداء الشغل بتغيير مقدار القوة أو اتجاهها."
+        },
+        {
+          "id": "ma",
+          "name": "الفائدة الميكانيكية",
+          "note": "الفائدة الميكانيكية = القوة الناتجة ÷ القوة المبذولة."
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "sp01",
+      "lesson": "science-processes",
+      "concept": "science",
+      "type": "choice",
+      "q": "العلم هو:",
+      "options": [
+        "طريقة منظمة لدراسة العالم الطبيعي",
+        "رأي شخصي فقط",
+        "حفظ كلمات دون تجربة",
+        "تخمين لا يمكن اختباره"
+      ],
+      "answer": 0,
+      "explain": "العلم طريقة منظمة لدراسة العالم الطبيعي."
+    },
+    {
+      "id": "sp02",
+      "lesson": "science-processes",
+      "concept": "observe-infer",
+      "type": "choice",
+      "q": "الملاحظة هي:",
+      "options": [
+        "وصف لما نشاهده أو نقيسه",
+        "تفسير سبب حدوث الشيء",
+        "قانون علمي",
+        "رأي شخصي"
+      ],
+      "answer": 0,
+      "explain": "الملاحظة تعتمد على ما نشاهده أو نقيسه مباشرة."
+    },
+    {
+      "id": "sp03",
+      "lesson": "science-processes",
+      "concept": "observe-infer",
+      "type": "choice",
+      "q": "الاستنتاج هو:",
+      "options": [
+        "تفسير منطقي يعتمد على الملاحظات",
+        "قياس الطول فقط",
+        "تسجيل درجة الحرارة",
+        "استخدام المسطرة"
+      ],
+      "answer": 0,
+      "explain": "الاستنتاج تفسير يعتمد على الملاحظات والمعرفة السابقة."
+    },
+    {
+      "id": "sp04",
+      "lesson": "science-processes",
+      "concept": "hypothesis",
+      "type": "choice",
+      "q": "الفرضية هي:",
+      "options": [
+        "تفسير يمكن اختباره",
+        "حقيقة لا تتغير",
+        "قانون لا يحتاج دليلًا",
+        "نتيجة نهائية دائمًا"
+      ],
+      "answer": 0,
+      "explain": "الفرضية تفسير أو توقع يمكن اختباره."
+    },
+    {
+      "id": "sp05",
+      "lesson": "science-processes",
+      "concept": "method",
+      "type": "choice",
+      "q": "بعد تكوين الفرضية تأتي خطوة:",
+      "options": [
+        "اختبار الفرضية",
+        "كتابة النتيجة أولًا",
+        "إلغاء التجربة",
+        "تغيير جميع العوامل"
+      ],
+      "answer": 0,
+      "explain": "بعد تكوين الفرضية يتم اختبارها."
+    },
+    {
+      "id": "sp06",
+      "lesson": "science-processes",
+      "concept": "theory-law",
+      "type": "choice",
+      "q": "القانون العلمي يصف:",
+      "options": [
+        "نمطًا يحدث في الطبيعة",
+        "رأي عالم",
+        "تجربة واحدة فقط",
+        "أداة قياس"
+      ],
+      "answer": 0,
+      "explain": "القانون العلمي يصف نمطًا يحدث في الطبيعة."
+    },
+    {
+      "id": "sp07",
+      "lesson": "science-processes",
+      "concept": "theory-law",
+      "type": "choice",
+      "q": "النظرية العلمية هي:",
+      "options": [
+        "تفسير مدعوم بالأدلة",
+        "قائمة أدوات",
+        "قياس واحد",
+        "رأي لا يحتاج دليلًا"
+      ],
+      "answer": 0,
+      "explain": "النظرية تفسير علمي تدعمه الأدلة."
+    },
+    {
+      "id": "sp08",
+      "lesson": "science-processes",
+      "concept": "variables",
+      "type": "choice",
+      "q": "المتغير المستقل هو المتغير الذي:",
+      "options": [
+        "يغيره الباحث",
+        "يقاس كنتيجة",
+        "يبقى ثابتًا",
+        "لا يدخل في التجربة"
+      ],
+      "answer": 0,
+      "explain": "المتغير المستقل يغيره الباحث عمدًا."
+    },
+    {
+      "id": "sp09",
+      "lesson": "science-processes",
+      "concept": "variables",
+      "type": "choice",
+      "q": "المتغير التابع هو المتغير الذي:",
+      "options": [
+        "يتم قياسه أو ملاحظته",
+        "يغيره الباحث عمدًا",
+        "يبقى ثابتًا دائمًا",
+        "لا يتأثر بشيء"
+      ],
+      "answer": 0,
+      "explain": "المتغير التابع هو الذي يقاس لمعرفة أثر المتغير المستقل."
+    },
+    {
+      "id": "sp10",
+      "lesson": "science-processes",
+      "concept": "variables",
+      "type": "choice",
+      "q": "العوامل التي لا تتغير أثناء التجربة تسمى:",
+      "options": [
+        "الثوابت",
+        "المتغيرات التابعة",
+        "الفرضيات",
+        "الاستنتاجات"
+      ],
+      "answer": 0,
+      "explain": "الثوابت هي العوامل التي تبقى دون تغيير أثناء التجربة."
+    },
+    {
+      "id": "sp11",
+      "lesson": "science-processes",
+      "concept": "science",
+      "type": "choice",
+      "q": "من العلوم الطبيعية:",
+      "options": [
+        "الفيزياء والكيمياء",
+        "التاريخ والجغرافيا",
+        "اللغة والفنون",
+        "القراءة والكتابة"
+      ],
+      "answer": 0,
+      "explain": "الفيزياء والكيمياء من العلوم الطبيعية."
+    },
+    {
+      "id": "sp12",
+      "lesson": "science-processes",
+      "concept": "science",
+      "type": "tf",
+      "q": "القياس من المهارات التي يستخدمها العلماء.",
+      "answer": true,
+      "explain": "نعم، القياس من المهارات العلمية الأساسية."
+    },
+    {
+      "id": "sm01",
+      "lesson": "scientific-models",
+      "concept": "types",
+      "type": "choice",
+      "q": "النموذج العلمي هو:",
+      "options": [
+        "تمثيل لشيء أو حدث أو فكرة",
+        "قانون لا يتغير",
+        "نتيجة تجربة فقط",
+        "رأي شخصي"
+      ],
+      "answer": 0,
+      "explain": "النموذج يمثل شيئًا أو حدثًا أو فكرة ليسهل فهمها."
+    },
+    {
+      "id": "sm02",
+      "lesson": "scientific-models",
+      "concept": "types",
+      "type": "choice",
+      "q": "مجسم الكرة الأرضية مثال على:",
+      "options": [
+        "نموذج مادي",
+        "نموذج حاسوبي",
+        "نموذج فكري",
+        "قانون علمي"
+      ],
+      "answer": 0,
+      "explain": "المجسم نموذج مادي يمكن لمسه ورؤيته."
+    },
+    {
+      "id": "sm03",
+      "lesson": "scientific-models",
+      "concept": "types",
+      "type": "choice",
+      "q": "محاكاة الطقس على الحاسوب مثال على:",
+      "options": [
+        "نموذج حاسوبي",
+        "نموذج مادي",
+        "نموذج ورقي فقط",
+        "فرضية"
+      ],
+      "answer": 0,
+      "explain": "المحاكاة بالحاسوب نموذج حاسوبي."
+    },
+    {
+      "id": "sm04",
+      "lesson": "scientific-models",
+      "concept": "types",
+      "type": "choice",
+      "q": "الفكرة أو المعادلة التي تمثل شيئًا تعد:",
+      "options": [
+        "نموذجًا فكريًا",
+        "نموذجًا ماديًا",
+        "أداة قياس",
+        "تجربة"
+      ],
+      "answer": 0,
+      "explain": "الفكرة أو المعادلة يمكن أن تكون نموذجًا فكريًا."
+    },
+    {
+      "id": "sm05",
+      "lesson": "scientific-models",
+      "concept": "communication",
+      "type": "choice",
+      "q": "تساعد النماذج العلماء على:",
+      "options": [
+        "توضيح الأفكار",
+        "إلغاء الأدلة",
+        "منع التجارب",
+        "تغيير النتائج"
+      ],
+      "answer": 0,
+      "explain": "من فوائد النماذج توضيح الأفكار والتواصل العلمي."
+    },
+    {
+      "id": "sm06",
+      "lesson": "scientific-models",
+      "concept": "testing",
+      "type": "choice",
+      "q": "يمكن استخدام النماذج من أجل:",
+      "options": [
+        "اختبار التوقعات",
+        "إلغاء الملاحظات",
+        "منع القياس",
+        "حذف البيانات"
+      ],
+      "answer": 0,
+      "explain": "تستخدم النماذج لاختبار بعض التوقعات والأفكار."
+    },
+    {
+      "id": "sm07",
+      "lesson": "scientific-models",
+      "concept": "benefits",
+      "type": "choice",
+      "q": "من فوائد النماذج أنها قد:",
+      "options": [
+        "توفر الوقت والمال",
+        "تجعل كل النتائج صحيحة",
+        "تلغي الحاجة للعلم",
+        "تمنع تغير المعرفة"
+      ],
+      "answer": 0,
+      "explain": "قد توفر النماذج الوقت والمال."
+    },
+    {
+      "id": "sm08",
+      "lesson": "scientific-models",
+      "concept": "benefits",
+      "type": "choice",
+      "q": "استخدام المحاكاة قبل التجربة الحقيقية قد يساعد على:",
+      "options": [
+        "تقليل المخاطر",
+        "زيادة الأخطاء عمدًا",
+        "إلغاء البيانات",
+        "منع المقارنة"
+      ],
+      "answer": 0,
+      "explain": "المحاكاة قد تقلل المخاطر قبل التطبيق الحقيقي."
+    },
+    {
+      "id": "sm09",
+      "lesson": "scientific-models",
+      "concept": "change",
+      "type": "choice",
+      "q": "قد يتغير النموذج العلمي عندما:",
+      "options": [
+        "تظهر أدلة جديدة",
+        "يتوقف العلماء عن القياس",
+        "نريد تغيير الإجابة فقط",
+        "لا توجد معلومات"
+      ],
+      "answer": 0,
+      "explain": "النماذج تتطور عندما تظهر معلومات وأدلة جديدة."
+    },
+    {
+      "id": "sm10",
+      "lesson": "scientific-models",
+      "concept": "types",
+      "type": "choice",
+      "q": "الخريطة مثال على نموذج يساعد على:",
+      "options": [
+        "تمثيل مكان بصورة مبسطة",
+        "قياس الكتلة",
+        "تسخين المواد",
+        "إنتاج الضوء"
+      ],
+      "answer": 0,
+      "explain": "الخريطة تمثل مكانًا بصورة مبسطة."
+    },
+    {
+      "id": "sm11",
+      "lesson": "scientific-models",
+      "concept": "communication",
+      "type": "choice",
+      "q": "الغرض الأساسي من النموذج هو:",
+      "options": [
+        "تسهيل الفهم والتمثيل",
+        "إخفاء المعلومات",
+        "زيادة صعوبة الفكرة",
+        "منع التواصل"
+      ],
+      "answer": 0,
+      "explain": "النموذج يساعد على الفهم والتمثيل."
+    },
+    {
+      "id": "sm12",
+      "lesson": "scientific-models",
+      "concept": "change",
+      "type": "tf",
+      "q": "يمكن أن تتغير النماذج العلمية مع ظهور معلومات جديدة.",
+      "answer": true,
+      "explain": "صحيح، النماذج العلمية قابلة للتطوير والتعديل."
+    },
+    {
+      "id": "ee01",
+      "lesson": "evaluate-explanations",
+      "concept": "claims",
+      "type": "choice",
+      "q": "الادعاء العلمي الجيد يحتاج إلى:",
+      "options": [
+        "دليل",
+        "لون جميل",
+        "شهرة فقط",
+        "رأي شخصي"
+      ],
+      "answer": 0,
+      "explain": "الادعاء العلمي يجب أن تدعمه الأدلة."
+    },
+    {
+      "id": "ee02",
+      "lesson": "evaluate-explanations",
+      "concept": "data",
+      "type": "choice",
+      "q": "يمكن عرض البيانات في:",
+      "options": [
+        "جداول ورسوم بيانية",
+        "آراء فقط",
+        "قصص فقط",
+        "صور بلا معلومات"
+      ],
+      "answer": 0,
+      "explain": "الجداول والرسوم البيانية من طرق عرض البيانات."
+    },
+    {
+      "id": "ee03",
+      "lesson": "evaluate-explanations",
+      "concept": "repeatability",
+      "type": "choice",
+      "q": "تكرار النتائج يساعد على:",
+      "options": [
+        "زيادة الثقة بالبيانات",
+        "إلغاء التجربة",
+        "منع المقارنة",
+        "تغيير السؤال"
+      ],
+      "answer": 0,
+      "explain": "تكرار النتائج يزيد الثقة بموثوقية البيانات."
+    },
+    {
+      "id": "ee04",
+      "lesson": "evaluate-explanations",
+      "concept": "evaluate",
+      "type": "choice",
+      "q": "الاستنتاج العلمي يجب أن يعتمد على:",
+      "options": [
+        "البيانات والأدلة",
+        "التخمين فقط",
+        "الإعلان",
+        "رأي شخص واحد"
+      ],
+      "answer": 0,
+      "explain": "الاستنتاج العلمي يعتمد على البيانات والأدلة."
+    },
+    {
+      "id": "ee05",
+      "lesson": "evaluate-explanations",
+      "concept": "critical",
+      "type": "choice",
+      "q": "التفكير الناقد يعني:",
+      "options": [
+        "فحص المعلومات والأدلة",
+        "قبول كل شيء مباشرة",
+        "حفظ الجملة فقط",
+        "رفض كل المعلومات"
+      ],
+      "answer": 0,
+      "explain": "التفكير الناقد يتضمن فحص المعلومات والأدلة قبل الحكم."
+    },
+    {
+      "id": "ee06",
+      "lesson": "evaluate-explanations",
+      "concept": "data",
+      "type": "choice",
+      "q": "الرسم البياني يساعد على:",
+      "options": [
+        "مقارنة البيانات بسهولة",
+        "إخفاء النتائج",
+        "إلغاء القياس",
+        "منع الاستنتاج"
+      ],
+      "answer": 0,
+      "explain": "يساعد الرسم البياني على رؤية العلاقات والمقارنة بين البيانات."
+    },
+    {
+      "id": "ee07",
+      "lesson": "evaluate-explanations",
+      "concept": "claims",
+      "type": "choice",
+      "q": "قبل تصديق إعلان علمي من الأفضل:",
+      "options": [
+        "التحقق من الدليل والمصدر",
+        "تصديقه مباشرة",
+        "تجاهل البيانات",
+        "اختيار أجمل صورة"
+      ],
+      "answer": 0,
+      "explain": "ينبغي فحص الدليل والمصدر قبل قبول الادعاء."
+    },
+    {
+      "id": "ee08",
+      "lesson": "evaluate-explanations",
+      "concept": "repeatability",
+      "type": "choice",
+      "q": "البيانات الموثوقة يفضل أن تكون:",
+      "options": [
+        "قابلة للتكرار",
+        "مختلفة دائمًا",
+        "غير مسجلة",
+        "من تجربة بلا قياس"
+      ],
+      "answer": 0,
+      "explain": "قابلية التكرار علامة مهمة على موثوقية النتائج."
+    },
+    {
+      "id": "ee09",
+      "lesson": "evaluate-explanations",
+      "concept": "evaluate",
+      "type": "choice",
+      "q": "إذا لم تدعم البيانات الاستنتاج فإن الأفضل:",
+      "options": [
+        "تعديل الاستنتاج",
+        "تجاهل البيانات",
+        "تغيير الأرقام",
+        "حذف التجربة"
+      ],
+      "answer": 0,
+      "explain": "يجب أن يتفق الاستنتاج مع البيانات المتاحة."
+    },
+    {
+      "id": "ee10",
+      "lesson": "evaluate-explanations",
+      "concept": "critical",
+      "type": "choice",
+      "q": "عند مقارنة تفسيرين علميين نبحث عن:",
+      "options": [
+        "التفسير الأكثر دعمًا بالأدلة",
+        "التفسير الأطول فقط",
+        "التفسير الأشهر فقط",
+        "التفسير الأسهل كتابة"
+      ],
+      "answer": 0,
+      "explain": "الأدلة هي الأساس عند تقويم التفسيرات."
+    },
+    {
+      "id": "ee11",
+      "lesson": "evaluate-explanations",
+      "concept": "data",
+      "type": "choice",
+      "q": "تدوين الملاحظات أثناء التجربة يساعد على:",
+      "options": [
+        "حفظ البيانات بدقة",
+        "نسيان النتائج",
+        "إلغاء القياس",
+        "منع التكرار"
+      ],
+      "answer": 0,
+      "explain": "تدوين الملاحظات يحفظ البيانات ويساعد على مراجعتها."
+    },
+    {
+      "id": "ee12",
+      "lesson": "evaluate-explanations",
+      "concept": "evaluate",
+      "type": "tf",
+      "q": "الاستنتاج العلمي الجيد تدعمه الأدلة والبيانات.",
+      "answer": true,
+      "explain": "صحيح، الأدلة والبيانات هي أساس الاستنتاج العلمي."
+    },
+    {
+      "id": "mo01",
+      "lesson": "motion",
+      "concept": "motion",
+      "type": "choice",
+      "q": "الحركة هي:",
+      "options": [
+        "تغير موضع الجسم مع الزمن",
+        "ثبات الجسم في مكانه",
+        "قياس الكتلة",
+        "تغير اللون"
+      ],
+      "answer": 0,
+      "explain": "الحركة هي تغير موضع الجسم مع الزمن بالنسبة إلى نقطة مرجعية."
+    },
+    {
+      "id": "mo02",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "قانون السرعة هو:",
+      "options": [
+        "السرعة = المسافة ÷ الزمن",
+        "السرعة = المسافة × الزمن",
+        "السرعة = الزمن ÷ المسافة",
+        "السرعة = الكتلة × التسارع"
+      ],
+      "answer": 0,
+      "explain": "السرعة تساوي المسافة مقسومة على الزمن."
+    },
+    {
+      "id": "mo03",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "من وحدات السرعة:",
+      "options": [
+        "م/ث",
+        "نيوتن",
+        "جول",
+        "كجم"
+      ],
+      "answer": 0,
+      "explain": "المتر لكل ثانية م/ث وحدة شائعة للسرعة."
+    },
+    {
+      "id": "mo04",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "لحساب المسافة نستخدم:",
+      "options": [
+        "المسافة = السرعة × الزمن",
+        "المسافة = السرعة ÷ الزمن",
+        "المسافة = الزمن ÷ السرعة",
+        "المسافة = القوة × الكتلة"
+      ],
+      "answer": 0,
+      "explain": "المسافة تساوي السرعة مضروبة في الزمن."
+    },
+    {
+      "id": "mo05",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "لحساب الزمن نستخدم:",
+      "options": [
+        "الزمن = المسافة ÷ السرعة",
+        "الزمن = المسافة × السرعة",
+        "الزمن = السرعة ÷ المسافة",
+        "الزمن = القوة ÷ الكتلة"
+      ],
+      "answer": 0,
+      "explain": "الزمن يساوي المسافة مقسومة على السرعة."
+    },
+    {
+      "id": "mo06",
+      "lesson": "motion",
+      "concept": "velocity",
+      "type": "choice",
+      "q": "السرعة المتجهة هي:",
+      "options": [
+        "السرعة مع تحديد الاتجاه",
+        "المسافة فقط",
+        "الزمن فقط",
+        "كتلة الجسم"
+      ],
+      "answer": 0,
+      "explain": "السرعة المتجهة تتضمن مقدار السرعة واتجاه الحركة."
+    },
+    {
+      "id": "mo07",
+      "lesson": "motion",
+      "concept": "acceleration",
+      "type": "choice",
+      "q": "التسارع هو:",
+      "options": [
+        "معدل تغير السرعة المتجهة",
+        "المسافة الكلية فقط",
+        "كتلة الجسم",
+        "درجة الحرارة"
+      ],
+      "answer": 0,
+      "explain": "التسارع يصف تغير السرعة المتجهة مع الزمن."
+    },
+    {
+      "id": "mo08",
+      "lesson": "motion",
+      "concept": "acceleration",
+      "type": "choice",
+      "q": "وحدة التسارع هي:",
+      "options": [
+        "م/ث²",
+        "م/ث",
+        "نيوتن",
+        "جول"
+      ],
+      "answer": 0,
+      "explain": "وحدة التسارع الشائعة هي متر لكل ثانية تربيع."
+    },
+    {
+      "id": "mo09",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "إذا كان الجسم ساكنًا فإن سرعته تساوي:",
+      "options": [
+        "صفرًا",
+        "1 م/ث",
+        "10 م/ث",
+        "100 م/ث"
+      ],
+      "answer": 0,
+      "explain": "الجسم الساكن لا يغير موضعه، لذلك سرعته صفر."
+    },
+    {
+      "id": "mo10",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "الأداة في السيارة التي تبين مقدار السرعة هي:",
+      "options": [
+        "عداد السرعة",
+        "الميزان",
+        "المسطرة",
+        "الترمومتر"
+      ],
+      "answer": 0,
+      "explain": "عداد السرعة يبين مقدار سرعة السيارة."
+    },
+    {
+      "id": "mo11",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "قطع جسم 20 مترًا في 4 ثوانٍ. سرعته تساوي:",
+      "options": [
+        "5 م/ث",
+        "4 م/ث",
+        "16 م/ث",
+        "80 م/ث"
+      ],
+      "answer": 0,
+      "explain": "السرعة = 20 ÷ 4 = 5 م/ث."
+    },
+    {
+      "id": "mo12",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "تحرك جسم بسرعة 3 م/ث مدة 4 ثوانٍ. المسافة تساوي:",
+      "options": [
+        "12 م",
+        "7 م",
+        "1 م",
+        "0.75 م"
+      ],
+      "answer": 0,
+      "explain": "المسافة = السرعة × الزمن = 3 × 4 = 12 مترًا."
+    },
+    {
+      "id": "nl01",
+      "lesson": "newton-laws",
+      "concept": "force",
+      "type": "choice",
+      "q": "القوة هي:",
+      "options": [
+        "دفع أو سحب",
+        "درجة الحرارة",
+        "المسافة",
+        "الزمن"
+      ],
+      "answer": 0,
+      "explain": "القوة تعني دفعًا أو سحبًا يؤثر في الجسم."
+    },
+    {
+      "id": "nl02",
+      "lesson": "newton-laws",
+      "concept": "force",
+      "type": "choice",
+      "q": "وحدة قياس القوة هي:",
+      "options": [
+        "النيوتن",
+        "الجول",
+        "المتر",
+        "الكيلوغرام"
+      ],
+      "answer": 0,
+      "explain": "تقاس القوة بوحدة النيوتن."
+    },
+    {
+      "id": "nl03",
+      "lesson": "newton-laws",
+      "concept": "first",
+      "type": "choice",
+      "q": "قانون نيوتن الأول يرتبط بمفهوم:",
+      "options": [
+        "القصور الذاتي",
+        "الشغل",
+        "الحرارة",
+        "الكثافة"
+      ],
+      "answer": 0,
+      "explain": "قانون نيوتن الأول يصف القصور الذاتي."
+    },
+    {
+      "id": "nl04",
+      "lesson": "newton-laws",
+      "concept": "first",
+      "type": "choice",
+      "q": "القصور الذاتي هو مقاومة الجسم لتغيير:",
+      "options": [
+        "حالته الحركية",
+        "لونه",
+        "درجة حرارته فقط",
+        "شكله فقط"
+      ],
+      "answer": 0,
+      "explain": "القصور الذاتي هو ميل الجسم للمحافظة على حالته الحركية."
+    },
+    {
+      "id": "nl05",
+      "lesson": "newton-laws",
+      "concept": "second",
+      "type": "choice",
+      "q": "قانون نيوتن الثاني هو:",
+      "options": [
+        "القوة = الكتلة × التسارع",
+        "القوة = المسافة ÷ الزمن",
+        "الشغل = القوة ÷ المسافة",
+        "السرعة = الكتلة × الزمن"
+      ],
+      "answer": 0,
+      "explain": "قانون نيوتن الثاني: F = m × a."
+    },
+    {
+      "id": "nl06",
+      "lesson": "newton-laws",
+      "concept": "third",
+      "type": "choice",
+      "q": "قانون نيوتن الثالث يقول:",
+      "options": [
+        "لكل فعل رد فعل مساوٍ له ومعاكس له",
+        "الجسم الساكن يتحرك دائمًا",
+        "القوة تساوي الشغل",
+        "السرعة لا تتغير أبدًا"
+      ],
+      "answer": 0,
+      "explain": "لكل فعل رد فعل مساوٍ له في المقدار ومعاكس له في الاتجاه."
+    },
+    {
+      "id": "nl07",
+      "lesson": "newton-laws",
+      "concept": "second",
+      "type": "choice",
+      "q": "وحدة قياس الكتلة هي:",
+      "options": [
+        "الكيلوغرام",
+        "النيوتن",
+        "الجول",
+        "المتر/ثانية"
+      ],
+      "answer": 0,
+      "explain": "تقاس الكتلة عادة بالكيلوغرام."
+    },
+    {
+      "id": "nl08",
+      "lesson": "newton-laws",
+      "concept": "net",
+      "type": "choice",
+      "q": "القوة المحصلة هي:",
+      "options": [
+        "مجموع القوى المؤثرة في الجسم",
+        "قوة واحدة فقط دائمًا",
+        "كتلة الجسم",
+        "سرعة الجسم"
+      ],
+      "answer": 0,
+      "explain": "القوة المحصلة هي الناتج الكلي لجميع القوى المؤثرة."
+    },
+    {
+      "id": "nl09",
+      "lesson": "newton-laws",
+      "concept": "net",
+      "type": "choice",
+      "q": "عندما تكون القوى متزنة تكون القوة المحصلة:",
+      "options": [
+        "صفرًا",
+        "1 نيوتن",
+        "10 نيوتن",
+        "لا يمكن حسابها"
+      ],
+      "answer": 0,
+      "explain": "القوى المتزنة تعطي قوة محصلة تساوي صفرًا."
+    },
+    {
+      "id": "nl10",
+      "lesson": "newton-laws",
+      "concept": "second",
+      "type": "choice",
+      "q": "إذا زادت القوة المؤثرة في جسم كتلته ثابتة فإن تسارعه:",
+      "options": [
+        "يزداد",
+        "يقل دائمًا",
+        "يبقى صفرًا",
+        "لا يتغير أبدًا"
+      ],
+      "answer": 0,
+      "explain": "من قانون نيوتن الثاني، زيادة القوة مع ثبات الكتلة تزيد التسارع."
+    },
+    {
+      "id": "nl11",
+      "lesson": "newton-laws",
+      "concept": "second",
+      "type": "choice",
+      "q": "كتلة جسم 2 كجم وتسارعه 3 م/ث². القوة تساوي:",
+      "options": [
+        "6 نيوتن",
+        "5 نيوتن",
+        "1 نيوتن",
+        "9 نيوتن"
+      ],
+      "answer": 0,
+      "explain": "القوة = الكتلة × التسارع = 2 × 3 = 6 نيوتن."
+    },
+    {
+      "id": "nl12",
+      "lesson": "newton-laws",
+      "concept": "third",
+      "type": "tf",
+      "q": "قوتا الفعل ورد الفعل متساويتان في المقدار ومتعاكستان في الاتجاه.",
+      "answer": true,
+      "explain": "هذه هي فكرة قانون نيوتن الثالث."
+    },
+    {
+      "id": "wm01",
+      "lesson": "work-machines",
+      "concept": "work",
+      "type": "choice",
+      "q": "يحدث الشغل عندما تؤثر قوة وتحرك الجسم:",
+      "options": [
+        "مسافة في اتجاه القوة",
+        "من دون أي حركة",
+        "من دون قوة",
+        "في الخيال فقط"
+      ],
+      "answer": 0,
+      "explain": "يحدث الشغل عندما تسبب القوة إزاحة للجسم."
+    },
+    {
+      "id": "wm02",
+      "lesson": "work-machines",
+      "concept": "work-law",
+      "type": "choice",
+      "q": "قانون الشغل هو:",
+      "options": [
+        "الشغل = القوة × المسافة",
+        "الشغل = القوة ÷ المسافة",
+        "الشغل = الكتلة × الزمن",
+        "الشغل = المسافة ÷ الزمن"
+      ],
+      "answer": 0,
+      "explain": "الشغل يساوي القوة مضروبة في المسافة."
+    },
+    {
+      "id": "wm03",
+      "lesson": "work-machines",
+      "concept": "work",
+      "type": "choice",
+      "q": "وحدة قياس الشغل هي:",
+      "options": [
+        "الجول",
+        "النيوتن",
+        "المتر/ثانية",
+        "الكيلوغرام"
+      ],
+      "answer": 0,
+      "explain": "يقاس الشغل بوحدة الجول."
+    },
+    {
+      "id": "wm04",
+      "lesson": "work-machines",
+      "concept": "simple-machines",
+      "type": "choice",
+      "q": "الآلة البسيطة تساعد على:",
+      "options": [
+        "تسهيل أداء الشغل",
+        "إلغاء الشغل تمامًا",
+        "زيادة كتلة الجسم دائمًا",
+        "إيقاف الحركة دائمًا"
+      ],
+      "answer": 0,
+      "explain": "الآلات البسيطة تسهّل أداء الشغل بتغيير القوة أو اتجاهها."
+    },
+    {
+      "id": "wm05",
+      "lesson": "work-machines",
+      "concept": "simple-machines",
+      "type": "choice",
+      "q": "أي مما يأتي آلة بسيطة؟",
+      "options": [
+        "الرافعة",
+        "التلفاز",
+        "الحاسوب",
+        "المصباح"
+      ],
+      "answer": 0,
+      "explain": "الرافعة من الآلات البسيطة."
+    },
+    {
+      "id": "wm06",
+      "lesson": "work-machines",
+      "concept": "simple-machines",
+      "type": "choice",
+      "q": "أي مما يأتي آلة بسيطة؟",
+      "options": [
+        "البكرة",
+        "الهاتف",
+        "الثلاجة",
+        "البطارية"
+      ],
+      "answer": 0,
+      "explain": "البكرة من الآلات البسيطة."
+    },
+    {
+      "id": "wm07",
+      "lesson": "work-machines",
+      "concept": "simple-machines",
+      "type": "choice",
+      "q": "المستوى المائل يعد:",
+      "options": [
+        "آلة بسيطة",
+        "وحدة قياس",
+        "قوة",
+        "سرعة"
+      ],
+      "answer": 0,
+      "explain": "المستوى المائل من الآلات البسيطة."
+    },
+    {
+      "id": "wm08",
+      "lesson": "work-machines",
+      "concept": "simple-machines",
+      "type": "choice",
+      "q": "الآلة البسيطة قد تغير:",
+      "options": [
+        "مقدار القوة أو اتجاهها",
+        "كتلة الجسم نفسها دائمًا",
+        "نوع المادة",
+        "درجة الحرارة دائمًا"
+      ],
+      "answer": 0,
+      "explain": "تساعد الآلات البسيطة بتغيير مقدار القوة أو اتجاهها."
+    },
+    {
+      "id": "wm09",
+      "lesson": "work-machines",
+      "concept": "ma",
+      "type": "choice",
+      "q": "الفائدة الميكانيكية تساوي:",
+      "options": [
+        "القوة الناتجة ÷ القوة المبذولة",
+        "القوة المبذولة ÷ الزمن",
+        "المسافة ÷ الزمن",
+        "الكتلة × التسارع"
+      ],
+      "answer": 0,
+      "explain": "الفائدة الميكانيكية = القوة الناتجة ÷ القوة المبذولة."
+    },
+    {
+      "id": "wm10",
+      "lesson": "work-machines",
+      "concept": "work-law",
+      "type": "choice",
+      "q": "أثرت قوة 5 نيوتن وحركت جسمًا 2 متر. الشغل يساوي:",
+      "options": [
+        "10 جول",
+        "7 جول",
+        "3 جول",
+        "2.5 جول"
+      ],
+      "answer": 0,
+      "explain": "الشغل = 5 × 2 = 10 جول."
+    },
+    {
+      "id": "wm11",
+      "lesson": "work-machines",
+      "concept": "ma",
+      "type": "choice",
+      "q": "إذا كانت القوة الناتجة 20 نيوتن والمبذولة 5 نيوتن فالفائدة الميكانيكية:",
+      "options": [
+        "4",
+        "25",
+        "15",
+        "0.25"
+      ],
+      "answer": 0,
+      "explain": "الفائدة الميكانيكية = 20 ÷ 5 = 4."
+    },
+    {
+      "id": "wm12",
+      "lesson": "work-machines",
+      "concept": "simple-machines",
+      "type": "tf",
+      "q": "يمكن لبعض الآلات البسيطة تغيير اتجاه القوة.",
+      "answer": true,
+      "explain": "نعم، من فوائد بعض الآلات البسيطة تغيير اتجاه القوة."
+    }
+  ]
 };
-</script>
-
-<script>
-window.SCIENCE_DATA={
-lessons:[
-{
- id:"science-processes",
- title:"العلم وعملياته",
- icon:"🔬",
- color:"teal",
- summary:"فهم طبيعة العلم، الملاحظة والاستنتاج، الفرضية، الطريقة العلمية، النظرية والقانون ومتغيرات التجربة.",
- objectives:[
- "تعريف العلم بوصفه طريقة منظمة لدراسة العالم الطبيعي",
- "التمييز بين الملاحظة والاستنتاج",
- "توضيح معنى الفرضية",
- "ترتيب خطوات الطريقة العلمية",
- "المقارنة بين النظرية والقانون",
- "التمييز بين المتغير المستقل والتابع والثوابت"
- ],
- concepts:[
- {id:"science",name:"طبيعة العلم",note:"العلم طريقة منظمة لفهم العالم الطبيعي."},
- {id:"observe-infer",name:"الملاحظة والاستنتاج",note:"الملاحظة وصف مباشر والاستنتاج تفسير للملاحظة."},
- {id:"hypothesis",name:"الفرضية",note:"تفسير قابل للاختبار."},
- {id:"method",name:"الطريقة العلمية",note:"خطوات منظمة لاختبار الفرضيات."},
- {id:"theory-law",name:"النظرية والقانون",note:"القانون يصف والنظرية تفسر."},
- {id:"variables",name:"متغيرات التجربة",note:"مستقل وتابع وثوابت."}
- ]
-},
-{
- id:"scientific-models",
- title:"النماذج العلمية",
- icon:"🧩",
- color:"indigo",
- summary:"النماذج المادية والحاسوبية والفكرية وأهميتها.",
- objectives:[
- "التعرف إلى أنواع النماذج",
- "بيان أهمية النماذج",
- "تفسير تغير النماذج مع تطور المعرفة"
- ],
- concepts:[
- {id:"types",name:"أنواع النماذج",note:"مادية وحاسوبية وفكرية."},
- {id:"communication",name:"التواصل العلمي",note:"تساعد على توضيح الأفكار."},
- {id:"testing",name:"اختبار التوقعات",note:"تستخدم لاختبار الأفكار."},
- {id:"change",name:"تطور النماذج",note:"تتغير مع ظهور معلومات جديدة."}
- ]
-},
-{
- id:"evaluate-explanations",
- title:"تقويم التفسيرات العلمية",
- icon:"🧠",
- color:"gold",
- summary:"تقويم البيانات والاستنتاجات والادعاءات باستخدام التفكير الناقد.",
- objectives:[
- "تقويم الملاحظات والاستنتاجات",
- "قراءة البيانات",
- "تقويم الادعاءات",
- "استخدام التفكير الناقد"
- ],
- concepts:[
- {id:"evaluate",name:"تقويم الاستنتاجات",note:"يجب أن تدعمها الأدلة."},
- {id:"data",name:"البيانات",note:"تنظم في جداول ورسوم."},
- {id:"claims",name:"الادعاءات",note:"يجب فحص الدليل."},
- {id:"critical",name:"التفكير الناقد",note:"فحص الأدلة قبل قبول الاستنتاج."}
- ]
-}
-],
-
-questions:[
-{id:"q1",lesson:"science-processes",concept:"science",type:"choice",q:"أي عبارة تصف العلم بصورة أفضل؟",options:["طريقة منظمة لدراسة العالم الطبيعي","مجموعة آراء","حفظ معلومات فقط","تفسير بلا دليل"],answer:0,explain:"العلم يعتمد على الملاحظة والأدلة."},
-{id:"q2",lesson:"science-processes",concept:"observe-infer",type:"choice",q:"أي عبارة تُعد ملاحظة؟",options:["لون الورقة أخضر","النبات ذابل بسبب قلة الماء","سيزداد نمو النبات","التربة جيدة"],answer:0,explain:"الملاحظة تصف ما يشاهد مباشرة."},
-{id:"q3",lesson:"science-processes",concept:"hypothesis",type:"choice",q:"أي عبارة تمثل فرضية قابلة للاختبار؟",options:["إذا زاد الضوء فقد يزداد نمو النبات","النبات جميل","التجربة رائعة","الضوء أفضل دائمًا"],answer:0,explain:"الفرضية قابلة للاختبار."},
-{id:"q4",lesson:"science-processes",concept:"method",type:"choice",q:"ما الخطوة التي تأتي بعد تكوين الفرضية؟",options:["اختبار الفرضية","الاستنتاج مباشرة","إلغاء المشكلة","تغيير جميع المتغيرات"],answer:0,explain:"بعد الفرضية يأتي الاختبار."},
-{id:"q5",lesson:"science-processes",concept:"theory-law",type:"choice",q:"ما الذي يصفه القانون العلمي؟",options:["نمطًا يحدث في الطبيعة","رأيًا شخصيًا","تخمينًا","سؤالًا"],answer:0,explain:"القانون يصف نمطًا في الطبيعة."},
-{id:"q6",lesson:"science-processes",concept:"variables",type:"choice",q:"في تجربة أثر كمية الماء في نمو النبات ما المتغير المستقل؟",options:["كمية الماء","طول النبات","نوع النبات","حجم الأصيص"],answer:0,explain:"المتغير المستقل يغيره الباحث."},
-{id:"q7",lesson:"science-processes",concept:"variables",type:"choice",q:"ما المتغير التابع في التجربة السابقة؟",options:["طول النبات","كمية الماء","نوع التربة","حجم الأصيص"],answer:0,explain:"المتغير التابع هو الذي يقاس."},
-{id:"q8",lesson:"science-processes",concept:"method",type:"tf",q:"إذا لم تدعم النتائج الفرضية يمكن تعديلها.",answer:true,explain:"الفرضية قابلة للتعديل وفق الأدلة."},
-
-{id:"q9",lesson:"scientific-models",concept:"types",type:"choice",q:"مجسم الكرة الأرضية مثال على:",options:["نموذج مادي","نموذج حاسوبي","قانون علمي","فرضية"],answer:0,explain:"المجسم نموذج مادي."},
-{id:"q10",lesson:"scientific-models",concept:"types",type:"choice",q:"محاكاة الطقس على الحاسوب مثال على:",options:["نموذج حاسوبي","نموذج مادي","قانون","ملاحظة"],answer:0,explain:"المحاكاة الرقمية نموذج حاسوبي."},
-{id:"q11",lesson:"scientific-models",concept:"communication",type:"choice",q:"من فوائد النماذج:",options:["توضيح الأفكار المعقدة","إلغاء الأدلة","منع التواصل","إلغاء التجارب"],answer:0,explain:"تساعد النماذج على توضيح الأفكار."},
-{id:"q12",lesson:"scientific-models",concept:"change",type:"tf",q:"قد يتغير النموذج العلمي عند ظهور معلومات جديدة.",answer:true,explain:"النماذج تتطور مع المعرفة."},
-
-{id:"q13",lesson:"evaluate-explanations",concept:"evaluate",type:"choice",q:"ما السؤال الأهم عند تقويم استنتاج علمي؟",options:["هل تدعمه البيانات؟","هل العبارة قصيرة؟","هل الكاتب مشهور؟","هل الشكل جميل؟"],answer:0,explain:"الاستنتاج يحتاج إلى دليل."},
-{id:"q14",lesson:"evaluate-explanations",concept:"data",type:"choice",q:"أي وسيلة تساعد على مقارنة البيانات؟",options:["الرسم البياني","عنوان الإعلان","اسم المنتج","لون الورقة"],answer:0,explain:"الرسم البياني يسهل المقارنة."},
-{id:"q15",lesson:"evaluate-explanations",concept:"claims",type:"choice",q:"إعلان يقدم ادعاءً بلا دليل، ماذا تفعل؟",options:["تطلب الدليل","تصدقه فورًا","تشتري المنتج","تتجاهل البيانات"],answer:0,explain:"يجب فحص الأدلة."},
-{id:"q16",lesson:"evaluate-explanations",concept:"critical",type:"choice",q:"التفكير الناقد يعني:",options:["فحص الأدلة قبل قبول الاستنتاج","رفض كل فكرة","قبول أول تفسير","اتباع الرأي فقط"],answer:0,explain:"التفكير الناقد يعتمد على الأدلة."}
-]
-};
-</script>
-
-<script>
-const CFG=window.SCIENCE_CONFIG;
-const DATA=window.SCIENCE_DATA;
+</script><script>
+const CFG=window.SCIENCE_CONFIG||{}, DATA=window.SCIENCE_DATA||{lessons:[],questions:[]};
 const $=id=>document.getElementById(id);
+let state={mode:'training',lesson:'all',task:null,student:{},quiz:[],i:0,score:0,correct:0,streak:0,bestStreak:0,logs:[],answered:false,startedAt:0,timer:null,timeLeft:0};
 
-let state={
- mode:"training",
- lesson:"all",
- task:null,
- student:{},
- quiz:[],
- i:0,
- score:0,
- correct:0,
- streak:0,
- bestStreak:0,
- logs:[],
- answered:false,
- startedAt:0,
- timer:null,
- timeLeft:0
-};
-
-function api(){
- return (CFG.apiUrl||"").trim();
-}
-
-function esc(s){
- return String(s??"").replace(/[&<>'"]/g,c=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  "'":"&#39;",
-  '"':"&quot;"
- }[c]));
-}
-
-function shuffle(a){
- const b=[...a];
- for(let i=b.length-1;i>0;i--){
-  const j=Math.floor(Math.random()*(i+1));
-  [b[i],b[j]]=[b[j],b[i]];
- }
- return b;
-}
-
-function pick(a,n){
- return shuffle(a).slice(0,Math.min(n,a.length));
-}
-
-function lessonBy(id){
- return DATA.lessons.find(x=>x.id===id);
-}
-
-function conceptName(lessonId,conceptId){
- const l=lessonBy(lessonId);
- return l?.concepts.find(c=>c.id===conceptId)?.name||conceptId;
-}
-
-function level(p){
- if(p>=90)return "متميز";
- if(p>=80)return "متقن";
- if(p>=70)return "جيد";
- if(p>=60)return "يحتاج تعزيزًا بسيطًا";
- return "يحتاج خطة علاجية";
-}
-
-function screen(id){
- ["homeScreen","lessonScreen","identityScreen","quizScreen","resultScreen"]
- .forEach(x=>$(x).classList.add("hidden"));
- $(id).classList.remove("hidden");
- scrollTo({top:0,behavior:"smooth"});
-}
-
-function goHome(){
- clearInterval(state.timer);
- screen("homeScreen");
-}
-
-function scrollToLessons(){
- document.getElementById("lessonsSection")
- .scrollIntoView({behavior:"smooth"});
-}
+function api(){return (CFG.apiUrl||localStorage.getItem('science_api_url')||'').trim()}
+function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+function pick(a,n){return shuffle(a).slice(0,Math.min(n,a.length))}
+function lessonBy(id){return DATA.lessons.find(x=>x.id===id)}
+function conceptName(lessonId,conceptId){const l=lessonBy(lessonId);return l?.concepts.find(c=>c.id===conceptId)?.name||conceptId}
+function level(p){if(p>=90)return'متميز';if(p>=80)return'متقن';if(p>=70)return'جيد';if(p>=60)return'يحتاج تعزيزًا بسيطًا';return'يحتاج خطة علاجية'}
+function screen(id){['homeScreen','lessonScreen','identityScreen','quizScreen','resultScreen'].forEach(x=>$(x).classList.add('hidden'));$(id).classList.remove('hidden');scrollTo({top:0,behavior:'smooth'})}
+function scrollToLessons(){document.getElementById('lessonsSection').scrollIntoView({behavior:'smooth'})} window.scrollToLessons=scrollToLessons;
+function goHome(){clearInterval(state.timer);screen('homeScreen')} window.goHome=goHome;
 
 function init(){
- $("schoolName").textContent=CFG.schoolName;
- $("subTitle").textContent=
- `${CFG.subject} | المعلم: ${CFG.teacherName}`;
-
- $("footerText").textContent=
- `${CFG.schoolName} • ${CFG.subject} • العام ${CFG.year}`;
-
- $("studentClass").innerHTML=
- '<option value="">اختر الفصل</option>'+
- CFG.classes.map(x=>`<option value="${x}">${x}</option>`).join("");
-
- $("studentClass").onchange=loadStudentsForClass;
-
- $("linkState").textContent=
- api()?"مرتبط بالمعلم":"قائمة محلية جاهزة";
-
- $("linkState").className=
- "pill "+(api()?"good":"off");
-
+ $('schoolName').textContent=CFG.schoolName||'مدرسة أبي الدرداء المتوسطة';
+ $('subTitle').textContent=`${CFG.subject||'العلوم – الصف الأول المتوسط'} | المعلم: ${CFG.teacherName||''}`;
+ $('footerText').textContent=`${CFG.schoolName||''} • ${CFG.subject||''} • العام ${CFG.year||'1448هـ'}`;
+ $('studentClass').innerHTML='<option value="">اختر الفصل</option>'+(CFG.classes||[]).map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+ $('studentName').innerHTML='<option value="">اختر الفصل أولًا</option>';
+ $('studentClass').onchange=loadStudentsForClass;
+ $('linkState').textContent=api()?'مرتبط بالمعلم':'غير مرتبط بالمعلم';$('linkState').className='pill '+(api()?'good':'off');
  renderLessons();
-
- $("startActivity").onclick=startActivity;
- $("checkBtn").onclick=checkAnswer;
- $("nextBtn").onclick=nextQuestion;
- $("resultAction").onclick=resultNext;
-
- const taskId=new URLSearchParams(location.search).get("task");
- if(taskId)loadTask(taskId);
+ $('startActivity').onclick=startActivity;$('checkBtn').onclick=checkAnswer;$('nextBtn').onclick=nextQuestion;$('resultAction').onclick=resultNext;
+ const taskId=new URLSearchParams(location.search).get('task');if(taskId)loadTask(taskId);
 }
 function renderLessons(){
-
- const allowedLessons =
-  Array.isArray(state.task?.lessonIds) &&
-  state.task.lessonIds.length
-  ? DATA.lessons.filter(l =>
-      state.task.lessonIds.includes(l.id)
-    )
-  : DATA.lessons;
-
- $("lessonCards").innerHTML=
- allowedLessons.map(l=>`
- <article class="lesson-card glass ${l.color}">
-  <span class="status">جاهز</span>
-  <div class="icon">${l.icon}</div>
-  <h4>${esc(l.title)}</h4>
-  <p>${esc(l.summary)}</p>
-  <button class="btn" onclick="openLesson('${l.id}')">
-   فتح الدرس
-  </button>
- </article>`).join("");
+ const allowedLessons=(Array.isArray(state.task?.lessonIds)&&state.task.lessonIds.length)
+   ? DATA.lessons.filter(l=>state.task.lessonIds.includes(l.id))
+   : DATA.lessons;
+ $('lessonCards').innerHTML=allowedLessons.map(l=>`<article class="lesson-card glass ${l.color}"><span class="status">جاهز</span><div class="icon">${l.icon}</div><h4>${esc(l.title)}</h4><p>${esc(l.summary)}</p><button class="btn" onclick="openLesson('${l.id}')">فتح الدرس</button></article>`).join('');
 }
-
 function openLesson(id){
- 
- const l=lessonBy(id);
- if(!l)return;
- const allowed =
-  Array.isArray(state.task?.lessonIds) &&
-  state.task.lessonIds.length
-  ? state.task.lessonIds
-  : null;
-
- if(allowed && !allowed.includes(id)){
-  alert("هذا الدرس غير ضمن التكليف المحدد.");
-  return;
- }
- state.lesson=id;
-
- $("lessonIcon").textContent=l.icon;
- $("lessonTitle").textContent=l.title;
- $("lessonSummary").textContent=l.summary;
- $("lessonStatus").textContent="الدرس • "+l.title;
-
- $("lessonObjectives").innerHTML=
- l.objectives.map(x=>`<li>${esc(x)}</li>`).join("");
-
- $("lessonConcepts").innerHTML=
- l.concepts.map(c=>`
- <li>
-  <b>${esc(c.name)}</b>
-  <span>${esc(c.note)}</span>
- </li>`).join("");
-
- $("lessonTrainBtn").onclick=()=>openIdentity("training",id);
- $("lessonRemedialBtn").onclick=()=>openIdentity("remedial",id);
- $("lessonEnrichBtn").onclick=()=>openIdentity("enrich",id);
-
- screen("lessonScreen");
+ const l=lessonBy(id);if(!l)return;
+ const allowed=(Array.isArray(state.task?.lessonIds)&&state.task.lessonIds.length)?state.task.lessonIds:null;
+ if(allowed&&!allowed.includes(id)){alert('هذا الدرس غير ضمن التكليف المحدد.');return}
+ state.lesson=id;$('lessonIcon').textContent=l.icon;$('lessonTitle').textContent=l.title;$('lessonSummary').textContent=l.summary;$('lessonStatus').textContent='الدرس • '+l.title;$('lessonObjectives').innerHTML=l.objectives.map(x=>`<li>${esc(x)}</li>`).join('');$('lessonConcepts').innerHTML=l.concepts.map(c=>`<li><b>${esc(c.name)}</b><span>${esc(c.note)}</span></li>`).join('');$('lessonTrainBtn').onclick=()=>openIdentity('training',id);$('lessonRemedialBtn').onclick=()=>openIdentity('remedial',id);$('lessonEnrichBtn').onclick=()=>openIdentity('enrich',id);screen('lessonScreen')
 }
 window.openLesson=openLesson;
 
-function openIdentity(mode,lesson,task=null){
- state.mode=mode;
- state.lesson=lesson;
- state.task=task;
-
- const labels={
-  training:"التدريب التفاعلي",
-  exam:"الاختبار الشامل",
-  remedial:"المسار العلاجي",
-  enrich:"المسار الإثرائي"
- };
-
- $("identityTitle").textContent=labels[mode]||"بيانات الطالب";
-
- let note=
- mode==="exam"
- ?"الاختبار يتكون من أسئلة محددة بزمن."
- :mode==="remedial"
- ?"تدريب مركز على المفاهيم التي تحتاج إلى تعزيز."
- :mode==="enrich"
- ?"مسار إضافي للطلاب المتقنين."
- :"يمكنك إعادة التدريب أكثر من مرة.";
-
- if(task){
-  note="تكليف: "+task.title;
- }
-
- $("taskNotice").textContent=note;
-
- $("studentName").innerHTML=
- '<option value="">اختر الفصل أولًا</option>';
-
- $("studentName").disabled=true;
-
- $("studentsStatus").textContent=
- "اختر الفصل لتظهر أسماء الطلاب.";
-
- if(task&&task.className&&task.className!=="الكل"){
-  $("studentClass").value=task.className;
-  loadStudentsForClass();
- }else{
-  $("studentClass").value="";
- }
-
- screen("identityScreen");
-}
+function openIdentity(mode,lesson,task=null){state.mode=mode;state.lesson=lesson;state.task=task;const labels={training:'التدريب التفاعلي',exam:'الاختبار الشامل',remedial:'المسار العلاجي',enrich:'المسار الإثرائي',task:'التكليف المنزلي'};$('identityTitle').textContent=labels[mode]||'بيانات الطالب';let note=mode==='exam'?'الاختبار يتكون من 20 سؤالًا، ولكل سؤال زمن محدد. لا يمكن الرجوع للسؤال السابق.':mode==='remedial'?'سيتركز التدريب على المفاهيم التي تحتاج إلى تعزيز، ثم تقارن نتيجتك بالمحاولة السابقة.':mode==='enrich'?'مسار إضافي للطلاب المتقنين، يركز على تطبيق المفاهيم بطريقة أعمق.':'يمكنك إعادة التدريب أكثر من مرة، وستظهر لك التغذية الراجعة بعد كل سؤال.';if(task)note=`تكليف: ${task.title}. ${task.endAt?'آخر موعد: '+new Date(task.endAt).toLocaleString('ar-SA'):''}`;$('taskNotice').textContent=note;
+ $('studentName').innerHTML='<option value="">اختر الفصل أولًا</option>';$('studentName').disabled=true;$('studentsStatus').textContent='اختر الفصل لتظهر أسماء الطلاب.';
+ if(task&&task.className&&task.className!=='الكل'){ $('studentClass').value=task.className; loadStudentsForClass(); } else { $('studentClass').value=''; }
+ screen('identityScreen')}
 window.openIdentity=openIdentity;
 
-async function loadStudentsForClass(){
- const className=$("studentClass").value;
- const select=$("studentName");
- const status=$("studentsStatus");
-
- if(!className){
-  select.innerHTML='<option value="">اختر الفصل أولًا</option>';
-  select.disabled=true;
-  return;
- }
-
- const showStudents=students=>{
-  select.innerHTML=
-   '<option value="">اختر اسمك</option>'+
-   students.map(s=>
-    `<option value="${esc(s.code)}">${esc(s.name)}</option>`
-   ).join("");
-
-  select.disabled=!students.length;
-
-  status.textContent=
-   students.length
-   ?`تم تحميل ${students.length} طالبًا من الفصل ${className}.`
-   :"لا توجد أسماء في هذا الفصل.";
- };
-
- /*
-   نحاول أولًا قاعدة المعلم.
-   إذا لم تستجب Apps Script نعرض القائمة المحلية فورًا.
-   وبذلك لا تتوقف منصة الطلاب بسبب خلل الاتصال.
- */
- if(api()){
-  select.innerHTML=
-   '<option value="">جاري تحميل الأسماء...</option>';
-
-  select.disabled=true;
-
-  status.textContent=
-   "جاري محاولة تحميل القائمة المحدثة...";
-
-  try{
-   const r=await requestApi({
-    action:"getStudents",
-    className
-   });
-
-   if(r?.ok&&Array.isArray(r.students)&&r.students.length){
-    showStudents(r.students);
-    return;
-   }
-  }catch(e){
-   console.log("API fallback",e);
-  }
- }
-
- const names=ROSTERS[className]||[];
-
- showStudents(
-  names.map((name,i)=>({
-   code:String(i+1),
-   name
-  }))
- );
-
- status.textContent=
- `تم تحميل ${names.length} طالبًا من القائمة المحلية للفصل ${className}.`;
-}
-
 async function loadTask(id){
+ if(!api()){alert('هذا رابط تكليف منزلي، لكن رابط منصة المعلم غير مضبوط على هذا الجهاز. افتح المنصة المنشورة بعد إتمام الربط.');return}
  try{
-  const r=await requestApi({
-   action:"getTask",
-   id
-  });
-
-  if(!r?.ok) throw new Error("task");
-
-  const t=r.task;
-
-  if(t.status!=="open"){
-   alert(t.message||"هذا التكليف غير متاح حاليًا.");
-   return;
-  }
-
-  let lessonIds=[];
-  const raw=t.lesson;
-
-  if(Array.isArray(raw)){
-   lessonIds=raw.map(String).map(x=>x.trim()).filter(Boolean);
-  }else{
-   try{
-    const parsed=JSON.parse(String(raw||""));
-
-    if(Array.isArray(parsed)){
-     lessonIds=parsed
-      .map(String)
-      .map(x=>x.trim())
-      .filter(Boolean);
-    }
-   }catch(e){}
-
-   if(!lessonIds.length && raw && raw!=="all"){
-    lessonIds=[String(raw).trim()];
+   const r=await jsonp({action:'getTask',id});
+   if(!r?.ok)throw new Error(r?.message||'تعذر فتح التكليف');
+   const t=r.task;
+   if(t.status!=='open'){alert(t.message||'هذا التكليف غير متاح حاليًا.');return}
+   let lessonIds=[];
+   const raw=t.lesson;
+   if(Array.isArray(raw)) lessonIds=raw.map(String).map(x=>x.trim()).filter(Boolean);
+   else{
+     try{const parsed=JSON.parse(String(raw||''));if(Array.isArray(parsed))lessonIds=parsed.map(String).map(x=>x.trim()).filter(Boolean)}catch(e){}
+     if(!lessonIds.length&&raw&&raw!=='all')lessonIds=[String(raw).trim()];
    }
-  }
-
-  t.lessonIds=lessonIds;
-state.task=t;
-renderLessons();
-  const firstLesson=
-   lessonIds.length
-   ?lessonIds[0]
-   :"all";
-
-  openIdentity(
-   t.mode||"training",
-   firstLesson,
-   t
-  );
-
- }catch(e){
-  alert("تعذر فتح التكليف الآن.");
- }
+   t.lessonIds=lessonIds;
+   state.task=t;
+   renderLessons();
+   const firstLesson=lessonIds.length?lessonIds[0]:'all';
+   openIdentity(t.mode||'training',firstLesson,t);
+ }catch(e){console.error(e);alert('تعذر فتح التكليف. تحقق من الرابط أو الاتصال.')}
 }
- 
-  
 
-async function requestApi(params){
- /*
-   JSONP عبر وسم script.
-   وإذا لم يستجب خلال مدة قصيرة،
-   لا تتوقف منصة الطلاب لأن القائمة المحلية متاحة.
- */
- return new Promise((resolve,reject)=>{
-
-  const endpoint=api();
-
-  if(!endpoint){
-   reject(new Error("no api"));
-   return;
-  }
-
-  const cb=
-   "studentCallback_"+Date.now()+"_"+Math.floor(Math.random()*100000);
-
-  const s=document.createElement("script");
-
-  const timer=setTimeout(()=>{
-   cleanup();
-   reject(new Error("timeout"));
-  },8000);
-
-  function cleanup(){
-   clearTimeout(timer);
-   try{delete window[cb]}catch(e){}
-   try{s.remove()}catch(e){}
-  }
-
-  window[cb]=data=>{
-   cleanup();
-   resolve(data);
-  };
-
-  s.onerror=()=>{
-   cleanup();
-   reject(new Error("network"));
-  };
-
-  const u=new URL(endpoint);
-
-  Object.entries({
-   ...params,
-   callback:cb,
-   _:Date.now()
-  }).forEach(([k,v])=>{
-   u.searchParams.set(k,String(v));
-  });
-
-  s.src=u.toString();
-
-  document.body.appendChild(s);
- });
+async function loadStudentsForClass(){
+ const className=$('studentClass').value;
+ const select=$('studentName');
+ if(!className){select.innerHTML='<option value="">اختر الفصل أولًا</option>';select.disabled=true;$('studentsStatus').textContent='اختر الفصل لتظهر أسماء الطلاب.';return}
+ const showStudents=students=>{
+   select.innerHTML='<option value="">اختر اسمك</option>'+students.map(s=>`<option value="${esc(s.code)}">${esc(s.name)}</option>`).join('');
+   select.disabled=!students.length;
+   $('studentsStatus').textContent=students.length?`تم تحميل ${students.length} طالبًا من الفصل ${className}.`:'لا توجد أسماء في هذا الفصل.';
+ };
+ if(api()){
+   select.disabled=true;select.innerHTML='<option value="">جاري تحميل الأسماء...</option>';$('studentsStatus').textContent='جاري محاولة تحميل القائمة المحدثة...';
+   try{const r=await jsonp({action:'getStudents',className});if(r?.ok&&Array.isArray(r.students)&&r.students.length){showStudents(r.students);return}}catch(e){console.log('API fallback',e)}
+ }
+ const names=ROSTERS[className]||[];
+ showStudents(names.map((name,i)=>({code:String(i+1),name})));
+ $('studentsStatus').textContent=`تم تحميل ${names.length} طالبًا من القائمة المحلية للفصل ${className}.`;
 }
 
 async function startActivity(){
-
- const className=$("studentClass").value;
- const select=$("studentName");
- const code=select.value;
- const name=select.options[select.selectedIndex]?.text||"";
-
- if(!className){
-  alert("اختر الفصل أولًا.");
-  return;
+ const className=$('studentClass').value,select=$('studentName'),code=select.value,name=select.options[select.selectedIndex]?.text||'';
+ if(!className){alert('اختر الفصل أولًا.');return}if(!code){alert('اختر اسمك من القائمة.');return}
+ state.student={name,className,code};
+ if(state.task&&state.task.className&&state.task.className!=='الكل'&&state.task.className!==className){alert('هذا التكليف غير مخصص لفصلك.');return}
+ if(state.mode==='exam'||state.task?.mode==='exam'){
+   if(!api()){alert('تعذر التحقق من محاولة الاختبار. أعد المحاولة عند توفر الاتصال.');return}
+   try{const r=await jsonp({action:'canAttempt',taskId:state.task?.id||'',className,studentCode:code});if(!r?.ok){throw new Error(r?.message||'تعذر التحقق من المحاولة')}if(r.allowed===false){alert(r.message||'استخدمت جميع المحاولات المتاحة لهذا الاختبار.');return}}catch(e){console.error(e);alert('تعذر التحقق من محاولة الاختبار الآن. تحقق من الإنترنت ثم أعد المحاولة.');return}
  }
-
- if(!code){
-  alert("اختر اسمك من القائمة.");
-  return;
- }
-
- state.student={
-  name,
-  className,
-  code
- };
-
- if(state.task&&
-    state.task.className&&
-    state.task.className!=="الكل"&&
-    state.task.className!==className){
-
-  alert("هذا التكليف غير مخصص لفصلك.");
-  return;
- }
-
- if(state.mode==="exam"&&api()){
-
-  try{
-   const r=await requestApi({
-    action:"canAttempt",
-    taskId:state.task?.id||"",
-    className,
-    studentCode:code
-   });
-
-   if(r?.allowed===false){
-    alert(r.message||"استخدمت المحاولة المتاحة.");
-    return;
-   }
-
-  }catch(e){
-   /*
-     لا نوقف التدريب العام إذا تعطل الاتصال.
-     أما التكليف الرسمي فيفضل التأكد من الاتصال.
-   */
-   if(state.task){
-    alert("تعذر التحقق من محاولة الاختبار. حاول مرة أخرى.");
-    return;
-   }
-  }
- }
-
- buildQuiz();
- state.startedAt=Date.now();
- screen("quizScreen");
- renderQuestion();
+ buildQuiz();state.startedAt=Date.now();screen('quizScreen');renderQuestion();
 }
-
-function randomizeChoice(q){
-
- if(q.type!=="choice"){
-  return structuredClone(q);
- }
-
- const pairs=q.options.map((text,i)=>({
-  text,
-  correct:i===q.answer
- }));
-
- const m=shuffle(pairs);
-
- return{
-  ...structuredClone(q),
-  options:m.map(x=>x.text),
-  answer:m.findIndex(x=>x.correct)
- };
-}
-
+function randomizeChoice(q){if(q.type!=='choice')return structuredClone(q);const pairs=q.options.map((text,i)=>({text,correct:i===q.answer}));const m=shuffle(pairs);return {...structuredClone(q),options:m.map(x=>x.text),answer:m.findIndex(x=>x.correct)}}
 function buildQuiz(){
-
- state.i=0;
- state.score=0;
- state.correct=0;
- state.streak=0;
- state.bestStreak=0;
- state.logs=[];
-const taskLessons =
-  Array.isArray(state.task?.lessonIds)
-  ? state.task.lessonIds
-  : [];
-
-let pool =
-  taskLessons.length
-  ? DATA.questions.filter(q =>
-      taskLessons.includes(q.lesson)
-    )
-  : state.lesson==="all"
-    ? DATA.questions
-    : DATA.questions.filter(q =>
-        q.lesson===state.lesson
-      );
-
- let n=
-  state.mode==="exam"
-  ?20
-  :state.mode==="remedial"
-  ?6
-  :state.mode==="enrich"
-  ?8
-  :10;
-
- if(state.task?.count){
-  n=state.task.count;
+ state.i=0;state.score=0;state.correct=0;state.streak=0;state.bestStreak=0;state.logs=[];
+ const taskLessons=(Array.isArray(state.task?.lessonIds)&&state.task.lessonIds.length)?state.task.lessonIds:[];
+ let pool=taskLessons.length?DATA.questions.filter(q=>taskLessons.includes(q.lesson)):(state.lesson==='all'?DATA.questions:DATA.questions.filter(q=>q.lesson===state.lesson));
+ let n=10;
+ if(state.mode==='exam'||state.task?.mode==='exam'){
+   n=state.task?.count||20;
+   const activeLessons=taskLessons.length?DATA.lessons.filter(l=>taskLessons.includes(l.id)):(state.lesson==='all'?DATA.lessons:DATA.lessons.filter(l=>l.id===state.lesson));
+   if(activeLessons.length>1){
+     const base=Math.floor(n/activeLessons.length),rem=n%activeLessons.length;let selected=[];
+     activeLessons.forEach((l,idx)=>{const need=base+(idx<rem?1:0);selected.push(...pick(DATA.questions.filter(q=>q.lesson===l.id),need))});
+     state.quiz=shuffle(selected).map(randomizeChoice);
+   }else state.quiz=pick(pool,n).map(randomizeChoice)
  }
-
- state.quiz=
-  pick(pool,n)
-  .map(randomizeChoice);
-
- $("timerBox").classList.toggle(
-  "hidden",
-  !(state.mode==="exam"||state.task?.mode==="exam")
- );
-
- $("checkBtn").classList.toggle(
-  "hidden",
-  state.mode==="exam"||state.task?.mode==="exam"
- );
-
- updateLive();
-}
-
-function qType(type){
- if(type==="tf")return"صح أو خطأ";
- if(type==="multi")return"اختيار متعدد";
- if(type==="order")return"ترتيب";
- return"اختيار من متعدد";
-}
-
-function renderQuestion(){
-
- clearInterval(state.timer);
-
- state.answered=false;
-
- const q=state.quiz[state.i];
-
- if(!q){
-  finishQuiz();
-  return;
+ else if(state.mode==='remedial'){
+   const weak=JSON.parse(localStorage.getItem('weak_concepts_'+state.lesson)||'[]');const target=weak.length?pool.filter(q=>weak.includes(q.concept)):pool;state.quiz=pick(target.length>=6?target:pool,state.task?.count||6).map(randomizeChoice)
  }
-
- $("progressBar").style.width=
- `${state.i/state.quiz.length*100}%`;
-
- $("quizMode").textContent=
- state.task?.title||
- ({
-  training:"تدريب",
-  exam:"اختبار",
-  remedial:"علاجي",
-  enrich:"إثرائي"
- }[state.mode]||"نشاط");
-
- $("quizCount").textContent=
- `السؤال ${state.i+1} من ${state.quiz.length}`;
-
- $("quizLesson").textContent=
- lessonBy(q.lesson)?.title||"";
-
- $("qType").textContent=qType(q.type);
- $("qConcept").textContent=
- conceptName(q.lesson,q.concept);
-
- $("questionText").textContent=q.q;
-
- $("feedback").classList.add("hidden");
- $("nextBtn").classList.add("hidden");
- $("checkBtn").disabled=false;
-
- renderAnswers(q);
-
- if(state.mode==="exam"||state.task?.mode==="exam"){
-  startTimer(state.task?.timePerQuestion||30);
- }
-
- updateLive();
+ else if(state.mode==='enrich') state.quiz=pick(pool,state.task?.count||8).map(randomizeChoice);
+ else state.quiz=pick(pool,state.task?.count||10).map(randomizeChoice);
+ $('timerBox').classList.toggle('hidden',!(state.mode==='exam'||state.task?.mode==='exam'));$('checkBtn').classList.toggle('hidden',(state.mode==='exam'||state.task?.mode==='exam'));updateLive();
 }
+function qType(type){return type==='tf'?'صح أو خطأ':type==='multi'?'اختيار متعدد':type==='order'?'ترتيب':'اختيار من متعدد'}
+function renderQuestion(){clearInterval(state.timer);state.answered=false;const q=state.quiz[state.i];$('progressBar').style.width=`${state.i/state.quiz.length*100}%`;$('quizMode').textContent=state.task?.title||({training:'تدريب',exam:'اختبار',remedial:'علاجي',enrich:'إثرائي'}[state.mode]||'نشاط');$('quizCount').textContent=`السؤال ${state.i+1} من ${state.quiz.length}`;$('quizLesson').textContent=lessonBy(q.lesson)?.title||'';$('qType').textContent=qType(q.type);$('qConcept').textContent=conceptName(q.lesson,q.concept);$('questionText').textContent=q.q;$('feedback').classList.add('hidden');$('nextBtn').classList.add('hidden');$('checkBtn').disabled=false;renderAnswers(q);if(state.mode==='exam'||state.task?.mode==='exam')startTimer(state.task?.timePerQuestion||30);updateLive()}
+function renderAnswers(q){const box=$('answers');box.innerHTML='';if(q.type==='order'){let arr=shuffle(q.options.map((t,i)=>({t,orig:i})));const draw=()=>{box.innerHTML=`<div class="order">${arr.map((x,i)=>`<div class="order-row"><span>${i+1}</span><b>${esc(x.t)}</b><button data-up="${i}">↑</button><button data-down="${i}">↓</button></div>`).join('')}</div>`;box.dataset.order=JSON.stringify(arr.map(x=>x.orig));box.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.up;if(i>0){[arr[i-1],arr[i]]=[arr[i],arr[i-1]];draw()}});box.querySelectorAll('[data-down]').forEach(b=>b.onclick=()=>{const i=+b.dataset.down;if(i<arr.length-1){[arr[i+1],arr[i]]=[arr[i],arr[i+1]];draw()}})};draw();return}
+ const opts=q.type==='tf'?['صح','خطأ']:q.options;opts.forEach((t,i)=>{const b=document.createElement('button');b.className='answer';b.type='button';b.dataset.index=i;b.textContent=t;b.onclick=()=>{if(state.answered)return;if(q.type==='multi'){b.classList.toggle('selected')}else{box.querySelectorAll('.answer').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');if(state.mode==='exam'||state.task?.mode==='exam')submitExam(i,false)}};box.appendChild(b)})}
+function response(q){if(q.type==='order')return JSON.parse($('answers').dataset.order||'[]');if(q.type==='multi')return [...$('answers').querySelectorAll('.answer.selected')].map(x=>+x.dataset.index).sort((a,b)=>a-b);const s=$('answers').querySelector('.answer.selected');if(!s)return null;if(q.type==='tf')return +s.dataset.index===0;return +s.dataset.index}
+function eq(a,b){if(Array.isArray(a)&&Array.isArray(b))return a.length===b.length&&a.every((x,i)=>x===b[i]);return a===b}
+function checkAnswer(){const q=state.quiz[state.i],r=response(q);if(r===null||(Array.isArray(r)&&!r.length)){alert('اختر إجابة أولًا.');return}finishQuestion(q,r,false)}
+function mark(q,r){if(q.type==='order')return;const els=[...$('answers').querySelectorAll('.answer')];els.forEach(el=>{let val=q.type==='tf'?(+el.dataset.index===0):+el.dataset.index;if(q.type==='multi'){if(q.answer.includes(val))el.classList.add('correct');if(el.classList.contains('selected')&&!q.answer.includes(val))el.classList.add('wrong')}else{if(eq(val,q.answer))el.classList.add('correct');if(eq(val,r)&&!eq(val,q.answer))el.classList.add('wrong')}})}
+function finishQuestion(q,r,timedOut){if(state.answered)return;state.answered=true;clearInterval(state.timer);const ok=eq(r,q.answer);if(ok){state.score++;state.correct++;state.streak++;state.bestStreak=Math.max(state.bestStreak,state.streak)}else state.streak=0;state.logs.push({id:q.id,lesson:q.lesson,concept:q.concept,correct:ok,response:r,timedOut:!!timedOut});mark(q,r);if(!(state.mode==='exam'||state.task?.mode==='exam')){const f=$('feedback');f.className='feedback '+(ok?'ok':'no');f.innerHTML=`<b>${ok?'✅ إجابة صحيحة':'💡 إجابة غير صحيحة'}</b><div>${esc(q.explain)}</div>`;f.classList.remove('hidden');$('checkBtn').disabled=true;$('nextBtn').classList.remove('hidden')}updateLive()}
+function submitExam(r,timedOut){const q=state.quiz[state.i];finishQuestion(q,r,timedOut);setTimeout(nextQuestion,350)}
+function nextQuestion(){if(state.i<state.quiz.length-1){state.i++;renderQuestion()}else finishQuiz()} window.nextQuestion=nextQuestion;
+function startTimer(sec){state.timeLeft=sec;timerUI();state.timer=setInterval(()=>{state.timeLeft--;timerUI();if(state.timeLeft<=0){clearInterval(state.timer);submitExam(null,true)}},1000)}
+function timerUI(){$('timerText').textContent=state.timeLeft;$('timerBox').className='timer'+(state.timeLeft<=7?' danger':state.timeLeft<=12?' warn':'')}
+function updateLive(){const n=state.logs.length,acc=n?Math.round(state.correct/n*100):0;$('liveScore').textContent=state.score;$('liveCorrect').textContent=state.correct;$('liveAccuracy').textContent=acc+'%';$('liveStreak').textContent=state.streak}
+function quitQuiz(){if(confirm('هل تريد إنهاء النشاط والعودة للرئيسية؟'))goHome()} window.quitQuiz=quitQuiz;
 
-function renderAnswers(q){
-
- const box=$("answers");
- box.innerHTML="";
-
- const opts=
- q.type==="tf"
- ?["صح","خطأ"]
- :q.options;
-
- opts.forEach((text,i)=>{
-
-  const b=document.createElement("button");
-
-  b.className="answer";
-  b.type="button";
-  b.dataset.index=i;
-  b.textContent=text;
-
-  b.onclick=()=>{
-
-   if(state.answered)return;
-
-   box.querySelectorAll(".answer")
-   .forEach(x=>x.classList.remove("selected"));
-
-   b.classList.add("selected");
-
-   if(state.mode==="exam"||state.task?.mode==="exam"){
-    finishQuestion(
-     q,
-     q.type==="tf"?(i===0):i,
-     false
-    );
-
-    setTimeout(nextQuestion,350);
-   }
-  };
-
-  box.appendChild(b);
- });
+function breakdown(){const out={};DATA.lessons.forEach(l=>out[l.id]={correct:0,total:0});state.logs.forEach(x=>{out[x.lesson]??={correct:0,total:0};out[x.lesson].total++;if(x.correct)out[x.lesson].correct++});return out}
+function weakConcepts(){const m={};state.logs.forEach(x=>{m[x.concept]??={c:0,t:0};m[x.concept].t++;if(x.correct)m[x.concept].c++});return Object.entries(m).filter(([,v])=>v.t&&v.c/v.t<.8).map(([k])=>k)}
+async function finishQuiz(){clearInterval(state.timer);$('progressBar').style.width='100%';const total=state.quiz.length,pct=Math.round(state.score/total*100),lvl=level(pct),bd=breakdown(),duration=Math.round((Date.now()-state.startedAt)/1000),weak=weakConcepts();if(state.lesson!=='all')localStorage.setItem('weak_concepts_'+state.lesson,JSON.stringify(weak));screen('resultScreen');$('scorePct').textContent=pct+'%';$('scoreRing').style.setProperty('--pct',pct+'%');$('resultTitle').textContent=state.mode==='exam'||state.task?.mode==='exam'?'نتيجة الاختبار':state.mode==='remedial'?'نتيجة المسار العلاجي':state.mode==='enrich'?'نتيجة المسار الإثرائي':'نتيجة التدريب';$('resultLevel').textContent=lvl;$('resultText').textContent=`${state.student.name} — حصلت على ${state.score} من ${total}. أعلى سلسلة صحيحة: ${state.bestStreak}. زمن النشاط: ${duration} ثانية.`;$('breakdown').innerHTML=DATA.lessons.map(l=>{const x=bd[l.id],p=x.total?Math.round(x.correct/x.total*100):0;return `<div class="break"><span>${esc(l.title)}</span><strong>${x.correct}/${x.total} (${p}%)</strong></div>`}).join('');let rec=[];if(weak.length)rec.push({h:'🩺 مفاهيم تحتاج تعزيزًا',p:weak.map(x=>conceptName(state.lesson==='all'?state.logs.find(z=>z.concept===x)?.lesson:state.lesson,x)).join('، ')});else rec.push({h:'🏅 مستوى إتقان مرتفع',p:'أظهرت النتائج إتقانًا جيدًا للمفاهيم التي ظهرت في هذه الجولة.'});rec.push({h:'الخطوة المقترحة',p:pct<80?'انتقل إلى المسار العلاجي ثم أعد التدريب.':'انتقل إلى المسار الإثرائي أو الاختبار الشامل لتثبيت الإتقان.'});$('recommendations').innerHTML=rec.map(x=>`<div class="rec"><h4>${esc(x.h)}</h4><p>${esc(x.p)}</p></div>`).join('');$('resultAction').textContent=pct<80?'ابدأ المسار العلاجي':'ابدأ المسار الإثرائي';$('sendStatus').textContent=api()?'جاري إرسال التقرير إلى منصة المعلم...':'تم حفظ النتيجة على هذا الجهاز. بعد ربط المنصة تصل التقارير إلى المعلم تلقائيًا.';
+ const payload={type:(state.mode==='exam'||state.task?.mode==='exam')?'test':state.mode,taskId:state.task?.id||'',taskTitle:state.task?.title||'',timestamp:new Date().toISOString(),studentName:state.student.name,className:state.student.className,studentCode:state.student.code,lesson:state.lesson,score,total,percent:pct,level:lvl,durationSec:duration,bestStreak:state.bestStreak,breakdown:bd,weakConcepts:weak,answers:state.logs};localStorage.setItem('last_science_result',JSON.stringify(payload));if(api()){try{await fetch(api(),{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});$('sendStatus').textContent='تم إرسال تقرير الأداء إلى منصة المعلم.'}catch(e){$('sendStatus').textContent='تم حفظ النتيجة، لكن تعذر تأكيد الإرسال. تحقق من الاتصال.'}}
+ state.lastPct=pct;state.lastWeak=weak;
 }
+function resultNext(){const target=state.lesson==='all'?(state.logs[0]?.lesson||DATA.lessons[0].id):state.lesson;if(state.lastPct<80)openIdentity('remedial',target);else openIdentity('enrich',target)}
 
-function response(q){
+function jsonp(params){return new Promise((resolve,reject)=>{const cb='cb_'+Date.now()+'_'+Math.floor(Math.random()*9999),s=document.createElement('script'),to=setTimeout(()=>{clean();reject(new Error('timeout'))},12000);window[cb]=d=>{clean();resolve(d)};function clean(){clearTimeout(to);delete window[cb];s.remove()}const u=new URL(api());Object.entries({...params,callback:cb}).forEach(([k,v])=>u.searchParams.set(k,v));s.src=u.toString();s.onerror=()=>{clean();reject(new Error('network'))};document.body.appendChild(s)})}
 
- const s=$("answers")
- .querySelector(".answer.selected");
+document.addEventListener('DOMContentLoaded',init);
 
- if(!s)return null;
-
- if(q.type==="tf"){
-  return +s.dataset.index===0;
- }
-
- return +s.dataset.index;
-}
-
-function eq(a,b){
- return a===b;
-}
-
-function checkAnswer(){
-
- const q=state.quiz[state.i];
- const r=response(q);
-
- if(r===null){
-  alert("اختر إجابة أولًا.");
-  return;
- }
-
- finishQuestion(q,r,false);
-}
-
-function mark(q,r){
-
- const els=[
-  ...$("answers")
-  .querySelectorAll(".answer")
- ];
-
- els.forEach(el=>{
-
-  let val=
-  q.type==="tf"
-  ?(+el.dataset.index===0)
-  :+el.dataset.index;
-
-  if(eq(val,q.answer)){
-   el.classList.add("correct");
-  }
-
-  if(eq(val,r)&&!eq(val,q.answer)){
-   el.classList.add("wrong");
-  }
- });
-}
-
-function finishQuestion(q,r,timedOut){
-
- if(state.answered)return;
-
- state.answered=true;
-
- clearInterval(state.timer);
-
- const ok=eq(r,q.answer);
-
- if(ok){
-  state.score++;
-  state.correct++;
-  state.streak++;
-  state.bestStreak=
-   Math.max(state.bestStreak,state.streak);
- }else{
-  state.streak=0;
- }
-
- state.logs.push({
-  id:q.id,
-  lesson:q.lesson,
-  concept:q.concept,
-  correct:ok,
-  response:r,
-  timedOut:!!timedOut
- });
-
- mark(q,r);
-
- if(!(state.mode==="exam"||
-      state.task?.mode==="exam")){
-
-  const f=$("feedback");
-
-  f.className=
-   "feedback "+(ok?"ok":"no");
-
-  f.innerHTML=
-   `<b>${ok?"✅ إجابة صحيحة":"💡 إجابة غير صحيحة"}</b>
-    <div>${esc(q.explain)}</div>`;
-
-  f.classList.remove("hidden");
-
-  $("checkBtn").disabled=true;
-  $("nextBtn").classList.remove("hidden");
- }
-
- updateLive();
-}
-
-function nextQuestion(){
-
- if(state.i<state.quiz.length-1){
-  state.i++;
-  renderQuestion();
- }else{
-  finishQuiz();
- }
-}
-
-function startTimer(sec){
-
- state.timeLeft=sec;
- timerUI();
-
- state.timer=setInterval(()=>{
-
-  state.timeLeft--;
-  timerUI();
-
-  if(state.timeLeft<=0){
-
-   clearInterval(state.timer);
-
-   const q=state.quiz[state.i];
-
-   finishQuestion(q,null,true);
-
-   setTimeout(nextQuestion,300);
-  }
-
- },1000);
-}
-
-function timerUI(){
-
- $("timerText").textContent=
- state.timeLeft;
-
- $("timerBox").className=
- "timer"+
- (state.timeLeft<=7
-  ?" danger"
-  :state.timeLeft<=12
-  ?" warn"
-  :"");
-}
-
-function updateLive(){
-
- const n=state.logs.length;
-
- const accuracy=
- n
- ?Math.round(state.correct/n*100)
- :0;
-
- $("liveScore").textContent=
- state.score;
-
- $("liveCorrect").textContent=
- state.correct;
-
- $("liveAccuracy").textContent=
- accuracy+"%";
-
- $("liveStreak").textContent=
- state.streak;
-}
-
-function quitQuiz(){
-
- if(confirm("هل تريد إنهاء النشاط والعودة للرئيسية؟")){
-  goHome();
- }
-}
-
-function breakdown(){
-
- const out={};
-
- DATA.lessons.forEach(l=>{
-  out[l.id]={
-   correct:0,
-   total:0
-  };
- });
-
- state.logs.forEach(x=>{
-
-  if(!out[x.lesson]){
-   out[x.lesson]={
-    correct:0,
-    total:0
-   };
-  }
-
-  out[x.lesson].total++;
-
-  if(x.correct){
-   out[x.lesson].correct++;
-  }
- });
-
- return out;
-}
-
-function weakConcepts(){
-
- const m={};
-
- state.logs.forEach(x=>{
-
-  if(!m[x.concept]){
-   m[x.concept]={
-    c:0,
-    t:0
-   };
-  }
-
-  m[x.concept].t++;
-
-  if(x.correct){
-   m[x.concept].c++;
-  }
- });
-
- return Object.entries(m)
- .filter(([,v])=>
-  v.t&&v.c/v.t<.8
- )
- .map(([k])=>k);
-}
-
-async function finishQuiz(){
-
- clearInterval(state.timer);
-
- $("progressBar").style.width="100%";
-
- const total=state.quiz.length;
- const pct=
- total
- ?Math.round(state.score/total*100)
- :0;
-
- const lvl=level(pct);
- const bd=breakdown();
- const duration=
- Math.round(
-  (Date.now()-state.startedAt)/1000
- );
-
- const weak=weakConcepts();
-
- screen("resultScreen");
-
- $("scorePct").textContent=
- pct+"%";
-
- $("scoreRing").style.setProperty(
-  "--pct",
-  pct+"%"
- );
-
- $("resultTitle").textContent=
- state.mode==="exam"
- ?"نتيجة الاختبار"
- :state.mode==="remedial"
- ?"نتيجة المسار العلاجي"
- :state.mode==="enrich"
- ?"نتيجة المسار الإثرائي"
- :"نتيجة التدريب";
-
- $("resultLevel").textContent=lvl;
-
- $("resultText").textContent=
- `${state.student.name} — حصلت على ${state.score} من ${total}.`;
-
- $("breakdown").innerHTML=
- DATA.lessons.map(l=>{
-
-  const x=bd[l.id];
-
-  const p=
-  x.total
-  ?Math.round(x.correct/x.total*100)
-  :0;
-
-  return`
-   <div class="break">
-    <span>${esc(l.title)}</span>
-    <strong>
-     ${x.correct}/${x.total} (${p}%)
-    </strong>
-   </div>
-  `;
-
- }).join("");
-
- let rec=[];
-
- if(weak.length){
-
-  rec.push({
-   h:"🩺 مفاهيم تحتاج تعزيزًا",
-   p:weak.join("، ")
-  });
-
- }else{
-
-  rec.push({
-   h:"🏅 مستوى إتقان مرتفع",
-   p:"أظهرت النتيجة إتقانًا جيدًا."
-  });
- }
-
- rec.push({
-  h:"الخطوة المقترحة",
-  p:pct<80
-  ?"انتقل إلى المسار العلاجي."
-  :"انتقل إلى المسار الإثرائي."
- });
-
- $("recommendations").innerHTML=
- rec.map(x=>`
- <div class="rec">
-  <h4>${esc(x.h)}</h4>
-  <p>${esc(x.p)}</p>
- </div>`).join("");
-
- $("resultAction").textContent=
- pct<80
- ?"ابدأ المسار العلاجي"
- :"ابدأ المسار الإثرائي";
-
- const payload={
-  type:state.mode==="exam"
-  ?"test"
-  :state.mode,
-
-  taskId:state.task?.id||"",
-  taskTitle:state.task?.title||"",
-  timestamp:new Date().toISOString(),
-  studentName:state.student.name,
-  className:state.student.className,
-  studentCode:state.student.code,
-  lesson:state.lesson,
-  score:state.score,
-  total,
-  percent:pct,
-  level:lvl,
-  durationSec:duration,
-  bestStreak:state.bestStreak,
-  breakdown:bd,
-  weakConcepts:weak,
-  answers:state.logs
- };
-
- localStorage.setItem(
-  "last_science_result",
-  JSON.stringify(payload)
- );
-
- $("sendStatus").textContent=
- "تم حفظ النتيجة على الجهاز.";
-
- if(api()){
-
-  try{
-
-   await fetch(api(),{
-    method:"POST",
-    mode:"no-cors",
-    headers:{
-     "Content-Type":
-     "text/plain;charset=utf-8"
-    },
-    body:JSON.stringify(payload)
-   });
-
-   $("sendStatus").textContent=
-   "تم إرسال تقرير الأداء إلى منصة المعلم.";
-
-  }catch(e){
-
-   $("sendStatus").textContent=
-   "تم حفظ النتيجة، وتعذر تأكيد الإرسال.";
-  }
- }
-
- state.lastPct=pct;
- state.lastWeak=weak;
-}
-
-function resultNext(){
-
- const target=
- state.lesson==="all"
- ?(state.logs[0]?.lesson||
-   DATA.lessons[0].id)
- :state.lesson;
-
- if(state.lastPct<80){
-  openIdentity("remedial",target);
- }else{
-  openIdentity("enrich",target);
- }
-}
-
-window.goHome=goHome;
-window.scrollToLessons=scrollToLessons;
-window.quitQuiz=quitQuiz;
-window.nextQuestion=nextQuestion;
-
-document.addEventListener(
- "DOMContentLoaded",
- init
-);
 </script>
-
-</body>
-</html>
+</body></html>
