@@ -29,7 +29,7 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 
 .portfolio-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 16px}.report-cards .feature{align-items:stretch}.report-card>div:last-child{display:flex;flex-direction:column;flex:1}.report-card .btn{margin-top:auto;align-self:flex-start}.report-modal-card{width:min(920px,96vw);max-height:92vh;overflow:auto}.report-paper{background:white;color:#172033;border-radius:18px;padding:28px;direction:rtl;line-height:1.9}.report-paper h1,.report-paper h2,.report-paper h3{color:#0b3553}.report-paper .report-head{text-align:center;border-bottom:3px solid #0b6c76;padding-bottom:14px;margin-bottom:18px}.report-paper .report-head h1{margin:0 0 4px;font-size:1.55rem}.report-paper .report-head p{margin:3px 0;color:#4b6072}.report-paper .report-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}.report-paper .meta-box{background:#f3f7fa;border:1px solid #dce6ed;border-radius:12px;padding:9px 12px}.report-paper .report-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}.report-paper .kpi{background:#f6fafb;border:1px solid #dce8ea;border-radius:12px;text-align:center;padding:12px}.report-paper .kpi b{display:block;font-size:1.3rem;color:#0b6c76}.report-paper table{min-width:0;color:#172033;border:1px solid #dfe7ec}.report-paper th{position:static;background:#eaf3f5;color:#14384a}.report-paper th,.report-paper td{border:1px solid #dfe7ec;padding:8px}.report-paper .report-section{margin-top:17px}.report-paper .report-section h3{margin:0 0 8px}.report-paper .evidence-note{background:#fff8e5;border:1px solid #f1d89b;border-radius:12px;padding:10px 12px}.report-paper ul{margin-top:6px}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}@media(max-width:700px){.portfolio-controls,.report-paper .report-meta,.report-paper .report-kpis{grid-template-columns:1fr}.report-paper{padding:18px}}
 
-.results-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0}.results-kpi{padding:13px;border-radius:15px;background:#0c1d32;border:1px solid var(--line);text-align:center}.results-kpi span{display:block;color:var(--muted);font-size:.78rem}.results-kpi b{display:block;font-size:1.35rem;margin-top:4px}.results-toolbar{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr auto;gap:10px;align-items:end}.improve-pos{color:#8ff0b1;font-weight:900}.improve-neg{color:#ffb0bb;font-weight:900}@media(max-width:900px){.results-kpis{grid-template-columns:repeat(2,1fr)}.results-toolbar{grid-template-columns:1fr}}
+.results-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0}.results-kpi{padding:13px;border-radius:15px;background:#0c1d32;border:1px solid var(--line);text-align:center}.results-kpi span{display:block;color:var(--muted);font-size:.78rem}.results-kpi b{display:block;font-size:1.35rem;margin-top:4px}.results-toolbar{display:grid;grid-template-columns:1.15fr .85fr .9fr 1fr .85fr auto;gap:10px;align-items:end}.improve-pos{color:#8ff0b1;font-weight:900}.improve-neg{color:#ffb0bb;font-weight:900}@media(max-width:900px){.results-kpis{grid-template-columns:repeat(2,1fr)}.results-toolbar{grid-template-columns:1fr}}
 @media print{body *{visibility:hidden!important}#reportModal,#reportModal *{visibility:visible!important}#reportModal{position:absolute!important;inset:0!important;background:white!important;padding:0!important;display:block!important}#reportModal .modal-card{box-shadow:none!important;border:0!important;max-height:none!important;width:100%!important;background:white!important;padding:0!important}#reportModal .section-head,#reportModal .modal-actions{display:none!important}.report-paper{border-radius:0!important;padding:16mm!important}.report-paper table{font-size:10pt!important}}
 
 .student-class-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
@@ -180,6 +180,39 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
  .student-portfolio-paper .sp-chart{height:64mm}
 }
 
+
+.task-lessons-box{
+  grid-column:1/-1;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  background:#0b1b30
+}
+.task-lessons-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;flex-wrap:wrap;margin-bottom:10px
+}
+.task-lessons-head strong{color:#fff}
+.task-lessons-head small{color:var(--muted)}
+.task-lessons-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px
+}
+.task-lesson-option{
+  display:flex;align-items:center;gap:9px;
+  padding:11px 12px;border-radius:12px;
+  background:#10243e;border:1px solid var(--line);
+  cursor:pointer
+}
+.task-lesson-option input{width:auto;accent-color:var(--teal)}
+.task-lesson-option span{font-weight:800}
+.task-lesson-option:hover{border-color:rgba(66,222,212,.45)}
+.task-lesson-actions{display:flex;gap:7px;flex-wrap:wrap}
+.task-lesson-actions button{
+  border:1px solid var(--line);background:#203652;color:#fff;
+  border-radius:9px;padding:6px 9px;font-weight:800
+}
+@media(max-width:700px){.task-lessons-grid{grid-template-columns:1fr}}
+
 </style></head>
 <body><div class="wrap">
 <header class="topbar glass"><div class="brand"><div class="logo">📊</div><div><h1>لوحة المعلم</h1><p id="teacherSub"></p></div></div><div class="actions"><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="journey-student.html">معاينة منصة الطالب</a></div></header>
@@ -198,6 +231,7 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
   <div class="results-toolbar">
     <div class="field"><label>بحث باسم الطالب</label><input id="nameFilter" placeholder="اكتب جزءًا من الاسم"></div>
     <div class="field"><label>الفصل</label><select id="classFilter"><option value="">كل الفصول</option></select></div>
+    <div class="field"><label>الفصل في المنهج</label><select id="resultChapterFilter"><option value="">كل الفصول</option><option value="الفصل الأول">الفصل الأول</option><option value="الفصل الثاني">الفصل الثاني</option></select></div>
     <div class="field"><label>الدرس / التكليف</label><select id="resultTaskFilter"><option value="">كل الدروس والتكليفات</option></select></div>
     <div class="field"><label>النوع</label><select id="resultTypeFilter"><option value="">الكل</option><option value="training">تدريب</option><option value="test">اختبار</option><option value="remedial">علاجي</option><option value="enrich">إثراء</option></select></div>
     <button id="exportBtn" class="btn secondary">تصدير CSV</button>
@@ -209,9 +243,9 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
     <div class="results-kpi"><span>متوسط التكرار</span><b id="rRepeat">0</b></div>
     <div class="results-kpi"><span>متوسط التحسن</span><b id="rImprove">0%</b></div>
   </div>
-  <div class="note good">يظهر صف واحد لكل طالب في كل درس/تكليف، وتُحسب مؤشرات المحاولات من جميع النتائج المسجلة دون حذف أي محاولة.</div>
+  <div class="note good">يظهر صف واحد لكل طالب داخل كل فصل من فصول المنهج، وتُجمع جميع محاولاته في ذلك الفصل دون خلط محاولات الفصل الأول بالفصل الثاني.</div>
   <div class="table-wrap"><table><thead><tr>
-    <th>#</th><th>الطالب</th><th>الفصل</th><th>النوع</th><th>الدرس / التكليف</th><th>المحاولات</th><th>أول نتيجة</th><th>آخر نتيجة</th><th>أفضل نتيجة</th><th>التحسن</th><th>آخر مستوى</th><th>آخر تسليم</th>
+    <th>#</th><th>الطالب</th><th>الفصل</th><th>الفصل في المنهج</th><th>النوع</th><th>الدرس / التكليف</th><th>المحاولات</th><th>أول نتيجة</th><th>آخر نتيجة</th><th>أفضل نتيجة</th><th>التحسن</th><th>آخر مستوى</th><th>آخر تسليم</th>
   </tr></thead><tbody id="resultsBody"></tbody></table></div>
 </section>
 
@@ -267,7 +301,16 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
       <div class="modal-actions"><button id="printReport" class="btn">طباعة / حفظ PDF</button><button id="copyReport" class="btn secondary">نسخ نص التقرير</button></div>
     </div></div>
 
-<div id="taskModal" class="modal hidden"><div class="modal-card glass"><div class="section-head" style="margin-top:0"><div><h3>إنشاء تكليف منزلي</h3><p>بعد الحفظ سيظهر رابط جاهز للإرسال للطلاب.</p></div><button id="closeTask" class="btn secondary">إغلاق</button></div><div class="form-grid"><div class="field"><label>اسم التكليف</label><input id="taskTitle" placeholder="مثال: تدريب النماذج العلمية"></div><div class="field"><label>النوع</label><select id="taskMode"><option value="training">تدريب</option><option value="exam">اختبار</option><option value="remedial">خطة علاجية</option><option value="enrich">إثراء</option></select></div><div class="field"><label>الدرس</label><select id="taskLesson"></select></div><div class="field"><label>الفصل المستهدف</label><select id="taskClass"><option>الكل</option></select></div><div class="field"><label>عدد الأسئلة</label><input id="taskCount" type="number" min="3" max="20" value="10"></div><div class="field"><label>زمن السؤال (للاختبار)</label><input id="taskTime" type="number" min="10" max="120" value="30"></div><div class="field"><label>عدد المحاولات</label><input id="taskAttempts" type="number" min="1" max="10" value="1"></div><div class="field"><label>بداية التكليف</label><input id="taskStart" type="datetime-local"></div><div class="field"><label>نهاية التكليف</label><input id="taskEnd" type="datetime-local"></div></div><div class="modal-actions"><button id="saveTask" class="btn">إنشاء التكليف والرابط</button></div></div></div>
+<div id="taskModal" class="modal hidden"><div class="modal-card glass"><div class="section-head" style="margin-top:0"><div><h3>إنشاء تكليف منزلي</h3><p>بعد الحفظ سيظهر رابط جاهز للإرسال للطلاب.</p></div><button id="closeTask" class="btn secondary">إغلاق</button></div><div class="form-grid"><div class="field"><label>اسم التكليف</label><input id="taskTitle" placeholder="مثال: تدريب النماذج العلمية"></div><div class="field"><label>النوع</label><select id="taskMode"><option value="training">تدريب</option><option value="exam">اختبار</option><option value="remedial">خطة علاجية</option><option value="enrich">إثراء</option></select></div><div class="task-lessons-box">
+  <div class="task-lessons-head">
+    <div><strong>الدروس المحددة للتكليف</strong><br><small>اختر درسًا واحدًا أو أكثر. لن تظهر للطالب بقية الدروس عند فتح رابط التكليف.</small></div>
+    <div class="task-lesson-actions">
+      <button type="button" id="taskLessonsAll">تحديد الكل</button>
+      <button type="button" id="taskLessonsNone">إلغاء التحديد</button>
+    </div>
+  </div>
+  <div id="taskLessonChoices" class="task-lessons-grid"></div>
+</div><div class="field"><label>الفصل المستهدف</label><select id="taskClass"><option>الكل</option></select></div><div class="field"><label>عدد الأسئلة</label><input id="taskCount" type="number" min="3" max="20" value="10"></div><div class="field"><label>زمن السؤال (للاختبار)</label><input id="taskTime" type="number" min="10" max="120" value="30"></div><div class="field"><label>عدد المحاولات</label><input id="taskAttempts" type="number" min="1" max="10" value="1"></div><div class="field"><label>بداية التكليف</label><input id="taskStart" type="datetime-local"></div><div class="field"><label>نهاية التكليف</label><input id="taskEnd" type="datetime-local"></div></div><div class="modal-actions"><button id="saveTask" class="btn">إنشاء التكليف والرابط</button></div></div></div>
 
 <script>
 const LESSONS={
@@ -402,7 +445,9 @@ function init(){
  $('teacherSub').textContent='مدرسة أبي الدرداء المتوسطة | المعلم: علي البقاشي';
  $('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام 1448هـ';
  CLASSES.forEach(c=>{$('classFilter').insertAdjacentHTML('beforeend',`<option>${c}</option>`);$('taskClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('portfolioClass')) $('portfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentsClass')) $('studentsClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentPortfolioClass')) $('studentPortfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`)});
- $('taskLesson').innerHTML='<option value="all">جميع الدروس</option>'+Object.entries(LESSONS).filter(([k])=>k!=='all').map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+ renderTaskLessonChoices();
+ $('taskLessonsAll').onclick=()=>document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>x.checked=true);
+ $('taskLessonsNone').onclick=()=>document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>x.checked=false);
  $('apiUrl').value=DEFAULT_API_URL; localStorage.setItem('sj_teacher_api',DEFAULT_API_URL);
  $('teacherKey').value=localStorage.getItem('sj_teacher_key')||'';
  $('lastUpdate').textContent='غير محمّل بعد';
@@ -415,6 +460,7 @@ function init(){
  $('classFilter').onchange=renderResults;
  $('nameFilter').oninput=renderResults;
  $('resultTaskFilter').onchange=renderResults;
+ if($('resultChapterFilter')) $('resultChapterFilter').onchange=renderResults;
  $('resultTypeFilter').onchange=renderResults;
  $('exportBtn').onclick=exportCsv;
  if($('studentsClass')) $('studentsClass').onchange=renderStudentsAdmin;
@@ -437,7 +483,7 @@ function switchTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList
 function renderAll(){stats();renderTasks();renderResults();renderStudentsAdmin()}
 function stats(){const students=new Set(results.map(x=>x.className+'-'+x.studentName)).size;$('sTasks').textContent=tasks.length;$('sStudents').textContent=students;$('sTraining').textContent=results.filter(x=>x.type!=='test'&&x.type!=='exam').length;$('sTests').textContent=results.filter(x=>x.type==='test'||x.type==='exam').length}
 function renderTasks(){
- $('tasksBody').innerHTML=tasks.map(t=>{const link=new URL('journey-student.html',location.href).href+'?task='+encodeURIComponent(t.id);return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(LESSONS[t.lesson]||t.lesson)}</td><td>${esc(t.className)}</td><td>${esc(fmt(t.startAt))}<br>${esc(fmt(t.endAt))}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td><button class="smallbtn copy" data-copy="${link}">نسخ الرابط</button></td><td><button class="smallbtn toggle" data-toggle="${t.id}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${t.id}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
+ $('tasksBody').innerHTML=tasks.map(t=>{const link=new URL('journey-student.html',location.href).href+'?task='+encodeURIComponent(t.id);return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(taskLessonsLabel(t))}</td><td>${esc(t.className)}</td><td>${esc(fmt(t.startAt))}<br>${esc(fmt(t.endAt))}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td><button class="smallbtn copy" data-copy="${link}">نسخ الرابط</button></td><td><button class="smallbtn toggle" data-toggle="${t.id}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${t.id}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);alert('تم نسخ رابط التكليف.')}catch{prompt('انسخ رابط التكليف:',b.dataset.copy)}});
  document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=async()=>{const t=tasks.find(x=>String(x.id)===String(b.dataset.toggle));if(!t)return;try{b.disabled=true;await apiAction('toggleTask',{id:t.id,active:String(!t.active)});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}});
  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('هل تريد حذف هذا التكليف؟'))return;try{b.disabled=true;await apiAction('deleteTask',{id:b.dataset.del});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}})
@@ -573,20 +619,92 @@ async function syncStudentsFromTracker(){
  }finally{btn.disabled=false}
 }
 
+
+function availableTaskLessons(){
+ return Object.entries(LESSONS).filter(([id])=>id!=='all');
+}
+function renderTaskLessonChoices(selected=[]){
+ const box=$('taskLessonChoices'); if(!box)return;
+ const chosen=new Set(Array.isArray(selected)?selected:selectedLessonIds({lessonIds:selected}));
+ box.innerHTML=availableTaskLessons().map(([id,title])=>`
+   <label class="task-lesson-option">
+     <input type="checkbox" value="${esc(id)}" ${chosen.has(id)?'checked':''}>
+     <span>${esc(title)}</span>
+   </label>`).join('');
+}
+function selectedTaskLessonIds(){
+ return [...document.querySelectorAll('#taskLessonChoices input[type="checkbox"]:checked')]
+   .map(x=>String(x.value||'').trim()).filter(Boolean);
+}
+function selectedLessonIds(task){
+ const raw=task?.lessonIds;
+ if(Array.isArray(raw)) return raw.map(String).map(x=>x.trim()).filter(Boolean);
+ if(raw){
+   try{
+     const parsed=JSON.parse(raw);
+     if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean);
+   }catch(_){}
+   return String(raw).split(',').map(x=>x.trim()).filter(Boolean);
+ }
+ const legacy=String(task?.lesson||'').trim();
+ return legacy&&legacy!=='all'?[legacy]:[];
+}
+function taskLessonsLabel(task){
+ const ids=selectedLessonIds(task);
+ if(!ids.length){
+   const legacy=String(task?.lesson||'').trim();
+   return legacy==='all'?'جميع الدروس':(LESSONS[legacy]||legacy||'—');
+ }
+ return ids.map(id=>LESSONS[id]||id).join(' + ');
+}
+
 async function createTask(){
  const title=$('taskTitle').value.trim();
  if(!title){alert('اكتب اسم التكليف.');return}
+ const lessonIds=selectedTaskLessonIds();
+ if(!lessonIds.length){alert('اختر درسًا واحدًا على الأقل لهذا التكليف.');return}
  const btn=$('saveTask');btn.disabled=true;
  try{
-  await apiAction('createTask',{title,mode:$('taskMode').value,lesson:$('taskLesson').value,className:$('taskClass').value,count:$('taskCount').value,timePerQuestion:$('taskTime').value,attempts:$('taskAttempts').value,startAt:$('taskStart').value,endAt:$('taskEnd').value});
+  await apiAction('createTask',{
+   title,
+   mode:$('taskMode').value,
+   lesson:lessonIds[0],
+   lessonIds:JSON.stringify(lessonIds),
+   className:$('taskClass').value,
+   count:$('taskCount').value,
+   timePerQuestion:$('taskTime').value,
+   attempts:$('taskAttempts').value,
+   startAt:$('taskStart').value,
+   endAt:$('taskEnd').value
+  });
   $('taskModal').classList.add('hidden');
   await loadTeacher();
-  alert('تم إنشاء التكليف وحفظه في قاعدة البيانات.');
+  alert(`تم إنشاء التكليف للدروس المحددة فقط (${lessonIds.length}).`);
  }catch(e){alert(e.message||e)}finally{btn.disabled=false}
 }
 const RESULT_CLASS_ORDER={'1/1':1,'2/1':2,'3/1':3,'4/1':4};
 const AR_NAME_COLLATOR=new Intl.Collator('ar',{sensitivity:'base',numeric:true,ignorePunctuation:true});
 function resultTitle(r){return String(r.taskTitle||'').trim() || LESSONS[r.lesson] || String(r.lesson||'نشاط بدون عنوان')}
+const RESULT_CHAPTER_BY_LESSON={
+ 'science-processes':'الفصل الأول',
+ 'scientific-models':'الفصل الأول',
+ 'evaluate-explanations':'الفصل الأول',
+ 'motion':'الفصل الثاني',
+ 'newton-laws':'الفصل الثاني',
+ 'work-machines':'الفصل الثاني'
+};
+function resultChapter(r){
+ const explicit=String(r.chapter||r.chapterName||r.unit||'').trim();
+ if(explicit){
+  if(/الثاني/.test(explicit)) return 'الفصل الثاني';
+  if(/الأول|الاول/.test(explicit)) return 'الفصل الأول';
+ }
+ const lesson=String(r.lesson||'').trim();
+ if(RESULT_CHAPTER_BY_LESSON[lesson]) return RESULT_CHAPTER_BY_LESSON[lesson];
+ const title=resultTitle(r);
+ if(/الفصل\s*الثاني|الحركة|نيوتن|الشغل|الآلات|الالات/.test(title)) return 'الفصل الثاني';
+ return 'الفصل الأول';
+}
 function resultPercent(r){return Number(r.percent??0)||0}
 function resultTime(r){return r.timestamp||''}
 function updateResultFilters(){
@@ -596,8 +714,8 @@ function updateResultFilters(){
  sel.innerHTML='<option value="">كل الدروس والتكليفات</option>'+titles.map(t=>`<option ${t===current?'selected':''}>${esc(t)}</option>`).join('');
 }
 function filteredRawResults(){
- const c=$('classFilter').value,n=$('nameFilter').value.trim().toLowerCase(),task=$('resultTaskFilter')?.value||'',type=$('resultTypeFilter')?.value||'';
- return results.filter(x=>(!c||x.className===c)&&(!n||x.studentName.toLowerCase().includes(n))&&(!task||resultTitle(x)===task)&&(!type||x.type===type));
+ const c=$('classFilter').value,n=$('nameFilter').value.trim().toLowerCase(),chapter=$('resultChapterFilter')?.value||'',task=$('resultTaskFilter')?.value||'',type=$('resultTypeFilter')?.value||'';
+ return results.filter(x=>(!c||x.className===c)&&(!n||x.studentName.toLowerCase().includes(n))&&(!chapter||resultChapter(x)===chapter)&&(!task||resultTitle(x)===task)&&(!type||x.type===type));
 }
 function aggregateResults(){
  const map=new Map();
@@ -606,12 +724,14 @@ function aggregateResults(){
 
  filteredRawResults().forEach(r=>{
   // صف واحد فقط لكل طالب داخل الفصل، وتُجمع تحته جميع محاولاته الظاهرة.
-  const key=[r.className,String(r.studentCode||''),String(r.studentName||'')].join('|');
+  const chapter=resultChapter(r);
+  const key=[r.className,String(r.studentCode||''),String(r.studentName||''),chapter].join('|');
   if(!map.has(key)){
    map.set(key,{
     studentName:r.studentName,
     className:r.className,
     studentCode:r.studentCode||'',
+    chapter,
     rows:[]
    });
   }
@@ -632,7 +752,7 @@ function aggregateResults(){
    ? selectedTask
    : titles.length===1
     ? titles[0]
-    : `الفصل الأول — ${titles.length} أنشطة`;
+    : `${g.chapter} — ${titles.length} أنشطة`;
 
   const type=selectedType
    ? selectedType
@@ -671,12 +791,12 @@ function renderResults(){
  if($('rAverage'))$('rAverage').textContent=avg+'%';
  if($('rRepeat'))$('rRepeat').textContent=repeat.toFixed(1);
  if($('rImprove'))$('rImprove').textContent=(avgImp>0?'+':'')+avgImp+'%';
- $('resultsBody').innerHTML=rows.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.studentName)}</b></td><td>${esc(r.className)}</td><td>${esc(typeName(r.type))}</td><td>${esc(r.title)}</td><td><b>${r.attempts}</b></td><td>${r.firstPct}%</td><td>${r.lastPct}%</td><td><b>${r.bestPct}%</b></td><td class="${r.improve>0?'improve-pos':r.improve<0?'improve-neg':''}">${r.attempts>1?(r.improve>0?'+':'')+r.improve+'%':'—'}</td><td>${esc(r.level||'—')}</td><td>${esc(fmt(r.lastTime))}</td></tr>`).join('')||'<tr><td colspan="12">لا توجد نتائج مطابقة.</td></tr>';
+ $('resultsBody').innerHTML=rows.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.studentName)}</b></td><td>${esc(r.className)}</td><td>${esc(r.chapter)}</td><td>${esc(typeName(r.type))}</td><td>${esc(r.title)}</td><td><b>${r.attempts}</b></td><td>${r.firstPct}%</td><td>${r.lastPct}%</td><td><b>${r.bestPct}%</b></td><td class="${r.improve>0?'improve-pos':r.improve<0?'improve-neg':''}">${r.attempts>1?(r.improve>0?'+':'')+r.improve+'%':'—'}</td><td>${esc(r.level||'—')}</td><td>${esc(fmt(r.lastTime))}</td></tr>`).join('')||'<tr><td colspan="13">لا توجد نتائج مطابقة.</td></tr>';
 }
 function exportCsv(){
  const rows=aggregateResults();
- const h=['الطالب','الفصل','النوع','الدرس/التكليف','عدد المحاولات','أول نتيجة','آخر نتيجة','أفضل نتيجة','التحسن','المستوى الأخير','آخر تسليم'];
- const data=[h,...rows.map(r=>[r.studentName,r.className,typeName(r.type),r.title,r.attempts,r.firstPct,r.lastPct,r.bestPct,r.improve,r.level,fmt(r.lastTime)])];
+ const h=['الطالب','الفصل','الفصل في المنهج','النوع','الدرس/التكليف','عدد المحاولات','أول نتيجة','آخر نتيجة','أفضل نتيجة','التحسن','المستوى الأخير','آخر تسليم'];
+ const data=[h,...rows.map(r=>[r.studentName,r.className,r.chapter,typeName(r.type),r.title,r.attempts,r.firstPct,r.lastPct,r.bestPct,r.improve,r.level,fmt(r.lastTime)])];
  const csv='\ufeff'+data.map(row=>row.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\n');
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='نتائج_رحلة_عالم_العلوم.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 }
