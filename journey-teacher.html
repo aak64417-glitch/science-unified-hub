@@ -302,16 +302,16 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
       <div class="modal-actions"><button id="printReport" class="btn">طباعة / حفظ PDF</button><button id="copyReport" class="btn secondary">نسخ نص التقرير</button></div>
     </div></div>
 
-<div id="taskModal" class="modal hidden"><div class="modal-card glass"><div class="section-head" style="margin-top:0"><div><h3>إنشاء تكليف منزلي</h3><p>بعد الحفظ سيظهر رابط جاهز للإرسال للطلاب.</p></div><button id="closeTask" class="btn secondary">إغلاق</button></div><div class="form-grid"><div class="field"><label>اسم التكليف</label><input id="taskTitle" placeholder="مثال: تدريب النماذج العلمية"></div><div class="field"><label>النوع</label><select id="taskMode"><option value="training">تدريب</option><option value="exam">اختبار</option><option value="remedial">خطة علاجية</option><option value="enrich">إثراء</option></select></div><div class="task-lessons-box">
+<div id="taskModal" class="modal hidden"><div class="modal-card glass"><div class="section-head" style="margin-top:0"><div><h3>إنشاء تكليف منزلي</h3><p>حدد النشاط والمحتوى والفصل؛ المنصة تحدد عدد الأسئلة تلقائيًا حسب المحتوى.</p></div><button id="closeTask" class="btn secondary">إغلاق</button></div><div class="form-grid"><div class="field"><label>اسم التكليف</label><input id="taskTitle" placeholder="مثال: تدريب النماذج العلمية"></div><div class="field"><label>النوع</label><select id="taskMode"><option value="training">تدريب</option><option value="exam">اختبار</option><option value="remedial">خطة علاجية</option><option value="enrich">إثراء</option></select></div><div class="task-lessons-box">
   <div class="task-lessons-head">
-    <div><strong>الدروس المحددة للتكليف</strong><br><small>اختر درسًا واحدًا فقط لهذا التكليف. لن تظهر للطالب بقية الدروس عند فتح الرابط.</small></div>
+    <div><strong>الدروس المحددة للتكليف</strong><br><small>اختر درسًا واحدًا أو أكثر. عدد الأسئلة يُحدد تلقائيًا من المحتوى المحدد، ولن تظهر للطالب دروس خارج التكليف.</small></div>
     <div class="task-lesson-actions">
       <button type="button" id="taskLessonsAll">تحديد الكل</button>
       <button type="button" id="taskLessonsNone">إلغاء التحديد</button>
     </div>
   </div>
   <div id="taskLessonChoices" class="task-lessons-grid"></div>
-</div><div class="field"><label>الفصل المستهدف</label><select id="taskClass"><option value="">اختر الفصل</option></select></div><div class="field"><label>عدد الأسئلة</label><input id="taskCount" type="number" min="3" max="20" value="10"></div><div class="field" id="taskTimeField"><label>زمن السؤال (للاختبار)</label><input id="taskTime" type="number" min="10" max="120" value="30"></div><div class="field" id="taskAttemptsField"><label>عدد المحاولات (للاختبار)</label><input id="taskAttempts" type="number" min="1" max="10" value="1"></div><div class="field"><label>بداية التكليف</label><input id="taskStart" type="datetime-local"></div><div class="field"><label>نهاية التكليف</label><input id="taskEnd" type="datetime-local"></div></div><div class="modal-actions"><button id="saveTask" class="btn">إنشاء التكليف والرابط</button></div></div></div>
+</div><div class="field"><label>الفصل المستهدف</label><select id="taskClass"><option value="">اختر الفصل</option></select></div><div class="field"><label>عدد الأسئلة</label><div class="note good">تلقائي حسب النشاط والمحتوى المحدد</div></div><div class="field" id="taskTimeField"><label>زمن السؤال (للاختبار)</label><input id="taskTime" type="number" min="10" max="120" value="30"></div><div class="field" id="taskAttemptsField"><label>عدد المحاولات (للاختبار)</label><input id="taskAttempts" type="number" min="1" max="10" value="1"></div><div class="field"><label>بداية التكليف</label><input id="taskStart" type="datetime-local"></div><div class="field"><label>نهاية التكليف</label><input id="taskEnd" type="datetime-local"></div></div><div class="modal-actions"><button id="saveTask" class="btn">إنشاء التكليف والرابط</button></div></div></div>
 
 <script>
 const LESSONS={
@@ -670,7 +670,8 @@ async function syncStudentsFromTracker(){
 
 
 function availableTaskLessons(){
- return Object.entries(LESSONS).filter(([id])=>id!=='all');
+ const ready=new Set(['science-processes','scientific-models','evaluate-explanations']);
+ return Object.entries(LESSONS).filter(([id])=>ready.has(id));
 }
 function renderTaskLessonChoices(selected=[]){
  const box=$('taskLessonChoices'); if(!box)return;
@@ -719,18 +720,18 @@ async function createTask(){
  const title=$('taskTitle').value.trim();
  if(!title){alert('اكتب اسم التكليف.');return}
  const lessonIds=selectedTaskLessonIds();
- if(lessonIds.length!==1){alert('اختر درسًا واحدًا فقط لهذا التكليف.');return}
+ if(!lessonIds.length){alert('اختر درسًا واحدًا على الأقل لهذا التكليف.');return}
  const className=$('taskClass').value;
  if(!CLASSES.includes(className)){alert('اختر الفصل المستهدف: 1/1 أو 2/1 أو 3/1 أو 4/1.');return}
  const btn=$('saveTask');btn.disabled=true;
  try{
+  const lessonValue=lessonIds.length===1?lessonIds[0]:JSON.stringify(lessonIds);
   await apiAction('createTask',{
    title,
    mode:$('taskMode').value,
-   lesson:lessonIds[0],
+   lesson:lessonValue,
    lessonIds:JSON.stringify(lessonIds),
    className:className,
-   count:$('taskCount').value,
    timePerQuestion:$('taskTime').value,
    attempts:$('taskAttempts').value,
    startAt:$('taskStart').value,
@@ -738,7 +739,7 @@ async function createTask(){
   });
   $('taskModal').classList.add('hidden');
   await loadTeacher();
-  alert(`تم إنشاء التكليف للدروس المحددة فقط (${lessonIds.length}).`);
+  alert(`تم إنشاء التكليف لـ ${lessonIds.length} من الدروس. عدد الأسئلة سيُحدد تلقائيًا من المحتوى ونوع النشاط.`);
  }catch(e){alert(e.message||e)}finally{btn.disabled=false}
 }
 const RESULT_CLASS_ORDER={'1/1':1,'2/1':2,'3/1':3,'4/1':4};

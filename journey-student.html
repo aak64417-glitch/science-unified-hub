@@ -249,6 +249,51 @@ const CFG=window.SCIENCE_CONFIG||{}, DATA=window.SCIENCE_DATA||{lessons:[],quest
 const $=id=>document.getElementById(id);
 let state={mode:'training',lesson:'all',task:null,student:{},quiz:[],i:0,score:0,correct:0,streak:0,bestStreak:0,logs:[],answered:false,startedAt:0,timer:null,timeLeft:0};
 
+
+const ENRICHMENT_IDS=new Set([
+ 'q3','q4','q6','q35','q36','q37','q42','q43',
+ 'q15','q16','q19','q50','q52','q53','q55','q57',
+ 'q23','q27','q28','q30','q59','q68','q70','q71'
+]);
+function taskLessonIds(task){
+ const raw=String(task?.lesson||'').trim();
+ if(!raw||raw==='all') return DATA.lessons.map(l=>l.id);
+ try{
+  const parsed=JSON.parse(raw);
+  if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean);
+ }catch(_){ }
+ return raw.split(',').map(x=>x.trim()).filter(Boolean);
+}
+function activeLessonIds(){
+ if(state.task?.lessonIds?.length) return state.task.lessonIds;
+ if(state.task) return taskLessonIds(state.task);
+ return state.lesson==='all'?DATA.lessons.map(l=>l.id):[state.lesson];
+}
+function weakStorageKey(lessonId){
+ const c=String(state.student?.className||'').replace(/\W+/g,'_');
+ const s=String(state.student?.code||'').replace(/\W+/g,'_');
+ return `sj_weak_${c}_${s}_${lessonId}`;
+}
+function readWeakConcepts(lessonId){
+ try{
+  const specific=JSON.parse(localStorage.getItem(weakStorageKey(lessonId))||'[]');
+  if(Array.isArray(specific)&&specific.length) return specific;
+ }catch(_){ }
+ try{
+  const legacy=JSON.parse(localStorage.getItem('weak_concepts_'+lessonId)||'[]');
+  return Array.isArray(legacy)?legacy:[];
+ }catch(_){ return []; }
+}
+function weakConceptsForLesson(lessonId){
+ const m={};
+ state.logs.filter(x=>x.lesson===lessonId).forEach(x=>{
+  m[x.concept]??={c:0,t:0};
+  m[x.concept].t++;
+  if(x.correct)m[x.concept].c++;
+ });
+ return Object.entries(m).filter(([,v])=>v.t&&v.c/v.t<.8).map(([k])=>k);
+}
+
 function api(){return (CFG.apiUrl||localStorage.getItem('science_api_url')||'').trim()}
 function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
@@ -287,7 +332,17 @@ function renderLessons(){
 function openLesson(id){const l=lessonBy(id);if(!l)return;state.lesson=id;$('lessonIcon').textContent=l.icon;$('lessonTitle').textContent=l.title;$('lessonSummary').textContent=l.summary;$('lessonStatus').textContent='الدرس • '+l.title;$('lessonObjectives').innerHTML=l.objectives.map(x=>`<li>${esc(x)}</li>`).join('');$('lessonConcepts').innerHTML=l.concepts.map(c=>`<li><b>${esc(c.name)}</b><span>${esc(c.note)}</span></li>`).join('');$('lessonTrainBtn').onclick=()=>openIdentity('training',id);$('lessonRemedialBtn').onclick=()=>openIdentity('remedial',id);$('lessonEnrichBtn').onclick=()=>openIdentity('enrich',id);screen('lessonScreen')}
 window.openLesson=openLesson;
 
-function openIdentity(mode,lesson,task=null){state.mode=mode;state.lesson=lesson;state.task=task;const labels={training:'التدريب التفاعلي',exam:'الاختبار الشامل',remedial:'المسار العلاجي',enrich:'المسار الإثرائي',task:'التكليف المنزلي'};$('identityTitle').textContent=labels[mode]||'بيانات الطالب';let note=mode==='exam'?'الاختبار يتكون من 20 سؤالًا، ولكل سؤال زمن محدد. لا يمكن الرجوع للسؤال السابق.':mode==='remedial'?'سيتركز التدريب على المفاهيم التي تحتاج إلى تعزيز، ثم تقارن نتيجتك بالمحاولة السابقة.':mode==='enrich'?'مسار إضافي للطلاب المتقنين، يركز على تطبيق المفاهيم بطريقة أعمق.':'يمكنك إعادة التدريب أكثر من مرة، وستظهر لك التغذية الراجعة بعد كل سؤال.';if(task)note=`تكليف: ${task.title}. ${task.endAt?'آخر موعد: '+new Date(task.endAt).toLocaleString('ar-SA'):''}`;$('taskNotice').textContent=note;
+function openIdentity(mode,lesson,task=null){
+ state.mode=mode;state.lesson=lesson;state.task=task;
+ const labels={training:'التدريب التفاعلي',exam:'الاختبار',remedial:'المسار العلاجي',enrich:'المسار الإثرائي',task:'التكليف المنزلي'};
+ $('identityTitle').textContent=labels[mode]||'بيانات الطالب';
+ let note=mode==='exam'?'يحدد النظام عدد الأسئلة تلقائيًا من المحتوى المحدد، ولكل سؤال الزمن الذي حدده المعلم.':mode==='remedial'?'يركز هذا المسار تلقائيًا على المفاهيم التي لم يتقنها الطالب في محاولاته السابقة.':mode==='enrich'?'يعرض هذا المسار أسئلة تطبيقية أعمق من المحتوى المحدد.':'يحدد النظام عدد الأسئلة تلقائيًا من محتوى التكليف، مع تغذية راجعة بعد كل سؤال.';
+ if(task){
+  const ids=task.lessonIds?.length?task.lessonIds:taskLessonIds(task);
+  const contentNames=ids.map(id=>lessonBy(id)?.title||id).join(' + ');
+  note=`تكليف: ${task.title}. المحتوى: ${contentNames}. ${task.endAt?'آخر موعد: '+new Date(task.endAt).toLocaleString('ar-SA'):''}`;
+ }
+ $('taskNotice').textContent=note;
  $('studentName').innerHTML='<option value="">جاري تحميل أسماء الفصل...</option>';$('studentName').disabled=true;$('studentsStatus').textContent='جاري تحميل أسماء الفصل المحدد في التكليف.';
  if(task && (CFG.classes||[]).includes(String(task.className||''))){
   $('studentClass').value=String(task.className);
@@ -315,8 +370,10 @@ async function loadTask(id){
   if(!(CFG.classes||[]).includes(String(t.className||'')))throw new Error('هذا الرابط غير مرتبط بفصل محدد. اطلب رابطًا جديدًا من المعلم.');
   const allowedModes=['training','exam','remedial','enrich'];
   if(!allowedModes.includes(String(t.mode||'')))throw new Error('نوع النشاط في هذا التكليف غير صالح.');
-  if(String(t.lesson||'')!=='all' && !lessonBy(String(t.lesson||'')))throw new Error('الدرس المحدد في هذا التكليف غير متاح في صفحة الطالب.');
-  openIdentity(t.mode,t.lesson||'all',t);
+  const ids=taskLessonIds(t);
+  if(!ids.length||ids.some(id=>!lessonBy(id)))throw new Error('أحد الدروس المحددة في هذا التكليف غير متاح في صفحة الطالب.');
+  t.lessonIds=ids;
+  openIdentity(t.mode,ids.length===1?ids[0]:'all',t);
  }catch(e){
   console.error(e);
   showAssignmentMessage(e.message||'تعذر فتح التكليف. تحقق من الرابط أو الاتصال.');
@@ -350,24 +407,35 @@ async function startActivity(){
    if(!api()){alert('تعذر التحقق من محاولة الاختبار. أعد المحاولة عند توفر الاتصال.');return}
    try{const r=await jsonp({action:'canAttempt',taskId:state.task?.id||'',className,studentCode:code});if(!r?.ok){throw new Error(r?.message||'تعذر التحقق من المحاولة')}if(r.allowed===false){alert(r.message||'استخدمت جميع المحاولات المتاحة لهذا الاختبار.');return}}catch(e){console.error(e);alert('تعذر التحقق من محاولة الاختبار الآن. تحقق من الإنترنت ثم أعد المحاولة.');return}
  }
- buildQuiz();state.startedAt=Date.now();screen('quizScreen');renderQuestion();
+ if(buildQuiz()===false)return;state.startedAt=Date.now();screen('quizScreen');renderQuestion();
 }
 function randomizeChoice(q){if(q.type!=='choice')return structuredClone(q);const pairs=q.options.map((text,i)=>({text,correct:i===q.answer}));const m=shuffle(pairs);return {...structuredClone(q),options:m.map(x=>x.text),answer:m.findIndex(x=>x.correct)}}
-function buildQuiz(){state.i=0;state.score=0;state.correct=0;state.streak=0;state.bestStreak=0;state.logs=[];let pool=state.lesson==='all'?DATA.questions:DATA.questions.filter(q=>q.lesson===state.lesson);let n=10;
- if(state.mode==='exam'||state.task?.mode==='exam'){
-   n=state.task?.count||20;
-   if(state.lesson==='all'&&DATA.lessons.length){
-     const base=Math.floor(n/DATA.lessons.length),rem=n%DATA.lessons.length;
-     let selected=[];
-     DATA.lessons.forEach((l,idx)=>{const need=base+(idx<rem?1:0);selected.push(...pick(DATA.questions.filter(q=>q.lesson===l.id),need))});
-     state.quiz=shuffle(selected).map(randomizeChoice);
-   }else state.quiz=pick(pool,n).map(randomizeChoice)
+function buildQuiz(){
+ state.i=0;state.score=0;state.correct=0;state.streak=0;state.bestStreak=0;state.logs=[];
+ const lessonIds=activeLessonIds();
+ const pool=DATA.questions.filter(q=>lessonIds.includes(q.lesson));
+ if(!pool.length){alert('لا توجد أسئلة متاحة للمحتوى المحدد.');return false}
+
+ if(state.mode==='remedial'){
+  const weakByLesson={};
+  lessonIds.forEach(id=>weakByLesson[id]=readWeakConcepts(id));
+  const target=pool.filter(q=>(weakByLesson[q.lesson]||[]).includes(q.concept));
+  // إذا لم توجد بيانات سابقة للطالب، يبدأ المسار بجولة تشخيصية من المحتوى نفسه.
+  state.quiz=shuffle(target.length?target:pool).map(randomizeChoice);
  }
- else if(state.mode==='remedial'){const weak=JSON.parse(localStorage.getItem('weak_concepts_'+state.lesson)||'[]');const target=weak.length?pool.filter(q=>weak.includes(q.concept)):pool;state.quiz=pick(target.length>=6?target:pool,state.task?.count||6).map(randomizeChoice)}
- else if(state.mode==='enrich'){state.quiz=pick(pool,state.task?.count||8).map(randomizeChoice)}
- else state.quiz=pick(pool,state.task?.count||10).map(randomizeChoice);
- $('timerBox').classList.toggle('hidden',!(state.mode==='exam'||state.task?.mode==='exam'));$('checkBtn').classList.toggle('hidden',(state.mode==='exam'||state.task?.mode==='exam'));
+ else if(state.mode==='enrich'){
+  const target=pool.filter(q=>ENRICHMENT_IDS.has(q.id));
+  state.quiz=shuffle(target.length?target:pool).map(randomizeChoice);
+ }
+ else {
+  // التدريب والاختبار يستخدمان كامل بنك الأسئلة للمحتوى الذي حدده المعلم.
+  state.quiz=shuffle(pool).map(randomizeChoice);
+ }
+
+ $('timerBox').classList.toggle('hidden',!(state.mode==='exam'||state.task?.mode==='exam'));
+ $('checkBtn').classList.toggle('hidden',(state.mode==='exam'||state.task?.mode==='exam'));
  updateLive();
+ return true;
 }
 function qType(type){return type==='tf'?'صح أو خطأ':type==='multi'?'اختيار متعدد':type==='order'?'ترتيب':'اختيار من متعدد'}
 function renderQuestion(){clearInterval(state.timer);state.answered=false;const q=state.quiz[state.i];$('progressBar').style.width=`${state.i/state.quiz.length*100}%`;$('quizMode').textContent=state.task?.title||({training:'تدريب',exam:'اختبار',remedial:'علاجي',enrich:'إثرائي'}[state.mode]||'نشاط');$('quizCount').textContent=`السؤال ${state.i+1} من ${state.quiz.length}`;$('quizLesson').textContent=lessonBy(q.lesson)?.title||'';$('qType').textContent=qType(q.type);$('qConcept').textContent=conceptName(q.lesson,q.concept);$('questionText').textContent=q.q;$('feedback').classList.add('hidden');$('nextBtn').classList.add('hidden');$('checkBtn').disabled=false;renderAnswers(q);if(state.mode==='exam'||state.task?.mode==='exam')startTimer(state.task?.timePerQuestion||30);updateLive()}
@@ -387,7 +455,7 @@ function quitQuiz(){if(confirm('هل تريد إنهاء النشاط والعو
 
 function breakdown(){const out={};DATA.lessons.forEach(l=>out[l.id]={correct:0,total:0});state.logs.forEach(x=>{out[x.lesson]??={correct:0,total:0};out[x.lesson].total++;if(x.correct)out[x.lesson].correct++});return out}
 function weakConcepts(){const m={};state.logs.forEach(x=>{m[x.concept]??={c:0,t:0};m[x.concept].t++;if(x.correct)m[x.concept].c++});return Object.entries(m).filter(([,v])=>v.t&&v.c/v.t<.8).map(([k])=>k)}
-async function finishQuiz(){clearInterval(state.timer);$('progressBar').style.width='100%';const total=state.quiz.length,pct=Math.round(state.score/total*100),lvl=level(pct),bd=breakdown(),duration=Math.round((Date.now()-state.startedAt)/1000),weak=weakConcepts();if(state.lesson!=='all')localStorage.setItem('weak_concepts_'+state.lesson,JSON.stringify(weak));screen('resultScreen');$('scorePct').textContent=pct+'%';$('scoreRing').style.setProperty('--pct',pct+'%');$('resultTitle').textContent=state.mode==='exam'||state.task?.mode==='exam'?'نتيجة الاختبار':state.mode==='remedial'?'نتيجة المسار العلاجي':state.mode==='enrich'?'نتيجة المسار الإثرائي':'نتيجة التدريب';$('resultLevel').textContent=lvl;$('resultText').textContent=`${state.student.name} — حصلت على ${state.score} من ${total}. أعلى سلسلة صحيحة: ${state.bestStreak}. زمن النشاط: ${duration} ثانية.`;$('breakdown').innerHTML=DATA.lessons.map(l=>{const x=bd[l.id],p=x.total?Math.round(x.correct/x.total*100):0;return `<div class="break"><span>${esc(l.title)}</span><strong>${x.correct}/${x.total} (${p}%)</strong></div>`}).join('');let rec=[];if(weak.length)rec.push({h:'🩺 مفاهيم تحتاج تعزيزًا',p:weak.map(x=>conceptName(state.lesson==='all'?state.logs.find(z=>z.concept===x)?.lesson:state.lesson,x)).join('، ')});else rec.push({h:'🏅 مستوى إتقان مرتفع',p:'أظهرت النتائج إتقانًا جيدًا للمفاهيم التي ظهرت في هذه الجولة.'});rec.push({h:'الخطوة المقترحة',p:pct<80?'انتقل إلى المسار العلاجي ثم أعد التدريب.':'انتقل إلى المسار الإثرائي أو الاختبار الشامل لتثبيت الإتقان.'});$('recommendations').innerHTML=rec.map(x=>`<div class="rec"><h4>${esc(x.h)}</h4><p>${esc(x.p)}</p></div>`).join('');$('resultAction').textContent=pct<80?'ابدأ المسار العلاجي':'ابدأ المسار الإثرائي';$('resultAction').classList.toggle('hidden',!!state.task);$('sendStatus').textContent=api()?'جاري إرسال التقرير إلى منصة المعلم...':'تم حفظ النتيجة على هذا الجهاز. بعد ربط المنصة تصل التقارير إلى المعلم تلقائيًا.';
+async function finishQuiz(){clearInterval(state.timer);$('progressBar').style.width='100%';const total=state.quiz.length,pct=Math.round(state.score/total*100),lvl=level(pct),bd=breakdown(),duration=Math.round((Date.now()-state.startedAt)/1000),weak=weakConcepts();activeLessonIds().forEach(id=>{const w=weakConceptsForLesson(id);localStorage.setItem(weakStorageKey(id),JSON.stringify(w));localStorage.setItem('weak_concepts_'+id,JSON.stringify(w));});screen('resultScreen');$('scorePct').textContent=pct+'%';$('scoreRing').style.setProperty('--pct',pct+'%');$('resultTitle').textContent=state.mode==='exam'||state.task?.mode==='exam'?'نتيجة الاختبار':state.mode==='remedial'?'نتيجة المسار العلاجي':state.mode==='enrich'?'نتيجة المسار الإثرائي':'نتيجة التدريب';$('resultLevel').textContent=lvl;$('resultText').textContent=`${state.student.name} — حصلت على ${state.score} من ${total}. أعلى سلسلة صحيحة: ${state.bestStreak}. زمن النشاط: ${duration} ثانية.`;$('breakdown').innerHTML=DATA.lessons.map(l=>{const x=bd[l.id],p=x.total?Math.round(x.correct/x.total*100):0;return `<div class="break"><span>${esc(l.title)}</span><strong>${x.correct}/${x.total} (${p}%)</strong></div>`}).join('');let rec=[];if(weak.length)rec.push({h:'🩺 مفاهيم تحتاج تعزيزًا',p:weak.map(x=>conceptName(state.lesson==='all'?state.logs.find(z=>z.concept===x)?.lesson:state.lesson,x)).join('، ')});else rec.push({h:'🏅 مستوى إتقان مرتفع',p:'أظهرت النتائج إتقانًا جيدًا للمفاهيم التي ظهرت في هذه الجولة.'});rec.push({h:'الخطوة المقترحة',p:pct<80?'انتقل إلى المسار العلاجي ثم أعد التدريب.':'انتقل إلى المسار الإثرائي أو الاختبار الشامل لتثبيت الإتقان.'});$('recommendations').innerHTML=rec.map(x=>`<div class="rec"><h4>${esc(x.h)}</h4><p>${esc(x.p)}</p></div>`).join('');$('resultAction').textContent=pct<80?'ابدأ المسار العلاجي':'ابدأ المسار الإثرائي';$('resultAction').classList.toggle('hidden',!!state.task);$('sendStatus').textContent=api()?'جاري إرسال التقرير إلى منصة المعلم...':'تم حفظ النتيجة على هذا الجهاز. بعد ربط المنصة تصل التقارير إلى المعلم تلقائيًا.';
  const payload={type:(state.mode==='exam'||state.task?.mode==='exam')?'test':state.mode,taskId:state.task?.id||'',taskTitle:state.task?.title||'',timestamp:new Date().toISOString(),studentName:state.student.name,className:state.student.className,studentCode:state.student.code,lesson:state.lesson,score,total,percent:pct,level:lvl,durationSec:duration,bestStreak:state.bestStreak,breakdown:bd,weakConcepts:weak,answers:state.logs};localStorage.setItem('last_science_result',JSON.stringify(payload));if(api()){try{await fetch(api(),{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});$('sendStatus').textContent='تم إرسال تقرير الأداء إلى منصة المعلم.'}catch(e){$('sendStatus').textContent='تم حفظ النتيجة، لكن تعذر تأكيد الإرسال. تحقق من الاتصال.'}}
  state.lastPct=pct;state.lastWeak=weak;
 }
