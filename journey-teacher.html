@@ -213,6 +213,8 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 }
 @media(max-width:700px){.task-lessons-grid{grid-template-columns:1fr}}
 
+
+.bank-lesson-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.bank-lesson-card{padding:13px;border:1px solid var(--line);border-radius:15px;background:#0c1d32}.bank-lesson-card b{display:block;font-size:.92rem;line-height:1.5}.bank-lesson-card strong{font-size:1.4rem}.bank-lesson-card small{color:var(--muted)}.bank-toolbar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:end;margin:12px 0}.bank-qtext{max-width:430px;line-height:1.65}.bank-actions{display:flex;gap:5px;flex-wrap:wrap}@media(max-width:900px){.bank-lesson-cards{grid-template-columns:repeat(2,1fr)}.bank-toolbar{grid-template-columns:1fr 1fr}}@media(max-width:560px){.bank-lesson-cards,.bank-toolbar{grid-template-columns:1fr}}
 </style></head>
 <body><div class="wrap">
 <header class="topbar glass"><div class="brand"><div class="logo">📊</div><div><h1>لوحة المعلم</h1><p id="teacherSub"></p></div></div><div class="actions"><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="journey-student.html">معاينة منصة الطالب</a></div></header>
@@ -222,7 +224,7 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 <section id="dashboard">
 <div class="section-head"><div><h3>ملخص المنصة</h3><p id="lastUpdate"></p></div><div class="actions"><button id="newTaskBtn" class="btn">+ تكليف منزلي جديد</button><button id="refreshBtn" class="btn secondary">تحديث</button></div></div>
 <div class="teacher-cards"><div class="stat"><strong id="sTasks">0</strong><span>التكليفات</span></div><div class="stat"><strong id="sStudents">0</strong><span>طلاب شاركوا</span></div><div class="stat"><strong id="sTraining">0</strong><span>تقارير التدريب</span></div><div class="stat"><strong id="sTests">0</strong><span>نتائج الاختبار</span></div></div>
-<div class="tabs"><button class="tab active" data-tab="tasks">مركز التكليفات المنزلية</button><button class="tab" data-tab="results">نتائج الطلاب</button><button class="tab" data-tab="students">إدارة الطلاب</button><button class="tab" data-tab="portfolio">تقارير ملف الإنجاز</button></div>
+<div class="tabs"><button class="tab active" data-tab="tasks">مركز التكليفات المنزلية</button><button class="tab" data-tab="results">نتائج الطلاب</button><button class="tab" data-tab="students">إدارة الطلاب</button><button class="tab" data-tab="bank">بنك الأسئلة</button><button class="tab" data-tab="portfolio">تقارير ملف الإنجاز</button></div>
 
 <section id="tasksTab" class="panel glass"><div class="section-head" style="margin-top:0"><div><h3>الروابط الذكية</h3><p>فعّل أو أوقف الرابط بعد إرساله للطلاب، وانسخ رابط النشاط من هنا.</p></div></div><div class="table-wrap"><table><thead><tr><th>التكليف</th><th>النوع</th><th>الدرس</th><th>الفصل</th><th>الفترة</th><th>الحالة</th><th>الرابط</th><th>إجراءات</th></tr></thead><tbody id="tasksBody"></tbody></table></div></section>
 
@@ -231,7 +233,7 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
   <div class="results-toolbar">
     <div class="field"><label>بحث باسم الطالب</label><input id="nameFilter" placeholder="اكتب جزءًا من الاسم"></div>
     <div class="field"><label>الفصل</label><select id="classFilter"><option value="">كل الفصول</option></select></div>
-    <div class="field"><label>الفصل في المنهج</label><select id="resultChapterFilter"><option value="">كل الفصول</option><option value="الفصل الأول">الفصل الأول</option><option value="الفصل الثاني">الفصل الثاني</option></select></div>
+    <div class="field"><label>الفصل في المنهج</label><select id="resultChapterFilter"><option value="">كل الفصول</option><option value="الفصل الأول">الفصل الأول</option><option value="الفصل الثاني">الفصل الثاني</option><option value="الفصل الثالث">الفصل الثالث</option><option value="الفصل الرابع">الفصل الرابع</option><option value="الفصل الخامس">الفصل الخامس</option><option value="الفصل السادس">الفصل السادس</option></select></div>
     <div class="field"><label>الدرس / التكليف</label><select id="resultTaskFilter"><option value="">كل الدروس والتكليفات</option></select></div>
     <div class="field"><label>النوع</label><select id="resultTypeFilter"><option value="">الكل</option><option value="training">تدريب</option><option value="test">اختبار</option><option value="remedial">علاجي</option><option value="enrich">إثراء</option></select></div>
     <button id="exportBtn" class="btn secondary">تصدير CSV</button>
@@ -268,6 +270,23 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
       <tbody id="studentsBody"></tbody>
     </table>
   </div>
+</section>
+
+
+<section id="bankTab" class="panel glass hidden">
+  <div class="section-head" style="margin-top:0">
+    <div><h3>بنك الأسئلة</h3><p>استعرض أسئلة الدروس الأربعة عشر، واعرف عددها، وأضف أو عدّل أو احذف دون تعديل الكود.</p></div>
+    <div class="actions"><button id="bankReloadBtn" class="btn secondary">تحديث البنك</button><button id="bankAddBtn" class="btn">+ إضافة سؤال</button></div>
+  </div>
+  <div id="bankLessonCards" class="bank-lesson-cards"></div>
+  <div class="bank-toolbar">
+    <div class="field"><label>الدرس</label><select id="bankLessonFilter"><option value="">كل الدروس</option></select></div>
+    <div class="field"><label>المسار</label><select id="bankTrackFilter"><option value="">الكل</option><option value="core">تدريب / أساسي</option><option value="remedial">علاجي</option><option value="enrich">إثرائي</option></select></div>
+    <div class="field"><label>المستوى</label><select id="bankDifficultyFilter"><option value="">الكل</option><option value="remember">تذكر</option><option value="understand">فهم</option><option value="apply">تطبيق / استنتاج</option></select></div>
+    <div class="field"><label>بحث</label><input id="bankSearch" placeholder="ابحث في نص السؤال أو المفهوم"></div>
+  </div>
+  <div id="bankStatus" class="note good">يتم عرض البنك الأساسي مع أي تعديلات محفوظة في Google Sheets.</div>
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>الدرس</th><th>المسار</th><th>المستوى</th><th>السؤال</th><th>الإجابة الصحيحة</th><th>الإجراءات</th></tr></thead><tbody id="bankBody"></tbody></table></div>
 </section>
 
 <section id="portfolioTab" class="panel glass hidden">
@@ -313,6 +332,26 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
   <div id="taskLessonChoices" class="task-lessons-grid"></div>
 </div><div class="field"><label>الفصل المستهدف</label><select id="taskClass"><option value="">اختر الفصل</option></select></div><div class="field"><label>عدد الأسئلة</label><div class="note good">تلقائي حسب النشاط والمحتوى المحدد</div></div><div class="field" id="taskTimeField"><label>زمن السؤال (للاختبار)</label><input id="taskTime" type="number" min="10" max="120" value="30"></div><div class="field" id="taskAttemptsField"><label>عدد المحاولات (للاختبار)</label><input id="taskAttempts" type="number" min="1" max="10" value="1"></div><div class="field"><label>بداية التكليف</label><input id="taskStart" type="datetime-local"></div><div class="field"><label>نهاية التكليف</label><input id="taskEnd" type="datetime-local"></div></div><div class="modal-actions"><button id="saveTask" class="btn">إنشاء التكليف والرابط</button></div></div></div>
 
+
+<div id="questionModal" class="modal hidden"><div class="modal-card glass">
+ <div class="section-head" style="margin-top:0"><div><h3 id="questionModalTitle">إضافة سؤال</h3><p>احفظ السؤال ليظهر للطلاب مباشرة بعد تحديث الصفحة.</p></div><button id="closeQuestionModal" class="btn secondary">إغلاق</button></div>
+ <div class="form-grid">
+  <div class="field"><label>الدرس</label><select id="qLesson"></select></div>
+  <div class="field"><label>المسار</label><select id="qTrack"><option value="core">تدريب / أساسي</option><option value="remedial">علاجي</option><option value="enrich">إثرائي</option></select></div>
+  <div class="field"><label>المستوى</label><select id="qDifficulty"><option value="remember">تذكر</option><option value="understand">فهم</option><option value="apply">تطبيق / استنتاج</option></select></div>
+  <div class="field"><label>المفهوم / النقطة</label><input id="qConcept" placeholder="مثال: خصائص المعادن"></div>
+ </div>
+ <div class="field" style="margin-top:12px"><label>نص السؤال</label><textarea id="qText" rows="3" style="width:100%;padding:13px;border-radius:14px;background:#09182a;border:1px solid var(--line);color:white"></textarea></div>
+ <div class="form-grid" style="margin-top:12px">
+  <div class="field"><label>الخيار أ</label><input id="qOpt0"></div><div class="field"><label>الخيار ب</label><input id="qOpt1"></div>
+  <div class="field"><label>الخيار ج</label><input id="qOpt2"></div><div class="field"><label>الخيار د</label><input id="qOpt3"></div>
+  <div class="field"><label>الإجابة الصحيحة</label><select id="qAnswer"><option value="0">أ</option><option value="1">ب</option><option value="2">ج</option><option value="3">د</option></select></div>
+ </div>
+ <div class="field" style="margin-top:12px"><label>التفسير / التغذية الراجعة</label><textarea id="qExplain" rows="2" style="width:100%;padding:13px;border-radius:14px;background:#09182a;border:1px solid var(--line);color:white"></textarea></div>
+ <input id="qId" type="hidden"><div class="modal-actions"><button id="saveQuestionBtn" class="btn">حفظ السؤال</button></div>
+</div></div>
+
+<script src="question-bank.js?v=20260920-bank1"></script>
 <script>
 const LESSONS={
  'science-processes':'العلم وعملياته',
@@ -321,6 +360,14 @@ const LESSONS={
  'motion':'الحركة',
  'newton-laws':'قوانين نيوتن للحركة',
  'work-machines':'الشغل والآلات البسيطة',
+ 'physical-properties':'الخواص والتغيرات الفيزيائية',
+ 'chemical-properties':'الخواص والتغيرات الكيميائية',
+ 'matter-structure':'تركيب المادة',
+ 'elements-compounds-mixtures':'العناصر والمركبات والمخاليط',
+ 'earth-jewels':'جواهر الأرض',
+ 'rock-types':'أنواع الصخور',
+ 'plate-tectonics':'صفائح الأرض المتحركة',
+ 'weathering-erosion':'التجوية والتعرية وأثرهما',
  'all':'جميع الدروس'
 };
 const $=id=>document.getElementById(id);
@@ -329,6 +376,67 @@ let tasks=[];
 let results=[];
 const CLASSES=['1/1','2/1','3/1','4/1'];
 let studentRoster={};
+let bankOverrides=[];
+let bankQuestions=[];
+function trackName(v){return ({core:'تدريب',remedial:'علاجي',enrich:'إثرائي'}[String(v||'core')]||String(v||'تدريب'))}
+function difficultyName(v){return ({remember:'تذكر',understand:'فهم',apply:'تطبيق / استنتاج'}[String(v||'remember')]||String(v||'تذكر'))}
+function correctAnswerText(q){if(!q)return '—';if(q.type==='tf')return q.answer?'صح':'خطأ';const opts=Array.isArray(q.options)?q.options:[];return opts[Number(q.answer)]??'—'}
+function mergeQuestionBank(){
+ const base=(window.SCIENCE_DATA?.questions||[]).map(q=>({...q}));
+ const byId=new Map(base.map(q=>[String(q.id),q]));
+ bankOverrides.forEach(o=>{const id=String(o.questionId||o.id||'');if(!id)return;if(String(o.action)==='delete'){byId.delete(id);return}const q=o.payload;if(q&&typeof q==='object')byId.set(id,{...q,id});});
+ bankQuestions=[...byId.values()];
+}
+async function loadQuestionBankAdmin(){
+ mergeQuestionBank();
+ try{const r=await jsonp({action:'getQuestionOverrides'});if(r?.ok)bankOverrides=Array.isArray(r.overrides)?r.overrides:[];}catch(e){console.warn(e)}
+ mergeQuestionBank();renderQuestionBank();
+}
+function bankLessonTitle(id){return LESSONS[id]||window.SCIENCE_DATA?.lessons?.find(l=>l.id===id)?.title||id}
+function renderQuestionBank(){
+ const cards=$('bankLessonCards'); if(!cards)return;
+ const counts={}; bankQuestions.forEach(q=>counts[q.lesson]=(counts[q.lesson]||0)+1);
+ const lessons=(window.SCIENCE_DATA?.lessons||[]);
+ cards.innerHTML=lessons.map(l=>`<div class="bank-lesson-card"><b>${esc(l.title)}</b><strong>${counts[l.id]||0}</strong><small> سؤال</small></div>`).join('');
+ const lesson=$('bankLessonFilter')?.value||'',track=$('bankTrackFilter')?.value||'',diff=$('bankDifficultyFilter')?.value||'',term=String($('bankSearch')?.value||'').trim().toLowerCase();
+ let rows=bankQuestions.filter(q=>(!lesson||q.lesson===lesson)&&(!track||String(q.track||'core')===track)&&(!diff||String(q.difficulty||'remember')===diff));
+ if(term)rows=rows.filter(q=>`${q.q||''} ${q.concept||''} ${q.explain||''}`.toLowerCase().includes(term));
+ $('bankBody').innerHTML=rows.map((q,i)=>`<tr><td>${i+1}</td><td>${esc(bankLessonTitle(q.lesson))}</td><td>${esc(trackName(q.track))}</td><td>${esc(difficultyName(q.difficulty))}</td><td class="bank-qtext">${esc(q.q||'')}</td><td>${esc(correctAnswerText(q))}</td><td><div class="bank-actions"><button class="smallbtn toggle" data-qedit="${esc(q.id)}">تعديل</button><button class="smallbtn remove" data-qdelete="${esc(q.id)}">حذف</button></div></td></tr>`).join('')||'<tr><td colspan="7">لا توجد أسئلة مطابقة.</td></tr>';
+ document.querySelectorAll('[data-qedit]').forEach(b=>b.onclick=()=>openQuestionModal(b.dataset.qedit));
+ document.querySelectorAll('[data-qdelete]').forEach(b=>b.onclick=()=>deleteQuestionBankItem(b.dataset.qdelete));
+ $('bankStatus').textContent=`إجمالي البنك الحالي: ${bankQuestions.length} سؤال — المعروض الآن: ${rows.length}.`;
+}
+function setupQuestionBankUi(){
+ const lessons=window.SCIENCE_DATA?.lessons||[];
+ if($('bankLessonFilter'))$('bankLessonFilter').innerHTML='<option value="">كل الدروس</option>'+lessons.map(l=>`<option value="${esc(l.id)}">${esc(l.title)}</option>`).join('');
+ if($('qLesson'))$('qLesson').innerHTML=lessons.map(l=>`<option value="${esc(l.id)}">${esc(l.title)}</option>`).join('');
+ ['bankLessonFilter','bankTrackFilter','bankDifficultyFilter','bankSearch'].forEach(id=>{if($(id))$(id).oninput=renderQuestionBank});
+ if($('bankReloadBtn'))$('bankReloadBtn').onclick=loadQuestionBankAdmin;
+ if($('bankAddBtn'))$('bankAddBtn').onclick=()=>openQuestionModal('');
+ if($('closeQuestionModal'))$('closeQuestionModal').onclick=()=>$('questionModal').classList.add('hidden');
+ if($('saveQuestionBtn'))$('saveQuestionBtn').onclick=saveQuestionBankItem;
+ mergeQuestionBank();renderQuestionBank();
+}
+function openQuestionModal(id=''){
+ const q=id?bankQuestions.find(x=>String(x.id)===String(id)):null;
+ $('questionModalTitle').textContent=q?'تعديل سؤال':'إضافة سؤال'; $('qId').value=q?.id||'';
+ $('qLesson').value=q?.lesson||$('bankLessonFilter').value||window.SCIENCE_DATA?.lessons?.[0]?.id||'';
+ $('qTrack').value=q?.track||'core'; $('qDifficulty').value=q?.difficulty||'remember'; $('qConcept').value=q?.concept||''; $('qText').value=q?.q||'';
+ const opts=Array.isArray(q?.options)?q.options:['','','','']; [0,1,2,3].forEach(i=>$('qOpt'+i).value=opts[i]||''); $('qAnswer').value=String(Number(q?.answer||0)); $('qExplain').value=q?.explain||'';
+ $('questionModal').classList.remove('hidden');
+}
+async function saveQuestionBankItem(){
+ const id=$('qId').value.trim()||('custom-'+Date.now()+'-'+Math.floor(Math.random()*1000));
+ const options=[0,1,2,3].map(i=>$('qOpt'+i).value.trim());
+ const q={id,lesson:$('qLesson').value,concept:$('qConcept').value.trim()||'عام',type:'choice',q:$('qText').value.trim(),options,answer:Number($('qAnswer').value),explain:$('qExplain').value.trim(),difficulty:$('qDifficulty').value,track:$('qTrack').value};
+ if(!q.lesson||!q.q||options.some(x=>!x)){alert('أكمل الدرس ونص السؤال والخيارات الأربعة.');return}
+ const btn=$('saveQuestionBtn');btn.disabled=true;try{await apiAction('upsertQuestionOverride',{questionId:id,payload:JSON.stringify(q)});$('questionModal').classList.add('hidden');await loadQuestionBankAdmin();alert('تم حفظ السؤال في بنك الأسئلة.')}catch(e){alert(e.message||e)}finally{btn.disabled=false}
+}
+async function deleteQuestionBankItem(id){
+ const q=bankQuestions.find(x=>String(x.id)===String(id)); if(!q)return;if(!confirm(`حذف السؤال:\n${q.q}`))return;
+ try{await apiAction('deleteQuestionOverride',{questionId:id});await loadQuestionBankAdmin();}catch(e){alert(e.message||e)}
+}
+
 const TRACKER_STORAGE_KEY='st_track_v1';
 const TRACKER_GRADE='الأول المتوسط';
 
@@ -425,6 +533,7 @@ async function loadTeacher(){
   $('lastUpdate').textContent='آخر تحديث: '+new Date().toLocaleString('ar-SA');
   setStatus(`تم الربط بنجاح — ${tasks.length} تكليف و${results.length} نتيجة.`,true);
   await loadAllStudents();
+  await loadQuestionBankAdmin();
   renderAll();
   updatePortfolioTasks();
   updateResultFilters();
@@ -505,10 +614,11 @@ function init(){
  if($('studentPortfolioBtn')) $('studentPortfolioBtn').onclick=generateStudentPortfolio;
  updateStudentPortfolioStudents();
  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+ setupQuestionBankUi();
  renderAll();
  if(getKey()) setTimeout(loadTeacher,150);
 }
-function switchTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));['tasks','results','students','portfolio'].forEach(x=>$(x+'Tab').classList.toggle('hidden',x!==tab));if(tab==='students')renderStudentsAdmin()}
+function switchTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));['tasks','results','students','bank','portfolio'].forEach(x=>$(x+'Tab').classList.toggle('hidden',x!==tab));if(tab==='students')renderStudentsAdmin();if(tab==='bank')renderQuestionBank()}
 function renderAll(){stats();renderTasks();renderResults();renderStudentsAdmin()}
 function stats(){const students=new Set(results.map(x=>x.className+'-'+x.studentName)).size;$('sTasks').textContent=tasks.length;$('sStudents').textContent=students;$('sTraining').textContent=results.filter(x=>x.type!=='test'&&x.type!=='exam').length;$('sTests').textContent=results.filter(x=>x.type==='test'||x.type==='exam').length}
 function renderTasks(){
@@ -670,8 +780,7 @@ async function syncStudentsFromTracker(){
 
 
 function availableTaskLessons(){
- const ready=new Set(['science-processes','scientific-models','evaluate-explanations']);
- return Object.entries(LESSONS).filter(([id])=>ready.has(id));
+ return Object.entries(LESSONS).filter(([id])=>id!=='all');
 }
 function renderTaskLessonChoices(selected=[]){
  const box=$('taskLessonChoices'); if(!box)return;
@@ -751,18 +860,39 @@ const RESULT_CHAPTER_BY_LESSON={
  'evaluate-explanations':'الفصل الأول',
  'motion':'الفصل الثاني',
  'newton-laws':'الفصل الثاني',
- 'work-machines':'الفصل الثاني'
+ 'work-machines':'الفصل الثاني',
+ 'physical-properties':'الفصل الثالث',
+ 'chemical-properties':'الفصل الثالث',
+ 'matter-structure':'الفصل الرابع',
+ 'elements-compounds-mixtures':'الفصل الرابع',
+ 'earth-jewels':'الفصل الخامس',
+ 'rock-types':'الفصل الخامس',
+ 'plate-tectonics':'الفصل السادس',
+ 'weathering-erosion':'الفصل السادس'
 };
 function resultChapter(r){
  const explicit=String(r.chapter||r.chapterName||r.unit||'').trim();
  if(explicit){
+  if(/السادس/.test(explicit)) return 'الفصل السادس';
+  if(/الخامس/.test(explicit)) return 'الفصل الخامس';
+  if(/الرابع/.test(explicit)) return 'الفصل الرابع';
+  if(/الثالث/.test(explicit)) return 'الفصل الثالث';
   if(/الثاني/.test(explicit)) return 'الفصل الثاني';
   if(/الأول|الاول/.test(explicit)) return 'الفصل الأول';
  }
  const lesson=String(r.lesson||'').trim();
  if(RESULT_CHAPTER_BY_LESSON[lesson]) return RESULT_CHAPTER_BY_LESSON[lesson];
+ const ids=Array.isArray(r.lessonIds)?r.lessonIds:[];
+ if(ids.length){
+  const chapters=[...new Set(ids.map(id=>RESULT_CHAPTER_BY_LESSON[id]).filter(Boolean))];
+  if(chapters.length===1)return chapters[0];
+ }
  const title=resultTitle(r);
- if(/الفصل\s*الثاني|الحركة|نيوتن|الشغل|الآلات|الالات/.test(title)) return 'الفصل الثاني';
+ if(/صفائح|التجوية|التعرية/.test(title)) return 'الفصل السادس';
+ if(/جواهر|المعادن|الصخور/.test(title)) return 'الفصل الخامس';
+ if(/تركيب المادة|العناصر|المركبات|المخاليط/.test(title)) return 'الفصل الرابع';
+ if(/الخواص|التغيرات الفيزيائية|التغيرات الكيميائية/.test(title)) return 'الفصل الثالث';
+ if(/الحركة|نيوتن|الشغل|الآلات|الالات/.test(title)) return 'الفصل الثاني';
  return 'الفصل الأول';
 }
 function resultPercent(r){return Number(r.percent??0)||0}
