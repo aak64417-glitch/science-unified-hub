@@ -787,17 +787,44 @@ async function syncStudentsFromTracker(){
 }
 
 
-function availableTaskLessons(){
- return Object.entries(LESSONS).filter(([id])=>id!=='all');
+function taskGradeFromClass(){
+ const cls=String($('taskClass')?.value||'').trim();
+ return cls.endsWith('/3') ? '3' : '1';
 }
+
+function availableTaskLessons(){
+ const grade=taskGradeFromClass();
+
+ return (window.SCIENCE_DATA?.lessons||[])
+   .filter(l=>String(l.grade||'1')===grade)
+   .map(l=>[l.id,l.title]);
+}
+
 function renderTaskLessonChoices(selected=[]){
- const box=$('taskLessonChoices'); if(!box)return;
- const chosen=new Set(Array.isArray(selected)?selected:selectedLessonIds({lessonIds:selected}));
+ const box=$('taskLessonChoices');
+ if(!box)return;
+
+ const taskClass=$('taskClass');
+
+ if(taskClass && !taskClass.dataset.gradeHook){
+   taskClass.dataset.gradeHook='1';
+   taskClass.addEventListener('change',()=>{
+     renderTaskLessonChoices([]);
+   });
+ }
+
+ const chosen=new Set(
+   Array.isArray(selected)
+     ? selected
+     : selectedLessonIds({lessonIds:selected})
+ );
+
  box.innerHTML=availableTaskLessons().map(([id,title])=>`
    <label class="task-lesson-option">
      <input type="checkbox" value="${esc(id)}" ${chosen.has(id)?'checked':''}>
      <span>${esc(title)}</span>
-   </label>`).join('');
+   </label>
+ `).join('');
 }
 function selectedTaskLessonIds(){
  return [...document.querySelectorAll('#taskLessonChoices input[type="checkbox"]:checked')]
