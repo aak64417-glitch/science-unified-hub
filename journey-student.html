@@ -151,18 +151,104 @@ const ENRICHMENT_IDS=new Set([
  'q23','q27','q28','q30','q59','q68','q70','q71'
 ]);
 function taskLessonIds(task){
- const raw=String(task?.lesson||'').trim();
- if(!raw||raw==='all') return DATA.lessons.map(l=>l.id);
- try{
-  const parsed=JSON.parse(raw);
-  if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean);
- }catch(_){ }
- return raw.split(',').map(x=>x.trim()).filter(Boolean);
+
+  const validLessons =
+    new Set(
+      DATA.lessons.map(
+        l => String(l.id)
+      )
+    );
+
+  const cleanIds = arr =>
+    [...new Set(
+      (arr || [])
+        .map(String)
+        .map(x => x.trim())
+        .filter(x => validLessons.has(x))
+    )];
+
+  if (Array.isArray(task?.lessonIds)) {
+    const ids = cleanIds(task.lessonIds);
+
+    if (ids.length) {
+      return ids;
+    }
+  }
+
+  const rawIds =
+    String(task?.lessonIds || '').trim();
+
+  if (rawIds) {
+
+    try {
+
+      const parsed =
+        JSON.parse(rawIds);
+
+      if (Array.isArray(parsed)) {
+
+        const ids =
+          cleanIds(parsed);
+
+        if (ids.length) {
+          return ids;
+        }
+      }
+
+    } catch (_) {
+
+      const ids =
+        cleanIds(
+          rawIds.split(',')
+        );
+
+      if (ids.length) {
+        return ids;
+      }
+    }
+  }
+
+  const raw =
+    String(task?.lesson || '').trim();
+
+  if (!raw) {
+    return [];
+  }
+
+  if (raw === 'all') {
+    return DATA.lessons.map(
+      l => l.id
+    );
+  }
+
+  try {
+
+    const parsed =
+      JSON.parse(raw);
+
+    if (Array.isArray(parsed)) {
+      return cleanIds(parsed);
+    }
+
+  } catch (_) {}
+
+  return cleanIds(
+    raw.split(',')
+  );
 }
 function activeLessonIds(){
- if(state.task?.lessonIds?.length) return state.task.lessonIds;
- if(state.task) return taskLessonIds(state.task);
- return state.lesson==='all'?DATA.lessons.map(l=>l.id):[state.lesson];
+
+  if (state.task) {
+    return taskLessonIds(state.task);
+  }
+
+  if (state.lesson === 'all') {
+    return DATA.lessons.map(l => l.id);
+  }
+
+  return lessonBy(state.lesson)
+    ? [state.lesson]
+    : [];
 }
 function weakStorageKey(lessonId){
  const c=String(state.student?.className||'').replace(/\W+/g,'_');
@@ -206,6 +292,7 @@ function showAssignmentMessage(message){
 function goHome(){clearInterval(state.timer);if(state.task){openIdentity(state.task.mode||state.mode,state.task.lesson||state.lesson,state.task)}else{showAssignmentMessage('هذه صفحة الطالب، وتفتح فقط من رابط التكليف الذي يرسله المعلم.')}} window.goHome=goHome;
 
 async function init(){
+ showAssignmentMessage('⏳ جاري تحميل التكليف...');
  $('schoolName').textContent=CFG.schoolName||'مدرسة أبي الدرداء المتوسطة';
  $('subTitle').textContent=`${CFG.subject||'العلوم – الصف الأول المتوسط'} | المعلم: ${CFG.teacherName||''}`;
  $('footerText').textContent=`${CFG.schoolName||''} • ${CFG.subject||''} • العام ${CFG.year||'1448هـ'}`;
