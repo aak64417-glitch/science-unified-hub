@@ -374,7 +374,10 @@ const $=id=>document.getElementById(id);
 const DEFAULT_API_URL='https://script.google.com/macros/s/AKfycbxp-t4JgGO5WiK6hoacjTyBqFnG-9bSWClplOpVV4VDuTV7T4tY0swB1Ll36kr_djJ7nQ/exec';
 let tasks=[];
 let results=[];
-const CLASSES=['1/1','2/1','3/1','4/1'];
+ const CLASSES=[
+  '1/1','2/1','3/1','4/1',
+  '1/3','2/3','3/3','4/3'
+];
 let studentRoster={};
 let bankOverrides=[];
 let bankQuestions=[];
@@ -500,12 +503,16 @@ function jsonp(params){
  return p;
 }
 
-const CLASS_ORDER_FOR_RESULTS={'1/1':1,'2/1':2,'3/1':3,'4/1':4};
+const CLASS_ORDER_FOR_RESULTS={
+  '1/1':1,'2/1':2,'3/1':3,'4/1':4,
+  '1/3':5,'2/3':6,'3/3':7,'4/3':8
+};
 function normalizeClassName(value){
  const raw=String(value??'').trim();
  if(!raw)return '';
  if(CLASS_ORDER_FOR_RESULTS[raw])return raw;
- const m=raw.match(/^([1-4])\s*[\/-]\s*1$/); if(m)return `${m[1]}/1`;
+ const m=raw.match(/^([1-4])\s*[\/-]\s*(1|3)$/);
+if(m)return `${m[1]}/${m[2]}`;
  const d=new Date(raw);
  if(!Number.isNaN(d.getTime())){
   const candidate=`${d.getMonth()+1}/${d.getDate()}`;
