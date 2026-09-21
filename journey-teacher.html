@@ -616,7 +616,7 @@ function jsonp(params){
   const script=document.createElement('script');
   const q=new URLSearchParams({...params,callback:callbackName,_:Date.now()});
   let finished=false;
-  const timer=setTimeout(()=>{finish();reject(new Error('انتهت مهلة الاتصال بالخادم.'))},20000);
+  const timer=setTimeout(()=>{finish();reject(new Error('انتهت مهلة الاتصال بالخادم.'))},45000);
   function finish(){
    if(finished)return;
    finished=true;
