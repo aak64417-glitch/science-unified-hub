@@ -280,6 +280,13 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
   </div>
   <div id="bankLessonCards" class="bank-lesson-cards"></div>
   <div class="bank-toolbar">
+   <div class="field">
+  <label>المرحلة</label>
+  <select id="bankGradeFilter">
+    <option value="1">أول متوسط</option>
+    <option value="3">ثالث متوسط</option>
+  </select>
+</div>
     <div class="field"><label>الدرس</label><select id="bankLessonFilter"><option value="">كل الدروس</option></select></div>
     <div class="field"><label>المسار</label><select id="bankTrackFilter"><option value="">الكل</option><option value="core">تدريب / أساسي</option><option value="remedial">علاجي</option><option value="enrich">إثرائي</option></select></div>
     <div class="field"><label>المستوى</label><select id="bankDifficultyFilter"><option value="">الكل</option><option value="remember">تذكر</option><option value="understand">فهم</option><option value="apply">تطبيق / استنتاج</option></select></div>
@@ -397,29 +404,151 @@ async function loadQuestionBankAdmin(){
  mergeQuestionBank();renderQuestionBank();
 }
 function bankLessonTitle(id){return LESSONS[id]||window.SCIENCE_DATA?.lessons?.find(l=>l.id===id)?.title||id}
-function renderQuestionBank(){
- const cards=$('bankLessonCards'); if(!cards)return;
- const counts={}; bankQuestions.forEach(q=>counts[q.lesson]=(counts[q.lesson]||0)+1);
- const lessons=(window.SCIENCE_DATA?.lessons||[]);
- cards.innerHTML=lessons.map(l=>`<div class="bank-lesson-card"><b>${esc(l.title)}</b><strong>${counts[l.id]||0}</strong><small> سؤال</small></div>`).join('');
- const lesson=$('bankLessonFilter')?.value||'',track=$('bankTrackFilter')?.value||'',diff=$('bankDifficultyFilter')?.value||'',term=String($('bankSearch')?.value||'').trim().toLowerCase();
- let rows=bankQuestions.filter(q=>(!lesson||q.lesson===lesson)&&(!track||String(q.track||'core')===track)&&(!diff||String(q.difficulty||'remember')===diff));
- if(term)rows=rows.filter(q=>`${q.q||''} ${q.concept||''} ${q.explain||''}`.toLowerCase().includes(term));
- $('bankBody').innerHTML=rows.map((q,i)=>`<tr><td>${i+1}</td><td>${esc(bankLessonTitle(q.lesson))}</td><td>${esc(trackName(q.track))}</td><td>${esc(difficultyName(q.difficulty))}</td><td class="bank-qtext">${esc(q.q||'')}</td><td>${esc(correctAnswerText(q))}</td><td><div class="bank-actions"><button class="smallbtn toggle" data-qedit="${esc(q.id)}">تعديل</button><button class="smallbtn remove" data-qdelete="${esc(q.id)}">حذف</button></div></td></tr>`).join('')||'<tr><td colspan="7">لا توجد أسئلة مطابقة.</td></tr>';
- document.querySelectorAll('[data-qedit]').forEach(b=>b.onclick=()=>openQuestionModal(b.dataset.qedit));
- document.querySelectorAll('[data-qdelete]').forEach(b=>b.onclick=()=>deleteQuestionBankItem(b.dataset.qdelete));
- $('bankStatus').textContent=`إجمالي البنك الحالي: ${bankQuestions.length} سؤال — المعروض الآن: ${rows.length}.`;
+
+function currentBankGrade(){
+ return String($('bankGradeFilter')?.value || '1');
 }
+
+function bankLessonsForGrade(){
+ const grade=currentBankGrade();
+ return (window.SCIENCE_DATA?.lessons||[])
+   .filter(l=>String(l.grade||'1')===grade);
+}
+
+function bankQuestionGrade(q){
+ const lesson=(window.SCIENCE_DATA?.lessons||[])
+   .find(l=>String(l.id)===String(q.lesson));
+ return String(lesson?.grade||'1');
+}
+
+function updateBankLessonOptions(){
+ const lessons=bankLessonsForGrade();
+
+ if($('bankLessonFilter')){
+   const old=$('bankLessonFilter').value;
+   $('bankLessonFilter').innerHTML=
+     '<option value="">كل دروس المرحلة</option>'+
+     lessons.map(l=>
+       `<option value="${esc(l.id)}">${esc(l.title)}</option>`
+     ).join('');
+
+   if(lessons.some(l=>String(l.id)===String(old))){
+     $('bankLessonFilter').value=old;
+   }
+ }
+
+ if($('qLesson')){
+   $('qLesson').innerHTML=lessons.map(l=>
+     `<option value="${esc(l.id)}">${esc(l.title)}</option>`
+   ).join('');
+ }
+}
+
+function renderQuestionBank(){
+ const cards=$('bankLessonCards');
+ if(!cards)return;
+
+ const grade=currentBankGrade();
+ const lessons=bankLessonsForGrade();
+ const gradeQuestions=bankQuestions.filter(
+   q=>bankQuestionGrade(q)===grade
+ );
+
+ const counts={};
+ gradeQuestions.forEach(q=>{
+   counts[q.lesson]=(counts[q.lesson]||0)+1;
+ });
+
+ cards.innerHTML=lessons.map(l=>`
+   <div class="bank-lesson-card">
+     <b>${esc(l.title)}</b>
+     <strong>${counts[l.id]||0}</strong>
+     <small> سؤال</small>
+   </div>
+ `).join('');
+
+ const lesson=$('bankLessonFilter')?.value||'';
+ const track=$('bankTrackFilter')?.value||'';
+ const diff=$('bankDifficultyFilter')?.value||'';
+ const term=String($('bankSearch')?.value||'')
+   .trim().toLowerCase();
+
+ let rows=gradeQuestions.filter(q=>
+   (!lesson||q.lesson===lesson) &&
+   (!track||String(q.track||'core')===track) &&
+   (!diff||String(q.difficulty||'remember')===diff)
+ );
+
+ if(term){
+   rows=rows.filter(q=>
+     `${q.q||''} ${q.concept||''} ${q.explain||''}`
+       .toLowerCase().includes(term)
+   );
+ }
+
+ $('bankBody').innerHTML=rows.map((q,i)=>`
+   <tr>
+     <td>${i+1}</td>
+     <td>${esc(bankLessonTitle(q.lesson))}</td>
+     <td>${esc(trackName(q.track))}</td>
+     <td>${esc(difficultyName(q.difficulty))}</td>
+     <td class="bank-qtext">${esc(q.q||'')}</td>
+     <td>${esc(correctAnswerText(q))}</td>
+     <td>
+       <div class="bank-actions">
+         <button class="smallbtn toggle" data-qedit="${esc(q.id)}">تعديل</button>
+         <button class="smallbtn remove" data-qdelete="${esc(q.id)}">حذف</button>
+       </div>
+     </td>
+   </tr>
+ `).join('') || '<tr><td colspan="7">لا توجد أسئلة في هذه المرحلة.</td></tr>';
+
+ document.querySelectorAll('[data-qedit]')
+   .forEach(b=>b.onclick=()=>openQuestionModal(b.dataset.qedit));
+
+ document.querySelectorAll('[data-qdelete]')
+   .forEach(b=>b.onclick=()=>deleteQuestionBankItem(b.dataset.qdelete));
+
+ const gradeName=grade==='3'?'ثالث متوسط':'أول متوسط';
+
+ $('bankStatus').textContent=
+   `${gradeName}: ${gradeQuestions.length} سؤال — المعروض الآن: ${rows.length}.`;
+}
+
 function setupQuestionBankUi(){
- const lessons=window.SCIENCE_DATA?.lessons||[];
- if($('bankLessonFilter'))$('bankLessonFilter').innerHTML='<option value="">كل الدروس</option>'+lessons.map(l=>`<option value="${esc(l.id)}">${esc(l.title)}</option>`).join('');
- if($('qLesson'))$('qLesson').innerHTML=lessons.map(l=>`<option value="${esc(l.id)}">${esc(l.title)}</option>`).join('');
- ['bankLessonFilter','bankTrackFilter','bankDifficultyFilter','bankSearch'].forEach(id=>{if($(id))$(id).oninput=renderQuestionBank});
- if($('bankReloadBtn'))$('bankReloadBtn').onclick=loadQuestionBankAdmin;
- if($('bankAddBtn'))$('bankAddBtn').onclick=()=>openQuestionModal('');
- if($('closeQuestionModal'))$('closeQuestionModal').onclick=()=>$('questionModal').classList.add('hidden');
- if($('saveQuestionBtn'))$('saveQuestionBtn').onclick=saveQuestionBankItem;
- mergeQuestionBank();renderQuestionBank();
+ updateBankLessonOptions();
+
+ if($('bankGradeFilter')){
+   $('bankGradeFilter').onchange=()=>{
+     updateBankLessonOptions();
+     renderQuestionBank();
+   };
+ }
+
+ [
+   'bankLessonFilter',
+   'bankTrackFilter',
+   'bankDifficultyFilter',
+   'bankSearch'
+ ].forEach(id=>{
+   if($(id))$(id).oninput=renderQuestionBank;
+ });
+
+ if($('bankReloadBtn'))
+   $('bankReloadBtn').onclick=loadQuestionBankAdmin;
+
+ if($('bankAddBtn'))
+   $('bankAddBtn').onclick=()=>openQuestionModal('');
+
+ if($('closeQuestionModal'))
+   $('closeQuestionModal').onclick=
+     ()=>$('questionModal').classList.add('hidden');
+
+ if($('saveQuestionBtn'))
+   $('saveQuestionBtn').onclick=saveQuestionBankItem;
+
+ mergeQuestionBank();
+ renderQuestionBank();
 }
 function openQuestionModal(id=''){
  const q=id?bankQuestions.find(x=>String(x.id)===String(id)):null;
