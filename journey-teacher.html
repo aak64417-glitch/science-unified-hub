@@ -910,7 +910,30 @@ function updateDailyTaskOptions(){
   if(!sel)return;
 
   const current=sel.value;
-  const ordered=dailyTaskCandidates();
+  const candidates=dailyTaskCandidates();
+const bestByClass=new Map();
+
+candidates.forEach(t=>{
+  const cls=normalizeClassName(t.className);
+
+  const hits=results.filter(r=>
+    String(r.taskId||'').trim()===String(t.id) &&
+    normalizeClassName(r.className)===cls
+  ).length;
+
+  const old=bestByClass.get(cls);
+
+  if(!old || hits>old.hits){
+    bestByClass.set(cls,{task:t,hits});
+  }
+});
+
+const ordered=[...bestByClass.values()]
+  .map(x=>x.task)
+  .sort((a,b)=>
+    (CLASS_ORDER_FOR_RESULTS[normalizeClassName(a.className)]||99)-
+    (CLASS_ORDER_FOR_RESULTS[normalizeClassName(b.className)]||99)
+  );
 
   sel.innerHTML=
     '<option value="">اختر التكليف</option>'+
