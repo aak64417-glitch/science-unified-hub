@@ -1061,17 +1061,14 @@ function renderDailyReport(){
 
   $('dailyMissingNames').innerHTML=
   data.participantRows.length
-    ? '<b>🌟 شكرًا للطلاب المشاركين على حرصهم وتفاعلهم، ونأمل استمرار هذا التميز في جميع التكليفات القادمة.</b>'
-    : '<b>لا توجد مشاركات في هذا التكليف حتى الآن.</b>';
- }
-function dailyMessageText(){
+    function dailyMessageText(){
   const data=getDailyReportData();
   if(!data)return '';
 
-  const missingText=data.missing.length
-    ? '\n\n⏰ الطلاب الذين لم يشاركوا بعد:\n'+
-      data.missing.map((s,i)=>`${i+1}- ${s.name}`).join('\n')
-    : '\n\n✅ جميع طلاب الفصل شاركوا في التكليف.';
+  const participantsText=data.participantRows.length
+    ? '\n\n🌟 الطلاب المشاركون:\n'+
+      data.participantRows.map((p,i)=>`${i+1}- ${p.name}`).join('\n')
+    : '\n\nلا توجد مشاركات في هذا التكليف حتى الآن.';
 
   return `📊 تقرير المشاركة اليومي
 🏫 مدرسة أبي الدرداء المتوسطة
@@ -1084,9 +1081,8 @@ function dailyMessageText(){
 ✅ عدد المشاركين: ${data.participantRows.length} من ${data.roster.length}
 🔁 إجمالي المحاولات: ${data.taskResults.length}
 📈 نسبة المشاركة: ${data.rate}%
-❌ لم يشاركوا: ${data.missing.length}
 
-🌟 شكرًا للطلاب المشاركين، ونأمل من بقية الطلاب سرعة إكمال التكليف والاستفادة من المحاولات المتاحة.${missingText}`;
+🌟 شكرًا للطلاب المشاركين على حرصهم وتفاعلهم، ونأمل استمرار هذا التميز في جميع التكليفات القادمة.${participantsText}`;
 }
 
 async function copyDailyMessage(){
