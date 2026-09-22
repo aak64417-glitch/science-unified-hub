@@ -1120,8 +1120,11 @@ async function shareDailyMessage(){
 }
  async function refreshDailyReport(){
   const dailyKey=String($('dailyTaskFilter')?.value||'').trim();
-  
-const task=dailyTaskCandidates().find(t=>String(t.dailyKey)===dailyKey);
+
+  const task=dailyTaskCandidates().find(
+    t=>String(t.dailyKey)===dailyKey
+  );
+
   if(!task){
     renderDailyReport();
     return;
@@ -1129,6 +1132,18 @@ const task=dailyTaskCandidates().find(t=>String(t.dailyKey)===dailyKey);
 
   const className=normalizeClassName(task.className);
 
+  // عرض التقرير فورًا من البيانات الموجودة
+  renderDailyReport();
+
+  // إذا كانت قائمة الفصل محملة مسبقًا فلا نعيد الاتصال بالخادم
+  if(
+    Array.isArray(studentRoster[className]) &&
+    studentRoster[className].length
+  ){
+    return;
+  }
+
+  // تحميل القائمة مرة واحدة فقط ثم تحديث التقرير
   try{
     const r=await jsonp({
       action:'getStudents',
@@ -1140,13 +1155,13 @@ const task=dailyTaskCandidates().find(t=>String(t.dailyKey)===dailyKey);
         code:String(s.code||''),
         name:String(s.name||'')
       }));
+
+      renderDailyReport();
     }
   }catch(e){
     console.warn('تعذر تحميل طلاب الفصل '+className,e);
   }
-
-  renderDailyReport();
-}   
+}
 
  async function loadAllStudents(){
  const roster={};
