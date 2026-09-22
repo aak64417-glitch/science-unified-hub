@@ -801,8 +801,8 @@ $('lastUpdate').textContent=(tasks.length||results.length)?'تم عرض آخر �
  if($('resultChapterFilter')) $('resultChapterFilter').onchange=renderResults;
  $('resultTypeFilter').onchange=renderResults;
  $('exportBtn').onclick=exportCsv;
- if($('dailyTaskFilter')) $('dailyTaskFilter').onchange=renderDailyReport;
-if($('dailyRefreshBtn')) $('dailyRefreshBtn').onclick=renderDailyReport;
+ if($('dailyTaskFilter')) $('dailyTaskFilter').onchange=refreshDailyReport;
+if($('dailyRefreshBtn')) $('dailyRefreshBtn').onclick=refreshDailyReport;
 if($('dailyCopyBtn')) $('dailyCopyBtn').onclick=copyDailyMessage;
 if($('dailyShareBtn')) $('dailyShareBtn').onclick=shareDailyMessage;
 if($('dailyPrintBtn')) $('dailyPrintBtn').onclick=()=>window.print();
@@ -839,7 +839,7 @@ function switchTab(tab){
 
   if(tab==='students') renderStudentsAdmin();
   if(tab==='bank') renderQuestionBank();
-if(tab==='daily'){updateDailyTaskOptions();renderDailyReport();}
+if(tab==='daily'){updateDailyTaskOptions();refreshDailyReport();}
  }
 function renderAll(){stats();renderTasks();renderResults();renderStudentsAdmin()}
 function stats(){const students=new Set(results.map(x=>x.className+'-'+x.studentName)).size;$('sTasks').textContent=tasks.length;$('sStudents').textContent=students;$('sTraining').textContent=results.filter(x=>x.type!=='test'&&x.type!=='exam').length;$('sTests').textContent=results.filter(x=>x.type==='test'||x.type==='exam').length}
@@ -1056,7 +1056,35 @@ async function shareDailyMessage(){
 
   await copyDailyMessage();
 }
-    
+ async function refreshDailyReport(){
+  const taskId=String($('dailyTaskFilter')?.value||'').trim();
+  const task=tasks.find(t=>String(t.id)===taskId);
+
+  if(!task){
+    renderDailyReport();
+    return;
+  }
+
+  const className=normalizeClassName(task.className);
+
+  try{
+    const r=await jsonp({
+      action:'getStudents',
+      className
+    });
+
+    if(r && r.ok!==false && Array.isArray(r.students)){
+      studentRoster[className]=r.students.map(s=>({
+        code:String(s.code||''),
+        name:String(s.name||'')
+      }));
+    }
+  }catch(e){
+    console.warn('تعذر تحميل طلاب الفصل '+className,e);
+  }
+
+  renderDailyReport();
+}   
 
  async function loadAllStudents(){
  const roster={};
