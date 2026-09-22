@@ -225,7 +225,10 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 <div class="section-head"><div><h3>ملخص المنصة</h3><p id="lastUpdate"></p></div><div class="actions"><button id="newTaskBtn" class="btn">+ تكليف منزلي جديد</button><button id="refreshBtn" class="btn secondary">تحديث</button></div></div>
 <div class="teacher-cards"><div class="stat"><strong id="sTasks">0</strong><span>التكليفات</span></div><div class="stat"><strong id="sStudents">0</strong><span>طلاب شاركوا</span></div><div class="stat"><strong id="sTraining">0</strong><span>تقارير التدريب</span></div><div class="stat"><strong id="sTests">0</strong><span>نتائج الاختبار</span></div></div>
 <div class="tabs"><button class="tab active" data-tab="tasks">مركز التكليفات المنزلية</button><button class="tab" data-tab="results">نتائج الطلاب</button><button class="tab" data-tab="students">إدارة الطلاب</button><button class="tab" data-tab="bank">بنك الأسئلة</button><button class="tab" data-tab="portfolio">تقارير ملف الإنجاز</button></div>
-
+<div id="tasksGradeSwitch" style="display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px">
+  <button id="tasksGrade1Btn" class="btn">أول متوسط</button>
+  <button id="tasksGrade3Btn" class="btn secondary">ثالث متوسط</button>
+</div>
 <section id="tasksTab" class="panel glass"><div class="section-head" style="margin-top:0"><div><h3>الروابط الذكية</h3><p>فعّل أو أوقف الرابط بعد إرساله للطلاب، وانسخ رابط النشاط من هنا.</p></div></div><div class="table-wrap"><table><thead><tr><th>التكليف</th><th>النوع</th><th>الدرس</th><th>الفصل</th><th>الفترة</th><th>الحالة</th><th>الرابط</th><th>إجراءات</th></tr></thead><tbody id="tasksBody"></tbody></table></div></section>
 
 <section id="resultsTab" class="panel glass hidden">
@@ -715,11 +718,34 @@ function syncTaskModeFields(){
  if($('taskAttemptsField'))$('taskAttemptsField').classList.toggle('hidden',!isTest);
 }
 function typeName(m){return({training:'تدريب',exam:'اختبار',remedial:'علاجي',enrich:'إثراء',test:'اختبار',mixed:'متنوع'}[m]||m)}
+ let currentTaskGrade='1';
+
+function taskGradeFromClassName(className){
+  return normalizeClassName(className).endsWith('/3') ? '3' : '1';
+}
+
+function setTasksGrade(grade){
+  currentTaskGrade=String(grade);
+
+  if($('tasksGrade1Btn')){
+    $('tasksGrade1Btn').className=
+      currentTaskGrade==='1' ? 'btn' : 'btn secondary';
+  }
+
+  if($('tasksGrade3Btn')){
+    $('tasksGrade3Btn').className=
+      currentTaskGrade==='3' ? 'btn' : 'btn secondary';
+  }
+
+  renderTasks();
+}
 function init(){
  $('teacherSub').textContent='مدرسة أبي الدرداء المتوسطة | المعلم: علي البقاشي';
  $('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام 1448هـ';
  CLASSES.forEach(c=>{$('classFilter').insertAdjacentHTML('beforeend',`<option>${c}</option>`);$('taskClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('portfolioClass')) $('portfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentsClass')) $('studentsClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentPortfolioClass')) $('studentPortfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`)});
  renderTaskLessonChoices();
+ if($('tasksGrade1Btn')) $('tasksGrade1Btn').onclick=()=>setTasksGrade('1');
+if($('tasksGrade3Btn')) $('tasksGrade3Btn').onclick=()=>setTasksGrade('3');
  $('taskLessonsAll').onclick=()=>document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>x.checked=true);
  $('taskLessonsNone').onclick=()=>document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>x.checked=false);
  $('apiUrl').value=DEFAULT_API_URL; localStorage.setItem('sj_teacher_api',DEFAULT_API_URL);
@@ -760,7 +786,9 @@ function switchTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList
 function renderAll(){stats();renderTasks();renderResults();renderStudentsAdmin()}
 function stats(){const students=new Set(results.map(x=>x.className+'-'+x.studentName)).size;$('sTasks').textContent=tasks.length;$('sStudents').textContent=students;$('sTraining').textContent=results.filter(x=>x.type!=='test'&&x.type!=='exam').length;$('sTests').textContent=results.filter(x=>x.type==='test'||x.type==='exam').length}
 function renderTasks(){
- const ordered=[...tasks].sort((a,b)=>taskSortTime(b)-taskSortTime(a));
+ const ordered=[...tasks]
+  .filter(t=>taskGradeFromClassName(t.className)===currentTaskGrade)
+  .sort((a,b)=>taskSortTime(b)-taskSortTime(a));
  $('tasksBody').innerHTML=ordered.map(t=>{const validClass=CLASSES.includes(normalizeClassName(t.className));const link=new URL('journey-student.html',location.href).href+'?task='+encodeURIComponent(t.id);const copyCell=validClass?`<button class="smallbtn copy" data-copy="${link}">نسخ الرابط</button>`:'<span class="task-status off">أنشئ تكليفًا جديدًا لفصل محدد</span>';return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(taskLessonsLabel(t))}</td><td>${esc(validClass?normalizeClassName(t.className):'قديم — غير محدد')}</td><td>${taskPeriod(t)}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td>${copyCell}</td><td><button class="smallbtn toggle" data-toggle="${t.id}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${t.id}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);alert('تم نسخ رابط التكليف.')}catch{prompt('انسخ رابط التكليف:',b.dataset.copy)}});
  document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=async()=>{const t=tasks.find(x=>String(x.id)===String(b.dataset.toggle));if(!t)return;try{b.disabled=true;await apiAction('toggleTask',{id:t.id,active:String(!t.active)});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}});
