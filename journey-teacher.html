@@ -674,12 +674,22 @@ async function loadTeacher(){
   results=Array.isArray(data.results)?data.results.map(normalizeResult):[];
   $('lastUpdate').textContent='آخر تحديث: '+new Date().toLocaleString('ar-SA');
   setStatus(`تم الربط بنجاح — ${tasks.length} تكليف و${results.length} نتيجة.`,true);
-  await loadAllStudents();
-  await loadQuestionBankAdmin();
   renderAll();
-  updatePortfolioTasks();
-  updateResultFilters();
+updatePortfolioTasks();
+updateResultFilters();
+
+try{
+  await loadAllStudents();
   updateStudentPortfolioStudents();
+}catch(e){
+  console.warn('تعذر تحديث قوائم الطلاب:',e);
+}
+
+try{
+  await loadQuestionBankAdmin();
+}catch(e){
+  console.warn('تعذر تحديث بنك الأسئلة:',e);
+}
  }catch(err){
   console.error(err);
   setStatus('تعذر تحميل لوحة المعلم: '+(err.message||err));
