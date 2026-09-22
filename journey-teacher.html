@@ -909,28 +909,35 @@ function updateDailyTaskOptions(){
   sel.innerHTML=
     '<option value="">اختر التكليف</option>'+
     ordered.map(t=>`
-      <option value="${esc(t.id)}">
-        ${esc(t.title||'تكليف')} — الفصل ${esc(normalizeClassName(t.className))}
+      <option value="${esc(t.dailyKey)}">
+       ${esc(
+  normalizeClassName(t.className)==='1/1' ? 'تدريب الفصل الأول — أول أول' :
+  normalizeClassName(t.className)==='2/1' ? 'تدريب الفصل الأول — أول ثاني' :
+  normalizeClassName(t.className)==='3/1' ? 'تدريب الفصل الأول — أول ثالث' :
+  normalizeClassName(t.className)==='4/1' ? 'تدريب الفصل الأول — أول رابع' :
+  t.title||'تكليف'
+)} 
       </option>
     `).join('');
 
-  if(ordered.some(t=>String(t.id)===String(current))){
+  if(ordered.some(t=>String(t.dailyKey)===String(current))){
     sel.value=current;
   }
 }
 
 function getDailyReportData(){
-  const taskId=String($('dailyTaskFilter')?.value||'').trim();
-  const task=dailyTaskCandidates().find(t=>String(t.id)===taskId);
-
+  
+const dailyKey=String($('dailyTaskFilter')?.value||'').trim();
+const task=dailyTaskCandidates().find(t=>String(t.dailyKey)===dailyKey);
   if(!task)return null;
 
   const className=normalizeClassName(task.className);
   const roster=studentRoster[className]||[];
 
   const taskResults=results.filter(r=>
-    String(r.taskId||'').trim()===String(task.id)
-  );
+  String(r.taskId||'').trim()===String(task.id) &&
+  normalizeClassName(r.className)===className
+);
 
   const participants=new Map();
 
@@ -1092,9 +1099,9 @@ async function shareDailyMessage(){
   await copyDailyMessage();
 }
  async function refreshDailyReport(){
-  const taskId=String($('dailyTaskFilter')?.value||'').trim();
+  const dailyKey=String($('dailyTaskFilter')?.value||'').trim();
   
-const task=dailyTaskCandidates().find(t=>String(t.id)===taskId);
+const task=dailyTaskCandidates().find(t=>String(t.dailyKey)===dailyKey);
   if(!task){
     renderDailyReport();
     return;
