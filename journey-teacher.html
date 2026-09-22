@@ -870,10 +870,13 @@ function dailyTaskCandidates(){
 
     if(!id || !CLASSES.includes(className))return;
 
-    map.set(id,{
+    const dailyKey=id+'|'+className;
+
+    map.set(dailyKey,{
       ...t,
       id,
-      className
+      className,
+      dailyKey
     });
   });
 
@@ -883,10 +886,13 @@ function dailyTaskCandidates(){
 
     if(!id || !CLASSES.includes(className))return;
 
-    if(!map.has(id)){
-      map.set(id,{
+    const dailyKey=id+'|'+className;
+
+    if(!map.has(dailyKey)){
+      map.set(dailyKey,{
         id,
-        title:String(r.taskTitle||r.lesson||'تكليف سابق'),
+        dailyKey,
+        title:String(r.taskTitle||r.lesson||'تدريب الفصل الأول'),
         className,
         mode:String(r.type||'training'),
         createdAt:r.timestamp||''
