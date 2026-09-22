@@ -110,7 +110,7 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 window.SCIENCE_CONFIG = {
   schoolName: "مدرسة أبي الدرداء المتوسطة",
   teacherName: "علي البقاشي",
-  subject: "العلوم – الصف الأول المتوسط",
+  subject: "العلوم",
   year: "1448هـ",
   classes: ["1/1","2/1","3/1","4/1","1/3","2/3","3/3","4/3"],
   apiUrl: "https://script.google.com/macros/s/AKfycbxp-t4JgGO5WiK6hoacjTyBqFnG-9bSWClplOpVV4VDuTV7T4tY0swB1Ll36kr_djJ7nQ/exec",
@@ -121,6 +121,25 @@ window.SCIENCE_CONFIG = {
 const CFG=window.SCIENCE_CONFIG||{}, DATA=window.SCIENCE_DATA||{lessons:[],questions:[]};
 const $=id=>document.getElementById(id);
 let state={mode:'training',lesson:'all',task:null,student:{},quiz:[],i:0,score:0,correct:0,streak:0,bestStreak:0,logs:[],answered:false,startedAt:0,timer:null,timeLeft:0};
+ function subjectFromClass(className){
+  const cls=String(className||'').trim();
+
+  if(cls.endsWith('/3')){
+    return 'العلوم – الصف الثالث المتوسط';
+  }
+
+  return 'العلوم – الصف الأول المتوسط';
+}
+
+function applyTaskGrade(className){
+  const subject=subjectFromClass(className);
+
+  $('subTitle').textContent=
+    `${subject} | المعلم: ${CFG.teacherName||''}`;
+
+  $('footerText').textContent=
+    `${CFG.schoolName||''} • ${subject} • العام ${CFG.year||'1448هـ'}`;
+}
 
 function applyQuestionOverrides(overrides){
  const list=Array.isArray(overrides)?overrides:[];
@@ -349,6 +368,7 @@ async function loadTask(id){
   const r=await jsonp({action:'getTask',id});
   if(!r?.ok)throw new Error(r?.message||'تعذر فتح التكليف');
   const t=r.task;
+applyTaskGrade(t.className);
   if(t.status!=='open')throw new Error(t.message||'هذا التكليف غير متاح حاليًا.');
   if(!(CFG.classes||[]).includes(String(t.className||'')))throw new Error('هذا الرابط غير مرتبط بفصل محدد. اطلب رابطًا جديدًا من المعلم.');
   const allowedModes=['training','exam','remedial','enrich'];
