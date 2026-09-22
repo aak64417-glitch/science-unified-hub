@@ -1114,7 +1114,13 @@ $('dailySummary').innerHTML=
 
   const participantsText=data.participantRows.length
     ? '\n\n🌟 الطلاب المشاركون:\n'+
-      data.participantRows.map((p,i)=>`${i+1}- ${p.name}`).join('\n')
+      data.participantRows.map((p,i)=>
+  `${i+1}- ${p.name} — ${
+    p.attempts===1 ? 'محاولة واحدة' :
+    p.attempts===2 ? 'محاولتان' :
+    `${p.attempts} محاولات`
+  }`
+).join('\n')
     : '\n\nلا توجد مشاركات في هذا التكليف حتى الآن.';
 
   return `📊 تقرير المشاركة اليومي
