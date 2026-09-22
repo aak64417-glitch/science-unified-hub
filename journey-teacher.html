@@ -230,7 +230,28 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
   <button id="tasksGrade3Btn" class="btn secondary">ثالث متوسط</button>
 </div>
 <section id="tasksTab" class="panel glass"><div class="section-head" style="margin-top:0"><div><h3>الروابط الذكية</h3><p>فعّل أو أوقف الرابط بعد إرساله للطلاب، وانسخ رابط النشاط من هنا.</p></div></div><div class="table-wrap"><table><thead><tr><th>التكليف</th><th>النوع</th><th>الدرس</th><th>الفصل</th><th>الفترة</th><th>الحالة</th><th>الرابط</th><th>إجراءات</th></tr></thead><tbody id="tasksBody"></tbody></table></div></section>
+<section id="dailyTab" class="panel glass hidden">
+  <div class="section-head" style="margin-top:0"><div><h3>تقرير المشاركة اليومي</h3><p>اختر التكليف لعرض المشاركين والمحاولات والطلاب الذين لم يشاركوا.</p></div></div>
 
+  <div class="form-grid">
+    <div class="field"><label>التكليف</label><select id="dailyTaskFilter"><option value="">اختر التكليف</option></select></div>
+    <button id="dailyRefreshBtn" class="btn">تحديث التقرير</button>
+    <button id="dailyCopyBtn" class="btn secondary">نسخ الرسالة</button>
+    <button id="dailyShareBtn" class="btn secondary">مشاركة الرسالة</button>
+    <button id="dailyPrintBtn" class="btn secondary">طباعة / PDF</button>
+  </div>
+
+  <div class="results-kpis" style="margin-top:14px">
+    <div class="results-kpi"><span>المشاركون</span><b id="dailyParticipants">0</b></div>
+    <div class="results-kpi"><span>إجمالي المحاولات</span><b id="dailyAttempts">0</b></div>
+    <div class="results-kpi"><span>نسبة المشاركة</span><b id="dailyRate">0%</b></div>
+    <div class="results-kpi"><span>لم يشاركوا</span><b id="dailyMissingCount">0</b></div>
+  </div>
+
+  <div id="dailySummary" class="note good" style="margin-top:14px">اختر تكليفًا لعرض التقرير.</div>
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>اسم الطالب</th><th>المحاولات</th><th>أفضل نتيجة</th><th>آخر نتيجة</th></tr></thead><tbody id="dailyParticipantsBody"></tbody></table></div>
+  <div id="dailyMissingNames" class="note" style="margin-top:14px">الطلاب الذين لم يشاركوا سيظهرون هنا.</div>
+</section>
 <section id="resultsTab" class="panel glass hidden">
   <div class="section-head" style="margin-top:0"><div><h3>نتائج الطلاب</h3><p>عرض منظم للمحاولات مع أول وآخر وأفضل نتيجة ونسبة التحسن.</p></div></div>
   <div class="results-toolbar">
@@ -780,6 +801,11 @@ $('lastUpdate').textContent=(tasks.length||results.length)?'تم عرض آخر �
  if($('resultChapterFilter')) $('resultChapterFilter').onchange=renderResults;
  $('resultTypeFilter').onchange=renderResults;
  $('exportBtn').onclick=exportCsv;
+ if($('dailyTaskFilter')) $('dailyTaskFilter').onchange=renderDailyReport;
+if($('dailyRefreshBtn')) $('dailyRefreshBtn').onclick=renderDailyReport;
+if($('dailyCopyBtn')) $('dailyCopyBtn').onclick=copyDailyMessage;
+if($('dailyShareBtn')) $('dailyShareBtn').onclick=shareDailyMessage;
+if($('dailyPrintBtn')) $('dailyPrintBtn').onclick=()=>window.print();
  if($('studentsClass')) $('studentsClass').onchange=renderStudentsAdmin;
  if($('addStudentBtn')) $('addStudentBtn').onclick=addStudentAdmin;
  if($('reloadStudentsBtn')) $('reloadStudentsBtn').onclick=async()=>{const b=$('reloadStudentsBtn');try{b.disabled=true;b.textContent='جارٍ التحديث...';await loadAllStudents();renderStudentsAdmin();alert('تم تحديث قوائم الطلاب بنجاح.')}catch(e){alert(e.message||e)}finally{b.disabled=false;b.textContent='تحديث القوائم'}};
@@ -798,7 +824,22 @@ $('lastUpdate').textContent=(tasks.length||results.length)?'تم عرض آخر �
  renderAll();
  if(getKey()) setTimeout(loadTeacher,150);
 }
-function switchTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));['tasks','results','students','bank','portfolio'].forEach(x=>$(x+'Tab').classList.toggle('hidden',x!==tab));if(tab==='students')renderStudentsAdmin();if(tab==='bank')renderQuestionBank()}
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach(x=>
+    x.classList.toggle('active',x.dataset.tab===tab)
+  );
+
+  ['tasks','results','daily','students','bank','portfolio'].forEach(x=>
+    $(x+'Tab').classList.toggle('hidden',x!==tab)
+  );
+
+  if($('tasksGradeSwitch')){
+    $('tasksGradeSwitch').classList.toggle('hidden',tab!=='tasks');
+  }
+
+  if(tab==='students') renderStudentsAdmin();
+  if(tab==='bank') renderQuestionBank();
+if(tab==='daily'){updateDailyTaskOptions();renderDailyReport();}
 function renderAll(){stats();renderTasks();renderResults();renderStudentsAdmin()}
 function stats(){const students=new Set(results.map(x=>x.className+'-'+x.studentName)).size;$('sTasks').textContent=tasks.length;$('sStudents').textContent=students;$('sTraining').textContent=results.filter(x=>x.type!=='test'&&x.type!=='exam').length;$('sTests').textContent=results.filter(x=>x.type==='test'||x.type==='exam').length}
 function renderTasks(){
@@ -810,8 +851,213 @@ function renderTasks(){
  document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=async()=>{const t=tasks.find(x=>String(x.id)===String(b.dataset.toggle));if(!t)return;try{b.disabled=true;await apiAction('toggleTask',{id:t.id,active:String(!t.active)});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}});
  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('هل تريد حذف هذا التكليف؟'))return;try{b.disabled=true;await apiAction('deleteTask',{id:b.dataset.del});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}})
 }
+function dailyStudentKey(code,name){
+  const c=String(code||'').trim();
+  if(c) return 'c:'+c;
+  return 'n:'+String(name||'')
+    .trim()
+    .replace(/\s+/g,' ')
+    .toLowerCase();
+}
 
-async function loadAllStudents(){
+function updateDailyTaskOptions(){
+  const sel=$('dailyTaskFilter');
+  if(!sel)return;
+
+  const current=sel.value;
+
+  const ordered=[...tasks]
+    .filter(t=>t && t.id && CLASSES.includes(normalizeClassName(t.className)))
+    .sort((a,b)=>taskSortTime(b)-taskSortTime(a));
+
+  sel.innerHTML=
+    '<option value="">اختر التكليف</option>'+
+    ordered.map(t=>`
+      <option value="${esc(t.id)}">
+        ${esc(t.title||'تكليف')} — الفصل ${esc(normalizeClassName(t.className))}
+      </option>
+    `).join('');
+
+  if(ordered.some(t=>String(t.id)===String(current))){
+    sel.value=current;
+  }
+}
+
+function getDailyReportData(){
+  const taskId=String($('dailyTaskFilter')?.value||'').trim();
+  const task=tasks.find(t=>String(t.id)===taskId);
+
+  if(!task)return null;
+
+  const className=normalizeClassName(task.className);
+  const roster=studentRoster[className]||[];
+
+  const taskResults=results.filter(r=>
+    String(r.taskId||'').trim()===String(task.id)
+  );
+
+  const participants=new Map();
+
+  taskResults.forEach(r=>{
+    const key=dailyStudentKey(r.studentCode,r.studentName);
+
+    if(!participants.has(key)){
+      participants.set(key,{
+        code:String(r.studentCode||''),
+        name:String(r.studentName||''),
+        rows:[]
+      });
+    }
+
+    participants.get(key).rows.push(r);
+  });
+
+  const participantRows=[...participants.values()].map(p=>{
+    const ordered=[...p.rows].sort((a,b)=>
+      (new Date(resultTime(a)).getTime()||0)-
+      (new Date(resultTime(b)).getTime()||0)
+    );
+
+    const percents=ordered.map(resultPercent);
+
+    return {
+      code:p.code,
+      name:p.name,
+      attempts:ordered.length,
+      best:percents.length?Math.max(...percents):0,
+      last:percents.length?percents[percents.length-1]:0
+    };
+  }).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+
+  const participantKeys=new Set(
+    participantRows.map(p=>dailyStudentKey(p.code,p.name))
+  );
+
+  const missing=roster.filter(s=>
+    !participantKeys.has(dailyStudentKey(s.code,s.name))
+  );
+
+  const rate=roster.length
+    ? Math.round((participantRows.length/roster.length)*100)
+    : 0;
+
+  return {
+    task,
+    className,
+    roster,
+    taskResults,
+    participantRows,
+    missing,
+    rate
+  };
+}
+
+function renderDailyReport(){
+  const data=getDailyReportData();
+
+  if(!data){
+    $('dailyParticipants').textContent='0';
+    $('dailyAttempts').textContent='0';
+    $('dailyRate').textContent='0%';
+    $('dailyMissingCount').textContent='0';
+    $('dailyParticipantsBody').innerHTML='';
+    $('dailySummary').textContent='اختر تكليفًا لعرض التقرير.';
+    $('dailyMissingNames').textContent='الطلاب الذين لم يشاركوا سيظهرون هنا.';
+    return;
+  }
+
+  $('dailyParticipants').textContent=data.participantRows.length;
+  $('dailyAttempts').textContent=data.taskResults.length;
+  $('dailyRate').textContent=data.rate+'%';
+  $('dailyMissingCount').textContent=data.missing.length;
+
+  $('dailySummary').innerHTML=
+    `<b>${esc(data.task.title||'التكليف')}</b> — الفصل <b>${esc(data.className)}</b> — `+
+    `شارك <b>${data.participantRows.length}</b> من أصل <b>${data.roster.length}</b> طالبًا.`;
+
+  $('dailyParticipantsBody').innerHTML=
+    data.participantRows.map((p,i)=>`
+      <tr>
+        <td>${i+1}</td>
+        <td><b>${esc(p.name)}</b></td>
+        <td>${p.attempts}</td>
+        <td>${Math.round(p.best)}%</td>
+        <td>${Math.round(p.last)}%</td>
+      </tr>
+    `).join('') ||
+    '<tr><td colspan="5">لا توجد مشاركات في هذا التكليف حتى الآن.</td></tr>';
+
+  $('dailyMissingNames').innerHTML=
+    data.missing.length
+      ? `<b>الطلاب الذين لم يشاركوا (${data.missing.length}):</b><br>${data.missing.map(s=>esc(s.name)).join('، ')}`
+      : '<b>ممتاز، جميع طلاب الفصل شاركوا في التكليف.</b>';
+}
+function dailyMessageText(){
+  const data=getDailyReportData();
+  if(!data)return '';
+
+  const missingText=data.missing.length
+    ? '\n\n⏰ الطلاب الذين لم يشاركوا بعد:\n'+
+      data.missing.map((s,i)=>`${i+1}- ${s.name}`).join('\n')
+    : '\n\n✅ جميع طلاب الفصل شاركوا في التكليف.';
+
+  return `📊 تقرير المشاركة اليومي
+🏫 مدرسة أبي الدرداء المتوسطة
+📚 مادة العلوم
+👨‍🏫 المعلم: علي البقاشي
+
+📝 التكليف: ${data.task.title||'التكليف'}
+🏷️ الفصل: ${data.className}
+
+✅ عدد المشاركين: ${data.participantRows.length} من ${data.roster.length}
+🔁 إجمالي المحاولات: ${data.taskResults.length}
+📈 نسبة المشاركة: ${data.rate}%
+❌ لم يشاركوا: ${data.missing.length}
+
+🌟 شكرًا للطلاب المشاركين، ونأمل من بقية الطلاب سرعة إكمال التكليف والاستفادة من المحاولات المتاحة.${missingText}`;
+}
+
+async function copyDailyMessage(){
+  const text=dailyMessageText();
+
+  if(!text){
+    alert('اختر التكليف أولًا.');
+    return;
+  }
+
+  try{
+    await navigator.clipboard.writeText(text);
+    alert('تم نسخ رسالة المشاركة. يمكنك لصقها في واتساب أو تلجرام.');
+  }catch(e){
+    prompt('انسخ الرسالة:',text);
+  }
+}
+
+async function shareDailyMessage(){
+  const text=dailyMessageText();
+
+  if(!text){
+    alert('اختر التكليف أولًا.');
+    return;
+  }
+
+  if(navigator.share){
+    try{
+      await navigator.share({
+        title:'تقرير المشاركة اليومي',
+        text
+      });
+      return;
+    }catch(e){
+      if(e?.name==='AbortError')return;
+    }
+  }
+
+  await copyDailyMessage();
+}
+    
+
+ async function loadAllStudents(){
  const roster={};
  for(const className of CLASSES){
   const r=await jsonp({action:'getStudents',className});
