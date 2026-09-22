@@ -616,7 +616,7 @@ function jsonp(params){
  const run=()=>new Promise((resolve,reject)=>{
   const api=getApi();
   if(!api){reject(new Error('أدخل رابط Apps Script أولًا.'));return}
-  const callbackName='scienceHubCallback';
+  const callbackName='scienceHubCallback_'+Date.now()+'_'+Math.floor(Math.random()*100000);
   const script=document.createElement('script');
   const q=new URLSearchParams({...params,callback:callbackName,_:Date.now()});
   let finished=false;
@@ -632,7 +632,8 @@ function jsonp(params){
   script.src=api+(api.includes('?')?'&':'?')+q.toString();
   document.body.appendChild(script);
  });
- const p=__scienceHubJsonpQueue.then(run,run);
+ const first=__scienceHubJsonpQueue.then(run,run);
+const p=first.catch(()=>new Promise(r=>setTimeout(r,1200)).then(run));
  __scienceHubJsonpQueue=p.catch(()=>{});
  return p;
 }
