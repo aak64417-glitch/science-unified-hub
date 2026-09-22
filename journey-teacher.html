@@ -1070,14 +1070,26 @@ function renderDailyReport(){
     return;
   }
 
-  $('dailyParticipants').textContent=data.participantRows.length;
-  $('dailyAttempts').textContent=data.taskResults.length;
-  $('dailyRate').textContent=data.rate+'%';
-  $('dailyMissingCount').textContent=data.missing.length;
+  const rosterReady=
+  Array.isArray(data.roster) &&
+  data.roster.length>0;
 
-  $('dailySummary').innerHTML=
-    `<b>${esc(data.task.title||'التكليف')}</b> — الفصل <b>${esc(data.className)}</b> — `+
-    `شارك <b>${data.participantRows.length}</b> من أصل <b>${data.roster.length}</b> طالبًا.`;
+$('dailyParticipants').textContent=data.participantRows.length;
+$('dailyAttempts').textContent=data.taskResults.length;
+
+$('dailyRate').textContent=
+  rosterReady ? data.rate+'%' : '…';
+
+$('dailyMissingCount').textContent=
+  rosterReady ? data.missing.length : '…';
+
+$('dailySummary').innerHTML=
+  `<b>${esc(data.task.title||'التكليف')}</b> — الفصل <b>${esc(data.className)}</b> — `+
+  (
+    rosterReady
+      ? `شارك <b>${data.participantRows.length}</b> من أصل <b>${data.roster.length}</b> طالبًا.`
+      : `شارك <b>${data.participantRows.length}</b> طالبًا حتى الآن — جارٍ تحميل عدد طلاب الفصل…`
+  );
 
   $('dailyParticipantsBody').innerHTML=
     data.participantRows.map((p,i)=>`
