@@ -1060,10 +1060,10 @@ function renderDailyReport(){
     '<tr><td colspan="5">لا توجد مشاركات في هذا التكليف حتى الآن.</td></tr>';
 
   $('dailyMissingNames').innerHTML=
-    data.missing.length
-      ? `<b>الطلاب الذين لم يشاركوا (${data.missing.length}):</b><br>${data.missing.map(s=>esc(s.name)).join('، ')}`
-      : '<b>ممتاز، جميع طلاب الفصل شاركوا في التكليف.</b>';
-}
+  data.participantRows.length
+    ? '<b>🌟 شكرًا للطلاب المشاركين على حرصهم وتفاعلهم، ونأمل استمرار هذا التميز في جميع التكليفات القادمة.</b>'
+    : '<b>لا توجد مشاركات في هذا التكليف حتى الآن.</b>';
+ }
 function dailyMessageText(){
   const data=getDailyReportData();
   if(!data)return '';
