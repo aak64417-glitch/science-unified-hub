@@ -861,15 +861,50 @@ function dailyStudentKey(code,name){
     .toLowerCase();
 }
 
+function dailyTaskCandidates(){
+  const map=new Map();
+
+  tasks.forEach(t=>{
+    const id=String(t?.id||'').trim();
+    const className=normalizeClassName(t?.className);
+
+    if(!id || !CLASSES.includes(className))return;
+
+    map.set(id,{
+      ...t,
+      id,
+      className
+    });
+  });
+
+  results.forEach(r=>{
+    const id=String(r?.taskId||'').trim();
+    const className=normalizeClassName(r?.className);
+
+    if(!id || !CLASSES.includes(className))return;
+
+    if(!map.has(id)){
+      map.set(id,{
+        id,
+        title:String(r.taskTitle||r.lesson||'تكليف سابق'),
+        className,
+        mode:String(r.type||'training'),
+        createdAt:r.timestamp||''
+      });
+    }
+  });
+
+  return [...map.values()].sort((a,b)=>
+    taskSortTime(b)-taskSortTime(a)
+  );
+}
+
 function updateDailyTaskOptions(){
   const sel=$('dailyTaskFilter');
   if(!sel)return;
 
   const current=sel.value;
-
-  const ordered=[...tasks]
-    .filter(t=>t && t.id && CLASSES.includes(normalizeClassName(t.className)))
-    .sort((a,b)=>taskSortTime(b)-taskSortTime(a));
+  const ordered=dailyTaskCandidates();
 
   sel.innerHTML=
     '<option value="">اختر التكليف</option>'+
@@ -883,10 +918,11 @@ function updateDailyTaskOptions(){
     sel.value=current;
   }
 }
+}
 
 function getDailyReportData(){
   const taskId=String($('dailyTaskFilter')?.value||'').trim();
-  const task=tasks.find(t=>String(t.id)===taskId);
+  const task=dailyTaskCandidates().find(t=>String(t.id)===taskId);
 
   if(!task)return null;
 
@@ -1058,8 +1094,8 @@ async function shareDailyMessage(){
 }
  async function refreshDailyReport(){
   const taskId=String($('dailyTaskFilter')?.value||'').trim();
-  const task=tasks.find(t=>String(t.id)===taskId);
-
+  
+const task=dailyTaskCandidates().find(t=>String(t.id)===taskId);
   if(!task){
     renderDailyReport();
     return;
