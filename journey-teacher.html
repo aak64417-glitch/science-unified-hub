@@ -553,8 +553,9 @@ function setupQuestionBankUi(){
 function openQuestionModal(id=''){
  const q=id?bankQuestions.find(x=>String(x.id)===String(id)):null;
  $('questionModalTitle').textContent=q?'تعديل سؤال':'إضافة سؤال'; $('qId').value=q?.id||'';
- $('qLesson').value=q?.lesson||$('bankLessonFilter').value||window.SCIENCE_DATA?.lessons?.[0]?.id||'';
- $('qTrack').value=q?.track||'core'; $('qDifficulty').value=q?.difficulty||'remember'; $('qConcept').value=q?.concept||''; $('qText').value=q?.q||'';
+ const gradeLessons=bankLessonsForGrade();
+$('qLesson').value=q?.lesson||$('bankLessonFilter')?.value||gradeLessons[0]?.id||'';
+ $('qTrack').value=q?.track
  const opts=Array.isArray(q?.options)?q.options:['','','','']; [0,1,2,3].forEach(i=>$('qOpt'+i).value=opts[i]||''); $('qAnswer').value=String(Number(q?.answer||0)); $('qExplain').value=q?.explain||'';
  $('questionModal').classList.remove('hidden');
 }
