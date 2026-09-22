@@ -672,6 +672,7 @@ async function loadTeacher(){
   if(!data||data.ok===false) throw new Error(data?.message||data?.error||'تعذر تحميل البيانات.');
   tasks=Array.isArray(data.tasks)?data.tasks:[];
   results=Array.isArray(data.results)?data.results.map(normalizeResult):[];
+  localStorage.setItem('sj_teacher_dashboard_cache_v1',JSON.stringify({tasks,results}));
   $('lastUpdate').textContent='آخر تحديث: '+new Date().toLocaleString('ar-SA');
   setStatus(`تم الربط بنجاح — ${tasks.length} تكليف و${results.length} نتيجة.`,true);
   renderAll();
@@ -761,7 +762,11 @@ if($('tasksGrade3Btn')) $('tasksGrade3Btn').onclick=()=>setTasksGrade('3');
  $('taskLessonsNone').onclick=()=>document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>x.checked=false);
  $('apiUrl').value=DEFAULT_API_URL; localStorage.setItem('sj_teacher_api',DEFAULT_API_URL);
  $('teacherKey').value=localStorage.getItem('sj_teacher_key')||'';
- $('lastUpdate').textContent='غير محمّل بعد';
+ try{
+ const c=JSON.parse(localStorage.getItem('sj_teacher_dashboard_cache_v1')||'null');
+ if(c){tasks=Array.isArray(c.tasks)?c.tasks:[];results=Array.isArray(c.results)?c.results.map(normalizeResult):[];}
+}catch(e){}
+$('lastUpdate').textContent=(tasks.length||results.length)?'تم عرض آخر بيانات محفوظة':'غير محمّل بعد';
  setStatus('أدخل مفتاح المعلم ثم اضغط «تحميل لوحة المعلم».');
  $('loadBtn').onclick=loadTeacher;
  $('refreshBtn').onclick=()=>{if(getKey()) loadTeacher(); else renderAll()};
