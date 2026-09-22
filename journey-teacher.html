@@ -840,6 +840,7 @@ function switchTab(tab){
   if(tab==='students') renderStudentsAdmin();
   if(tab==='bank') renderQuestionBank();
 if(tab==='daily'){updateDailyTaskOptions();renderDailyReport();}
+ }
 function renderAll(){stats();renderTasks();renderResults();renderStudentsAdmin()}
 function stats(){const students=new Set(results.map(x=>x.className+'-'+x.studentName)).size;$('sTasks').textContent=tasks.length;$('sStudents').textContent=students;$('sTraining').textContent=results.filter(x=>x.type!=='test'&&x.type!=='exam').length;$('sTests').textContent=results.filter(x=>x.type==='test'||x.type==='exam').length}
 function renderTasks(){
