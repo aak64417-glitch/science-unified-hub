@@ -910,34 +910,74 @@ function updateDailyTaskOptions(){
   if(!sel)return;
 
   const current=sel.value;
-  const ordered=dailyTaskCandidates().sort((a,b)=>{
-  const classDiff=
-    (CLASS_ORDER_FOR_RESULTS[normalizeClassName(a.className)]||99)-
-    (CLASS_ORDER_FOR_RESULTS[normalizeClassName(b.className)]||99);
+  const raw=dailyTaskCandidates();
 
-  if(classDiff!==0)return classDiff;
+  // توحيد أسماء التكليفات المتشابهة لمنع التكرار
+  const normalizeDailyTitle=title=>
+    String(title||'تكليف')
+      .trim()
+      .replace(/^تدريب\s+على\s+/,'')
+      .replace(/^تدريب\s+/,'')
+      .replace(/\s+/g,' ');
 
-  return taskSortTime(b)-taskSortTime(a);
-});
+  const grouped=new Map();
+
+  raw.forEach(t=>{
+    const cls=normalizeClassName(t.className);
+    const key=cls+'|'+normalizeDailyTitle(t.title);
+
+    const hits=results.filter(r=>
+      String(r.taskId||'').trim()===String(t.id) &&
+      normalizeClassName(r.className)===cls
+    ).length;
+
+    const item={
+      task:t,
+      hits,
+      time:taskSortTime(t)
+    };
+
+    const old=grouped.get(key);
+
+    const replace=
+      !old ||
+      (hits>0 && old.hits===0) ||
+      (hits>0 && old.hits>0 && item.time>old.time) ||
+      (hits===0 && old.hits===0 && item.time>old.time);
+
+    if(replace){
+      grouped.set(key,item);
+    }
+  });
+
+  const ordered=[...grouped.values()]
+    .map(x=>x.task)
+    .sort((a,b)=>{
+      const classDiff=
+        (CLASS_ORDER_FOR_RESULTS[normalizeClassName(a.className)]||99)-
+        (CLASS_ORDER_FOR_RESULTS[normalizeClassName(b.className)]||99);
+
+      if(classDiff!==0)return classDiff;
+
+      return taskSortTime(b)-taskSortTime(a);
+    });
+
+  const classLabel=cls=>({
+    '1/1':'أول أول',
+    '2/1':'أول ثاني',
+    '3/1':'أول ثالث',
+    '4/1':'أول رابع',
+    '1/3':'ثالث أول',
+    '2/3':'ثالث ثاني',
+    '3/3':'ثالث ثالث',
+    '4/3':'ثالث رابع'
+  }[normalizeClassName(cls)]||normalizeClassName(cls));
 
   sel.innerHTML=
     '<option value="">اختر التكليف</option>'+
     ordered.map(t=>`
       <option value="${esc(t.dailyKey)}">
-       ${esc(
-  (t.title||'تكليف')+' — '+
-(
-  normalizeClassName(t.className)==='1/1' ? 'أول أول' :
-  normalizeClassName(t.className)==='2/1' ? 'أول ثاني' :
-  normalizeClassName(t.className)==='3/1' ? 'أول ثالث' :
-  normalizeClassName(t.className)==='4/1' ? 'أول رابع' :
-  normalizeClassName(t.className)==='1/3' ? 'ثالث أول' :
-  normalizeClassName(t.className)==='2/3' ? 'ثالث ثاني' :
-  normalizeClassName(t.className)==='3/3' ? 'ثالث ثالث' :
-  normalizeClassName(t.className)==='4/3' ? 'ثالث رابع' :
-  normalizeClassName(t.className)
-)
-)} 
+        ${esc((t.title||'تكليف')+' — '+classLabel(t.className))}
       </option>
     `).join('');
 
