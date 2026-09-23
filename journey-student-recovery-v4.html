@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111f"><title>رحلة عالم العلوم - نسخة الاستعادة</title>
+<script>
+if(new URLSearchParams(location.search).has('task')){
+  document.documentElement.classList.add('task-loading');
+}
+</script>
 <style>
 :root{
  --bg:#07111f;--bg2:#0a1728;--card:#102039;--card2:#132944;--text:#f7fbff;--muted:#9fb2c8;
@@ -22,6 +27,41 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 .result{text-align:center}.ring{width:150px;height:150px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--teal) var(--pct,0%),#18314e 0);position:relative}.ring:after{content:"";position:absolute;inset:12px;background:#0b1c30;border-radius:50%}.ring strong{position:relative;z-index:2;font-size:2rem}.level{display:inline-block;padding:8px 12px;border-radius:999px;background:#18304d;font-weight:900}.breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.break{padding:14px;border-radius:15px;background:#0c1d32;border:1px solid var(--line)}.break span{display:block;color:var(--muted);font-size:.82rem}.break strong{display:block;margin-top:5px}.recommend{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;text-align:right}.rec{padding:15px;border-radius:15px;background:rgba(255,255,255,.035);border:1px solid var(--line)}.rec h4{margin:0 0 7px}.rec p{margin:0;color:var(--muted);line-height:1.75}
 .teacher-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:16px;border-radius:16px;background:#0c1d32;border:1px solid var(--line)}.stat strong{display:block;font-size:1.55rem}.stat span{color:var(--muted);font-size:.83rem}.tabs{display:flex;gap:7px;margin:16px 0;flex-wrap:wrap}.tab{border:1px solid var(--line);background:#10243e;color:white;padding:9px 13px;border-radius:12px;font-weight:800}.tab.active{background:var(--teal);color:#07111f}.toolbar{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;margin-top:14px}table{width:100%;border-collapse:collapse;min-width:950px}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:right;font-size:.88rem;vertical-align:top}th{background:#132944;position:sticky;top:0}tbody tr:hover td{background:rgba(255,255,255,.025)}.smallbtn{padding:7px 9px;border-radius:9px;border:0;font-weight:800;cursor:pointer}.copy{background:var(--teal);color:#07111f}.toggle{background:#294363;color:white}.remove{background:var(--red);color:white}.task-status{padding:5px 8px;border-radius:999px;font-size:.75rem;display:inline-block}.task-status.on{background:rgba(91,227,139,.12);color:#c6ffd8}.task-status.off{background:rgba(255,124,142,.12);color:#ffd3da}.modal{position:fixed;inset:0;background:rgba(2,8,16,.78);display:grid;place-items:center;padding:16px;z-index:80}.modal-card{width:min(760px,100%);max-height:90vh;overflow:auto;padding:22px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
 @media(max-width:900px){.hero,.lesson-hero{grid-template-columns:1fr}.grid3,.grid2,.choice-row,.form-grid,.teacher-cards,.breakdown,.recommend,.live{grid-template-columns:1fr}.topbar{position:static}.brand p{display:none}.toolbar{grid-template-columns:1fr}.lesson-card p{min-height:0}.hero-main{padding:24px}}
+
+html.task-loading body{overflow:hidden}
+html.task-loading body > *{visibility:hidden}
+html.task-loading body::before{
+  visibility:visible;
+  content:"جاري فتح التكليف…";
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:#07111f;
+  color:#f7fbff;
+  font-family:Tahoma,"Noto Sans Arabic",Arial,sans-serif;
+  font-size:1.25rem;
+  font-weight:900;
+  text-align:center;
+}
+html.task-loading body::after{
+  visibility:visible;
+  content:"";
+  position:fixed;
+  z-index:100000;
+  width:42px;
+  height:42px;
+  left:calc(50% - 21px);
+  top:calc(50% + 38px);
+  border:4px solid rgba(255,255,255,.18);
+  border-top-color:#42ded4;
+  border-radius:50%;
+  animation:taskSpin .75s linear infinite;
+}
+@keyframes taskSpin{to{transform:rotate(360deg)}}
+
 @media(max-width:520px){.wrap{padding:10px}.topbar{padding:11px}.logo{width:44px;height:44px}.brand h1{font-size:.9rem}.hero{padding-top:18px}.hero-main,.panel{padding:17px}.hero h2{font-size:2.2rem}.hero-actions,.quiz-actions{flex-direction:column}.hero-actions .btn,.quiz-actions .btn{width:100%}.route-grid{grid-template-columns:1fr 1fr}.timer{min-width:78px}.quiz-top{align-items:flex-start;flex-direction:column}.timer{align-self:stretch}}
 
 
@@ -11608,6 +11648,48 @@ const $=id=>document.getElementById(id);
 let state={mode:'training',lesson:'all',task:null,student:{},quiz:[],i:0,score:0,correct:0,streak:0,bestStreak:0,logs:[],answered:false,startedAt:0,timer:null,timeLeft:0,prefetchedStudents:null,prefetchedClass:''};
 
 function api(){return (CFG.apiUrl||localStorage.getItem('science_api_url')||'').trim()}
+function jsonpParallel(params){
+ return new Promise((resolve,reject)=>{
+  const base=api();if(!base){reject(new Error('رابط الخادم غير متاح'));return}
+  const cb='scienceFastCb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
+  const script=document.createElement('script');
+  const q=new URLSearchParams({...params,callback:cb,_:Date.now()});
+  let done=false;
+  const finish=()=>{if(done)return;done=true;clearTimeout(timer);try{script.remove()}catch(e){};try{delete window[cb]}catch(e){}};
+  const timer=setTimeout(()=>{finish();reject(new Error('انتهت مهلة تحميل تعديلات بنك الأسئلة'))},12000);
+  window[cb]=data=>{finish();resolve(data)};
+  script.onerror=()=>{finish();reject(new Error('تعذر تحميل تعديلات بنك الأسئلة'))};
+  script.src=base+(base.includes('?')?'&':'?')+q.toString();
+  document.body.appendChild(script);
+ });
+}
+function applyQuestionOverrides(items){
+ const data=window.SCIENCE_DATA||{lessons:[],questions:[]};
+ const qmap=new Map((data.questions||[]).map(q=>[String(q.id),q]));
+ (Array.isArray(items)?items:[]).forEach(item=>{
+   const id=String(item?.questionId||'').trim();if(!id)return;
+   if(String(item.action||'upsert')==='delete'){qmap.delete(id);return}
+   const p=item?.payload;if(!p||typeof p!=='object'||Array.isArray(p))return;
+   qmap.set(id,{...(qmap.get(id)||{}),...p,id});
+ });
+ data.questions=[...qmap.values()];
+ window.SCIENCE_DATA=data;
+}
+function applyCachedQuestionOverrides(){
+ try{
+  const raw=localStorage.getItem('science_question_overrides_v1');if(!raw)return;
+  const x=JSON.parse(raw);if(Array.isArray(x))applyQuestionOverrides(x);
+ }catch(e){}
+}
+async function loadQuestionOverridesFast(){
+ try{
+  const r=await jsonpParallel({action:'getQuestionOverrides'});
+  if(r?.ok&&Array.isArray(r.overrides)){
+    localStorage.setItem('science_question_overrides_v1',JSON.stringify(r.overrides));
+    applyQuestionOverrides(r.overrides);
+  }
+ }catch(e){console.warn('تعذر تحديث تعديلات بنك الأسئلة، سيتم استخدام النسخة المتاحة.',e)}
+}
 function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
 function pick(a,n){return shuffle(a).slice(0,Math.min(n,a.length))}
@@ -11626,10 +11708,16 @@ function init(){
  $('studentName').innerHTML='<option value="">اختر الفصل أولًا</option>';
  $('studentClass').onchange=loadStudentsForClass;
  $('linkState').textContent=api()?'مرتبط بالمعلم':'غير مرتبط بالمعلم';$('linkState').className='pill '+(api()?'good':'off');
- renderLessons();
- setTimeout(()=>flushPendingResults().catch(()=>{}),250);
+ applyCachedQuestionOverrides();
+ const taskId=new URLSearchParams(location.search).get('task');
+ if(taskId){
+   loadTask(taskId);
+   setTimeout(()=>flushPendingResults().catch(()=>{}),3000);
+ }else{
+   renderLessons();
+   setTimeout(()=>flushPendingResults().catch(()=>{}),250);
+ }
  $('startActivity').onclick=startActivity;$('checkBtn').onclick=checkAnswer;$('nextBtn').onclick=nextQuestion;$('resultAction').onclick=resultNext;
- const taskId=new URLSearchParams(location.search).get('task');if(taskId)loadTask(taskId);
 }
 function renderLessons(){
  const grade=String(state.task?.grade||'1');
@@ -11666,14 +11754,16 @@ function openIdentity(mode,lesson,task=null){state.mode=mode;state.lesson=lesson
 window.openIdentity=openIdentity;
 
 async function loadTask(id){
- if(!api()){alert('هذا رابط تكليف منزلي، لكن رابط منصة المعلم غير مضبوط على هذا الجهاز. افتح المنصة المنشورة بعد إتمام الربط.');return}
+ if(!api()){document.documentElement.classList.remove('task-loading');alert('هذا رابط تكليف منزلي، لكن رابط منصة المعلم غير مضبوط على هذا الجهاز. افتح المنصة المنشورة بعد إتمام الربط.');return}
  try{
+   const overridesPromise=loadQuestionOverridesFast();
    let r=await jsonp({action:'getTaskBundle',id});
    if(!r?.ok) r=await jsonp({action:'getTask',id});
+   await overridesPromise;
    if(!r?.ok)throw new Error(r?.message||'تعذر فتح التكليف');
    const t=r.task;
    t.className=normalizeTaskClass(t.className);
-   if(t.status!=='open'){alert(t.message||'هذا التكليف غير متاح حاليًا.');return}
+   if(t.status!=='open'){document.documentElement.classList.remove('task-loading');alert(t.message||'هذا التكليف غير متاح حاليًا.');return}
    let lessonIds=[];
    const rawIds=(t.lessonIds!==undefined&&t.lessonIds!==null&&t.lessonIds!=='')?t.lessonIds:t.lesson;
    if(Array.isArray(rawIds)) lessonIds=rawIds.map(String).map(x=>x.trim()).filter(Boolean);
@@ -11696,7 +11786,8 @@ async function loadTask(id){
    renderLessons();
    const firstLesson=lessonIds.length?lessonIds[0]:'all';
    openIdentity(t.mode||'training',firstLesson,t);
- }catch(e){console.error(e);alert('تعذر فتح التكليف. تحقق من الرابط أو الاتصال.')}
+   document.documentElement.classList.remove('task-loading');
+ }catch(e){document.documentElement.classList.remove('task-loading');console.error(e);alert('تعذر فتح التكليف. تحقق من الرابط أو الاتصال.')}
 }
 
 async function loadStudentsForClass(){
