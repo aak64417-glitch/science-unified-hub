@@ -1,0 +1,1202 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07111f"><title>لوحة المعلم - نسخة الاستعادة | رحلة عالم العلوم</title><style>:root{
+ --bg:#07111f;--bg2:#0a1728;--card:#102039;--card2:#132944;--text:#f7fbff;--muted:#9fb2c8;
+ --teal:#42ded4;--indigo:#8190ff;--gold:#ffd166;--green:#5be38b;--red:#ff7c8e;--line:rgba(255,255,255,.10);
+ --shadow:0 24px 70px rgba(0,0,0,.28);--r:24px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,"Noto Sans Arabic",Arial,sans-serif;color:var(--text);min-height:100vh;background:radial-gradient(circle at 8% 0%,rgba(129,144,255,.20),transparent 34%),radial-gradient(circle at 95% 8%,rgba(66,222,212,.14),transparent 28%),linear-gradient(180deg,#06101d,#0a1728 45%,#07111f)}
+button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.hidden{display:none!important}.wrap{max-width:1200px;margin:auto;padding:18px}.glass{background:linear-gradient(180deg,rgba(18,40,65,.94),rgba(10,25,43,.96));border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--r)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 16px;position:sticky;top:10px;z-index:30;backdrop-filter:blur(15px)}.brand{display:flex;gap:12px;align-items:center;min-width:0}.logo{width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,var(--teal),var(--indigo));display:grid;place-items:center;font-size:27px;box-shadow:0 12px 35px rgba(66,222,212,.23)}.brand h1{font-size:1.05rem;margin:0}.brand p{font-size:.82rem;color:var(--muted);margin:4px 0 0}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:0;padding:11px 16px;border-radius:14px;font-weight:900;background:var(--teal);color:#07111f;transition:.18s transform,.18s box-shadow,.18s opacity;box-shadow:0 12px 28px rgba(66,222,212,.18)}.btn:hover{transform:translateY(-1px)}.btn.secondary{background:#203652;color:var(--text);box-shadow:none;border:1px solid var(--line)}.btn.gold{background:var(--gold)}.btn.indigo{background:var(--indigo);color:white}.btn.danger{background:var(--red);color:white}.btn:disabled{opacity:.45;transform:none;cursor:not-allowed}.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);font-size:.8rem;color:#d8e5f2}.pill.good{border-color:rgba(91,227,139,.35);color:#c8ffd9}.pill.off{border-color:rgba(255,124,142,.35);color:#ffd2d9}
+.hero{display:grid;grid-template-columns:1.18fr .82fr;gap:18px;padding:34px 0 20px}.hero-main{padding:34px;position:relative;overflow:hidden}.hero-main:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;left:-70px;bottom:-110px;background:radial-gradient(circle,rgba(66,222,212,.18),transparent 70%)}.eyebrow{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(66,222,212,.10);color:#aefef8;border:1px solid rgba(66,222,212,.22);font-weight:900;font-size:.82rem}.hero h2{font-size:clamp(2.2rem,5vw,4.3rem);line-height:1.08;margin:16px 0}.hero h2 span{background:linear-gradient(90deg,#b7fff9,#aab5ff,#ffe299);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{margin:0;color:#d5e1ed;line-height:1.95;font-size:1.02rem}.hero-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.hero-side{padding:20px;display:grid;gap:12px}.route-card{padding:17px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.04)}.route-card strong{font-size:1.45rem;display:block}.route-card span{color:#dfe9f5;font-size:.92rem}.route-card small{color:var(--muted);display:block;line-height:1.65;margin-top:5px}.route-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.route-mini{padding:14px;border-radius:16px;background:#0c1d32;border:1px solid var(--line)}.route-mini b{display:block;font-size:1.2rem}.route-mini span{font-size:.78rem;color:var(--muted)}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:24px 2px 13px}.section-head h3{margin:0;font-size:1.45rem}.section-head p{margin:5px 0 0;color:var(--muted)}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.lesson-card{padding:22px;position:relative;overflow:hidden;transition:.2s transform,.2s border-color}.lesson-card:hover{transform:translateY(-3px);border-color:rgba(66,222,212,.28)}.lesson-card .icon{font-size:35px}.lesson-card h4{font-size:1.22rem;margin:10px 0}.lesson-card p{color:var(--muted);line-height:1.75;min-height:84px}.lesson-card .status{font-size:.78rem;padding:6px 9px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);position:absolute;left:17px;top:17px}.lesson-card.teal{background:linear-gradient(180deg,rgba(21,66,68,.65),rgba(10,25,43,.96))}.lesson-card.indigo{background:linear-gradient(180deg,rgba(42,45,92,.62),rgba(10,25,43,.96))}.lesson-card.gold{background:linear-gradient(180deg,rgba(85,63,22,.45),rgba(10,25,43,.96))}.lesson-card .btn{width:100%;margin-top:10px}
+.feature{padding:20px;display:flex;gap:14px;align-items:flex-start}.feature .ficon{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(66,222,212,.16),rgba(129,144,255,.16));border:1px solid var(--line);font-size:25px;flex:0 0 auto}.feature h4{margin:0 0 7px}.feature p{margin:0;color:var(--muted);line-height:1.75}.footer{text-align:center;padding:32px 10px;color:#7990a8;font-size:.83rem}
+.screen{padding-top:24px}.panel{padding:23px}.backline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}.lesson-hero{display:grid;grid-template-columns:1fr .65fr;gap:14px}.lesson-summary h2{margin:6px 0 10px;font-size:2rem}.lesson-summary p{color:#d6e2ee;line-height:1.85}.objective-box h4,.concept-box h4{margin:0 0 10px}.objective-list,.concept-list{margin:0;padding:0 18px 0 0;color:#dce7f2;line-height:2}.concept-list{display:grid;gap:9px;list-style:none;padding:0}.concept-list li{padding:12px 13px;border-radius:14px;background:#0c1b2f;border:1px solid var(--line)}.concept-list b{display:block;margin-bottom:4px}.concept-list span{color:var(--muted);line-height:1.65;font-size:.9rem}.choice-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.mode-card{padding:17px;border-radius:17px;background:#0d2037;border:1px solid var(--line)}.mode-card strong{display:block;margin-bottom:7px}.mode-card p{font-size:.86rem;color:var(--muted);line-height:1.65;min-height:58px}.mode-card .btn{width:100%}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.field label{display:block;color:var(--muted);font-size:.84rem;font-weight:800;margin-bottom:7px}.field input,.field select{width:100%;padding:13px 14px;border-radius:14px;background:#09182a;border:1px solid var(--line);color:white;outline:none}.field input:focus,.field select:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(66,222,212,.08)}.note{padding:12px 14px;border-radius:14px;background:rgba(255,209,102,.10);border:1px solid rgba(255,209,102,.28);color:#ffe8ab;line-height:1.65}.note.good{background:rgba(91,227,139,.09);border-color:rgba(91,227,139,.28);color:#caffda}
+.quiz-top{display:flex;align-items:center;gap:14px}.progress-wrap{flex:1}.progress{height:11px;border-radius:999px;background:#071321;border:1px solid var(--line);overflow:hidden}.progress i{height:100%;display:block;width:0;background:linear-gradient(90deg,var(--teal),var(--indigo));transition:.25s width}.meta{display:flex;gap:7px;flex-wrap:wrap;color:var(--muted);font-size:.86rem;margin-top:7px}.timer{min-width:92px;text-align:center;padding:10px;border-radius:15px;border:1px solid var(--line);background:#09182a}.timer strong{font-size:1.4rem;display:block}.timer.warn{color:#ffe198;border-color:rgba(255,209,102,.45)}.timer.danger{color:#ffb7c1;border-color:rgba(255,124,142,.5);animation:pulse 1s infinite}@keyframes pulse{50%{transform:scale(1.05)}}.live{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0}.live div{padding:12px;text-align:center;border-radius:14px;background:#0c1d32;border:1px solid var(--line)}.live span{display:block;color:var(--muted);font-size:.78rem}.live b{font-size:1.12rem}.question{padding:20px;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid var(--line)}.q-tags{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px}.q-tag{padding:6px 9px;border-radius:999px;background:rgba(129,144,255,.10);color:#d0d7ff;border:1px solid var(--line);font-size:.78rem;font-weight:900}.question h3{line-height:1.85;font-size:1.22rem;margin:0 0 14px}.answers{display:grid;gap:10px}.answer{width:100%;text-align:right;padding:14px;border-radius:15px;border:1px solid var(--line);background:#10243e;color:white;font-weight:800;transition:.18s}.answer:hover{transform:translateY(-1px);border-color:#587ba3}.answer.selected{background:rgba(66,222,212,.10);border-color:var(--teal)}.answer.correct{background:rgba(91,227,139,.12);border-color:var(--green)}.answer.wrong{background:rgba(255,124,142,.12);border-color:var(--red)}.order{display:grid;gap:9px}.order-row{display:flex;gap:8px;align-items:center;padding:11px;border-radius:14px;background:#10243e;border:1px solid var(--line)}.order-row span{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:#203b5e}.order-row b{flex:1}.order-row button{border:0;border-radius:8px;background:#284566;color:white;padding:6px 9px}.feedback{padding:13px 14px;border-radius:14px;margin-top:13px;line-height:1.7}.feedback.ok{background:rgba(91,227,139,.10);border:1px solid rgba(91,227,139,.3)}.feedback.no{background:rgba(255,124,142,.10);border:1px solid rgba(255,124,142,.3)}.quiz-actions{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.result{text-align:center}.ring{width:150px;height:150px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--teal) var(--pct,0%),#18314e 0);position:relative}.ring:after{content:"";position:absolute;inset:12px;background:#0b1c30;border-radius:50%}.ring strong{position:relative;z-index:2;font-size:2rem}.level{display:inline-block;padding:8px 12px;border-radius:999px;background:#18304d;font-weight:900}.breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.break{padding:14px;border-radius:15px;background:#0c1d32;border:1px solid var(--line)}.break span{display:block;color:var(--muted);font-size:.82rem}.break strong{display:block;margin-top:5px}.recommend{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;text-align:right}.rec{padding:15px;border-radius:15px;background:rgba(255,255,255,.035);border:1px solid var(--line)}.rec h4{margin:0 0 7px}.rec p{margin:0;color:var(--muted);line-height:1.75}
+.teacher-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{padding:16px;border-radius:16px;background:#0c1d32;border:1px solid var(--line)}.stat strong{display:block;font-size:1.55rem}.stat span{color:var(--muted);font-size:.83rem}.tabs{display:flex;gap:7px;margin:16px 0;flex-wrap:wrap}.tab{border:1px solid var(--line);background:#10243e;color:white;padding:9px 13px;border-radius:12px;font-weight:800}.tab.active{background:var(--teal);color:#07111f}.toolbar{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;margin-top:14px}table{width:100%;border-collapse:collapse;min-width:950px}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:right;font-size:.88rem;vertical-align:top}th{background:#132944;position:sticky;top:0}tbody tr:hover td{background:rgba(255,255,255,.025)}.smallbtn{padding:7px 9px;border-radius:9px;border:0;font-weight:800;cursor:pointer}.copy{background:var(--teal);color:#07111f}.toggle{background:#294363;color:white}.remove{background:var(--red);color:white}.task-status{padding:5px 8px;border-radius:999px;font-size:.75rem;display:inline-block}.task-status.on{background:rgba(91,227,139,.12);color:#c6ffd8}.task-status.off{background:rgba(255,124,142,.12);color:#ffd3da}.modal{position:fixed;inset:0;background:rgba(2,8,16,.78);display:grid;place-items:center;padding:16px;z-index:80}.modal-card{width:min(760px,100%);max-height:90vh;overflow:auto;padding:22px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+@media(max-width:900px){.hero,.lesson-hero{grid-template-columns:1fr}.grid3,.grid2,.choice-row,.form-grid,.teacher-cards,.breakdown,.recommend,.live{grid-template-columns:1fr}.topbar{position:static}.brand p{display:none}.toolbar{grid-template-columns:1fr}.lesson-card p{min-height:0}.hero-main{padding:24px}}
+
+.student-admin-toolbar{display:grid;grid-template-columns:180px 1fr auto;gap:10px;align-items:end;margin-bottom:14px}
+.student-admin-note{margin:0 0 14px}
+.student-admin-table table{min-width:720px}
+.student-admin-table td.actions-cell{white-space:nowrap}
+.student-count-badge{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:4px 9px;border-radius:999px;background:rgba(66,222,212,.10);border:1px solid rgba(66,222,212,.25);color:#b8fff9;font-weight:900}
+@media(max-width:700px){.student-admin-toolbar{grid-template-columns:1fr}.student-admin-toolbar .btn{width:100%}}
+
+@media(max-width:520px){.wrap{padding:10px}.topbar{padding:11px}.logo{width:44px;height:44px}.brand h1{font-size:.9rem}.hero{padding-top:18px}.hero-main,.panel{padding:17px}.hero h2{font-size:2.2rem}.hero-actions,.quiz-actions{flex-direction:column}.hero-actions .btn,.quiz-actions .btn{width:100%}.route-grid{grid-template-columns:1fr 1fr}.timer{min-width:78px}.quiz-top{align-items:flex-start;flex-direction:column}.timer{align-self:stretch}}
+
+.portfolio-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 16px}.report-cards .feature{align-items:stretch}.report-card>div:last-child{display:flex;flex-direction:column;flex:1}.report-card .btn{margin-top:auto;align-self:flex-start}.report-modal-card{width:min(920px,96vw);max-height:92vh;overflow:auto}.report-paper{background:white;color:#172033;border-radius:18px;padding:28px;direction:rtl;line-height:1.9}.report-paper h1,.report-paper h2,.report-paper h3{color:#0b3553}.report-paper .report-head{text-align:center;border-bottom:3px solid #0b6c76;padding-bottom:14px;margin-bottom:18px}.report-paper .report-head h1{margin:0 0 4px;font-size:1.55rem}.report-paper .report-head p{margin:3px 0;color:#4b6072}.report-paper .report-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}.report-paper .meta-box{background:#f3f7fa;border:1px solid #dce6ed;border-radius:12px;padding:9px 12px}.report-paper .report-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}.report-paper .kpi{background:#f6fafb;border:1px solid #dce8ea;border-radius:12px;text-align:center;padding:12px}.report-paper .kpi b{display:block;font-size:1.3rem;color:#0b6c76}.report-paper table{min-width:0;color:#172033;border:1px solid #dfe7ec}.report-paper th{position:static;background:#eaf3f5;color:#14384a}.report-paper th,.report-paper td{border:1px solid #dfe7ec;padding:8px}.report-paper .report-section{margin-top:17px}.report-paper .report-section h3{margin:0 0 8px}.report-paper .evidence-note{background:#fff8e5;border:1px solid #f1d89b;border-radius:12px;padding:10px 12px}.report-paper ul{margin-top:6px}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}@media(max-width:700px){.portfolio-controls,.report-paper .report-meta,.report-paper .report-kpis{grid-template-columns:1fr}.report-paper{padding:18px}}
+
+.results-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0}.results-kpi{padding:13px;border-radius:15px;background:#0c1d32;border:1px solid var(--line);text-align:center}.results-kpi span{display:block;color:var(--muted);font-size:.78rem}.results-kpi b{display:block;font-size:1.35rem;margin-top:4px}.results-toolbar{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr auto;gap:10px;align-items:end}.improve-pos{color:#8ff0b1;font-weight:900}.improve-neg{color:#ffb0bb;font-weight:900}@media(max-width:900px){.results-kpis{grid-template-columns:repeat(2,1fr)}.results-toolbar{grid-template-columns:1fr}}
+@media print{body *{visibility:hidden!important}#reportModal,#reportModal *{visibility:visible!important}#reportModal{position:absolute!important;inset:0!important;background:white!important;padding:0!important;display:block!important}#reportModal .modal-card{box-shadow:none!important;border:0!important;max-height:none!important;width:100%!important;background:white!important;padding:0!important}#reportModal .section-head,#reportModal .modal-actions{display:none!important}.report-paper{border-radius:0!important;padding:16mm!important}.report-paper table{font-size:10pt!important}}
+
+.student-class-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.student-class-card{border:1px solid var(--line);background:#0d2139;color:#fff;border-radius:14px;padding:12px;cursor:pointer;text-align:center;font-weight:900}
+.student-class-card b{display:block;font-size:1.15rem;margin-bottom:3px}.student-class-card span{color:var(--muted);font-size:.82rem}
+.student-class-card.active{outline:2px solid var(--teal);background:#12304a}
+.replace{background:#f0b84a;color:#07111f}
+@media(max-width:700px){.student-class-overview{grid-template-columns:repeat(2,1fr)}}
+
+/* ===== تصميم احترافي لتقارير ملف الإنجاز ===== */
+.report-paper{
+  --rp-navy:#0b2744;--rp-teal:#0f7f87;--rp-teal2:#14a7a4;--rp-gold:#d6a84b;--rp-ink:#17324a;--rp-muted:#607387;--rp-soft:#f4f8fa;
+  max-width:900px;margin:0 auto;background:#fff;color:var(--rp-ink);border-radius:22px;padding:0!important;overflow:hidden;box-shadow:0 22px 60px rgba(8,35,61,.18);direction:rtl;line-height:1.8
+}
+.report-paper .pro-head{position:relative;padding:28px 34px 24px;background:linear-gradient(135deg,var(--rp-navy),#103a60 56%,#0d6872);color:#fff;overflow:hidden}
+.report-paper .pro-head:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;left:-65px;top:-90px;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%)}
+.report-paper .pro-topline{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;position:relative;z-index:1}
+.report-paper .pro-brand{display:flex;gap:14px;align-items:center}
+.report-paper .pro-mark{width:58px;height:58px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(135deg,#49ded3,#87a0ff);font-size:29px;box-shadow:0 10px 25px rgba(0,0,0,.18)}
+.report-paper .pro-eyebrow{display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.22);font-size:.76rem;font-weight:900;margin-bottom:8px}
+.report-paper .pro-head h1{color:#fff!important;margin:0;font-size:1.72rem;line-height:1.4}.report-paper .pro-head p{margin:4px 0;color:#dcebf4}
+.report-paper .pro-date{text-align:left;min-width:150px}.report-paper .pro-date b{display:block;font-size:1.05rem}.report-paper .pro-date span{font-size:.8rem;color:#dcebf4}
+.report-paper .report-body{padding:24px 30px 28px}
+.report-paper .report-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:0 0 16px}
+.report-paper .meta-box{background:#f6f9fb;border:1px solid #dfe9ef;border-radius:14px;padding:11px 12px;min-height:70px}.report-paper .meta-box span{display:block;color:var(--rp-muted);font-size:.76rem;font-weight:800}.report-paper .meta-box b{display:block;margin-top:4px;color:var(--rp-ink);font-size:.92rem}
+.report-paper .report-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 18px}.report-paper .kpi{position:relative;background:linear-gradient(180deg,#fbfefe,#f0f7f7);border:1px solid #d9e7e8;border-radius:16px;text-align:center;padding:15px 10px 13px;overflow:hidden}.report-paper .kpi:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(var(--rp-teal2),#78c6c2)}.report-paper .kpi b{display:block;font-size:1.55rem;color:var(--rp-teal);line-height:1.2}.report-paper .kpi span{display:block;margin-top:6px;color:#41596e;font-size:.8rem;font-weight:800}
+.report-paper .pro-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:14px}.report-paper .pro-card{border:1px solid #dfe8ee;background:#fff;border-radius:16px;padding:15px 16px}.report-paper .pro-card h3{margin:0 0 9px;color:var(--rp-navy);font-size:1rem;display:flex;align-items:center;gap:7px}.report-paper .pro-card p{margin:0;color:#40566b;font-size:.88rem}.report-paper .pro-card ul{margin:6px 0 0;padding-right:20px;color:#40566b;font-size:.87rem}
+.report-paper .report-section{margin-top:16px}.report-paper .report-section>h3{margin:0 0 9px;padding-right:11px;border-right:4px solid var(--rp-teal2);color:var(--rp-navy);font-size:1.04rem}
+.report-paper .level-bars{display:grid;gap:8px}.report-paper .level-row{display:grid;grid-template-columns:90px 1fr 54px;gap:8px;align-items:center;font-size:.82rem}.report-paper .level-track{height:10px;border-radius:999px;background:#e9eff3;overflow:hidden}.report-paper .level-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--rp-teal2),#6bc7c3)}.report-paper .level-num{text-align:left;font-weight:900;color:var(--rp-navy)}
+.report-paper .insight{padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,#edf8f7,#f6fbfb);border:1px solid #d5e8e6;color:#355164;font-size:.86rem}.report-paper .insight strong{color:var(--rp-teal)}
+.report-paper table{width:100%;border-collapse:separate;border-spacing:0;min-width:0;color:#233a50;border:1px solid #dce6ec;border-radius:13px;overflow:hidden}.report-paper th{position:static;background:#eaf3f5;color:#173a50;font-size:.78rem}.report-paper th,.report-paper td{border:0;border-bottom:1px solid #e4ebef;padding:8px 9px;font-size:.78rem}.report-paper tr:last-child td{border-bottom:0}
+.report-paper .evidence-note{background:#fff9ea;border:1px solid #efdaaa;border-radius:13px;padding:11px 13px;color:#775c24}.report-paper .sign-row{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:22px;padding-top:16px;border-top:1px dashed #cbd7df}.report-paper .sign{text-align:center;color:#51687b}.report-paper .sign b{display:block;color:#1e3e58;margin-bottom:18px}.report-paper .report-footer{text-align:center;margin-top:16px;color:#8090a0;font-size:.72rem}
+@media(max-width:700px){.report-paper .pro-topline{display:block}.report-paper .pro-date{text-align:right;margin-top:12px}.report-paper .report-body{padding:18px}.report-paper .report-meta,.report-paper .report-kpis,.report-paper .pro-grid,.report-paper .sign-row{grid-template-columns:1fr 1fr}.report-paper .level-row{grid-template-columns:78px 1fr 45px}}
+@media(max-width:480px){.report-paper .report-meta,.report-paper .report-kpis,.report-paper .pro-grid,.report-paper .sign-row{grid-template-columns:1fr}}
+@media print{
+ #reportModal .modal-card{width:100%!important}.report-paper{box-shadow:none!important;border-radius:0!important;max-width:none!important}.report-paper .pro-head{padding:12mm 14mm 8mm!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.report-paper .report-body{padding:8mm 12mm 10mm!important}.report-paper .report-kpis,.report-paper .report-meta,.report-paper .pro-grid{break-inside:avoid}.report-paper .details-page{break-before:page}.report-paper table{font-size:9pt!important}.report-paper th,.report-paper td{font-size:8.5pt!important;padding:6px!important}
+}
+
+
+
+/* ملف إنجاز الطالب */
+.student-portfolio-builder{margin:0 0 18px;padding:18px;border-radius:20px;border:1px solid rgba(66,222,212,.28);background:linear-gradient(135deg,rgba(66,222,212,.08),rgba(129,144,255,.08))}
+.student-portfolio-builder .sp-builder-head{display:flex;gap:12px;align-items:center;margin-bottom:14px}.student-portfolio-builder .sp-builder-icon{width:54px;height:54px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,var(--teal),var(--indigo));color:#07111f;font-size:28px;box-shadow:0 12px 30px rgba(66,222,212,.16)}.student-portfolio-builder h4{margin:0 0 3px;font-size:1.18rem}.student-portfolio-builder p{margin:0;color:var(--muted);line-height:1.7}.student-portfolio-controls{display:grid;grid-template-columns:180px 1fr auto;gap:10px;align-items:end}.student-portfolio-controls .btn{min-width:190px}
+@media(max-width:760px){.student-portfolio-controls{grid-template-columns:1fr}.student-portfolio-controls .btn{width:100%}}
+
+
+.report-paper.student-portfolio-paper{
+  --sp-blue:#2d73b4;--sp-blue-dark:#164e82;--sp-ink:#17324d;--sp-muted:#657d92;
+  --sp-line:#d6e3ed;--sp-soft:#f3f8fc;--sp-green:#49b978;--sp-yellow:#f3bd43;--sp-red:#e45b68;
+  max-width:940px;margin:0 auto;background:#eef4f8!important;color:var(--sp-ink)!important;
+  border-radius:18px;padding:18px!important;box-shadow:none!important;overflow:visible!important
+}
+.student-portfolio-paper .sp-page{
+  width:min(100%,820px);min-height:1120px;margin:0 auto 24px;background:#fff;position:relative;overflow:hidden;
+  padding:34px 38px 54px;border:1px solid #d8e4ed;box-shadow:0 10px 30px rgba(25,70,105,.09)
+}
+.student-portfolio-paper .sp-cover{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  background:linear-gradient(180deg,#fff 0%,#fcfeff 100%)
+}
+.student-portfolio-paper .sp-cover-wave{
+  position:absolute;right:-20px;top:-20px;bottom:-20px;width:180px;
+  background:
+   linear-gradient(180deg,rgba(120,196,241,.9),rgba(47,117,181,.95)),
+   linear-gradient(180deg,#d4eeff,#7fc5ef);
+  clip-path:polygon(36% 0,100% 0,100% 100%,20% 100%,38% 87%,26% 75%,44% 60%,26% 45%,43% 28%,30% 14%)
+}
+.student-portfolio-paper .sp-cover-wave:before{
+  content:"";position:absolute;inset:0 20px 0 40px;background:rgba(255,255,255,.38);
+  clip-path:polygon(43% 0,100% 0,100% 100%,34% 100%,51% 88%,40% 75%,59% 60%,39% 46%,60% 29%,45% 14%)
+}
+.student-portfolio-paper .sp-cover-icons{
+  position:absolute;right:34px;top:250px;z-index:2;display:grid;gap:36px;color:#0f4c83
+}
+.student-portfolio-paper .sp-cover-icons svg{width:48px;height:48px;stroke:currentColor;fill:none;stroke-width:2.4}
+.student-portfolio-paper .sp-book-icon{width:80px;height:80px;margin-bottom:18px;color:#2b73b4}
+.student-portfolio-paper .sp-book-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2.4}
+.student-portfolio-paper .sp-cover h1{font-size:2.45rem;margin:0 0 8px;color:#123e70}
+.student-portfolio-paper .sp-cover .subtitle{font-size:1.16rem;color:#244e75;font-weight:800}
+.student-portfolio-paper .sp-tagline{margin-top:25px;color:#214c78;font-size:1.03rem;font-weight:900}
+.student-portfolio-paper .sp-student-card{
+  width:min(610px,82%);margin:34px auto 0;padding:22px 28px;background:#eff7fd;border:1px solid #d8e8f4;
+  border-radius:19px;text-align:right;box-shadow:0 8px 24px rgba(28,82,125,.07)
+}
+.student-portfolio-paper .sp-student-card div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:7px 0}
+.student-portfolio-paper .sp-student-card span{color:#648097}.student-portfolio-paper .sp-student-card b{color:#173d65}
+.student-portfolio-paper .sp-motto{margin-top:20px;padding:13px 24px;border-radius:12px;background:#dcefff;color:#174e7c;font-weight:900}
+.student-portfolio-paper .sp-titlebar{
+  background:linear-gradient(90deg,#2d73b4,#2c6dad);color:#fff;text-align:center;border-radius:10px;
+  font-size:1.48rem;font-weight:900;padding:10px 16px;margin:0 0 18px
+}
+.student-portfolio-paper .sp-subline{text-align:center;color:#708699;font-size:.84rem;margin:-7px 0 16px}
+.student-portfolio-paper .sp-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 18px}
+.student-portfolio-paper .sp-kpi{border-radius:12px;padding:18px 9px;text-align:center;border:1px solid #d9e6ef}
+.student-portfolio-paper .sp-kpi:nth-child(1){background:#f3eafe;border-color:#dbcdf7}
+.student-portfolio-paper .sp-kpi:nth-child(2){background:#eaf5ff;border-color:#cce5f8}
+.student-portfolio-paper .sp-kpi:nth-child(3){background:#edf9ee;border-color:#cde9d1}
+.student-portfolio-paper .sp-kpi:nth-child(4){background:#fff5df;border-color:#efdba9}
+.student-portfolio-paper .sp-kpi b{display:block;font-size:1.72rem;color:#163f69}
+.student-portfolio-paper .sp-kpi span{display:block;margin-top:7px;color:#435c72;font-weight:800;font-size:.84rem}
+.student-portfolio-paper .sp-section{margin-top:21px}.student-portfolio-paper .sp-section h3{margin:0 0 9px;color:#163e67;font-size:1.15rem}
+.student-portfolio-paper .sp-panel,.student-portfolio-paper .sp-notes{
+  background:#f3f8fc;border:1px solid #d9e5ee;border-radius:14px;padding:16px 18px
+}
+.student-portfolio-paper .sp-progress-track{height:18px;background:#dfe8ef;border-radius:999px;overflow:hidden}
+.student-portfolio-paper .sp-progress-track i{display:block;height:100%;background:linear-gradient(90deg,#2f8fce,#235ea7);border-radius:999px}
+.student-portfolio-paper .sp-progress-label{display:flex;justify-content:space-between;margin-top:8px;color:#5c7488;font-weight:900}
+.student-portfolio-paper .sp-notes ul{margin:0;padding-right:20px;line-height:2}
+.student-portfolio-paper .sp-encourage{text-align:center;margin-top:18px}
+.student-portfolio-paper .sp-encourage span{display:inline-block;padding:11px 26px;border-radius:12px;background:#e4f1fc;color:#1f5e94;font-weight:900}
+.student-portfolio-paper table{width:100%;min-width:0;border-collapse:collapse;font-size:.84rem}
+.student-portfolio-paper th{position:static;background:#e8f2fa;color:#163d66}
+.student-portfolio-paper th,.student-portfolio-paper td{border:1px solid #d4e0ea;padding:8px;text-align:center}
+.student-portfolio-paper .sp-positive{color:#169553;font-weight:900}.student-portfolio-paper .sp-negative{color:#c34351;font-weight:900}
+.student-portfolio-paper .sp-topbox{margin-top:18px;border:1px solid #d9e5ee;background:#f7fbfe;border-radius:14px;padding:14px 18px}
+.student-portfolio-paper .sp-topbox h4{margin:0 0 8px;color:#173f68}
+.student-portfolio-paper .sp-topbox ol{margin:0;padding-right:24px;line-height:1.9}
+.student-portfolio-paper .sp-charts-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+.student-portfolio-paper .sp-chart-card{background:#fbfdff;border:1px solid #d9e5ee;border-radius:14px;padding:14px}
+.student-portfolio-paper .sp-chart-card h4{margin:0 0 8px;text-align:center;color:#173f68}
+.student-portfolio-paper .sp-chart{width:100%;height:255px;background:#fff;border:0}
+.student-portfolio-paper .sp-donut-wrap{display:grid;place-items:center;min-height:235px}
+.student-portfolio-paper .sp-donut{width:160px;height:160px;border-radius:50%;position:relative}
+.student-portfolio-paper .sp-donut:after{content:"";position:absolute;inset:36px;background:white;border-radius:50%}
+.student-portfolio-paper .sp-legend{display:grid;gap:7px;margin-top:8px}
+.student-portfolio-paper .sp-legend div{display:flex;justify-content:space-between;align-items:center;font-size:.8rem}
+.student-portfolio-paper .sp-legend i{width:11px;height:11px;border-radius:2px;display:inline-block;margin-left:6px}
+.student-portfolio-paper .sp-teacher-note{margin-top:18px;background:#f4f9fd;border:1px solid #d8e5ef;border-radius:14px;padding:16px 18px}
+.student-portfolio-paper .sp-teacher-note h4{margin:0 0 8px;color:#173f68}.student-portfolio-paper .sp-teacher-note p{margin:0;line-height:1.9;color:#435d72}
+.student-portfolio-paper .sp-signatures{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:24px}
+.student-portfolio-paper .sp-sign{border-top:1px solid #b7c9d6;padding-top:10px;text-align:center;color:#435c70}
+.student-portfolio-paper .sp-page-number{position:absolute;bottom:16px;left:0;right:0;text-align:center;color:#4f6578;font-weight:900}
+.student-portfolio-paper .sp-footer-note{position:absolute;bottom:14px;right:38px;color:#8899a8;font-size:.72rem}
+@media(max-width:700px){
+ .report-paper.student-portfolio-paper{padding:8px!important}
+ .student-portfolio-paper .sp-page{min-height:auto;padding:22px 15px 44px}
+ .student-portfolio-paper .sp-cover-wave,.student-portfolio-paper .sp-cover-icons{display:none}
+ .student-portfolio-paper .sp-student-card{width:100%}.student-portfolio-paper .sp-student-card div{grid-template-columns:1fr}
+ .student-portfolio-paper .sp-kpis{grid-template-columns:1fr 1fr}.student-portfolio-paper .sp-charts-grid,.student-portfolio-paper .sp-signatures{grid-template-columns:1fr}
+}
+@media print{
+ .report-paper.student-portfolio-paper{background:white!important;padding:0!important}
+ .student-portfolio-paper .sp-page{
+   width:210mm;height:297mm;min-height:297mm;margin:0!important;padding:12mm 14mm 16mm!important;
+   box-shadow:none!important;border:0!important;page-break-after:always;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact
+ }
+ .student-portfolio-paper .sp-page:last-child{page-break-after:auto;break-after:auto}
+ .student-portfolio-paper .sp-chart{height:64mm}
+}
+
+
+.task-lessons-box{grid-column:1/-1;border:1px solid rgba(118,203,255,.18);border-radius:18px;padding:14px;background:rgba(255,255,255,.025)}
+.task-lessons-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.task-lesson-actions{display:flex;gap:8px;flex-wrap:wrap}
+.task-lesson-actions button{border:1px solid rgba(118,203,255,.22);background:rgba(255,255,255,.06);color:inherit;border-radius:12px;padding:8px 12px;font-weight:700}
+.task-lessons-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.task-lesson-option{display:flex;align-items:center;gap:10px;border:1px solid rgba(118,203,255,.16);border-radius:14px;padding:11px 12px;background:rgba(255,255,255,.035);cursor:pointer}
+.task-lesson-option input{width:auto;accent-color:var(--teal)}
+.task-lesson-option span{font-weight:800}
+.task-lesson-option:hover{border-color:rgba(66,222,212,.45)}
+@media(max-width:700px){.task-lessons-grid{grid-template-columns:1fr}}
+
+/* ===== Recovery v1: grade-aware lessons, per-lesson counts, participation report ===== */
+.task-grade-note{grid-column:1/-1}
+.task-lesson-option{display:grid!important;grid-template-columns:auto 1fr auto;align-items:center}
+.task-lesson-count{width:82px!important;padding:8px 10px!important;text-align:center}
+.task-lesson-meta{display:flex;flex-direction:column;gap:3px;min-width:0}
+.task-lesson-meta small{color:var(--muted);font-weight:700}
+.task-count-total{grid-column:1/-1;padding:12px 14px;border-radius:14px;background:rgba(66,222,212,.08);border:1px solid rgba(66,222,212,.25);font-weight:900}
+.participation-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.participation-paper{font-family:Tahoma,Arial,sans-serif;direction:rtl;color:#17324d;background:#fff;padding:28px;border-radius:18px}
+.participation-paper h2{margin:0 0 8px;color:#0f5d78}.participation-paper .pp-meta{color:#587184;margin-bottom:16px}
+.participation-paper .pp-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.participation-paper .pp-kpi{padding:12px;border-radius:14px;background:#f3f8fb;border:1px solid #dce8ef;text-align:center}.participation-paper .pp-kpi b{display:block;font-size:1.35rem;color:#0f5d78}
+.participation-paper table{min-width:0;width:100%;border-collapse:collapse}.participation-paper th,.participation-paper td{border:1px solid #dbe6ed;padding:9px;text-align:right;color:#17324d}.participation-paper th{background:#eaf5f7;color:#0f5d78}
+@media(max-width:700px){.participation-paper .pp-kpis{grid-template-columns:1fr 1fr}.task-lesson-option{grid-template-columns:auto 1fr}.task-lesson-count{grid-column:2}}
+
+</style></head>
+<body><div class="wrap">
+<header class="topbar glass"><div class="brand"><div class="logo">📊</div><div><h1>لوحة المعلم <small style="font-size:.7em;color:#9fb2c8">نسخة الاستعادة</small></h1><p id="teacherSub"></p></div></div><div class="actions"><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="journey-student.html">معاينة منصة الطالب</a></div></header>
+<main class="screen">
+<section class="panel glass"><div class="section-head" style="margin-top:0"><div><h3>الربط</h3><p>أدخل رابط Apps Script ومفتاح المعلم. يحفظ الرابط على هذا الجهاز.</p></div></div><div class="form-grid"><div class="field"><label>رابط Apps Script /exec</label><input id="apiUrl" dir="ltr" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="field"><label>مفتاح المعلم</label><input id="teacherKey" type="password" placeholder="مفتاح المعلم"></div><div class="field" style="align-self:end"><button id="loadBtn" class="btn" style="width:100%">تحميل لوحة المعلم</button></div></div><div id="status" class="note" style="margin-top:12px">وضع المعاينة: يمكنك استعراض لوحة المعلم الآن. الربط الفعلي مع النتائج سيتم بعد إضافة رابط Apps Script.</div></section>
+
+<section id="dashboard">
+<div class="section-head"><div><h3>ملخص المنصة</h3><p id="lastUpdate"></p></div><div class="actions"><button id="newTaskBtn" class="btn">+ تكليف منزلي جديد</button><button id="refreshBtn" class="btn secondary">تحديث</button></div></div>
+<div class="teacher-cards"><div class="stat"><strong id="sTasks">0</strong><span>التكليفات</span></div><div class="stat"><strong id="sStudents">0</strong><span>طلاب شاركوا</span></div><div class="stat"><strong id="sTraining">0</strong><span>تقارير التدريب</span></div><div class="stat"><strong id="sTests">0</strong><span>نتائج الاختبار</span></div></div>
+<div class="tabs"><button class="tab active" data-tab="tasks">مركز التكليفات المنزلية</button><button class="tab" data-tab="results">نتائج الطلاب</button><button class="tab" data-tab="students">إدارة الطلاب</button><button class="tab" data-tab="portfolio">تقارير ملف الإنجاز</button></div>
+
+<section id="tasksTab" class="panel glass"><div class="section-head" style="margin-top:0"><div><h3>الروابط الذكية</h3><p>فعّل أو أوقف الرابط بعد إرساله للطلاب، وانسخ رابط النشاط من هنا.</p></div></div><div class="table-wrap"><table><thead><tr><th>التكليف</th><th>النوع</th><th>الدرس</th><th>الفصل</th><th>الفترة</th><th>الحالة</th><th>الرابط</th><th>إجراءات</th></tr></thead><tbody id="tasksBody"></tbody></table></div></section>
+
+<section id="resultsTab" class="panel glass hidden">
+  <div class="section-head" style="margin-top:0"><div><h3>نتائج الطلاب</h3><p>عرض منظم للمحاولات مع أول وآخر وأفضل نتيجة ونسبة التحسن.</p></div></div>
+  <div class="results-toolbar">
+    <div class="field"><label>بحث باسم الطالب</label><input id="nameFilter" placeholder="اكتب جزءًا من الاسم"></div>
+    <div class="field"><label>الفصل</label><select id="classFilter"><option value="">كل الفصول</option></select></div>
+    <div class="field"><label>الدرس / التكليف</label><select id="resultTaskFilter"><option value="">كل الدروس والتكليفات</option></select></div>
+    <div class="field"><label>النوع</label><select id="resultTypeFilter"><option value="">الكل</option><option value="training">تدريب</option><option value="test">اختبار</option><option value="remedial">علاجي</option><option value="enrich">إثراء</option></select></div>
+    <button id="participationBtn" class="btn">تقرير المشاركين</button><button id="shareParticipationBtn" class="btn secondary">مشاركة التقرير</button><button id="exportBtn" class="btn secondary">تصدير CSV</button>
+  </div>
+  <div class="results-kpis">
+    <div class="results-kpi"><span>الطلاب المشاركون</span><b id="rStudents">0</b></div>
+    <div class="results-kpi"><span>إجمالي المحاولات</span><b id="rAttempts">0</b></div>
+    <div class="results-kpi"><span>متوسط الأداء</span><b id="rAverage">0%</b></div>
+    <div class="results-kpi"><span>متوسط التكرار</span><b id="rRepeat">0</b></div>
+    <div class="results-kpi"><span>متوسط التحسن</span><b id="rImprove">0%</b></div>
+  </div>
+  <div class="note good">يظهر صف واحد لكل طالب في كل درس/تكليف، وتُحسب مؤشرات المحاولات من جميع النتائج المسجلة دون حذف أي محاولة.</div>
+  <div class="table-wrap"><table><thead><tr>
+    <th>#</th><th>الطالب</th><th>الفصل</th><th>النوع</th><th>الدرس / التكليف</th><th>المحاولات</th><th>أول نتيجة</th><th>آخر نتيجة</th><th>أفضل نتيجة</th><th>التحسن</th><th>آخر مستوى</th><th>آخر تسليم</th>
+  </tr></thead><tbody id="resultsBody"></tbody></table></div>
+</section>
+
+<section id="studentsTab" class="panel glass hidden">
+  <div class="section-head" style="margin-top:0">
+    <div><h3>إدارة الطلاب</h3><p>قائمة مركزية للفصول 1/1 إلى 4/1. يمكنك إضافة طالب، تصحيح اسمه، نقله، استبداله أو حذفه، ويظهر التغيير في صفحة الطالب مباشرة.</p></div>
+    <div class="actions"><button id="reloadStudentsBtn" class="btn secondary">تحديث القوائم</button></div>
+  </div>
+  <div class="note student-admin-note"><b>الفرق بين التعديل والاستبدال:</b> «تعديل الاسم» لتصحيح اسم الطالب الحالي مع تحديث اسمه في نتائجه السابقة، أما «استبدال الطالب» فيُبقي نتائج الطالب القديم محفوظة ويضيف الطالب الجديد بهوية مستقلة.</div>
+  <div id="studentsOverview" class="student-class-overview"></div>
+  <div class="student-admin-toolbar">
+    <div class="field"><label>الفصل</label><select id="studentsClass"></select></div>
+    <div class="field"><label>اسم الطالب المستجد</label><input id="newStudentName" placeholder="اكتب الاسم الرباعي أو كما تريد ظهوره للطالب"></div>
+    <button id="addStudentBtn" class="btn">+ إضافة الطالب</button>
+  </div>
+  <div id="studentsAdminStatus" class="note good">اختر الفصل لعرض الطلاب.</div>
+  <div class="table-wrap student-admin-table">
+    <table>
+      <thead><tr><th>#</th><th>اسم الطالب</th><th>رمز الطالب</th><th>الفصل</th><th>الإجراءات</th></tr></thead>
+      <tbody id="studentsBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="portfolioTab" class="panel glass hidden">
+      <div class="section-head" style="margin-top:0"><div><h3>تقارير ملف الإنجاز</h3><p>أنشئ التقرير مباشرة من نتائج الطلاب، ثم اطبعه أو احفظه PDF من نافذة الطباعة.</p></div></div>
+
+      <div class="student-portfolio-builder">
+        <div class="sp-builder-head"><div class="sp-builder-icon">📚</div><div><h4>ملف إنجاز الطالب</h4><p>أنشئ ملفًا فرديًا لكل طالب من نتائجه الحقيقية: عدد التدريبات والمحاولات، متوسط الأداء، أفضل نتيجة، التحسن، تفاصيل الأنشطة والرسوم البيانية.</p></div></div>
+        <div class="student-portfolio-controls">
+          <div class="field"><label>الفصل</label><select id="studentPortfolioClass"><option value="">اختر الفصل</option></select></div>
+          <div class="field"><label>الطالب</label><select id="studentPortfolioStudent"><option value="">اختر الطالب</option></select></div>
+          <button id="studentPortfolioBtn" class="btn">فتح ملف إنجاز الطالب</button>
+        </div>
+      </div>
+      <div class="portfolio-controls">
+        <div class="field"><label>الفصل</label><select id="portfolioClass"><option value="">كل الفصول</option></select></div>
+        <div class="field"><label>عنوان النشاط / التكليف</label><select id="portfolioTask"><option value="">كل الأنشطة</option></select></div>
+      </div>
+      <div class="grid2 report-cards">
+        <article class="feature glass report-card"><div class="ficon">📘</div><div><h4>تقرير التدريب</h4><p>المشاركة، المتوسط، مستويات الأداء، ونقاط القوة والجوانب التي تحتاج تعزيزًا.</p><button class="btn" data-report="training">إنشاء تقرير التدريب</button></div></article>
+        <article class="feature glass report-card"><div class="ficon">🧪</div><div><h4>تقرير الاختبار</h4><p>عدد المختبرين، المتوسط، أعلى وأقل نتيجة، وتوزيع مستويات الطلاب.</p><button class="btn indigo" data-report="test">إنشاء تقرير الاختبار</button></div></article>
+        <article class="feature glass report-card"><div class="ficon">🩺</div><div><h4>تقرير الخطة العلاجية</h4><p>الطلاب المستهدفون، المفاهيم الضعيفة، الإجراءات العلاجية، ونتيجة المتابعة.</p><button class="btn gold" data-report="remedial">إنشاء تقرير الخطة العلاجية</button></div></article>
+        <article class="feature glass report-card"><div class="ficon">📈</div><div><h4>تقرير الأثر التعليمي</h4><p>مقارنة التدريب والاختبار وإظهار مؤشرات التحسن والأثر على التحصيل.</p><button class="btn secondary" data-report="impact">إنشاء تقرير الأثر التعليمي</button></div></article>
+      </div>
+    </section>
+</section>
+</main><footer class="footer" id="footer"></footer></div>
+
+<div id="reportModal" class="modal hidden"><div class="modal-card glass report-modal-card">
+      <div class="section-head" style="margin-top:0"><div><h3 id="reportModalTitle">تقرير ملف الإنجاز</h3><p>معاينة التقرير قبل الطباعة أو الحفظ PDF.</p></div><button id="closeReport" class="btn secondary">إغلاق</button></div>
+      <div id="reportPaper" class="report-paper"></div>
+      <div class="modal-actions"><button id="printReport" class="btn">طباعة / حفظ PDF</button><button id="copyReport" class="btn secondary">نسخ نص التقرير</button><button id="shareReport" class="btn secondary hidden">مشاركة الرسالة</button></div>
+    </div></div>
+
+<div id="taskModal" class="modal hidden"><div class="modal-card glass"><div class="section-head" style="margin-top:0"><div><h3 id="taskModalTitle">إنشاء تكليف منزلي</h3><p>اختر الصف والدروس وحدد عدد الأسئلة لكل درس.</p></div><button id="closeTask" class="btn secondary">إغلاق</button></div><div class="form-grid"><div class="field"><label>اسم التكليف</label><input id="taskTitle" placeholder="مثال: تدريب النماذج العلمية"></div><div class="field"><label>النوع</label><select id="taskMode"><option value="training">تدريب</option><option value="exam">اختبار</option><option value="remedial">خطة علاجية</option><option value="enrich">إثراء</option></select></div><div class="field"><label>الصف الدراسي</label><select id="taskGrade"><option value="1">الأول المتوسط</option><option value="3">الثالث المتوسط</option></select></div><div class="task-lessons-box"><div class="task-lessons-head"><div><strong>الدروس المحددة للتكليف</strong><br><small>فعّل الدرس ثم حدد عدد أسئلته.</small></div><div class="task-lesson-actions"><button type="button" id="taskLessonsAll">تحديد الكل</button><button type="button" id="taskLessonsNone">إلغاء التحديد</button></div></div><div id="taskLessonChoices" class="task-lessons-grid"></div></div><div id="taskCountTotal" class="task-count-total">إجمالي الأسئلة: 0</div><input id="taskCount" type="hidden" value="0"><div class="field"><label>الفصل المستهدف</label><select id="taskClass"><option>الكل</option></select></div><div class="field"><label>زمن السؤال (للاختبار)</label><input id="taskTime" type="number" min="10" max="120" value="30"></div><div class="field"><label>عدد المحاولات</label><input id="taskAttempts" type="number" min="1" max="10" value="1"></div><div class="field"><label>بداية التكليف</label><input id="taskStart" type="datetime-local"></div><div class="field"><label>نهاية التكليف</label><input id="taskEnd" type="datetime-local"></div></div><div class="modal-actions"><button id="saveTask" class="btn">إنشاء التكليف والرابط</button></div></div></div>
+
+<script src="question-bank-corrected-recovery.js"></script>
+<script src="third-grade-bank-recovery.js"></script>
+<script>
+let LESSONS={'all':'جميع الدروس'};
+function refreshLessonCatalog(){
+ const data=window.SCIENCE_DATA||{lessons:[],questions:[]};
+ const next={'all':'جميع الدروس'};
+ (data.lessons||[]).forEach(l=>{if(l&&l.id)next[String(l.id)]=String(l.title||l.short||l.id)});
+ LESSONS=next;
+ return data;
+}
+function lessonDataById(id){return (window.SCIENCE_DATA?.lessons||[]).find(l=>String(l.id)===String(id))||null}
+function lessonQuestionCount(id){return (window.SCIENCE_DATA?.questions||[]).filter(q=>String(q.lesson)===String(id)).length}
+
+const $=id=>document.getElementById(id);
+const DEFAULT_API_URL='https://script.google.com/macros/s/AKfycbxp-t4JgGO5WiK6hoacjTyBqFnG-9bSWClplOpVV4VDuTV7T4tY0swB1Ll36kr_djJ7nQ/exec';
+let tasks=[];
+let results=[];
+const CLASSES=['1/1','2/1','3/1','4/1'];
+let studentRoster={};
+const TRACKER_STORAGE_KEY='st_track_v1';
+const TRACKER_GRADE='الأول المتوسط';
+
+function normalizeStudentNameKey(name){
+ return String(name||'').normalize('NFKC')
+   .replace(/[\u064B-\u065F\u0670]/g,'')
+   .replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي')
+   .replace(/\s+/g,' ').trim().toLowerCase();
+}
+function readTrackerRoster(){
+ const raw=localStorage.getItem(TRACKER_STORAGE_KEY);
+ if(!raw) throw new Error('لم أجد بيانات سجل المتابعة على هذا الجهاز. افتح سجل المتابعة مرة واحدة في نفس المتصفح ثم ارجع واضغط المزامنة.');
+ let st;
+ try{st=JSON.parse(raw)}catch(e){throw new Error('تعذر قراءة بيانات سجل المتابعة المحفوظة.')}
+ const semester=String(st?.meta?.semester||'الفصل الدراسي الأول');
+ let classes=st?.grades?.[TRACKER_GRADE]?.[semester];
+ if(!classes && (!st?.meta?.grade || st.meta.grade===TRACKER_GRADE)) classes=st?.classes;
+ if(!classes) throw new Error(`لم أجد قوائم ${TRACKER_GRADE} في ${semester} داخل سجل المتابعة.`);
+ const roster={};
+ CLASSES.forEach(cls=>{
+   const students=Array.isArray(classes?.[cls]?.students)?classes[cls].students:[];
+   const names=[]; const seen=new Set();
+   students.forEach(s=>{
+     const name=String((s&&typeof s==='object')?s.name:s||'').replace(/\s+/g,' ').trim();
+     const key=normalizeStudentNameKey(name);
+     if(name && key && !seen.has(key)){seen.add(key);names.push(name)}
+   });
+   roster[cls]=names;
+ });
+ const total=CLASSES.reduce((n,c)=>n+roster[c].length,0);
+ if(!total) throw new Error('قوائم سجل المتابعة لا تحتوي أسماء في الفصول 1/1 إلى 4/1.');
+ return {roster,semester,year:String(st?.meta?.year||'')};
+}
+
+function getApi(){return $('apiUrl').value.trim()}
+function getKey(){return $('teacherKey').value.trim()}
+function setStatus(text,good=false){$('status').className=good?'note good':'note';$('status').textContent=text}
+let __scienceHubJsonpQueue=Promise.resolve();
+function jsonp(params){
+ const run=()=>new Promise((resolve,reject)=>{
+  const api=getApi();
+  if(!api){reject(new Error('أدخل رابط Apps Script أولًا.'));return}
+  const callbackName='scienceHubCallback';
+  const script=document.createElement('script');
+  const q=new URLSearchParams({...params,callback:callbackName,_:Date.now()});
+  let finished=false;
+  const timer=setTimeout(()=>{finish();reject(new Error('انتهت مهلة الاتصال بالخادم.'))},20000);
+  function finish(){
+   if(finished)return;
+   finished=true;
+   clearTimeout(timer);
+   try{script.remove()}catch(e){}
+  }
+  window[callbackName]=data=>{finish();resolve(data)};
+  script.onerror=()=>{finish();reject(new Error('تعذر تحميل استجابة Apps Script من داخل الصفحة.'))};
+  script.src=api+(api.includes('?')?'&':'?')+q.toString();
+  document.body.appendChild(script);
+ });
+ const p=__scienceHubJsonpQueue.then(run,run);
+ __scienceHubJsonpQueue=p.catch(()=>{});
+ return p;
+}
+
+const CLASS_ORDER_FOR_RESULTS={'1/1':1,'2/1':2,'3/1':3,'4/1':4};
+function normalizeClassName(value){
+ const raw=String(value??'').trim();
+ if(!raw)return '';
+ if(CLASS_ORDER_FOR_RESULTS[raw])return raw;
+ const m=raw.match(/^([1-4])\s*[\/-]\s*1$/); if(m)return `${m[1]}/1`;
+ const d=new Date(raw);
+ if(!Number.isNaN(d.getTime())){
+  const candidate=`${d.getMonth()+1}/${d.getDate()}`;
+  if(CLASS_ORDER_FOR_RESULTS[candidate])return candidate;
+ }
+ return raw;
+}
+function normalizeResult(r){
+ const weak=Array.isArray(r.weakConcepts)?r.weakConcepts.join('، '):(r.weakConcepts||'—');
+ const type=String(r.type||'training')==='exam'?'test':String(r.type||'training');
+ return {...r,studentName:String(r.studentName||''),className:normalizeClassName(r.className),taskTitle:String(r.taskTitle||''),type,weakConcepts:weak};
+}
+const TEACHER_CACHE_KEY='sj_teacher_last_success_v1';
+function saveTeacherCache(){
+ try{
+  localStorage.setItem(TEACHER_CACHE_KEY,JSON.stringify({savedAt:new Date().toISOString(),tasks,results}));
+ }catch(e){console.warn('تعذر حفظ النسخة المحلية',e)}
+}
+function restoreTeacherCache(){
+ try{
+  const raw=localStorage.getItem(TEACHER_CACHE_KEY);
+  if(!raw)return false;
+  const cached=JSON.parse(raw);
+  const cachedTasks=Array.isArray(cached?.tasks)?cached.tasks:[];
+  const cachedResults=Array.isArray(cached?.results)?cached.results.map(normalizeResult):[];
+  if(!cachedTasks.length && !cachedResults.length)return false;
+  tasks=cachedTasks;
+  results=cachedResults;
+  renderAll();
+  updatePortfolioTasks();
+  updateResultFilters();
+  updateStudentPortfolioStudents();
+  const when=cached?.savedAt?new Date(cached.savedAt).toLocaleString('ar-SA'):'وقت سابق';
+  $('lastUpdate').textContent='آخر نسخة محفوظة: '+when;
+  return true;
+ }catch(e){console.warn('تعذر قراءة النسخة المحلية',e);return false}
+}
+async function loadTeacher(){
+ const api=getApi(),key=getKey();
+ if(!api||!key){setStatus('أدخل رابط Apps Script ومفتاح المعلم ثم اضغط تحميل لوحة المعلم.');return}
+ localStorage.setItem('sj_teacher_api',api);
+ localStorage.setItem('sj_teacher_key',key);
+ $('loadBtn').disabled=true;
+ const hadCache=restoreTeacherCache();
+ setStatus(hadCache?'تم عرض آخر نسخة محفوظة فورًا، ويجري الآن تحديثها من الخادم...':'جارٍ الاتصال بقاعدة البيانات وتحميل النتائج...');
+ try{
+  const data=await jsonp({action:'report',key});
+  if(!data||data.ok===false) throw new Error(data?.message||data?.error||'تعذر تحميل البيانات.');
+  tasks=Array.isArray(data.tasks)?data.tasks:[];
+  results=Array.isArray(data.results)?data.results.map(normalizeResult):[];
+  saveTeacherCache();
+  $('lastUpdate').textContent='آخر تحديث: '+new Date().toLocaleString('ar-SA');
+  setStatus(`تم الربط بنجاح — ${tasks.length} تكليف و${results.length} نتيجة.`,true);
+  renderAll();
+  updatePortfolioTasks();
+  updateResultFilters();
+  updateStudentPortfolioStudents();
+  try{
+   await loadAllStudents();
+   renderStudentsAdmin();
+   updateStudentPortfolioStudents();
+  }catch(studentErr){
+   console.warn('تعذر تحديث قوائم الطلاب دون التأثير على النتائج',studentErr);
+  }
+ }catch(err){
+  console.error(err);
+  if(hadCache){
+   setStatus('تعذر التحديث من الخادم؛ تم الإبقاء على آخر نتائج محفوظة على هذا الجهاز.');
+  }else{
+   setStatus('تعذر تحميل لوحة المعلم: '+(err.message||err));
+  }
+ }finally{$('loadBtn').disabled=false}
+}
+async function apiAction(action,params={}){
+ const key=getKey();
+ if(!key) throw new Error('أدخل مفتاح المعلم.');
+ const data=await jsonp({action,key,...params});
+ if(!data||data.ok===false) throw new Error(data?.message||data?.error||'تعذر تنفيذ العملية.');
+ return data;
+}
+
+function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function fmt(v){try{return new Date(v).toLocaleString('ar-SA')}catch{return v||'—'}}
+function typeName(m){return({training:'تدريب',exam:'اختبار',remedial:'علاجي',enrich:'إثراء',test:'اختبار',mixed:'متنوع'}[m]||m)}
+function init(){
+ $('teacherSub').textContent='مدرسة أبي الدرداء المتوسطة | المعلم: علي البقاشي';
+ $('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام 1448هـ';
+ CLASSES.forEach(c=>{$('classFilter').insertAdjacentHTML('beforeend',`<option>${c}</option>`);$('taskClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('portfolioClass')) $('portfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentsClass')) $('studentsClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentPortfolioClass')) $('studentPortfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`)});
+ refreshLessonCatalog();
+ renderTaskLessonChoices();
+ if($('taskGrade')) $('taskGrade').onchange=()=>renderTaskLessonChoices();
+ if($('taskLessonsAll')) $('taskLessonsAll').onclick=()=>{document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>{x.checked=true;const n=x.closest('.task-lesson-option')?.querySelector('.task-lesson-count');if(n)n.disabled=false});updateTaskCountTotal()};
+ if($('taskLessonsNone')) $('taskLessonsNone').onclick=()=>{document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>{x.checked=false;const n=x.closest('.task-lesson-option')?.querySelector('.task-lesson-count');if(n)n.disabled=true});updateTaskCountTotal()};
+ $('apiUrl').value=DEFAULT_API_URL; localStorage.setItem('sj_teacher_api',DEFAULT_API_URL);
+ $('teacherKey').value=localStorage.getItem('sj_teacher_key')||'';
+ $('lastUpdate').textContent='غير محمّل بعد';
+ setStatus('أدخل مفتاح المعلم ثم اضغط «تحميل لوحة المعلم».');
+ $('loadBtn').onclick=loadTeacher;
+ $('refreshBtn').onclick=()=>{if(getKey()) loadTeacher(); else renderAll()};
+ $('newTaskBtn').onclick=()=>openTaskEditor(null);
+ $('closeTask').onclick=()=>$('taskModal').classList.add('hidden');
+ $('saveTask').onclick=createTask;
+ $('classFilter').onchange=renderResults;
+ $('nameFilter').oninput=renderResults;
+ $('resultTaskFilter').onchange=renderResults;
+ $('resultTypeFilter').onchange=renderResults;
+ $('exportBtn').onclick=exportCsv;
+ if($('participationBtn')) $('participationBtn').onclick=()=>generateParticipationReport();
+ if($('shareParticipationBtn')) $('shareParticipationBtn').onclick=()=>shareParticipationReport();
+ if($('shareReport')) $('shareReport').onclick=()=>shareCurrentReport();
+ if($('studentsClass')) $('studentsClass').onchange=renderStudentsAdmin;
+ if($('addStudentBtn')) $('addStudentBtn').onclick=addStudentAdmin;
+ if($('reloadStudentsBtn')) $('reloadStudentsBtn').onclick=async()=>{const b=$('reloadStudentsBtn');try{b.disabled=true;b.textContent='جارٍ التحديث...';await loadAllStudents();renderStudentsAdmin();alert('تم تحديث قوائم الطلاب بنجاح.')}catch(e){alert(e.message||e)}finally{b.disabled=false;b.textContent='تحديث القوائم'}};
+ document.querySelectorAll('[data-report]').forEach(b=>b.onclick=()=>generatePortfolioReport(b.dataset.report));
+ $('closeReport').onclick=()=>$('reportModal').classList.add('hidden');
+ $('printReport').onclick=()=>window.print();
+ $('copyReport').onclick=copyReportText;
+ if($('portfolioClass')) $('portfolioClass').onchange=updatePortfolioTasks;
+ if($('portfolioTask')) updatePortfolioTasks();
+ if($('studentPortfolioClass')) $('studentPortfolioClass').onchange=updateStudentPortfolioStudents;
+ if($('studentPortfolioBtn')) $('studentPortfolioBtn').onclick=generateStudentPortfolio;
+ updateStudentPortfolioStudents();
+ document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+ renderAll();
+ if(getKey()) setTimeout(loadTeacher,150);
+}
+function switchTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));['tasks','results','students','portfolio'].forEach(x=>$(x+'Tab').classList.toggle('hidden',x!==tab));if(tab==='students')renderStudentsAdmin()}
+function renderAll(){stats();renderTasks();renderResults();renderStudentsAdmin()}
+function stats(){const students=new Set(results.map(x=>x.className+'-'+x.studentName)).size;$('sTasks').textContent=tasks.length;$('sStudents').textContent=students;$('sTraining').textContent=results.filter(x=>x.type!=='test'&&x.type!=='exam').length;$('sTests').textContent=results.filter(x=>x.type==='test'||x.type==='exam').length}
+function availableTaskLessons(){
+ const grade=String($('taskGrade')?.value||'1');
+ const data=refreshLessonCatalog();
+ return (data.lessons||[]).filter(l=>String(l.grade||'1')===grade).map(l=>[String(l.id),String(l.title||l.id),String(l.chapter||''),lessonQuestionCount(l.id)]);
+}
+function normalizeLessonCounts(raw){
+ if(!raw)return {};
+ if(typeof raw==='object'&&!Array.isArray(raw))return raw;
+ try{const x=JSON.parse(String(raw));return x&&typeof x==='object'&&!Array.isArray(x)?x:{}}catch(e){return {}}
+}
+function renderTaskLessonChoices(selected=[],counts={}){
+ const box=$('taskLessonChoices'); if(!box)return;
+ const chosen=new Set(Array.isArray(selected)?selected:selectedLessonIds({lessonIds:selected}));
+ const countMap=normalizeLessonCounts(counts);
+ box.innerHTML=availableTaskLessons().map(([id,title,chapter,available])=>{
+   const checked=chosen.has(id);
+   const defaultCount=Math.min(5,Math.max(1,available||1));
+   const n=Math.max(1,Math.min(Number(countMap[id]||defaultCount),Math.max(1,available||99)));
+   return `<label class="task-lesson-option">
+     <input class="task-lesson-check" type="checkbox" value="${esc(id)}" ${checked?'checked':''}>
+     <span class="task-lesson-meta"><b>${esc(title)}</b><small>${esc(chapter||'')} • متاح ${available} سؤالًا</small></span>
+     <input class="task-lesson-count" type="number" min="1" max="${Math.max(1,available)}" value="${n}" ${checked?'':'disabled'} aria-label="عدد أسئلة ${esc(title)}">
+   </label>`;
+ }).join('');
+ box.querySelectorAll('.task-lesson-check').forEach(c=>c.onchange=()=>{const n=c.closest('.task-lesson-option')?.querySelector('.task-lesson-count');if(n)n.disabled=!c.checked;updateTaskCountTotal()});
+ box.querySelectorAll('.task-lesson-count').forEach(n=>n.oninput=updateTaskCountTotal);
+ updateTaskCountTotal();
+}
+function selectedTaskLessonIds(){
+ return [...document.querySelectorAll('#taskLessonChoices .task-lesson-check:checked')]
+   .map(x=>String(x.value||'').trim()).filter(Boolean);
+}
+function selectedTaskLessonCounts(){
+ const out={};
+ document.querySelectorAll('#taskLessonChoices .task-lesson-option').forEach(row=>{
+   const c=row.querySelector('.task-lesson-check'),n=row.querySelector('.task-lesson-count');
+   if(c?.checked){out[String(c.value)]=Math.max(1,Number(n?.value||1)||1)}
+ });
+ return out;
+}
+function updateTaskCountTotal(){
+ const counts=selectedTaskLessonCounts();
+ const total=Object.values(counts).reduce((s,n)=>s+(Number(n)||0),0);
+ if($('taskCount'))$('taskCount').value=String(total);
+ if($('taskCountTotal'))$('taskCountTotal').textContent=`إجمالي الأسئلة: ${total}`;
+ return total;
+}
+function selectedLessonIds(task){
+ const raw=task?.lessonIds;
+ if(Array.isArray(raw)) return raw.map(String).map(x=>x.trim()).filter(Boolean);
+ if(raw){
+   try{const parsed=JSON.parse(String(raw)); if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean)}catch(_){}
+   return String(raw).split(',').map(x=>x.replace(/[\[\]"]/g,'').trim()).filter(Boolean);
+ }
+ const legacy=String(task?.lesson||'').trim();
+ if(!legacy || legacy==='all') return [];
+ try{const parsed=JSON.parse(legacy); if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean)}catch(_){}
+ return legacy.split(',').map(x=>x.replace(/[\[\]"]/g,'').trim()).filter(Boolean);
+}
+function taskGrade(task){
+ if(task?.grade)return String(task.grade);
+ const ids=selectedLessonIds(task); return ids.some(id=>String(id).startsWith('g3-'))?'3':'1';
+}
+function taskLessonsLabel(task){
+ refreshLessonCatalog();
+ const ids=selectedLessonIds(task);
+ if(!ids.length){
+   const legacy=String(task?.lesson||'').trim();
+   return legacy==='all'?'جميع الدروس':(LESSONS[legacy]||legacy||'—');
+ }
+ return ids.map(id=>LESSONS[id]||id).join(' + ');
+}
+function openTaskEditor(task){
+ const editing=!!task; window.__editingTaskId=editing?String(task.id):'';
+ $('taskModalTitle').textContent=editing?'تعديل التكليف':'إنشاء تكليف منزلي';
+ $('saveTask').textContent=editing?'حفظ التعديلات':'إنشاء التكليف والرابط';
+ $('taskTitle').value=task?.title||'';
+ $('taskMode').value=task?.mode||'training';
+ $('taskGrade').value=taskGrade(task||{});
+ $('taskClass').value=normalizeClassName(task?.className)||'الكل';
+ $('taskTime').value=Number(task?.timePerQuestion||30);
+ $('taskAttempts').value=Number(task?.attempts||1);
+ const localDate=v=>{if(!v)return '';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v).slice(0,16);const z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${z(d.getHours())}:${z(d.getMinutes())}`};
+ $('taskStart').value=localDate(task?.startAt); $('taskEnd').value=localDate(task?.endAt);
+ renderTaskLessonChoices(selectedLessonIds(task||{}),normalizeLessonCounts(task?.lessonCounts));
+ $('taskModal').classList.remove('hidden');
+}
+
+
+const SHORT_LINK_CACHE_KEY='sj_teacher_short_links_v1';
+function readShortLinkCache(){
+ try{return JSON.parse(localStorage.getItem(SHORT_LINK_CACHE_KEY)||'{}')||{}}catch(e){return {}}
+}
+function saveShortLinkCache(cache){
+ try{localStorage.setItem(SHORT_LINK_CACHE_KEY,JSON.stringify(cache||{}))}catch(e){}
+}
+function shortenShareUrl(longUrl){
+ const cache=readShortLinkCache();
+ if(cache[longUrl]) return Promise.resolve(cache[longUrl]);
+ return new Promise((resolve,reject)=>{
+  const callbackName='isgdShort_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+  const script=document.createElement('script');
+  let done=false;
+  const timer=setTimeout(()=>finish(new Error('انتهت مهلة إنشاء الرابط القصير.')),12000);
+  function cleanup(){
+   clearTimeout(timer);
+   try{script.remove()}catch(e){}
+   try{delete window[callbackName]}catch(e){window[callbackName]=undefined}
+  }
+  function finish(err,value){
+   if(done)return; done=true; cleanup();
+   if(err) reject(err); else resolve(value);
+  }
+  window[callbackName]=data=>{
+   if(data&&data.shorturl){
+    cache[longUrl]=String(data.shorturl);
+    saveShortLinkCache(cache);
+    finish(null,String(data.shorturl));
+   }else{
+    finish(new Error((data&&data.errormessage)||'تعذر إنشاء الرابط القصير.'));
+   }
+  };
+  script.onerror=()=>finish(new Error('تعذر الاتصال بخدمة اختصار الروابط.'));
+  script.src='https://is.gd/create.php?format=json&callback='+encodeURIComponent(callbackName)+'&url='+encodeURIComponent(longUrl);
+  document.body.appendChild(script);
+ });
+}
+function copyWithoutClipboardPermission(text){
+ const ta=document.createElement('textarea');
+ ta.value=String(text??'');
+ ta.setAttribute('readonly','');
+ ta.style.position='fixed';
+ ta.style.inset='-9999px auto auto -9999px';
+ ta.style.opacity='0';
+ document.body.appendChild(ta);
+ ta.focus();
+ ta.select();
+ try{ta.setSelectionRange(0,ta.value.length)}catch(e){}
+ let ok=false;
+ try{ok=document.execCommand('copy')}catch(e){ok=false}
+ ta.remove();
+ return ok;
+}
+async function copyTextSafely(text,message){
+ if(copyWithoutClipboardPermission(text)){alert(message);return}
+ prompt('انسخ الرابط:',text);
+}
+function renderTasks(){
+ refreshLessonCatalog();
+ $('tasksBody').innerHTML=tasks.map(t=>{const link=new URL('journey-student-recovery.html',location.href).href+'?task='+encodeURIComponent(t.id);return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(taskLessonsLabel(t))}<br><small>${taskGrade(t)==='3'?'ثالث متوسط':'أول متوسط'}</small></td><td>${esc(normalizeClassName(t.className)||'الكل')}</td><td>${esc(fmt(t.startAt))}<br>${esc(fmt(t.endAt))}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td><button class="smallbtn copy" data-copy="${link}">نسخ الرابط</button></td><td><button class="smallbtn copy" data-participation="${esc(t.id)}">المشاركون</button> <button class="smallbtn toggle" data-edit="${esc(t.id)}">تعديل</button> <button class="smallbtn toggle" data-toggle="${esc(t.id)}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${esc(t.id)}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
+ document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copyTextSafely(b.dataset.copy,'تم نسخ رابط الطالب.'));
+ document.querySelectorAll('[data-participation]').forEach(b=>b.onclick=()=>generateParticipationReport(b.dataset.participation));
+ document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const t=tasks.find(x=>String(x.id)===String(b.dataset.edit));if(t)openTaskEditor(t)});
+ document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=async()=>{const t=tasks.find(x=>String(x.id)===String(b.dataset.toggle));if(!t)return;try{b.disabled=true;await apiAction('toggleTask',{id:t.id,active:String(!t.active)});t.active=!t.active;renderTasks();stats();saveTeacherCache()}catch(e){alert(e.message||e)}finally{b.disabled=false}});
+ document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('هل تريد حذف هذا التكليف؟'))return;try{b.disabled=true;await apiAction('deleteTask',{id:b.dataset.del});tasks=tasks.filter(x=>String(x.id)!==String(b.dataset.del));renderTasks();stats();updatePortfolioTasks();saveTeacherCache()}catch(e){alert(e.message||e)}finally{b.disabled=false}})
+}
+
+async function loadAllStudents(){
+ const roster={};
+ for(const className of CLASSES){
+  const r=await jsonp({action:'getStudents',className});
+  if(!r||r.ok===false) throw new Error(r?.message||`تعذر تحميل طلاب ${className}`);
+  roster[className]=Array.isArray(r.students)?r.students.map(s=>({code:String(s.code),name:String(s.name)})):[];
+ }
+ studentRoster=roster;
+ return roster;
+}
+function currentStudentsClass(){return $('studentsClass')?.value||CLASSES[0]}
+function renderStudentsAdmin(){
+ if(!$('studentsBody')||!$('studentsClass'))return;
+ if(!$('studentsClass').value) $('studentsClass').value=CLASSES[0];
+ const cls=currentStudentsClass();
+ const rows=studentRoster[cls]||[];
+ if($('studentsOverview')){
+   $('studentsOverview').innerHTML=CLASSES.map(c=>`<button type="button" class="student-class-card ${c===cls?'active':''}" data-class-card="${esc(c)}"><b>الفصل ${esc(c)}</b><span>${(studentRoster[c]||[]).length} طالبًا</span></button>`).join('');
+   document.querySelectorAll('[data-class-card]').forEach(b=>b.onclick=()=>{$('studentsClass').value=b.dataset.classCard;renderStudentsAdmin()});
+ }
+ $('studentsAdminStatus').className='note '+(rows.length?'good':'');
+ $('studentsAdminStatus').innerHTML=`الفصل <b>${esc(cls)}</b> — <span class="student-count-badge">${rows.length}</span> طالبًا في القائمة النشطة.`;
+ $('studentsBody').innerHTML=rows.map((s,i)=>`<tr>
+   <td>${i+1}</td>
+   <td><b>${esc(s.name)}</b></td>
+   <td>${esc(s.code)}</td>
+   <td>${esc(cls)}</td>
+   <td class="actions-cell">
+     <button class="smallbtn toggle" data-stu-edit="${esc(s.code)}">تعديل الاسم</button>
+     <button class="smallbtn copy" data-stu-move="${esc(s.code)}">نقل</button>
+     <button class="smallbtn replace" data-stu-replace="${esc(s.code)}">استبدال الطالب</button>
+     <button class="smallbtn remove" data-stu-del="${esc(s.code)}">حذف</button>
+   </td></tr>`).join('')||'<tr><td colspan="5">لا يوجد طلاب مسجلون في هذا الفصل.</td></tr>';
+ document.querySelectorAll('[data-stu-edit]').forEach(b=>b.onclick=()=>renameStudentAdmin(cls,b.dataset.stuEdit));
+ document.querySelectorAll('[data-stu-move]').forEach(b=>b.onclick=()=>moveStudentAdmin(cls,b.dataset.stuMove));
+ document.querySelectorAll('[data-stu-replace]').forEach(b=>b.onclick=()=>replaceStudentAdmin(cls,b.dataset.stuReplace));
+ document.querySelectorAll('[data-stu-del]').forEach(b=>b.onclick=()=>deleteStudentAdmin(cls,b.dataset.stuDel));
+}
+async function addStudentAdmin(){
+ const cls=currentStudentsClass(),name=$('newStudentName').value.trim();
+ if(name.length<3){alert('اكتب اسم الطالب أولًا.');return}
+ const btn=$('addStudentBtn');btn.disabled=true;
+ try{
+  const r=await apiAction('addStudent',{className:cls,studentName:name});
+  $('newStudentName').value='';
+  await loadAllStudents();renderStudentsAdmin();
+  alert(`تمت إضافة ${r.studentName||name} إلى الفصل ${cls}.`);
+ }catch(e){alert(e.message||e)}finally{btn.disabled=false}
+}
+async function renameStudentAdmin(cls,code){
+ const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
+ const name=prompt('اكتب الاسم الصحيح للطالب:',s.name);
+ if(name===null)return;
+ const clean=name.trim();if(clean.length<3){alert('الاسم قصير جدًا.');return}
+ try{
+   await apiAction('updateStudent',{oldClassName:cls,className:cls,studentCode:code,newClassName:cls,studentName:clean});
+   await loadAllStudents();renderStudentsAdmin();alert('تم تعديل اسم الطالب وتحديث اسمه في نتائجه السابقة.');
+ }catch(e){alert(e.message||e)}
+}
+async function moveStudentAdmin(cls,code){
+ const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
+ const target=prompt(`نقل الطالب: ${s.name}\nاكتب الفصل الجديد: ${CLASSES.filter(x=>x!==cls).join(' أو ')}`,'');
+ if(target===null)return;
+ const to=target.trim();
+ if(!CLASSES.includes(to)){alert('الفصل غير صحيح. استخدم 1/1 أو 2/1 أو 3/1 أو 4/1.');return}
+ if(to===cls){alert('الطالب موجود بالفعل في هذا الفصل.');return}
+ if(!confirm(`هل تريد نقل ${s.name} من ${cls} إلى ${to}؟\nسيظهر في قائمة الفصل الجديد وتُحدّث نتائجه السابقة إلى الفصل الجديد.`))return;
+ try{
+   await apiAction('updateStudent',{oldClassName:cls,className:cls,studentCode:code,newClassName:to,studentName:s.name});
+   await loadAllStudents();$('studentsClass').value=to;renderStudentsAdmin();alert(`تم نقل الطالب إلى ${to}.`);
+ }catch(e){alert(e.message||e)}
+}
+async function replaceStudentAdmin(cls,code){
+ const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
+ const name=prompt(`استبدال الطالب: ${s.name}\nاكتب اسم الطالب الجديد:`, '');
+ if(name===null)return;
+ const clean=name.trim();if(clean.length<3){alert('اكتب اسم الطالب الجديد كاملًا.');return}
+ if(!confirm(`سيتم إخفاء ${s.name} من قائمة الاختيار مع بقاء نتائجه السابقة محفوظة، ثم إضافة ${clean} كطالب جديد في الفصل ${cls}. هل تريد المتابعة؟`))return;
+ try{
+   await apiAction('replaceStudent',{className:cls,studentCode:code,studentName:clean});
+   await loadAllStudents();renderStudentsAdmin();alert('تم استبدال الطالب. بقيت نتائج الطالب السابق محفوظة، وظهر الطالب الجديد في القائمة.');
+ }catch(e){alert(e.message||e)}
+}
+async function deleteStudentAdmin(cls,code){
+ const s=(studentRoster[cls]||[]).find(x=>String(x.code)===String(code));if(!s)return;
+ if(!confirm(`حذف ${s.name} من قائمة الفصل ${cls}؟\nلن تُحذف نتائجه السابقة.`))return;
+ try{
+   await apiAction('setStudentActive',{className:cls,studentCode:code,active:'false'});
+   await loadAllStudents();renderStudentsAdmin();alert('تم حذف الطالب من قائمة الاختيار مع الاحتفاظ بنتائجه السابقة.');
+ }catch(e){alert(e.message||e)}
+}
+
+// أبقينا هذه الدالة للتوافق مع النسخ السابقة فقط، ولا تعتمد النسخة الحالية عليها.
+async function syncStudentsFromTracker(){
+ if(!getKey()){alert('حمّل لوحة المعلم أولًا وأدخل مفتاح المعلم.');return}
+ let source;
+ try{source=readTrackerRoster()}catch(e){alert(e.message||e);return}
+ const counts=CLASSES.map(c=>`${c}: ${source.roster[c].length}`).join(' — ');
+ const ok=confirm(`تم العثور على قوائم سجل المتابعة (${source.semester}${source.year?' — '+source.year:''}).\n${counts}\n\nهل تريد اعتمادها الآن؟\nستتم المزامنة على أربع دفعات سريعة، فصلًا بعد فصل. وتبقى النتائج السابقة محفوظة.`);
+ if(!ok)return;
+ const btn=$('syncTrackerBtn'); btn.disabled=true;
+ let added=0,updated=0,reactivated=0,removed=0;
+ try{
+   $('studentsAdminStatus').className='note';
+   for(let i=0;i<CLASSES.length;i++){
+     const cls=CLASSES[i];
+     $('studentsAdminStatus').textContent=`جاري مزامنة الفصل ${cls} (${i+1} من ${CLASSES.length})...`;
+     const r=await apiAction('syncClassStudents',{
+       className:cls,
+       names:JSON.stringify(source.roster[cls]||[])
+     });
+     added+=Number(r.added||0);
+     updated+=Number(r.updated||0);
+     reactivated+=Number(r.reactivated||0);
+     removed+=Number(r.removed||0);
+   }
+   await loadAllStudents();
+   renderStudentsAdmin();
+   $('studentsAdminStatus').className='note good';
+   $('studentsAdminStatus').textContent=`تم اعتماد سجل المتابعة بنجاح: إضافة ${added}، تحديث ${updated}، إعادة تفعيل ${reactivated}، إخفاء ${removed}.`;
+   alert('تمت مزامنة أسماء سجل المتابعة بنجاح. ستظهر القوائم الجديدة في صفحة الطالب عند فتح الفصل أو تحديث الصفحة.');
+ }catch(e){
+   console.error(e);
+   $('studentsAdminStatus').className='note';
+   $('studentsAdminStatus').textContent='تعذر إكمال المزامنة: '+(e.message||e);
+   alert('تعذر إكمال المزامنة: '+(e.message||e));
+   try{await loadAllStudents();renderStudentsAdmin()}catch(_){}
+ }finally{btn.disabled=false}
+}
+
+async function createTask(){
+ const title=$('taskTitle').value.trim();
+ if(!title){alert('اكتب اسم التكليف.');return}
+ const lessonIds=selectedTaskLessonIds();
+ if(!lessonIds.length){alert('اختر درسًا واحدًا على الأقل لهذا التكليف.');return}
+ const lessonCounts=selectedTaskLessonCounts();
+ const total=updateTaskCountTotal();
+ if(total<1){alert('حدد عدد الأسئلة لكل درس.');return}
+ const className=$('taskClass').value;
+ if(!className||className==='الكل'){alert('اختر فصلًا محددًا للتكليف.');return}
+ const btn=$('saveTask');btn.disabled=true;
+ const action=window.__editingTaskId?'editTask':'createTask';
+ try{
+  const payload={
+   id:window.__editingTaskId||'',title,mode:$('taskMode').value,grade:$('taskGrade').value,
+   lesson:JSON.stringify(lessonIds),lessonIds:JSON.stringify(lessonIds),lessonCounts:JSON.stringify(lessonCounts),
+   className,count:total,timePerQuestion:$('taskTime').value,attempts:$('taskAttempts').value,
+   startAt:$('taskStart').value,endAt:$('taskEnd').value
+  };
+  const res=await apiAction(action,payload);
+  $('taskModal').classList.add('hidden'); window.__editingTaskId='';
+  if(res?.task){
+    const i=tasks.findIndex(x=>String(x.id)===String(res.task.id));
+    if(i>=0)tasks[i]=res.task;else tasks.unshift(res.task);
+    renderTasks();stats();updatePortfolioTasks();updateResultFilters();saveTeacherCache();
+  }else{
+    // توافق احتياطي مع خادم قديم لا يعيد بيانات التكليف كاملة.
+    await loadTeacher();
+  }
+  alert(action==='editTask'?'تم حفظ تعديلات التكليف مع بقاء نفس الرابط.':`تم إنشاء التكليف: ${lessonIds.length} درس / ${total} سؤالًا.`);
+ }catch(e){alert(e.message||e)}finally{btn.disabled=false}
+}
+const RESULT_CLASS_ORDER={'1/1':1,'2/1':2,'3/1':3,'4/1':4};
+const AR_NAME_COLLATOR=new Intl.Collator('ar',{sensitivity:'base',numeric:true,ignorePunctuation:true});
+function resultTitle(r){return String(r.taskTitle||'').trim() || LESSONS[r.lesson] || String(r.lesson||'نشاط بدون عنوان')}
+function resultPercent(r){return Number(r.percent??0)||0}
+function resultTime(r){return r.timestamp||''}
+function updateResultFilters(){
+ const sel=$('resultTaskFilter'); if(!sel)return;
+ const current=sel.value;
+ const titles=[...new Set(results.map(resultTitle).filter(Boolean))].sort((a,b)=>AR_NAME_COLLATOR.compare(a,b));
+ sel.innerHTML='<option value="">كل الدروس والتكليفات</option>'+titles.map(t=>`<option ${t===current?'selected':''}>${esc(t)}</option>`).join('');
+}
+function filteredRawResults(){
+ const c=$('classFilter').value,n=$('nameFilter').value.trim().toLowerCase(),task=$('resultTaskFilter')?.value||'',type=$('resultTypeFilter')?.value||'';
+ return results.filter(x=>(!c||x.className===c)&&(!n||x.studentName.toLowerCase().includes(n))&&(!task||resultTitle(x)===task)&&(!type||x.type===type));
+}
+function aggregateResults(){
+ const map=new Map();
+ const selectedTask=$('resultTaskFilter')?.value||'';
+ const selectedType=$('resultTypeFilter')?.value||'';
+
+ filteredRawResults().forEach(r=>{
+  // صف واحد فقط لكل طالب داخل الفصل، وتُجمع تحته جميع محاولاته الظاهرة.
+  const key=[r.className,String(r.studentCode||''),String(r.studentName||'')].join('|');
+  if(!map.has(key)){
+   map.set(key,{
+    studentName:r.studentName,
+    className:r.className,
+    studentCode:r.studentCode||'',
+    rows:[]
+   });
+  }
+  map.get(key).rows.push(r);
+ });
+
+ return [...map.values()].map(g=>{
+  g.rows.sort((a,b)=>(new Date(resultTime(a)).getTime()||0)-(new Date(resultTime(b)).getTime()||0));
+
+  const first=g.rows[0];
+  const last=g.rows[g.rows.length-1];
+  const vals=g.rows.map(resultPercent);
+
+  const titles=[...new Set(g.rows.map(resultTitle).filter(Boolean))];
+  const types=[...new Set(g.rows.map(r=>String(r.type||'training')))];
+
+  const title=selectedTask
+   ? selectedTask
+   : titles.length===1
+    ? titles[0]
+    : `الفصل الأول — ${titles.length} أنشطة`;
+
+  const type=selectedType
+   ? selectedType
+   : types.length===1
+    ? types[0]
+    : 'mixed';
+
+  return {
+   ...g,
+   title,
+   type,
+   activityCount:titles.length,
+   attempts:g.rows.length,
+   firstPct:resultPercent(first),
+   lastPct:resultPercent(last),
+   bestPct:Math.max(...vals),
+   improve:resultPercent(last)-resultPercent(first),
+   level:last.level||'',
+   lastTime:resultTime(last)
+  };
+ }).sort((a,b)=>{
+  const ca=RESULT_CLASS_ORDER[a.className]??99,cb=RESULT_CLASS_ORDER[b.className]??99;
+  if(ca!==cb)return ca-cb;
+  return AR_NAME_COLLATOR.compare(String(a.studentName||''),String(b.studentName||''));
+ });
+}
+function renderResults(){
+ const raw=filteredRawResults(),rows=aggregateResults();
+ const unique=new Set(raw.map(r=>r.className+'|'+r.studentName)).size;
+ const avg=raw.length?Math.round(raw.reduce((s,r)=>s+resultPercent(r),0)/raw.length):0;
+ const repeat=rows.length?(raw.length/rows.length):0;
+ const improved=rows.filter(r=>r.attempts>1);
+ const avgImp=improved.length?Math.round(improved.reduce((s,r)=>s+r.improve,0)/improved.length):0;
+ if($('rStudents'))$('rStudents').textContent=unique;
+ if($('rAttempts'))$('rAttempts').textContent=raw.length;
+ if($('rAverage'))$('rAverage').textContent=avg+'%';
+ if($('rRepeat'))$('rRepeat').textContent=repeat.toFixed(1);
+ if($('rImprove'))$('rImprove').textContent=(avgImp>0?'+':'')+avgImp+'%';
+ $('resultsBody').innerHTML=rows.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.studentName)}</b></td><td>${esc(r.className)}</td><td>${esc(typeName(r.type))}</td><td>${esc(r.title)}</td><td><b>${r.attempts}</b></td><td>${r.firstPct}%</td><td>${r.lastPct}%</td><td><b>${r.bestPct}%</b></td><td class="${r.improve>0?'improve-pos':r.improve<0?'improve-neg':''}">${r.attempts>1?(r.improve>0?'+':'')+r.improve+'%':'—'}</td><td>${esc(r.level||'—')}</td><td>${esc(fmt(r.lastTime))}</td></tr>`).join('')||'<tr><td colspan="12">لا توجد نتائج مطابقة.</td></tr>';
+}
+function exportCsv(){
+ const rows=aggregateResults();
+ const h=['الطالب','الفصل','النوع','الدرس/التكليف','عدد المحاولات','أول نتيجة','آخر نتيجة','أفضل نتيجة','التحسن','المستوى الأخير','آخر تسليم'];
+ const data=[h,...rows.map(r=>[r.studentName,r.className,typeName(r.type),r.title,r.attempts,r.firstPct,r.lastPct,r.bestPct,r.improve,r.level,fmt(r.lastTime)])];
+ const csv='\ufeff'+data.map(row=>row.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='نتائج_رحلة_عالم_العلوم.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
+}
+
+
+let __currentShareText='';
+function taskById(id){return tasks.find(t=>String(t.id)===String(id))||null}
+function participationData(taskId=''){
+ const selectedTask=taskId?taskById(taskId):null;
+ const title=selectedTask?.title||$('resultTaskFilter')?.value||'';
+ const cls=normalizeClassName(selectedTask?.className)||$('classFilter')?.value||'';
+ let raw=results.filter(r=>{
+   if(taskId&&String(r.taskId||'')!==String(taskId))return false;
+   if(!taskId&&title&&resultTitle(r)!==title)return false;
+   if(cls&&r.className!==cls)return false;
+   return true;
+ });
+ const groups=new Map();
+ raw.forEach(r=>{
+   const key=[r.className,String(r.studentCode||''),normalizeStudentNameKey(r.studentName)].join('|');
+   if(!groups.has(key))groups.set(key,{studentName:r.studentName,className:r.className,rows:[]});
+   groups.get(key).rows.push(r);
+ });
+ const participants=[...groups.values()].map(g=>{
+   g.rows.sort((a,b)=>(new Date(resultTime(a)).getTime()||0)-(new Date(resultTime(b)).getTime()||0));
+   const vals=g.rows.map(resultPercent);return {studentName:g.studentName,className:g.className,attempts:g.rows.length,bestPct:Math.max(...vals),lastPct:resultPercent(g.rows[g.rows.length-1])}
+ }).sort((a,b)=>AR_NAME_COLLATOR.compare(a.studentName,b.studentName));
+ let totalStudents=0;
+ if(cls) totalStudents=(studentRoster[cls]||[]).length;
+ else totalStudents=Object.values(studentRoster||{}).reduce((s,a)=>s+(Array.isArray(a)?a.length:0),0);
+ if(!totalStudents) totalStudents=participants.length;
+ const attempts=raw.length,participated=participants.length,notParticipated=Math.max(0,totalStudents-participated),rate=totalStudents?Math.round(participated/totalStudents*100):0;
+ return {task:selectedTask,title:title||selectedTask?.title||'التكليف المحدد',className:cls||'كل الفصول',participants,totalStudents,attempts,participated,notParticipated,rate};
+}
+function participationShareText(d){
+ const lines=[`🌟 نجوم العلوم لهذا اليوم`,`📘 النشاط: ${d.title}`,`🏫 الفصل: ${d.className}`,`✅ عدد المشاركين: ${d.participated} من ${d.totalStudents} (${d.rate}%)`,`🔁 إجمالي المحاولات: ${d.attempts}`,''];
+ if(d.participants.length){lines.push('أسماء الطلاب المشاركين:');d.participants.forEach((p,i)=>lines.push(`${i+1}. ${p.studentName} — ${p.attempts} محاولة — أفضل نتيجة ${p.bestPct}%`))}
+ lines.push('',`⏳ عدد الطلاب الذين لم يشاركوا حتى الآن: ${d.notParticipated}`,'✨ هدفنا مشاركة الجميع وتحقيق أفضل أداء ممكن.');
+ return lines.join('\n');
+}
+function generateParticipationReport(taskId=''){
+ const d=participationData(taskId);
+ if(!d.title||(!taskId&&!$('resultTaskFilter')?.value)){alert('اختر التكليف من قائمة النتائج أو اضغط زر «المشاركون» بجانب التكليف.');return}
+ __currentShareText=participationShareText(d);
+ const rows=d.participants.map((p,i)=>`<tr><td>${i+1}</td><td><b>${esc(p.studentName)}</b></td><td>${esc(p.className)}</td><td>${p.attempts}</td><td>${p.bestPct}%</td><td>${p.lastPct}%</td></tr>`).join('')||'<tr><td colspan="6">لم يشارك أي طالب حتى الآن.</td></tr>';
+ $('reportModalTitle').textContent='تقرير مشاركة الطلاب في التكليف';
+ $('reportPaper').innerHTML=`<div class="participation-paper"><h2>تقرير مشاركة الطلاب في التكليف</h2><div class="pp-meta">مدرسة أبي الدرداء المتوسطة • المعلم: علي البقاشي • ${new Date().toLocaleDateString('ar-SA')}</div><h3>${esc(d.title)}</h3><div class="pp-meta">الفصل: ${esc(d.className)}</div><div class="pp-kpis"><div class="pp-kpi"><b>${d.participated}</b><span>شاركوا</span></div><div class="pp-kpi"><b>${d.totalStudents}</b><span>إجمالي الطلاب</span></div><div class="pp-kpi"><b>${d.attempts}</b><span>المحاولات</span></div><div class="pp-kpi"><b>${d.rate}%</b><span>نسبة المشاركة</span></div></div><div class="note">لم يشارك حتى الآن: <b>${d.notParticipated}</b> طالبًا.</div><table><thead><tr><th>#</th><th>الطالب</th><th>الفصل</th><th>المحاولات</th><th>أفضل نتيجة</th><th>آخر نتيجة</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+ $('reportModal').classList.remove('hidden'); if($('shareReport'))$('shareReport').classList.remove('hidden');
+ return d;
+}
+async function shareCurrentReport(){
+ const text=__currentShareText||$('reportPaper')?.innerText||'';if(!text)return;
+ if(navigator.share){try{await navigator.share({title:'تقرير مشاركة الطلاب',text});return}catch(e){if(e?.name==='AbortError')return}}
+ await copyTextSafely(text,'تم نسخ رسالة التقرير؛ يمكنك لصقها في واتساب أو تلجرام.');
+}
+async function shareParticipationReport(){
+ const d=generateParticipationReport(); if(!d)return; await shareCurrentReport();
+}
+
+
+function updateStudentPortfolioStudents(){
+ const cls=$('studentPortfolioClass')?.value||'';
+ const sel=$('studentPortfolioStudent'); if(!sel)return;
+ const current=sel.value;
+ if(!cls){sel.innerHTML='<option value="">اختر الفصل أولًا</option>';return}
+ const fromRoster=(studentRoster[cls]||[]).map(s=>String(s.name||'').trim()).filter(Boolean);
+ const fromResults=results.filter(r=>r.className===cls).map(r=>String(r.studentName||'').trim()).filter(Boolean);
+ const seen=new Set(),names=[];
+ [...fromRoster,...fromResults].forEach(n=>{const k=normalizeStudentNameKey(n);if(k&&!seen.has(k)){seen.add(k);names.push(n)}});
+ names.sort((a,b)=>AR_NAME_COLLATOR.compare(a,b));
+ sel.innerHTML='<option value="">اختر الطالب</option>'+names.map(n=>`<option value="${esc(n)}" ${n===current?'selected':''}>${esc(n)}</option>`).join('');
+}
+function studentPortfolioGroups(rows){
+ const m=new Map();
+ rows.forEach(r=>{
+  const title=resultTitle(r),type=String(r.type||'training');
+  const key=[String(r.taskId||''),title,type].join('|');
+  if(!m.has(key))m.set(key,{title,type,rows:[]});
+  m.get(key).rows.push(r);
+ });
+ return [...m.values()].map(g=>{
+  g.rows.sort((a,b)=>(new Date(resultTime(a)).getTime()||0)-(new Date(resultTime(b)).getTime()||0));
+  const first=g.rows[0],last=g.rows[g.rows.length-1],vals=g.rows.map(resultPercent);
+  return {...g,attempts:g.rows.length,first:resultPercent(first),last:resultPercent(last),best:Math.max(...vals),improve:resultPercent(last)-resultPercent(first),lastTime:resultTime(last)};
+ }).sort((a,b)=>AR_NAME_COLLATOR.compare(a.title,b.title));
+}
+function studentProgressSvg(rows){
+ const ordered=[...rows].sort((a,b)=>(new Date(resultTime(a)).getTime()||0)-(new Date(resultTime(b)).getTime()||0));
+ if(!ordered.length)return '<div class="sp-panel">لا توجد محاولات مسجلة حتى الآن.</div>';
+ const w=760,h=220,pad=38,n=ordered.length;
+ const x=i=>n===1?w/2:pad+i*(w-2*pad)/(n-1);
+ const y=v=>h-pad-(Math.max(0,Math.min(100,v))*(h-2*pad)/100);
+ const pts=ordered.map((r,i)=>`${x(i).toFixed(1)},${y(resultPercent(r)).toFixed(1)}`).join(' ');
+ const grid=[0,25,50,75,100].map(v=>`<line x1="${pad}" y1="${y(v)}" x2="${w-pad}" y2="${y(v)}" stroke="#dce8f1" stroke-width="1"/><text x="8" y="${y(v)+4}" font-size="12" fill="#6c8294">${v}%</text>`).join('');
+ const dots=ordered.map((r,i)=>`<circle cx="${x(i)}" cy="${y(resultPercent(r))}" r="5" fill="#1f76b5"><title>${esc(resultTitle(r))}: ${resultPercent(r)}%</title></circle>`).join('');
+ return `<svg class="sp-chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="تطور نتائج الطالب">${grid}<polyline points="${pts}" fill="none" stroke="#276fb5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>${dots}</svg>`;
+}
+function studentPortfolioWeak(rows){
+ const map={};
+ rows.forEach(r=>String(r.weakConcepts||'').split(/[،,|]/).map(x=>x.trim()).filter(x=>x&&x!=='—').forEach(x=>map[x]=(map[x]||0)+1));
+ return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,5);
+}
+function studentPortfolioFeedback(avgPct,bestPct,avgImprove,attempts){
+ let level='يحتاج إلى متابعة منتظمة',note='الاستمرار في التدريب القصير مع مراجعة المفاهيم الأساسية بعد كل محاولة.';
+ if(avgPct>=90){level='أداء متميز';note='المحافظة على مستوى الإتقان مع الانتقال تدريجيًا إلى أنشطة إثرائية وتطبيقية.'}
+ else if(avgPct>=80){level='أداء متقن';note='الاستمرار في الممارسة مع التركيز على الأسئلة التي تتطلب تطبيقًا وحلًا.'}
+ else if(avgPct>=70){level='أداء جيد';note='زيادة التكرار الموجّه للمفاهيم الأقل إتقانًا مع متابعة التحسن بين المحاولات.'}
+ else if(avgPct>=60){level='أداء مقبول يحتاج تعزيزًا';note='يوصى بتدريب علاجي قصير ومتدرج، ثم إعادة المحاولة للتحقق من الإتقان.'}
+ const trend=avgImprove>0?`ويظهر تحسن متوسط قدره +${avgImprove}% في الأنشطة التي تكررت محاولاتها.`:avgImprove<0?`وتظهر حاجة لمراجعة الأداء لأن متوسط التغير في المحاولات المتكررة بلغ ${avgImprove}%.`:'ولا توجد حتى الآن محاولات متكررة كافية لقياس التحسن بصورة واضحة.';
+ return {level,note:`${note} ${trend} إجمالي المحاولات المسجلة: ${attempts}.`};
+}
+function generateStudentPortfolio(){
+ const cls=$('studentPortfolioClass')?.value||'',name=$('studentPortfolioStudent')?.value||'';
+ if(!cls){alert('اختر الفصل أولًا.');return}
+ if(!name){alert('اختر الطالب أولًا.');return}
+ const rows=results.filter(r=>r.className===cls&&normalizeStudentNameKey(r.studentName)===normalizeStudentNameKey(name));
+ const groups=studentPortfolioGroups(rows);
+ const attempts=rows.length,activities=groups.length;
+ const avgPct=rows.length?Math.round(rows.reduce((s,r)=>s+resultPercent(r),0)/rows.length):0;
+ const bestPct=rows.length?Math.max(...rows.map(resultPercent)):0;
+ const repeated=groups.filter(g=>g.attempts>1);
+ const avgImprove=repeated.length?Math.round(repeated.reduce((s,g)=>s+g.improve,0)/repeated.length):0;
+ const fb=studentPortfolioFeedback(avgPct,bestPct,avgImprove,attempts);
+ const weak=studentPortfolioWeak(rows);
+ const levels={excellent:0,mastered:0,good:0,support:0};
+ rows.forEach(r=>{const p=resultPercent(r);if(p>=90)levels.excellent++;else if(p>=80)levels.mastered++;else if(p>=70)levels.good++;else levels.support++});
+ const total=Math.max(1,levels.excellent+levels.mastered+levels.good+levels.support);
+ const p1=Math.round(levels.excellent/total*100),p2=p1+Math.round(levels.mastered/total*100),p3=p2+Math.round(levels.good/total*100);
+ const weakText=weak.length?weak.map(([x,n])=>`${esc(x)} (${n})`).join('، '):'لا توجد جوانب ضعف متكررة واضحة في النتائج الحالية.';
+ const top=[...groups].sort((a,b)=>b.best-a.best).slice(0,3);
+ const topList=top.length?top.map((g,i)=>`<li>${i+1}. ${esc(g.title)} — ${g.best}%</li>`).join(''):'<li>لا توجد نتائج كافية بعد.</li>';
+ const details=groups.length?groups.map((g,i)=>`<tr><td>${i+1}</td><td>${esc(g.title)}</td><td>${g.attempts}</td><td>${g.first}%</td><td>${g.last}%</td><td><b>${g.best}%</b></td><td class="${g.improve>0?'sp-positive':g.improve<0?'sp-negative':''}">${g.attempts>1?(g.improve>0?'+':'')+g.improve+'%':'—'}</td></tr>`).join(''):'<tr><td colspan="7">لا توجد نتائج مسجلة لهذا الطالب حتى الآن.</td></tr>';
+ const notes=[
+   attempts?`يبدي الطالب اهتمامًا جيدًا في التدريبات، ولديه ${attempts} محاولة مسجلة.`:'لا توجد محاولات مسجلة حتى الآن.',
+   avgImprove>0?`هناك تحسن ملحوظ في النتائج مع تكرار المحاولة بمتوسط +${avgImprove}%.`:'يُنصح بتكرار التدريبات لقياس التحسن بصورة أدق.',
+   avgPct>=80?'المستوى العام جيد ويشير إلى تحقق الإتقان في معظم النتائج.':'يُنصح بالاستمرار في الممارسة والمراجعة لرفع مستوى الإتقان.',
+   weak.length?`يحتاج إلى مزيد من التركيز في: ${weakText}`:'لا تظهر مفاهيم ضعيفة متكررة في البيانات الحالية.'
+ ].map(x=>`<li>${x}</li>`).join('');
+
+ const iconBook=`<svg viewBox="0 0 64 64"><path d="M7 13c9-4 17-3 25 2v36c-8-5-16-6-25-2z"/><path d="M57 13c-9-4-17-3-25 2v36c8-5 16-6 25-2z"/><path d="M32 15v36"/></svg>`;
+ const iconAtom=`<svg viewBox="0 0 64 64"><ellipse cx="32" cy="32" rx="25" ry="9"/><ellipse cx="32" cy="32" rx="25" ry="9" transform="rotate(60 32 32)"/><ellipse cx="32" cy="32" rx="25" ry="9" transform="rotate(120 32 32)"/><circle cx="32" cy="32" r="3" fill="currentColor" stroke="none"/></svg>`;
+ const iconFlask=`<svg viewBox="0 0 64 64"><path d="M24 8h16M28 8v17L14 50c-2 4 1 7 5 7h26c4 0 7-3 5-7L36 25V8"/><path d="M21 43h22"/></svg>`;
+ const iconPlant=`<svg viewBox="0 0 64 64"><path d="M32 55V30"/><path d="M32 37c-12 0-18-7-18-16 11 0 18 5 18 16z"/><path d="M32 31c10 0 17-6 17-15-10 0-17 5-17 15z"/><path d="M17 56h30"/></svg>`;
+
+ const html=`
+ <div class="sp-page sp-cover">
+   <div class="sp-cover-wave"></div>
+   <div class="sp-cover-icons"><span>${iconAtom}</span><span>${iconFlask}</span><span>${iconPlant}</span></div>
+   <div class="sp-book-icon">${iconBook}</div>
+   <h1>ملف إنجاز الطالب</h1>
+   <div class="subtitle">في مادة العلوم — الصف الأول المتوسط</div>
+   <div class="sp-tagline">خطوات صغيرة… تصنع فرقًا كبيرًا</div>
+   <div class="sp-student-card">
+     <div><span>اسم الطالب:</span><b>${esc(name)}</b></div>
+     <div><span>الفصل:</span><b>${esc(cls)}</b></div>
+     <div><span>العام الدراسي:</span><b>1448هـ</b></div>
+   </div>
+   <div class="sp-motto">التعلم رحلة مستمرة… وأنت على الطريق الصحيح</div>
+ </div>
+
+ <div class="sp-page">
+   <div class="sp-titlebar">الملخص العام</div>
+   <div class="sp-kpis">
+     <div class="sp-kpi"><b>${activities}</b><span>عدد التدريبات</span></div>
+     <div class="sp-kpi"><b>${attempts}</b><span>عدد المحاولات</span></div>
+     <div class="sp-kpi"><b>${avgPct}%</b><span>متوسط الدقة</span></div>
+     <div class="sp-kpi"><b>${bestPct}%</b><span>أفضل نتيجة</span></div>
+   </div>
+   <div class="sp-section"><h3>مستوى الأداء العام</h3>
+     <div class="sp-panel">
+       <div class="sp-progress-track"><i style="width:${avgPct}%"></i></div>
+       <div class="sp-progress-label"><span>${esc(fb.level)}</span><b>${avgPct}%</b></div>
+     </div>
+   </div>
+   <div class="sp-section"><h3>ملاحظات عامة</h3><div class="sp-notes"><ul>${notes}</ul></div></div>
+   <div class="sp-encourage"><span>☆ واصل التقدم… فأنت قادر على المزيد</span></div>
+   <div class="sp-page-number">1</div>
+ </div>
+
+ <div class="sp-page">
+   <div class="sp-titlebar">تفاصيل النتائج</div>
+   <table><thead><tr><th>م</th><th>الدرس / التدريب</th><th>المحاولات</th><th>أول نتيجة</th><th>آخر نتيجة</th><th>أفضل نتيجة</th><th>نسبة التحسن</th></tr></thead><tbody>${details}</tbody></table>
+   <div class="sp-topbox"><h4>📊 أعلى ثلاث نتائج</h4><ol>${topList}</ol></div>
+   <div class="sp-topbox"><h4>🎯 أبرز الجوانب التي تحتاج تعزيزًا</h4><div>${weakText}</div></div>
+   <div class="sp-page-number">2</div>
+ </div>
+
+ <div class="sp-page">
+   <div class="sp-titlebar">الرسوم البيانية</div>
+   <div class="sp-charts-grid">
+     <div class="sp-chart-card"><h4>تطور نتائج الطالب</h4>${studentProgressSvg(rows)}</div>
+     <div class="sp-chart-card"><h4>توزيع مستويات النتائج</h4>
+       <div class="sp-donut-wrap"><div class="sp-donut" style="background:conic-gradient(#49b978 0 ${p1}%,#3b7bd5 ${p1}% ${p2}%,#f3bd43 ${p2}% ${p3}%,#e45b68 ${p3}% 100%)"></div></div>
+       <div class="sp-legend">
+         <div><span><i style="background:#49b978"></i>من 90–100%</span><b>${levels.excellent}</b></div>
+         <div><span><i style="background:#3b7bd5"></i>من 80–89%</span><b>${levels.mastered}</b></div>
+         <div><span><i style="background:#f3bd43"></i>من 70–79%</span><b>${levels.good}</b></div>
+         <div><span><i style="background:#e45b68"></i>أقل من 70%</span><b>${levels.support}</b></div>
+       </div>
+     </div>
+   </div>
+   <div class="sp-teacher-note"><h4>رأي المعلم</h4><p>${esc(fb.note)}</p></div>
+   <div class="sp-encourage"><span>🏆 الالتزام اليوم… يحقق النجاح غدًا</span></div>
+   <div class="sp-signatures"><div class="sp-sign"><b>المعلم</b><br>علي طاهر البقاشي</div><div class="sp-sign"><b>مدير المدرسة</b><br>فوزي محمد الهلال</div></div>
+   <div class="sp-page-number">3</div>
+ </div>`;
+
+ $('reportModalTitle').textContent='ملف إنجاز الطالب — '+name;
+ $('reportPaper').classList.add('student-portfolio-paper');
+ $('reportPaper').innerHTML=html;
+ $('reportModal').classList.remove('hidden');
+ const card=$('reportModal')?.querySelector('.modal-card'); if(card) card.scrollTop=0;
+}
+
+function updatePortfolioTasks(){
+ const sel=$('portfolioTask'); if(!sel)return;
+ const current=sel.value; const cls=$('portfolioClass')?.value||'';
+ const names=[...new Set(results.filter(r=>!cls||r.className===cls).map(r=>r.taskTitle).filter(Boolean))];
+ sel.innerHTML='<option value="">كل الأنشطة</option>'+names.map(n=>`<option ${n===current?'selected':''}>${esc(n)}</option>`).join('');
+}
+function portfolioRows(kind){
+ const cls=$('portfolioClass')?.value||'', task=$('portfolioTask')?.value||'';
+ let rows=results.filter(r=>(!cls||r.className===cls)&&(!task||r.taskTitle===task));
+ if(kind==='training') rows=rows.filter(r=>r.type!=='test'&&r.type!=='exam');
+ if(kind==='test') rows=rows.filter(r=>r.type==='test'||r.type==='exam');
+ if(kind==='remedial') rows=rows.filter(r=>r.type==='remedial'||(r.percent<60));
+ return rows;
+}
+function reportLevelCounts(rows){const bins={'متميز':0,'متقن':0,'جيد':0,'يحتاج تعزيزًا':0};rows.forEach(r=>{const p=+r.percent||0;if(p>=90)bins['متميز']++;else if(p>=80)bins['متقن']++;else if(p>=70)bins['جيد']++;else bins['يحتاج تعزيزًا']++});return bins}
+function reportWeak(rows){const m={};rows.forEach(r=>String(r.weakConcepts||'').split(/[،,|]/).map(x=>x.trim()).filter(x=>x&&x!=='—').forEach(x=>m[x]=(m[x]||0)+1));return Object.entries(m).sort((a,b)=>b[1]-a[1])}
+function avg(rows){return rows.length?Math.round(rows.reduce((a,r)=>a+(+r.percent||0),0)/rows.length):0}
+function kpiHtml(items){return `<div class="report-kpis">${items.map(([l,v])=>`<div class="kpi"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('')}</div>`}
+function reportRowsTable(rows){if(!rows.length)return '<div class="evidence-note">لا توجد نتائج مطابقة للمرشح المحدد حتى الآن.</div>';return `<table><thead><tr><th>الطالب</th><th>الفصل</th><th>النشاط</th><th>الدرجة</th><th>النسبة</th><th>المستوى</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.studentName)}</td><td>${esc(r.className)}</td><td>${esc(r.taskTitle)}</td><td>${r.score}/${r.total}</td><td>${r.percent}%</td><td>${esc(r.level)}</td></tr>`).join('')}</tbody></table>`}
+function baseHead(title){
+ const cls=$('portfolioClass')?.value||'جميع الفصول',task=$('portfolioTask')?.value||'جميع الأنشطة';
+ const now=new Date();
+ const g=now.toLocaleDateString('ar-SA');
+ let h=''; try{h=now.toLocaleDateString('ar-SA-u-ca-islamic-umalqura',{year:'numeric',month:'long',day:'numeric'})}catch(e){}
+ return `<div class="pro-head"><div class="pro-topline"><div class="pro-brand"><div class="pro-mark">📊</div><div><div class="pro-eyebrow">شاهد رقمي موثق • ملف الإنجاز</div><h1>${esc(title)}</h1><p>مدرسة أبي الدرداء المتوسطة — مادة العلوم — الصف الأول المتوسط</p><p>المعلم: علي طاهر البقاشي • العام الدراسي 1448هـ</p></div></div><div class="pro-date"><b>${esc(g)}</b><span>${esc(h)}</span></div></div></div><div class="report-body"><div class="report-meta"><div class="meta-box"><span>الفصل المستهدف</span><b>${esc(cls)}</b></div><div class="meta-box"><span>النشاط / التكليف</span><b>${esc(task)}</b></div><div class="meta-box"><span>نوع الشاهد</span><b>تعلم رقمي تفاعلي</b></div><div class="meta-box"><span>منصة التنفيذ</span><b>رحلة عالم العلوم</b></div></div>`
+}
+function levelBarsHtml(levels,total){
+ const items=[['متميز',levels['متميز']],['متقن',levels['متقن']],['جيد',levels['جيد']],['يحتاج تعزيزًا',levels['يحتاج تعزيزًا']]];
+ return `<div class="level-bars">${items.map(([n,v])=>{const p=total?Math.round(v/total*100):0;return `<div class="level-row"><span>${esc(n)}</span><div class="level-track"><div class="level-fill" style="width:${p}%"></div></div><span class="level-num">${v} (${p}%)</span></div>`}).join('')}</div>`
+}
+function reportClose(){return `<div class="sign-row"><div class="sign"><b>معلم المادة</b>علي طاهر البقاشي</div><div class="sign"><b>مدير المدرسة</b>فوزي محمد الهلال</div></div><div class="report-footer">مدرسة أبي الدرداء المتوسطة • توثيق إلكتروني لمنصة رحلة عالم العلوم</div></div>`}
+
+function generatePortfolioReport(kind){
+ let rows=portfolioRows(kind), title='', body='';
+ if(kind==='training'){
+  title='تقرير تنفيذ التدريب التفاعلي';
+  const levels=reportLevelCounts(rows), weak=reportWeak(rows), a=avg(rows), top=rows.length?Math.max(...rows.map(r=>+r.percent||0)):0;
+  const mastery=rows.length?Math.round(rows.filter(r=>(+r.percent||0)>=80).length/rows.length*100):0;
+  const low=rows.filter(r=>(+r.percent||0)<60).length;
+  body=baseHead(title)+kpiHtml([['عدد المشاركات',rows.length],['متوسط الأداء',a+'%'],['أعلى نتيجة',top+'%'],['نسبة الإتقان',mastery+'%']])+`<div class="pro-grid"><div class="pro-card"><h3>🎯 ملخص تنفيذي</h3><p>نُفّذ التدريب عبر منصة «رحلة عالم العلوم» بهدف تثبيت المفاهيم، إتاحة التغذية الراجعة الفورية، ومتابعة تقدم الطلاب بصورة رقمية قابلة للقياس. بلغ متوسط الأداء <b>${a}%</b>، وحقق <b>${mastery}%</b> من المشاركات مستوى الإتقان فأعلى.</p></div><div class="pro-card"><h3>📌 مؤشر المتابعة</h3><p>${low?`يوجد ${low} مشاركة دون 60% وتحتاج متابعة علاجية مركزة.`:'لا توجد مشاركات دون 60% ضمن النطاق المحدد، وهو مؤشر إيجابي على تحقق الحد الأدنى من الإتقان.'}</p></div></div><div class="report-section"><h3>تحليل مستويات الأداء</h3>${levelBarsHtml(levels,rows.length)}</div><div class="report-section"><h3>أبرز المفاهيم التي تحتاج تعزيزًا</h3><div class="insight">${weak.length?`تكررت الحاجة إلى المراجعة في: <strong>${weak.slice(0,5).map(([x,n])=>`${esc(x)} (${n})`).join('، ')}</strong>.`:'لم تظهر مفاهيم ضعيفة متكررة في البيانات الحالية.'}</div></div><div class="report-section"><h3>التوصيات والإجراء التالي</h3><div class="pro-grid"><div class="pro-card"><h3>🧭 دعم علاجي</h3><ul><li>إعادة التدريب للطلاب الأقل من 80%.</li><li>توجيه أسئلة قصيرة للمفاهيم الأكثر تكرارًا في الأخطاء.</li><li>إعادة قياس بعدي للتحقق من التحسن.</li></ul></div><div class="pro-card"><h3>🚀 إثراء واستمرار</h3><ul><li>تقديم نشاط إثرائي للطلاب المتقنين.</li><li>الاستمرار في التكليفات القصيرة المنتظمة.</li><li>مقارنة الأداء بين أول وآخر محاولة.</li></ul></div></div></div><div class="report-section details-page"><h3>تفاصيل النتائج</h3>${reportRowsTable(rows)}</div>`+reportClose();
+ } else if(kind==='test'){
+  title='تقرير نتائج الاختبار الإلكتروني';
+  const levels=reportLevelCounts(rows), a=avg(rows), top=rows.length?Math.max(...rows.map(r=>+r.percent||0)):0, lowv=rows.length?Math.min(...rows.map(r=>+r.percent||0)):0, weak=reportWeak(rows);
+  const mastery=rows.length?Math.round(rows.filter(r=>(+r.percent||0)>=80).length/rows.length*100):0;
+  body=baseHead(title)+kpiHtml([['عدد المختبرين',rows.length],['متوسط الاختبار',a+'%'],['أعلى نتيجة',top+'%'],['نسبة الإتقان',mastery+'%']])+`<div class="pro-grid"><div class="pro-card"><h3>🧪 قراءة سريعة للنتائج</h3><p>بلغ متوسط الاختبار <b>${a}%</b>، وأعلى نتيجة <b>${top}%</b>، وأقل نتيجة <b>${lowv}%</b>. تعكس النتائج مستوى تحقق نواتج التعلم ضمن النطاق المحدد.</p></div><div class="pro-card"><h3>📍 قرار تعليمي</h3><p>${mastery>=80?'تشير البيانات إلى مستوى إتقان مرتفع، مع توجيه الدعم للطلاب ذوي النتائج المنخفضة.':'تحتاج النتائج إلى تعزيز إضافي ومراجعة مركزة قبل الانتقال إلى تقويم لاحق.'}</p></div></div><div class="report-section"><h3>توزيع مستويات الأداء</h3>${levelBarsHtml(levels,rows.length)}</div><div class="report-section"><h3>المفاهيم الأكثر حاجة للمراجعة</h3><div class="insight">${weak.length?`الأكثر تكرارًا: <strong>${weak.slice(0,5).map(([x,n])=>`${esc(x)} (${n})`).join('، ')}</strong>.`:'لا توجد أخطاء مفاهيمية متكررة ظاهرة في البيانات الحالية.'}</div></div><div class="report-section"><h3>التوصيات</h3><div class="pro-grid"><div class="pro-card"><h3>🩺 علاج</h3><ul><li>إلحاق الطلاب الأقل من 60% بخطة علاجية.</li><li>إعادة شرح المفاهيم ذات الضعف الجماعي.</li></ul></div><div class="pro-card"><h3>⭐ إثراء</h3><ul><li>تقديم مهام إثرائية للطلاب المتقنين.</li><li>استخدام أسئلة تطبيقية أعلى قليلًا في المستوى.</li></ul></div></div></div><div class="report-section details-page"><h3>نتائج الطلاب</h3>${reportRowsTable(rows)}</div>`+reportClose();
+ } else if(kind==='remedial'){
+  title='تقرير الخطة العلاجية'; const source=portfolioRows('impact').filter(r=>(+r.percent||0)<60); const weak=reportWeak(source); rows=source;
+  body=baseHead(title)+kpiHtml([['الطلاب المستهدفون',rows.length],['متوسط الأداء قبل العلاج',avg(rows)+'%'],['المفاهيم المستهدفة',weak.length],['حالة المتابعة',rows.length?'قيد التنفيذ':'لا توجد حالات']])+`<div class="pro-grid"><div class="pro-card"><h3>🎯 هدف الخطة</h3><p>رفع مستوى إتقان الطلاب الذين ظهرت لديهم فجوات مفاهيمية من خلال تدريب موجه، أسئلة متدرجة، ثم إعادة قياس بعدي للتحقق من التحسن.</p></div><div class="pro-card"><h3>🧠 المفاهيم المستهدفة</h3><p>${weak.length?weak.map(([x,n])=>`${esc(x)} (${n})`).join('، '):'لا توجد حاليًا نتائج أقل من 60% ضمن المرشح المحدد.'}</p></div></div><div class="report-section"><h3>الإجراءات العلاجية</h3><div class="pro-grid"><div class="pro-card"><h3>1️⃣ إعادة بناء المفهوم</h3><ul><li>شرح مصغر ومباشر للمفهوم الضعيف.</li><li>مثال محلول ثم سؤال مشابه.</li></ul></div><div class="pro-card"><h3>2️⃣ تحقق من الإتقان</h3><ul><li>تدريب قصير متدرج.</li><li>اختبار متابعة قصير.</li><li>مقارنة النتيجة قبل وبعد.</li></ul></div></div></div><div class="report-section details-page"><h3>الطلاب المستهدفون</h3>${reportRowsTable(rows)}</div>`+reportClose();
+ } else {
+  title='تقرير الأثر التعليمي للمنصة'; const tr=portfolioRows('training'), te=portfolioRows('test'), at=avg(tr), ae=avg(te), diff=ae-at;
+  body=baseHead(title)+kpiHtml([['متوسط التدريب',at+'%'],['متوسط الاختبار',ae+'%'],['فرق الأداء',(diff>=0?'+':'')+diff+' نقطة'],['إجمالي المشاركات',tr.length+te.length]])+`<div class="pro-grid"><div class="pro-card"><h3>📈 مؤشر الأثر</h3><p>${tr.length&&te.length?(diff>=0?`تظهر البيانات تحسنًا قدره <b>${diff} نقطة مئوية</b> بين متوسط التدريب ومتوسط الاختبار.`:`متوسط الاختبار أقل من التدريب بمقدار <b>${Math.abs(diff)} نقطة</b>، مما يشير إلى الحاجة إلى مراجعة مركزة قبل التقويمات القادمة.`):'يلزم توفر نتائج تدريب واختبار معًا لقياس الأثر بصورة أدق.'}</p></div><div class="pro-card"><h3>🔎 آلية التنفيذ</h3><p>تم توظيف روابط التكليفات الذكية، التدريب المنزلي، والمتابعة الإلكترونية للنتائج بهدف تحسين الاستمرارية ورفع جودة التغذية الراجعة.</p></div></div><div class="report-section"><h3>شواهد مقترحة للإرفاق</h3><div class="pro-grid"><div class="pro-card"><ul><li>صورة من واجهة منصة رحلة عالم العلوم.</li><li>لقطة من نتائج الطلاب ومؤشرات التحسن.</li></ul></div><div class="pro-card"><ul><li>رابط أو صورة من التكليف المنزلي.</li><li>الخطة العلاجية والتقرير الختامي.</li></ul></div></div></div><div class="report-section"><h3>القيمة المضافة</h3><div class="insight">يوفر النظام شاهدًا رقميًا يجمع بين <strong>التنفيذ، القياس، التحليل، والمتابعة</strong> في مسار واحد، بما يدعم توثيق الممارسة التعليمية في ملف الإنجاز.</div></div>`+reportClose();
+ }
+ $('reportModalTitle').textContent=title; $('reportPaper').classList.remove('student-portfolio-paper'); $('reportPaper').innerHTML=body; $('reportModal').classList.remove('hidden');
+}
+
+async function copyReportText(){const text=$('reportPaper').innerText;if(copyWithoutClipboardPermission(text)){alert('تم نسخ نص التقرير.')}else{prompt('انسخ نص التقرير:',text)}}
+
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body></html>
