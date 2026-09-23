@@ -361,6 +361,26 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
     </div>
   </div>
   <div id="taskLessonChoices" class="task-lessons-grid"></div>
+ <div class="task-lessons-box" id="taskQuestionsBox" style="margin-top:14px">
+  <div class="task-lessons-head">
+    <div>
+      <strong>اختيار أسئلة التكليف</strong><br>
+      <small>حدد الأسئلة التي تريد إرسالها للطلاب، ويمكنك استبعاد أي سؤال.</small>
+    </div>
+
+    <div class="task-lesson-actions">
+      <button type="button" id="taskQuestionsAll">تحديد الكل</button>
+      <button type="button" id="taskQuestionsNone">إلغاء التحديد</button>
+      <button type="button" id="taskAddQuestion">+ إضافة سؤال</button>
+    </div>
+  </div>
+
+  <div id="taskQuestionCount" class="note good">
+    اختر الدرس أولًا لعرض أسئلته.
+  </div>
+
+  <div id="taskQuestionChoices"></div>
+</div>
 </div><div class="field"><label>الفصل المستهدف</label><select id="taskClass"><option value="">اختر الفصل</option></select></div><div class="field"><label>عدد الأسئلة</label><div class="note good">تلقائي حسب النشاط والمحتوى المحدد</div></div><div class="field" id="taskTimeField"><label>زمن السؤال (للاختبار)</label><input id="taskTime" type="number" min="10" max="120" value="30"></div><div class="field" id="taskAttemptsField"><label>عدد المحاولات (للاختبار)</label><input id="taskAttempts" type="number" min="1" max="10" value="1"></div><div class="field"><label>بداية التكليف</label><input id="taskStart" type="datetime-local"></div><div class="field"><label>نهاية التكليف</label><input id="taskEnd" type="datetime-local"></div></div><div class="modal-actions"><button id="saveTask" class="btn">إنشاء التكليف والرابط</button></div></div></div>
 
 
@@ -779,8 +799,33 @@ function init(){
  renderTaskLessonChoices();
  if($('tasksGrade1Btn')) $('tasksGrade1Btn').onclick=()=>setTasksGrade('1');
 if($('tasksGrade3Btn')) $('tasksGrade3Btn').onclick=()=>setTasksGrade('3');
- $('taskLessonsAll').onclick=()=>document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>x.checked=true);
- $('taskLessonsNone').onclick=()=>document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>x.checked=false);
+ $('taskLessonsAll').onclick=()=>{
+  document.querySelectorAll('#taskLessonChoices input[type="checkbox"]')
+    .forEach(x=>x.checked=true);
+  renderTaskQuestionChoices();
+};
+ $('taskLessonsNone').onclick=()=>{
+  document.querySelectorAll('#taskLessonChoices input[type="checkbox"]')
+    .forEach(x=>x.checked=false);
+  renderTaskQuestionChoices();
+};
+ $('taskQuestionsAll').onclick=()=>{
+  document.querySelectorAll('#taskQuestionChoices input[type="checkbox"]')
+    .forEach(x=>x.checked=true);
+  updateTaskQuestionCount();
+};
+
+$('taskQuestionsNone').onclick=()=>{
+  document.querySelectorAll('#taskQuestionChoices input[type="checkbox"]')
+    .forEach(x=>x.checked=false);
+  updateTaskQuestionCount();
+};
+
+$('taskAddQuestion').onclick=()=>{
+  const ids=selectedTaskLessonIds();
+  openQuestionModal('');
+  if(ids[0] && $('qLesson')) $('qLesson').value=ids[0];
+};
  $('apiUrl').value=DEFAULT_API_URL; localStorage.setItem('sj_teacher_api',DEFAULT_API_URL);
  $('teacherKey').value=localStorage.getItem('sj_teacher_key')||'';
  try{
@@ -1409,6 +1454,87 @@ function renderTaskLessonChoices(selected=[]){
      <span>${esc(title)}</span>
    </label>
  `).join('');
+ box.querySelectorAll('input[type="checkbox"]').forEach(x=>
+  x.addEventListener('change',renderTaskQuestionChoices)
+);
+renderTaskQuestionChoices();
+}
+ function selectedTaskQuestionIds(){
+  return [...document.querySelectorAll(
+    '#taskQuestionChoices input[type="checkbox"]:checked'
+  )].map(x=>String(x.value||'').trim()).filter(Boolean);
+}
+
+function updateTaskQuestionCount(){
+  const all=document.querySelectorAll(
+    '#taskQuestionChoices input[type="checkbox"]'
+  ).length;
+
+  const selected=selectedTaskQuestionIds().length;
+
+  if($('taskQuestionCount')){
+    $('taskQuestionCount').textContent=
+      `تم اختيار ${selected} من ${all} سؤالًا`;
+  }
+}
+
+function renderTaskQuestionChoices(){
+  const box=$('taskQuestionChoices');
+  if(!box)return;
+
+  const lessonIds=selectedTaskLessonIds();
+
+  if(!lessonIds.length){
+    box.innerHTML='';
+    $('taskQuestionCount').textContent=
+      'اختر الدرس أولًا لعرض أسئلته.';
+    return;
+  }
+
+  const source=bankQuestions.length
+    ? bankQuestions
+    : (window.SCIENCE_DATA?.questions||[]);
+
+  const questions=source.filter(q=>
+    lessonIds.includes(String(q.lesson))
+  );
+
+  box.innerHTML=lessonIds.map(lessonId=>{
+    const lessonQuestions=questions.filter(
+      q=>String(q.lesson)===lessonId
+    );
+
+    return `
+      <div class="task-question-group">
+        <h4>${esc(bankLessonTitle(lessonId))}</h4>
+
+        ${lessonQuestions.map((q,i)=>`
+          <label class="task-lesson-option">
+            <input
+              type="checkbox"
+              value="${esc(q.id)}"
+              checked
+            >
+            <span>
+              ${i+1}. ${esc(q.q||'')}
+              <small>
+                ${esc(q.objective||q.concept||'')}
+              </small>
+            </span>
+          </label>
+        `).join('')}
+      </div>
+    `;
+  }).join('');
+
+  document
+    .querySelectorAll('#taskQuestionChoices input[type="checkbox"]')
+    .forEach(x=>x.addEventListener(
+      'change',
+      updateTaskQuestionCount
+    ));
+
+  updateTaskQuestionCount();
 }
 function selectedTaskLessonIds(){
  return [...document.querySelectorAll('#taskLessonChoices input[type="checkbox"]:checked')]
@@ -1449,6 +1575,11 @@ async function createTask(){
  if(!title){alert('اكتب اسم التكليف.');return}
  const lessonIds=selectedTaskLessonIds();
  if(!lessonIds.length){alert('اختر درسًا واحدًا على الأقل لهذا التكليف.');return}
+ const questionIds=selectedTaskQuestionIds();
+if(!questionIds.length){
+  alert('اختر سؤالًا واحدًا على الأقل لهذا التكليف.');
+  return;
+}
  const className=$('taskClass').value;
  if(!CLASSES.includes(className)){alert('اختر الفصل المستهدف: 1/1 أو 2/1 أو 3/1 أو 4/1.');return}
  const btn=$('saveTask');btn.disabled=true;
@@ -1459,6 +1590,8 @@ async function createTask(){
    mode:$('taskMode').value,
    lesson:lessonValue,
    lessonIds:JSON.stringify(lessonIds),
+   questionIds:JSON.stringify(questionIds),
+count:questionIds.length,
    className:className,
    timePerQuestion:$('taskTime').value,
    attempts:$('taskAttempts').value,
