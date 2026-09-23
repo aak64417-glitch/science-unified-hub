@@ -1,63 +1,65 @@
-const CACHE='science-hub-v6-live-html';
+// Fresh-online service worker: never serve stale application files.
+// Version: 2026-09-23-final
 
-const SHELL=[
-  './',
-  './index.html',
-  './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png'
-];
-
-self.addEventListener('install',e=>{
-  e.waitUntil(
-    caches.open(CACHE).then(c=>c.addAll(SHELL))
-  );
+self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-self.addEventListener('activate',e=>{
-  e.waitUntil(
-    caches.keys().then(keys=>
-      Promise.all(
-        keys
-          .filter(k=>k!==CACHE)
-          .map(k=>caches.delete(k))
-      )
-    )
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET')return;
+self.addEventListener('fetch', event => {
+  const request = event.request;
 
-  const u=new URL(e.request.url);
-  if(u.origin!==self.location.origin)return;
+  if (request.method !== 'GET') return;
 
-  const isHtml=
-    e.request.mode==='navigate' ||
-    u.pathname.endsWith('.html');
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
 
-  if(isHtml){
-    e.respondWith(
-      fetch(e.request,{cache:'no-store'})
-        .then(r=>r)
-        .catch(async()=>{
-          return await caches.match(e.request) ||
-                 await caches.match('./index.html');
-        })
-    );
-    return;
-  }
+  event.respondWith(
+    fetch(request, { cache: 'no-store' }).catch(() => {
+      if (request.mode === 'navigate') {
+        return new Response(
+          `<!doctype html>
+          <html lang="ar" dir="rtl">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <title>تعذر الاتصال</title>
+            <style>
+              body{font-family:Tahoma,Arial,sans-serif;background:#07111f;color:#fff;margin:0;display:grid;place-items:center;min-height:100vh;text-align:center;padding:24px}
+              .box{max-width:560px;background:#102039;border:1px solid #ffffff22;border-radius:22px;padding:28px;box-shadow:0 18px 50px #0006}
+              h1{color:#ffd166;margin-top:0}p{line-height:1.9;color:#dbe7f3}
+              button{border:0;border-radius:14px;padding:12px 20px;font-weight:700;cursor:pointer}
+            </style>
+          </head>
+          <body>
+            <div class="box">
+              <h1>تعذر الاتصال بالإنترنت</h1>
+              <p>لم نعرض نسخة قديمة من المنصة. تأكد من الاتصال ثم أعد المحاولة لفتح أحدث نسخة.</p>
+              <button onclick="location.reload()">إعادة المحاولة</button>
+            </div>
+          </body>
+          </html>`,
+          {
+            status: 503,
+            headers: {
+              'Content-Type': 'text/html; charset=utf-8',
+              'Cache-Control': 'no-store'
+            }
+          }
+        );
+      }
 
-  e.respondWith(
-    caches.match(e.request).then(cached=>
-      cached ||
-      fetch(e.request).then(r=>{
-        const copy=r.clone();
-        caches.open(CACHE).then(c=>c.put(e.request,copy));
-        return r;
-      })
-    )
+      return new Response('', {
+        status: 503,
+        headers: { 'Cache-Control': 'no-store' }
+      });
+    })
   );
 });
