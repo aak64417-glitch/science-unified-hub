@@ -6,22 +6,27 @@ window.SCIENCE_DATA = {
       "short": "العلم وعملياته",
       "icon": "🔬",
       "color": "teal",
-      "summary": "فهم طبيعة العلم، مهارات العلماء، الملاحظة والاستنتاج، الفرضية، خطوات الطريقة العلمية، النظرية والقانون العلمي، فروع العلوم، والمتغيرات في التجارب.",
+      "summary": "فهم طبيعة العلم، والأسئلة التي يمكن للعلم الإجابة عنها والتي لا يجيب عنها، والملاحظة والاستنتاج، والفرضية، والنظرية والقانون العلمي، وفروع العلوم، ومهارات العلماء، والطريقة العلمية، والمتغيرات في التجارب.",
       "objectives": [
-        "تعريف العلم بوصفه طريقة منظمة لدراسة العالم الطبيعي",
-        "التمييز بين الملاحظة والاستنتاج",
-        "توضيح معنى الفرضية وكيف تُختبر",
-        "ترتيب خطوات الطريقة العلمية",
-        "المقارنة بين النظرية العلمية والقانون العلمي",
-        "التعرف إلى فروع العلوم الرئيسة",
-        "التمييز بين المتغير المستقل والتابع والثوابت",
-        "التعرف إلى بعض المهارات والممارسات العلمية"
+        "تعرف العلوم وتحدد بعض الأسئلة التي لا يجيب عنها العلم",
+        "تقارن بين النظريات العلمية والقوانين العلمية",
+        "تتعرف الفروع الثلاثة للعلوم",
+        "تحدد بعض المهارات التي يستخدمها العلماء",
+        "توضح المقصود بالفرضية وكيف يمكن اختبارها",
+        "تميز الاختلاف بين الملاحظة والاستنتاج",
+        "تميز بين المتغير المستقل والمتغير التابع والثوابت في التجربة",
+        "تطبق خطوات الطريقة العلمية في مواقف بسيطة"
       ],
       "concepts": [
         {
           "id": "science",
           "name": "طبيعة العلم",
           "note": "العلم طريقة لتعلّم المزيد عن العالم الطبيعي من خلال الملاحظة والاستقصاء والأدلة."
+        },
+        {
+          "id": "science-questions",
+          "name": "الأسئلة التي يجيب عنها العلم والتي لا يجيب عنها",
+          "note": "يجيب العلم عن أسئلة يمكن فحصها بالملاحظة والقياس والتجربة، ولا يحسم الأسئلة التي تعتمد على الرأي الشخصي أو القيم أو التفضيلات."
         },
         {
           "id": "observe-infer",
@@ -59,7 +64,19 @@ window.SCIENCE_DATA = {
           "note": "من المهارات التي يستخدمها العلماء: الملاحظة، القياس، النمذجة، التحليل، التفسير، الاستدلال، التنبؤ، الاستقصاء والتجريب."
         }
       ],
-      "chapter": "الفصل الأول"
+      "chapter": "الفصل الأول",
+      "grade": "1",
+      "planGoal": "التمييز بين الملاحظة والاستنتاج والفرضية والمتغيرات، وفهم طبيعة العلم ومجالاته.",
+      "sourcePages": "16–21",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "scientific-models",
@@ -102,7 +119,19 @@ window.SCIENCE_DATA = {
           "note": "تتغير النماذج عندما تظهر معلومات أو أدلة جديدة."
         }
       ],
-      "chapter": "الفصل الأول"
+      "chapter": "الفصل الأول",
+      "grade": "1",
+      "planGoal": "التعرف على أنواع النماذج العلمية وأهميتها واستخداماتها.",
+      "sourcePages": "26–29",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "evaluate-explanations",
@@ -146,7 +175,19 @@ window.SCIENCE_DATA = {
           "note": "تدوين الملاحظات بدقة يسمح بقراءتها وفهمها وإعادة التجربة، والبيانات الموثوقة ينبغي أن تكون قابلة للتكرار."
         }
       ],
-      "chapter": "الفصل الأول"
+      "chapter": "الفصل الأول",
+      "grade": "1",
+      "planGoal": "تحليل الأدلة والتفسيرات وتقويم الاستنتاجات والادعاءات علميًا.",
+      "sourcePages": "30–38",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "motion",
@@ -155,16 +196,21 @@ window.SCIENCE_DATA = {
       "icon": "🏃",
       "color": "teal",
       "chapter": "الفصل الثاني",
-      "summary": "وصف حركة الأجسام بالنسبة إلى نقطة مرجعية، وحساب السرعة والسرعة المتوسطة، والتمييز بين السرعة والسرعة المتجهة، وفهم التسارع وتمثيل الحركة.",
+      "summary": "وصف حركة الأجسام بالنسبة إلى نقطة مرجعية، وحساب السرعة والسرعة المتوسطة، واستخدام علاقات السرعة والمسافة والزمن، والتمييز بين السرعة والسرعة المتجهة، وحساب التسارع وفهم وحدات القياس وتمثيل الحركة.",
       "objectives": [
         "تحديد الحركة باستخدام نقطة مرجعية",
         "تفسير معنى المسافة والسرعة",
-        "حساب السرعة المتوسطة من المسافة والزمن",
+        "اختيار الوحدة المناسبة للمسافة والزمن والسرعة",
+        "حساب السرعة من المسافة والزمن",
+        "حساب المسافة من السرعة والزمن",
+        "حساب الزمن من المسافة والسرعة",
+        "حساب السرعة المتوسطة",
         "التمييز بين السرعة والسرعة المتجهة",
         "توضيح معنى التسارع",
+        "حساب التسارع من تغير السرعة والزمن",
+        "اختيار الوحدة الصحيحة للتسارع",
         "التعرف إلى السرعة اللحظية",
-        "تفسير تغير الحركة من خلال الرسوم أو البيانات",
-        "تطبيق علاقات المسافة والسرعة والزمن في مواقف بسيطة"
+        "تفسير تغير الحركة من خلال الرسوم أو البيانات"
       ],
       "concepts": [
         {
@@ -270,8 +316,46 @@ window.SCIENCE_DATA = {
             "أن الزمن توقف"
           ],
           "app_explain": "ثبات المسافة مع استمرار الزمن يعني أن الجسم لم يغير موقعه."
+        },
+        {
+          "id": "motion-formulas",
+          "name": "علاقات السرعة والمسافة والزمن",
+          "note": "السرعة = المسافة ÷ الزمن، والمسافة = السرعة × الزمن، والزمن = المسافة ÷ السرعة. يجب توحيد الوحدات قبل التعويض.",
+          "app_q": "جسم سرعته 8 م/ث تحرك 15 ث. ما المسافة التي قطعها؟",
+          "app_options": [
+            "120 م",
+            "23 م",
+            "0.53 م",
+            "8 م"
+          ],
+          "app_explain": "المسافة = السرعة × الزمن = 8 × 15 = 120 م."
+        },
+        {
+          "id": "motion-units",
+          "name": "وحدات الحركة",
+          "note": "من الوحدات الشائعة: المسافة بالمتر أو الكيلومتر، الزمن بالثانية أو الساعة، السرعة م/ث أو كم/س، والتسارع م/ث².",
+          "app_q": "أي وحدة مناسبة لقياس التسارع؟",
+          "app_options": [
+            "م/ث²",
+            "م",
+            "ث",
+            "كم/س"
+          ],
+          "app_explain": "التسارع هو تغير السرعة بالنسبة للزمن؛ لذلك من وحداته م/ث²."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "وصف الحركة وحساب السرعة وفهم التسارع.",
+      "sourcePages": "44–49",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "newton-laws",
@@ -396,7 +480,19 @@ window.SCIENCE_DATA = {
           ],
           "app_explain": "الوزن يعتمد على قوة الجاذبية، أما الكتلة فتبقى ثابتة."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "تطبيق مفاهيم القوى وقوانين نيوتن على أمثلة من الحياة اليومية.",
+      "sourcePages": "50–57",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "work-machines",
@@ -521,7 +617,19 @@ window.SCIENCE_DATA = {
           ],
           "app_explain": "نصل السكين إسفين، والمسمار اللولبي برغي."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "التعرف على الشغل وأنواع الآلات البسيطة وتحديد أمثلة من البيئة.",
+      "sourcePages": "58–64",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "physical-properties",
@@ -646,7 +754,19 @@ window.SCIENCE_DATA = {
           ],
           "app_explain": "التقطيع يغير الشكل والحجم ولا يكوّن مادة جديدة."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "تصنيف خواص المادة والتغيرات الفيزيائية.",
+      "sourcePages": "",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "chemical-properties",
@@ -771,7 +891,19 @@ window.SCIENCE_DATA = {
           ],
           "app_explain": "الاحتراق ينتج مواد جديدة ولا يعيد الخشب إلى حالته الأصلية بسهولة."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "التمييز بين الخواص والتغيرات الفيزيائية والكيميائية.",
+      "sourcePages": "",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "matter-structure",
@@ -896,7 +1028,19 @@ window.SCIENCE_DATA = {
           ],
           "app_explain": "تساوي عدد البروتونات والإلكترونات يجعل الشحنة الكلية صفرًا."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "التعرف على الذرة ومكوناتها وتطور نماذج الذرة.",
+      "sourcePages": "",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "elements-compounds-mixtures",
@@ -1021,7 +1165,19 @@ window.SCIENCE_DATA = {
           ],
           "app_explain": "الترشيح يفصل جسيمات الرمل غير الذائبة عن الماء."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "المقارنة بين العنصر والمركب والمخلوط وفهم الجدول الدوري وتطبيقاته.",
+      "sourcePages": "",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "earth-jewels",
@@ -1146,7 +1302,19 @@ window.SCIENCE_DATA = {
           ],
           "app_explain": "المغناطيسية خاصية مميزة لبعض المعادن ويمكن استخدامها في التعرف إليها."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "التعرف على خصائص المعادن وكيفية تمييزها.",
+      "sourcePages": "",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "rock-types",
@@ -1271,7 +1439,19 @@ window.SCIENCE_DATA = {
           ],
           "app_explain": "الحرارة والضغط يمكن أن يحولا الصخر الرسوبي إلى متحول."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "المقارنة بين الصخور النارية والرسوبية والمتحولة.",
+      "sourcePages": "",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "plate-tectonics",
@@ -1396,7 +1576,19 @@ window.SCIENCE_DATA = {
           ],
           "app_explain": "الحركة الجانبية المتعاكسة أو المتوازية تميز الحدود التحويلية."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "تفسير حركة الصفائح وعلاقتها بالزلازل والبراكين.",
+      "sourcePages": "",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     },
     {
       "id": "weathering-erosion",
@@ -1521,7 +1713,19 @@ window.SCIENCE_DATA = {
           ],
           "app_explain": "جذور النباتات تثبت التربة وتقلل أثر الماء والرياح."
         }
-      ]
+      ],
+      "grade": "1",
+      "planGoal": "التمييز بين التجوية والتعرية والترسيب وحماية التربة.",
+      "sourcePages": "",
+      "bank": {
+        "editableAsLessonGroup": true,
+        "selectionPolicy": "balanced-by-objective",
+        "questionMix": {
+          "remember": 0.3,
+          "understand": 0.35,
+          "apply": 0.35
+        }
+      }
     }
   ],
   "questions": [
@@ -1538,7 +1742,13 @@ window.SCIENCE_DATA = {
         "تفسير لا يحتاج إلى دليل"
       ],
       "answer": 0,
-      "explain": "العلم يعتمد على الملاحظة والاستقصاء والأدلة لفهم العالم الطبيعي."
+      "explain": "العلم يعتمد على الملاحظة والاستقصاء والأدلة لفهم العالم الطبيعي.",
+      "grade": "1",
+      "objective": "تعرف العلوم وتحدد بعض الأسئلة التي لا يجيب عنها العلم",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q2",
@@ -1553,7 +1763,13 @@ window.SCIENCE_DATA = {
         "التربة جيدة لأنها غنية"
       ],
       "answer": 0,
-      "explain": "الملاحظة تصف ما يُشاهد أو يُقاس مباشرة، أما تفسير السبب فهو استنتاج."
+      "explain": "الملاحظة تصف ما يُشاهد أو يُقاس مباشرة، أما تفسير السبب فهو استنتاج.",
+      "grade": "1",
+      "objective": "تميز الاختلاف بين الملاحظة والاستنتاج",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q3",
@@ -1568,7 +1784,13 @@ window.SCIENCE_DATA = {
         "قياسًا"
       ],
       "answer": 1,
-      "explain": "العبارة تفسير محتمل لملاحظة سابقة، لذلك هي استنتاج."
+      "explain": "العبارة تفسير محتمل لملاحظة سابقة، لذلك هي استنتاج.",
+      "grade": "1",
+      "objective": "تميز الاختلاف بين الملاحظة والاستنتاج",
+      "sourcePage": "16–21",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q4",
@@ -1583,7 +1805,13 @@ window.SCIENCE_DATA = {
         "الضوء أفضل دائمًا"
       ],
       "answer": 0,
-      "explain": "الفرضية تفسير أو توقع منطقي يمكن اختباره."
+      "explain": "الفرضية تفسير أو توقع منطقي يمكن اختباره.",
+      "grade": "1",
+      "objective": "توضح المقصود بالفرضية وكيف يمكن اختبارها",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q5",
@@ -1598,7 +1826,13 @@ window.SCIENCE_DATA = {
         "تغيير جميع المتغيرات"
       ],
       "answer": 0,
-      "explain": "بعد تكوين الفرضية يتم اختبارها، ثم تحليل البيانات والاستنتاج."
+      "explain": "بعد تكوين الفرضية يتم اختبارها، ثم تحليل البيانات والاستنتاج.",
+      "grade": "1",
+      "objective": "تطبق خطوات الطريقة العلمية في مواقف بسيطة",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q6",
@@ -1622,7 +1856,13 @@ window.SCIENCE_DATA = {
         4,
         5
       ],
-      "explain": "هذا هو التسلسل الوارد في الدرس."
+      "explain": "هذا هو التسلسل الوارد في الدرس.",
+      "grade": "1",
+      "objective": "تطبق خطوات الطريقة العلمية في مواقف بسيطة",
+      "sourcePage": "16–21",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q7",
@@ -1637,7 +1877,13 @@ window.SCIENCE_DATA = {
         "رأي شخصي"
       ],
       "answer": 0,
-      "explain": "القانون العلمي يصف ما يحدث أو نمطًا متكررًا في الطبيعة."
+      "explain": "القانون العلمي يصف ما يحدث أو نمطًا متكررًا في الطبيعة.",
+      "grade": "1",
+      "objective": "تقارن بين النظريات العلمية والقوانين العلمية",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q8",
@@ -1652,12 +1898,18 @@ window.SCIENCE_DATA = {
         "قياس واحد فقط"
       ],
       "answer": 0,
-      "explain": "النظرية العلمية تفسير مدعوم بالملاحظات والاستقصاءات."
+      "explain": "النظرية العلمية تفسير مدعوم بالملاحظات والاستقصاءات.",
+      "grade": "1",
+      "objective": "تقارن بين النظريات العلمية والقوانين العلمية",
+      "sourcePage": "16–21",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q9",
       "lesson": "science-processes",
-      "concept": "science",
+      "concept": "skills",
       "type": "choice",
       "q": "أي مهارتين تساعدان العلماء على جمع معلومات مباشرة؟",
       "options": [
@@ -1667,7 +1919,13 @@ window.SCIENCE_DATA = {
         "الرأي والتفضيل"
       ],
       "answer": 0,
-      "explain": "الملاحظة والقياس من المهارات الأساسية لجمع البيانات."
+      "explain": "الملاحظة والقياس من المهارات الأساسية لجمع البيانات.",
+      "grade": "1",
+      "objective": "تحدد بعض المهارات التي يستخدمها العلماء",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q10",
@@ -1676,7 +1934,13 @@ window.SCIENCE_DATA = {
       "type": "tf",
       "q": "إذا لم تدعم النتائج الفرضية فمن المقبول علميًا تعديل الفرضية أو إعادة اختبارها.",
       "answer": true,
-      "explain": "الفرضيات قابلة للاختبار والتعديل وفق الأدلة."
+      "explain": "الفرضيات قابلة للاختبار والتعديل وفق الأدلة.",
+      "grade": "1",
+      "objective": "توضح المقصود بالفرضية وكيف يمكن اختبارها",
+      "sourcePage": "16–21",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q11",
@@ -1691,7 +1955,13 @@ window.SCIENCE_DATA = {
         "قانون علمي"
       ],
       "answer": 0,
-      "explain": "المجسم شيء ملموس يمثل شيئًا آخر، لذا فهو نموذج مادي."
+      "explain": "المجسم شيء ملموس يمثل شيئًا آخر، لذا فهو نموذج مادي.",
+      "grade": "1",
+      "objective": "وصف أنواع مختلفة من النماذج",
+      "sourcePage": "26–29",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q12",
@@ -1706,7 +1976,13 @@ window.SCIENCE_DATA = {
         "فرضية"
       ],
       "answer": 0,
-      "explain": "المحاكاة الرقمية من النماذج الحاسوبية."
+      "explain": "المحاكاة الرقمية من النماذج الحاسوبية.",
+      "grade": "1",
+      "objective": "وصف أنواع مختلفة من النماذج",
+      "sourcePage": "26–29",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q13",
@@ -1721,7 +1997,13 @@ window.SCIENCE_DATA = {
         "إعلانًا"
       ],
       "answer": 0,
-      "explain": "النموذج الفكري يمثل فكرة أو تصورًا يساعد على الفهم."
+      "explain": "النموذج الفكري يمثل فكرة أو تصورًا يساعد على الفهم.",
+      "grade": "1",
+      "objective": "وصف أنواع مختلفة من النماذج",
+      "sourcePage": "26–29",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q14",
@@ -1736,7 +2018,13 @@ window.SCIENCE_DATA = {
         "تمنع تغير المعرفة"
       ],
       "answer": 0,
-      "explain": "النماذج تسهّل عرض الأفكار والظواهر التي يصعب دراستها مباشرة."
+      "explain": "النماذج تسهّل عرض الأفكار والظواهر التي يصعب دراستها مباشرة.",
+      "grade": "1",
+      "objective": "التمييز بين النموذج المادي والحاسوبي والفكري",
+      "sourcePage": "26–29",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q15",
@@ -1751,7 +2039,13 @@ window.SCIENCE_DATA = {
         "لإلغاء التجارب دائمًا"
       ],
       "answer": 0,
-      "explain": "النموذج يسمح باختبار توقعات أو فرضيات بطريقة مناسبة قبل التطبيق المباشر أحيانًا."
+      "explain": "النموذج يسمح باختبار توقعات أو فرضيات بطريقة مناسبة قبل التطبيق المباشر أحيانًا.",
+      "grade": "1",
+      "objective": "توضيح أهمية النماذج في التواصل العلمي",
+      "sourcePage": "26–29",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q16",
@@ -1766,7 +2060,13 @@ window.SCIENCE_DATA = {
         "كتابة رأي شخصي"
       ],
       "answer": 0,
-      "explain": "المحاكاة قد تقلل المخاطر قبل تجربة التصميم في الواقع."
+      "explain": "المحاكاة قد تقلل المخاطر قبل تجربة التصميم في الواقع.",
+      "grade": "1",
+      "objective": "شرح دور النماذج في اختبار التوقعات والفرضيات",
+      "sourcePage": "26–29",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q17",
@@ -1775,7 +2075,13 @@ window.SCIENCE_DATA = {
       "type": "tf",
       "q": "قد يتغير النموذج العلمي عندما تظهر معلومات وأدلة جديدة.",
       "answer": true,
-      "explain": "النماذج تتطور مع تطور المعرفة العلمية."
+      "explain": "النماذج تتطور مع تطور المعرفة العلمية.",
+      "grade": "1",
+      "objective": "تفسير سبب تغير النماذج مع تطور المعرفة",
+      "sourcePage": "26–29",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q18",
@@ -1790,7 +2096,13 @@ window.SCIENCE_DATA = {
         "إلغاء الحاجة للملاحظة"
       ],
       "answer": 0,
-      "explain": "من استخدامات النماذج توفير الوقت والمال والمحافظة على الأرواح."
+      "explain": "من استخدامات النماذج توفير الوقت والمال والمحافظة على الأرواح.",
+      "grade": "1",
+      "objective": "شرح دور النماذج في اختبار التوقعات والفرضيات",
+      "sourcePage": "26–29",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q19",
@@ -1805,7 +2117,13 @@ window.SCIENCE_DATA = {
         "إعلان تجاري"
       ],
       "answer": 0,
-      "explain": "المجسم المادي مناسب لتوضيح الشكل والبنية ثلاثية الأبعاد."
+      "explain": "المجسم المادي مناسب لتوضيح الشكل والبنية ثلاثية الأبعاد.",
+      "grade": "1",
+      "objective": "التمييز بين النموذج المادي والحاسوبي والفكري",
+      "sourcePage": "26–29",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q20",
@@ -1823,7 +2141,13 @@ window.SCIENCE_DATA = {
         0,
         1
       ],
-      "explain": "من الأنواع الواردة: المادية والحاسوبية والفكرية."
+      "explain": "من الأنواع الواردة: المادية والحاسوبية والفكرية.",
+      "grade": "1",
+      "objective": "وصف أنواع مختلفة من النماذج",
+      "sourcePage": "26–29",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q21",
@@ -1838,7 +2162,13 @@ window.SCIENCE_DATA = {
         "هل التصميم جميل؟"
       ],
       "answer": 0,
-      "explain": "قوة الاستنتاج تعتمد على الأدلة والبيانات التي تدعمه."
+      "explain": "قوة الاستنتاج تعتمد على الأدلة والبيانات التي تدعمه.",
+      "grade": "1",
+      "objective": "تقويم الملاحظات والاستنتاجات",
+      "sourcePage": "30–38",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q22",
@@ -1853,7 +2183,13 @@ window.SCIENCE_DATA = {
         "لون الورقة"
       ],
       "answer": 0,
-      "explain": "الرسوم البيانية من وسائل عرض البيانات وتسهيل المقارنة بينها."
+      "explain": "الرسوم البيانية من وسائل عرض البيانات وتسهيل المقارنة بينها.",
+      "grade": "1",
+      "objective": "قراءة البيانات في الجداول والرسوم",
+      "sourcePage": "30–38",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q23",
@@ -1868,7 +2204,13 @@ window.SCIENCE_DATA = {
         "اختيار المنتج الأغلى"
       ],
       "answer": 0,
-      "explain": "يجب فحص الادعاء والبحث عن أدلة ومصدر وطريقة اختبار واضحة."
+      "explain": "يجب فحص الادعاء والبحث عن أدلة ومصدر وطريقة اختبار واضحة.",
+      "grade": "1",
+      "objective": "تقويم بعض الإعلانات والمواد الدعائية علميًا",
+      "sourcePage": "30–38",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q24",
@@ -1883,7 +2225,13 @@ window.SCIENCE_DATA = {
         "الاعتماد على الرأي فقط"
       ],
       "answer": 0,
-      "explain": "التفكير الناقد يعتمد على الأدلة والتحقق والمقارنة."
+      "explain": "التفكير الناقد يعتمد على الأدلة والتحقق والمقارنة.",
+      "grade": "1",
+      "objective": "الحكم على قوة الاستنتاج في ضوء الأدلة",
+      "sourcePage": "30–38",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q25",
@@ -1898,7 +2246,13 @@ window.SCIENCE_DATA = {
         "صورة غير مرتبطة"
       ],
       "answer": 0,
-      "explain": "البيانات يمكن تمثيلها في جداول ورسوم وأشكال ووصف منظم."
+      "explain": "البيانات يمكن تمثيلها في جداول ورسوم وأشكال ووصف منظم.",
+      "grade": "1",
+      "objective": "قراءة البيانات في الجداول والرسوم",
+      "sourcePage": "30–38",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q26",
@@ -1907,7 +2261,13 @@ window.SCIENCE_DATA = {
       "type": "tf",
       "q": "يمكن قبول استنتاج قوي حتى لو لم تدعمه أي بيانات.",
       "answer": false,
-      "explain": "الاستنتاج العلمي يحتاج إلى أدلة وملاحظات أو بيانات تدعمه."
+      "explain": "الاستنتاج العلمي يحتاج إلى أدلة وملاحظات أو بيانات تدعمه.",
+      "grade": "1",
+      "objective": "تقويم الملاحظات والاستنتاجات",
+      "sourcePage": "30–38",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q27",
@@ -1922,7 +2282,13 @@ window.SCIENCE_DATA = {
         "لا توجد مشكلة"
       ],
       "answer": 0,
-      "explain": "قوة الاستنتاج تتأثر بكمية البيانات ومدى كفايتها وتمثيلها."
+      "explain": "قوة الاستنتاج تتأثر بكمية البيانات ومدى كفايتها وتمثيلها.",
+      "grade": "1",
+      "objective": "تقويم بعض الإعلانات والمواد الدعائية علميًا",
+      "sourcePage": "30–38",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q28",
@@ -1937,7 +2303,13 @@ window.SCIENCE_DATA = {
         "يختار الأقصر"
       ],
       "answer": 0,
-      "explain": "المقارنة بين الأدلة جزء من التفكير الناقد."
+      "explain": "المقارنة بين الأدلة جزء من التفكير الناقد.",
+      "grade": "1",
+      "objective": "الحكم على قوة الاستنتاج في ضوء الأدلة",
+      "sourcePage": "30–38",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q29",
@@ -1952,7 +2324,13 @@ window.SCIENCE_DATA = {
         "حجم الورقة"
       ],
       "answer": 0,
-      "explain": "فهم العناوين والقيم والمتغيرات ضروري لتفسير البيانات."
+      "explain": "فهم العناوين والقيم والمتغيرات ضروري لتفسير البيانات.",
+      "grade": "1",
+      "objective": "قراءة البيانات في الجداول والرسوم",
+      "sourcePage": "30–38",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q30",
@@ -1970,7 +2348,13 @@ window.SCIENCE_DATA = {
         0,
         1
       ],
-      "explain": "الاستنتاج الأقوى يعتمد على بيانات وملاحظات واضحة وكافية."
+      "explain": "الاستنتاج الأقوى يعتمد على بيانات وملاحظات واضحة وكافية.",
+      "grade": "1",
+      "objective": "تقويم الملاحظات والاستنتاجات",
+      "sourcePage": "30–38",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q31",
@@ -1985,7 +2369,13 @@ window.SCIENCE_DATA = {
         "علم الكيمياء"
       ],
       "answer": 0,
-      "explain": "علم الأحياء يختص بدراسة المخلوقات الحية وتفاعلاتها."
+      "explain": "علم الأحياء يختص بدراسة المخلوقات الحية وتفاعلاتها.",
+      "grade": "1",
+      "objective": "تتعرف الفروع الثلاثة للعلوم",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q32",
@@ -2000,7 +2390,13 @@ window.SCIENCE_DATA = {
         "علم الفيزياء"
       ],
       "answer": 0,
-      "explain": "علم الأرض والفضاء يدرس أنظمة الأرض والفضاء ومكوناتها."
+      "explain": "علم الأرض والفضاء يدرس أنظمة الأرض والفضاء ومكوناتها.",
+      "grade": "1",
+      "objective": "تتعرف الفروع الثلاثة للعلوم",
+      "sourcePage": "16–21",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q33",
@@ -2015,7 +2411,13 @@ window.SCIENCE_DATA = {
         "الفلك فقط"
       ],
       "answer": 0,
-      "explain": "الكيمياء من العلوم الطبيعية وتهتم بدراسة المادة وتفاعلاتها."
+      "explain": "الكيمياء من العلوم الطبيعية وتهتم بدراسة المادة وتفاعلاتها.",
+      "grade": "1",
+      "objective": "تتعرف الفروع الثلاثة للعلوم",
+      "sourcePage": "16–21",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q34",
@@ -2030,7 +2432,13 @@ window.SCIENCE_DATA = {
         "علم الأرض"
       ],
       "answer": 0,
-      "explain": "الفيزياء تهتم بدراسة الطاقة ودورها وقدرتها على إحداث تغير في المادة."
+      "explain": "الفيزياء تهتم بدراسة الطاقة ودورها وقدرتها على إحداث تغير في المادة.",
+      "grade": "1",
+      "objective": "تتعرف الفروع الثلاثة للعلوم",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q35",
@@ -2045,7 +2453,13 @@ window.SCIENCE_DATA = {
         "حجم الأصيص إذا لم يتغير"
       ],
       "answer": 0,
-      "explain": "المتغير المستقل هو العامل الذي يغيّره الباحث عمدًا أثناء التجربة."
+      "explain": "المتغير المستقل هو العامل الذي يغيّره الباحث عمدًا أثناء التجربة.",
+      "grade": "1",
+      "objective": "تميز بين المتغير المستقل والمتغير التابع والثوابت في التجربة",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q36",
@@ -2060,7 +2474,13 @@ window.SCIENCE_DATA = {
         "نوع التربة إذا لم يتغير"
       ],
       "answer": 0,
-      "explain": "المتغير التابع هو العامل الذي يتغير بسبب تغير المتغير المستقل ويُقاس أثناء التجربة."
+      "explain": "المتغير التابع هو العامل الذي يتغير بسبب تغير المتغير المستقل ويُقاس أثناء التجربة.",
+      "grade": "1",
+      "objective": "تميز بين المتغير المستقل والمتغير التابع والثوابت في التجربة",
+      "sourcePage": "16–21",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q37",
@@ -2078,7 +2498,13 @@ window.SCIENCE_DATA = {
         0,
         1
       ],
-      "explain": "الثوابت عوامل لا تتغير أثناء التجربة، مثل نوع التربة وحجم الأصيص."
+      "explain": "الثوابت عوامل لا تتغير أثناء التجربة، مثل نوع التربة وحجم الأصيص.",
+      "grade": "1",
+      "objective": "تميز بين المتغير المستقل والمتغير التابع والثوابت في التجربة",
+      "sourcePage": "16–21",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q38",
@@ -2087,7 +2513,13 @@ window.SCIENCE_DATA = {
       "type": "tf",
       "q": "المتغيرات التابعة هي العوامل التي تتغير بسبب تغير العوامل المستقلة.",
       "answer": true,
-      "explain": "هذا هو وصف المتغير التابع في التجربة."
+      "explain": "هذا هو وصف المتغير التابع في التجربة.",
+      "grade": "1",
+      "objective": "تميز بين المتغير المستقل والمتغير التابع والثوابت في التجربة",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q39",
@@ -2096,7 +2528,13 @@ window.SCIENCE_DATA = {
       "type": "tf",
       "q": "الثوابت هي العوامل التي تتغير أثناء التجربة.",
       "answer": false,
-      "explain": "الثوابت هي عوامل لا تتغير أثناء التجربة."
+      "explain": "الثوابت هي عوامل لا تتغير أثناء التجربة.",
+      "grade": "1",
+      "objective": "تميز بين المتغير المستقل والمتغير التابع والثوابت في التجربة",
+      "sourcePage": "16–21",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q40",
@@ -2114,7 +2552,13 @@ window.SCIENCE_DATA = {
         0,
         1
       ],
-      "explain": "من الممارسات العلمية القياس والنمذجة، إضافة إلى الملاحظة والتحليل والتفسير وغيرها."
+      "explain": "من الممارسات العلمية القياس والنمذجة، إضافة إلى الملاحظة والتحليل والتفسير وغيرها.",
+      "grade": "1",
+      "objective": "تحدد بعض المهارات التي يستخدمها العلماء",
+      "sourcePage": "16–21",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q41",
@@ -2129,7 +2573,13 @@ window.SCIENCE_DATA = {
         "التفضيل"
       ],
       "answer": 0,
-      "explain": "التنبؤ من المهارات العلمية التي يستخدمها العلماء."
+      "explain": "التنبؤ من المهارات العلمية التي يستخدمها العلماء.",
+      "grade": "1",
+      "objective": "تحدد بعض المهارات التي يستخدمها العلماء",
+      "sourcePage": "16–21",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q42",
@@ -2144,7 +2594,13 @@ window.SCIENCE_DATA = {
         "لا يعتمد أي منهما على الملاحظات"
       ],
       "answer": 0,
-      "explain": "النظرية العلمية تحاول تفسير سلوك أو نمط لوحظ في الطبيعة، أما القانون العلمي فيصف نمطًا أو سلوكًا يحدث فيها."
+      "explain": "النظرية العلمية تحاول تفسير سلوك أو نمط لوحظ في الطبيعة، أما القانون العلمي فيصف نمطًا أو سلوكًا يحدث فيها.",
+      "grade": "1",
+      "objective": "تقارن بين النظريات العلمية والقوانين العلمية",
+      "sourcePage": "16–21",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q43",
@@ -2159,7 +2615,13 @@ window.SCIENCE_DATA = {
         "ثابت"
       ],
       "answer": 0,
-      "explain": "في تدريب الدرس وردت هذه العبارة مثالًا على القانون العلمي."
+      "explain": "في تدريب الدرس وردت هذه العبارة مثالًا على القانون العلمي.",
+      "grade": "1",
+      "objective": "تقارن بين النظريات العلمية والقوانين العلمية",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q44",
@@ -2174,7 +2636,13 @@ window.SCIENCE_DATA = {
         "الاستنتاج النهائي مباشرة"
       ],
       "answer": 0,
-      "explain": "يوضح الدرس أن التوقع يقود إلى وضع الفرضيات."
+      "explain": "يوضح الدرس أن التوقع يقود إلى وضع الفرضيات.",
+      "grade": "1",
+      "objective": "توضح المقصود بالفرضية وكيف يمكن اختبارها",
+      "sourcePage": "16–21",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "science-processes"
     },
     {
       "id": "q45",
@@ -2183,7 +2651,13 @@ window.SCIENCE_DATA = {
       "type": "tf",
       "q": "النماذج المادية نماذج يمكن لمسها أو رؤيتها.",
       "answer": true,
-      "explain": "النماذج المادية هي نماذج يمكن لمسها أو رؤيتها."
+      "explain": "النماذج المادية هي نماذج يمكن لمسها أو رؤيتها.",
+      "grade": "1",
+      "objective": "وصف أنواع مختلفة من النماذج",
+      "sourcePage": "26–29",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q46",
@@ -2192,7 +2666,13 @@ window.SCIENCE_DATA = {
       "type": "tf",
       "q": "النماذج الحاسوبية يمكن لمسها مثل المجسمات المادية.",
       "answer": false,
-      "explain": "النماذج الحاسوبية تُبنى ببرامج حاسوبية ويمكن عرضها على الشاشة، لكنها ليست مجسمات مادية يمكن لمسها."
+      "explain": "النماذج الحاسوبية تُبنى ببرامج حاسوبية ويمكن عرضها على الشاشة، لكنها ليست مجسمات مادية يمكن لمسها.",
+      "grade": "1",
+      "objective": "وصف أنواع مختلفة من النماذج",
+      "sourcePage": "26–29",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q47",
@@ -2207,7 +2687,13 @@ window.SCIENCE_DATA = {
         "قانونًا علميًا"
       ],
       "answer": 0,
-      "explain": "المجسم الذي يمثل الخلية يمكن رؤيته ولمسه، لذلك هو نموذج مادي."
+      "explain": "المجسم الذي يمثل الخلية يمكن رؤيته ولمسه، لذلك هو نموذج مادي.",
+      "grade": "1",
+      "objective": "وصف أنواع مختلفة من النماذج",
+      "sourcePage": "26–29",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q48",
@@ -2222,7 +2708,13 @@ window.SCIENCE_DATA = {
         "فرضية"
       ],
       "answer": 0,
-      "explain": "عرض حالة الطقس بالحاسوب من أمثلة النماذج الحاسوبية."
+      "explain": "عرض حالة الطقس بالحاسوب من أمثلة النماذج الحاسوبية.",
+      "grade": "1",
+      "objective": "وصف أنواع مختلفة من النماذج",
+      "sourcePage": "26–29",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q49",
@@ -2237,7 +2729,13 @@ window.SCIENCE_DATA = {
         "عينات حقيقية من الظاهرة"
       ],
       "answer": 0,
-      "explain": "النماذج الفكرية عبارة عن أفكار ومفاهيم تصف طريقة التفكير في شيء معين في العالم الطبيعي."
+      "explain": "النماذج الفكرية عبارة عن أفكار ومفاهيم تصف طريقة التفكير في شيء معين في العالم الطبيعي.",
+      "grade": "1",
+      "objective": "وصف أنواع مختلفة من النماذج",
+      "sourcePage": "26–29",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q50",
@@ -2252,7 +2750,13 @@ window.SCIENCE_DATA = {
         "لأن النموذج لا يتغير أبدًا"
       ],
       "answer": 0,
-      "explain": "تساعد النماذج على تصور أو اختبار أشياء قد يصعب رؤيتها أو التعامل معها مباشرة."
+      "explain": "تساعد النماذج على تصور أو اختبار أشياء قد يصعب رؤيتها أو التعامل معها مباشرة.",
+      "grade": "1",
+      "objective": "التمييز بين النموذج المادي والحاسوبي والفكري",
+      "sourcePage": "26–29",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q51",
@@ -2267,7 +2771,13 @@ window.SCIENCE_DATA = {
         "تجعل كل فرضية صحيحة"
       ],
       "answer": 0,
-      "explain": "يستخدم بعض العلماء النماذج لتوضيح الأفكار ونقلها للآخرين بطريقة محسوسة أو أوضح."
+      "explain": "يستخدم بعض العلماء النماذج لتوضيح الأفكار ونقلها للآخرين بطريقة محسوسة أو أوضح.",
+      "grade": "1",
+      "objective": "التمييز بين النموذج المادي والحاسوبي والفكري",
+      "sourcePage": "26–29",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q52",
@@ -2282,7 +2792,13 @@ window.SCIENCE_DATA = {
         "إلغاء القياس"
       ],
       "answer": 0,
-      "explain": "من استخدامات النماذج اختبار التوقعات والفرضيات قبل التطبيق المباشر."
+      "explain": "من استخدامات النماذج اختبار التوقعات والفرضيات قبل التطبيق المباشر.",
+      "grade": "1",
+      "objective": "توضيح أهمية النماذج في التواصل العلمي",
+      "sourcePage": "26–29",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q53",
@@ -2297,7 +2813,13 @@ window.SCIENCE_DATA = {
         "لأنها تمنع حدوث الأخطاء نهائيًا"
       ],
       "answer": 0,
-      "explain": "قد تكون النماذج أكثر أمانًا وأقل تكلفة من استخدام الجسم الأصلي."
+      "explain": "قد تكون النماذج أكثر أمانًا وأقل تكلفة من استخدام الجسم الأصلي.",
+      "grade": "1",
+      "objective": "شرح دور النماذج في اختبار التوقعات والفرضيات",
+      "sourcePage": "26–29",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q54",
@@ -2312,7 +2834,13 @@ window.SCIENCE_DATA = {
         "اختفاء الحاجة إلى الأدلة"
       ],
       "answer": 0,
-      "explain": "تتغير النماذج عندما تتوافر معلومات جديدة وتزداد دقة المعرفة."
+      "explain": "تتغير النماذج عندما تتوافر معلومات جديدة وتزداد دقة المعرفة.",
+      "grade": "1",
+      "objective": "تفسير سبب تغير النماذج مع تطور المعرفة",
+      "sourcePage": "26–29",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q55",
@@ -2327,7 +2855,13 @@ window.SCIENCE_DATA = {
         "النماذج لا تستخدم في العلوم"
       ],
       "answer": 0,
-      "explain": "يوضح تسلسل نماذج الذرة أن النماذج العلمية تتطور مع ظهور معلومات جديدة."
+      "explain": "يوضح تسلسل نماذج الذرة أن النماذج العلمية تتطور مع ظهور معلومات جديدة.",
+      "grade": "1",
+      "objective": "تفسير سبب تغير النماذج مع تطور المعرفة",
+      "sourcePage": "26–29",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q56",
@@ -2342,7 +2876,13 @@ window.SCIENCE_DATA = {
         "لا يتأثر بأي معلومات جديدة"
       ],
       "answer": 0,
-      "explain": "كلما كانت معلومات النموذج أوسع وأكثر دقة كان أقدر على توضيح الأفكار والمفاهيم."
+      "explain": "كلما كانت معلومات النموذج أوسع وأكثر دقة كان أقدر على توضيح الأفكار والمفاهيم.",
+      "grade": "1",
+      "objective": "تفسير سبب تغير النماذج مع تطور المعرفة",
+      "sourcePage": "26–29",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q57",
@@ -2360,7 +2900,13 @@ window.SCIENCE_DATA = {
         0,
         1
       ],
-      "explain": "من فوائد النماذج توفير الوقت والمال والمحافظة على الأرواح في بعض الحالات."
+      "explain": "من فوائد النماذج توفير الوقت والمال والمحافظة على الأرواح في بعض الحالات.",
+      "grade": "1",
+      "objective": "شرح دور النماذج في اختبار التوقعات والفرضيات",
+      "sourcePage": "26–29",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q58",
@@ -2375,7 +2921,13 @@ window.SCIENCE_DATA = {
         "الآراء دون بيانات"
       ],
       "answer": 0,
-      "explain": "تستخدم النماذج في تمثيل المعلومات المهمة، ومنها الخرائط والجداول."
+      "explain": "تستخدم النماذج في تمثيل المعلومات المهمة، ومنها الخرائط والجداول.",
+      "grade": "1",
+      "objective": "التمييز بين النموذج المادي والحاسوبي والفكري",
+      "sourcePage": "26–29",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "scientific-models"
     },
     {
       "id": "q59",
@@ -2390,7 +2942,13 @@ window.SCIENCE_DATA = {
         "تعتمد على شكل العرض فقط"
       ],
       "answer": 0,
-      "explain": "يعتمد التفكير الناقد على ربط المعرفة السابقة بالمعلومات والحقائق الجديدة ثم الحكم عليها."
+      "explain": "يعتمد التفكير الناقد على ربط المعرفة السابقة بالمعلومات والحقائق الجديدة ثم الحكم عليها.",
+      "grade": "1",
+      "objective": "الحكم على قوة الاستنتاج في ضوء الأدلة",
+      "sourcePage": "30–38",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q60",
@@ -2405,7 +2963,13 @@ window.SCIENCE_DATA = {
         "تقويم الإعلان فقط"
       ],
       "answer": 0,
-      "explain": "يوضح الدرس أن التقويم يتضمن تقويم الملاحظات وتقويم الاستنتاجات."
+      "explain": "يوضح الدرس أن التقويم يتضمن تقويم الملاحظات وتقويم الاستنتاجات.",
+      "grade": "1",
+      "objective": "تقويم الملاحظات والاستنتاجات",
+      "sourcePage": "30–38",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q61",
@@ -2420,7 +2984,13 @@ window.SCIENCE_DATA = {
         "الفرضية"
       ],
       "answer": 0,
-      "explain": "البيانات هي المعلومات التي يتم جمعها أثناء البحث العلمي من خلال الملاحظات."
+      "explain": "البيانات هي المعلومات التي يتم جمعها أثناء البحث العلمي من خلال الملاحظات.",
+      "grade": "1",
+      "objective": "قراءة البيانات في الجداول والرسوم",
+      "sourcePage": "30–38",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q62",
@@ -2438,7 +3008,13 @@ window.SCIENCE_DATA = {
         0,
         1
       ],
-      "explain": "يمكن تنظيم البيانات في جداول أو رسوم بيانية أو أشكال أو وصف."
+      "explain": "يمكن تنظيم البيانات في جداول أو رسوم بيانية أو أشكال أو وصف.",
+      "grade": "1",
+      "objective": "قراءة البيانات في الجداول والرسوم",
+      "sourcePage": "30–38",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q63",
@@ -2453,7 +3029,13 @@ window.SCIENCE_DATA = {
         "للاستغناء عن البيانات"
       ],
       "answer": 0,
-      "explain": "تدوين الملاحظات بدقة يسمح بفهمها لاحقًا وإعادة التجربة إذا لزم الأمر."
+      "explain": "تدوين الملاحظات بدقة يسمح بفهمها لاحقًا وإعادة التجربة إذا لزم الأمر.",
+      "grade": "1",
+      "objective": "توضيح أهمية تدوين الملاحظات وقابلية تكرار البيانات",
+      "sourcePage": "30–38",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q64",
@@ -2462,7 +3044,13 @@ window.SCIENCE_DATA = {
       "type": "tf",
       "q": "يجب تدوين الملاحظات أثناء التجربة حتى يمكن قراءتها وفهمها من جديد وإعادة التجربة إذا لزم الأمر.",
       "answer": true,
-      "explain": "هذه هي أهمية تدوين الملاحظات كما يوضح الدرس."
+      "explain": "هذه هي أهمية تدوين الملاحظات كما يوضح الدرس.",
+      "grade": "1",
+      "objective": "توضيح أهمية تدوين الملاحظات وقابلية تكرار البيانات",
+      "sourcePage": "30–38",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q65",
@@ -2477,7 +3065,13 @@ window.SCIENCE_DATA = {
         "مأخوذة من إعلان فقط"
       ],
       "answer": 0,
-      "explain": "البيانات الموثوقة تكون محددة ودقيقة وقابلة للتكرار."
+      "explain": "البيانات الموثوقة تكون محددة ودقيقة وقابلة للتكرار.",
+      "grade": "1",
+      "objective": "توضيح أهمية تدوين الملاحظات وقابلية تكرار البيانات",
+      "sourcePage": "30–38",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q66",
@@ -2492,7 +3086,13 @@ window.SCIENCE_DATA = {
         "تأتي من مصدر غير معروف"
       ],
       "answer": 0,
-      "explain": "قابلية التكرار تعني أن الآخرين يمكنهم تكرار الاستقصاء والحصول على نتائج مشابهة."
+      "explain": "قابلية التكرار تعني أن الآخرين يمكنهم تكرار الاستقصاء والحصول على نتائج مشابهة.",
+      "grade": "1",
+      "objective": "توضيح أهمية تدوين الملاحظات وقابلية تكرار البيانات",
+      "sourcePage": "30–38",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q67",
@@ -2501,7 +3101,13 @@ window.SCIENCE_DATA = {
       "type": "tf",
       "q": "يجب تصديق أي ادعاء حتى لو كان غير مدعوم بالبيانات.",
       "answer": false,
-      "explain": "الادعاء غير المدعوم بالبيانات لا ينبغي قبوله دون دليل."
+      "explain": "الادعاء غير المدعوم بالبيانات لا ينبغي قبوله دون دليل.",
+      "grade": "1",
+      "objective": "تقويم بعض الإعلانات والمواد الدعائية علميًا",
+      "sourcePage": "30–38",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q68",
@@ -2516,7 +3122,13 @@ window.SCIENCE_DATA = {
         "اختيار المنتج لأن الإعلان جذاب"
       ],
       "answer": 0,
-      "explain": "تقويم المواد الدعائية يتطلب فحص معلومات المنتج وبياناته قبل اتخاذ القرار."
+      "explain": "تقويم المواد الدعائية يتطلب فحص معلومات المنتج وبياناته قبل اتخاذ القرار.",
+      "grade": "1",
+      "objective": "تقويم بعض الإعلانات والمواد الدعائية علميًا",
+      "sourcePage": "30–38",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q69",
@@ -2531,7 +3143,13 @@ window.SCIENCE_DATA = {
         "اللون المطبوع على العبوة"
       ],
       "answer": 0,
-      "explain": "تشير خلاصة الدرس إلى أن المختبرات المستقلة الموثوقة تفحص المنتجات للتأكد من صلاحيتها."
+      "explain": "تشير خلاصة الدرس إلى أن المختبرات المستقلة الموثوقة تفحص المنتجات للتأكد من صلاحيتها.",
+      "grade": "1",
+      "objective": "تقويم بعض الإعلانات والمواد الدعائية علميًا",
+      "sourcePage": "30–38",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q70",
@@ -2546,7 +3164,13 @@ window.SCIENCE_DATA = {
         "استنتاج بلا ملاحظات"
       ],
       "answer": 0,
-      "explain": "الاستنتاج الأقوى يعتمد على أدلة وبيانات موثوقة ويمكن تكرارها."
+      "explain": "الاستنتاج الأقوى يعتمد على أدلة وبيانات موثوقة ويمكن تكرارها.",
+      "grade": "1",
+      "objective": "تقويم الملاحظات والاستنتاجات",
+      "sourcePage": "30–38",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q71",
@@ -2561,7 +3185,13 @@ window.SCIENCE_DATA = {
         "يغير عنوان التجربة فقط"
       ],
       "answer": 0,
-      "explain": "التفكير الناقد يتطلب أن يكون الاستنتاج متوافقًا مع الأدلة والبيانات المتاحة."
+      "explain": "التفكير الناقد يتطلب أن يكون الاستنتاج متوافقًا مع الأدلة والبيانات المتاحة.",
+      "grade": "1",
+      "objective": "الحكم على قوة الاستنتاج في ضوء الأدلة",
+      "sourcePage": "30–38",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q72",
@@ -2576,7 +3206,13 @@ window.SCIENCE_DATA = {
         "عنوان بلا أرقام"
       ],
       "answer": 0,
-      "explain": "الرسوم البيانية تساعد على تنظيم البيانات ومقارنتها وتفسيرها بسهولة."
+      "explain": "الرسوم البيانية تساعد على تنظيم البيانات ومقارنتها وتفسيرها بسهولة.",
+      "grade": "1",
+      "objective": "قراءة البيانات في الجداول والرسوم",
+      "sourcePage": "30–38",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "evaluate-explanations"
     },
     {
       "id": "q73",
@@ -2593,7 +3229,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "النقطة المرجعية جسم أو مكان نقارن به موقع الجسم لتحديد ما إذا كان يتحرك.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد الحركة باستخدام نقطة مرجعية",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q74",
@@ -2610,7 +3250,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: النقطة المرجعية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد الحركة باستخدام نقطة مرجعية",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q75",
@@ -2627,7 +3271,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الجسم الثابت بجانب الطريق يصلح نقطة مرجعية واضحة للحكم على تغير موقع السيارة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تحديد الحركة باستخدام نقطة مرجعية",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q76",
@@ -2644,7 +3292,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المسافة هي طول المسار الذي يقطعه الجسم أثناء حركته.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير معنى المسافة والسرعة",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q77",
@@ -2661,7 +3313,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: المسافة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير معنى المسافة والسرعة",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q78",
@@ -2678,7 +3334,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المسافة تساوي مجموع أطوال المسار المقطوع: 100 + 50 = 150 م.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير معنى المسافة والسرعة",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q79",
@@ -2695,7 +3355,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "السرعة هي المسافة التي يقطعها الجسم مقسومة على الزمن المستغرق.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب السرعة المتوسطة من المسافة والزمن",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q80",
@@ -2712,7 +3376,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: السرعة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب السرعة المتوسطة من المسافة والزمن",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q81",
@@ -2729,7 +3397,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "السرعة = المسافة ÷ الزمن = 120 ÷ 20 = 6 م/ث.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "حساب السرعة المتوسطة من المسافة والزمن",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q82",
@@ -2746,7 +3418,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "السرعة المتوسطة تساوي المسافة الكلية مقسومة على الزمن الكلي للحركة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين السرعة والسرعة المتجهة",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q83",
@@ -2763,7 +3439,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: السرعة المتوسطة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين السرعة والسرعة المتجهة",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q84",
@@ -2780,7 +3460,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "السرعة المتوسطة = 180 ÷ 3 = 60 كم/س.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التمييز بين السرعة والسرعة المتجهة",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q85",
@@ -2797,7 +3481,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "السرعة اللحظية هي مقدار سرعة الجسم عند لحظة زمنية محددة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح معنى التسارع",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q86",
@@ -2814,7 +3502,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: السرعة اللحظية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح معنى التسارع",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q87",
@@ -2831,7 +3523,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "عداد السرعة يبين سرعة السيارة في اللحظة التي تنظر فيها إليه.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "توضيح معنى التسارع",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q88",
@@ -2848,7 +3544,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "السرعة المتجهة تصف مقدار السرعة واتجاه الحركة معًا.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى السرعة اللحظية",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q89",
@@ -2865,7 +3565,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: السرعة المتجهة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى السرعة اللحظية",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q90",
@@ -2882,7 +3586,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "إضافة الاتجاه إلى مقدار السرعة يجعل الوصف سرعة متجهة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى السرعة اللحظية",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q91",
@@ -2899,7 +3607,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التسارع هو التغير في السرعة المتجهة مقسومًا على الزمن، وقد ينتج عن تغير المقدار أو الاتجاه.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير تغير الحركة من خلال الرسوم أو البيانات",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q92",
@@ -2916,7 +3628,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: التسارع.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير تغير الحركة من خلال الرسوم أو البيانات",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q93",
@@ -2933,7 +3649,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التسارع = (15 - 5) ÷ 5 = 2 م/ث².",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير تغير الحركة من خلال الرسوم أو البيانات",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q94",
@@ -2950,7 +3670,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "يمكن استخدام الجداول والرسوم البيانية لتمثيل تغير المسافة أو السرعة مع الزمن وتفسير الحركة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تطبيق علاقات المسافة والسرعة والزمن في مواقف بسيطة",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q95",
@@ -2967,7 +3691,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: تمثيل الحركة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تطبيق علاقات المسافة والسرعة والزمن في مواقف بسيطة",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q96",
@@ -2984,7 +3712,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "ثبات المسافة مع استمرار الزمن يعني أن الجسم لم يغير موقعه.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تطبيق علاقات المسافة والسرعة والزمن في مواقف بسيطة",
+      "sourcePage": "44–49",
+      "editableGroup": "motion"
     },
     {
       "id": "q97",
@@ -3001,7 +3733,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "القوة دفع أو سحب يمكن أن يغير حركة جسم، وتقاس بوحدة النيوتن.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف القوة وقياسها",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q98",
@@ -3018,7 +3754,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: القوة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف القوة وقياسها",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q99",
@@ -3035,7 +3775,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "القوة هي المؤثر الذي يمكن أن يغير حركة الجسم.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تعريف القوة وقياسها",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q100",
@@ -3052,7 +3796,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "القوة المحصلة هي مجموع القوى المؤثرة في جسم مع مراعاة اتجاهاتها.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد أثر القوة المحصلة في حركة الأجسام",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q101",
@@ -3069,7 +3817,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: القوة المحصلة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد أثر القوة المحصلة في حركة الأجسام",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q102",
@@ -3086,7 +3838,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "عندما تؤثر القوتان في الاتجاه نفسه تجمع مقداراهما.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تحديد أثر القوة المحصلة في حركة الأجسام",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q103",
@@ -3103,7 +3859,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "القوى المتزنة محصلتها صفر فلا تغير حالة الحركة، أما غير المتزنة فمحصلتها غير صفر وتسبب تغيرًا في الحركة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين القوى المتزنة وغير المتزنة",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q104",
@@ -3120,7 +3880,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: القوى المتزنة وغير المتزنة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين القوى المتزنة وغير المتزنة",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q105",
@@ -3137,7 +3901,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "وزن الكتاب إلى أسفل وقوة الطاولة إلى أعلى متساويتان تقريبًا، لذا المحصلة صفر.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التمييز بين القوى المتزنة وغير المتزنة",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q106",
@@ -3154,7 +3922,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "يبقى الجسم ساكنًا أو متحركًا بسرعة ثابتة في خط مستقيم ما لم تؤثر فيه قوة محصلة؛ وميل الجسم لمقاومة تغير حركته يسمى القصور الذاتي.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير قانون نيوتن الأول والقصور الذاتي",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q107",
@@ -3171,7 +3943,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: قانون نيوتن الأول والقصور الذاتي.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير قانون نيوتن الأول والقصور الذاتي",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q108",
@@ -3188,7 +3964,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "يميل جسم الراكب إلى الاستمرار في حالته الحركية بسبب القصور الذاتي.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير قانون نيوتن الأول والقصور الذاتي",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q109",
@@ -3205,7 +3985,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "يربط قانون نيوتن الثاني بين القوة والكتلة والتسارع: القوة المحصلة = الكتلة × التسارع.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "استخدام قانون نيوتن الثاني في مواقف بسيطة",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q110",
@@ -3222,7 +4006,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: قانون نيوتن الثاني.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "استخدام قانون نيوتن الثاني في مواقف بسيطة",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q111",
@@ -3239,7 +4027,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "القوة = الكتلة × التسارع = 4 × 3 = 12 ن.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "استخدام قانون نيوتن الثاني في مواقف بسيطة",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q112",
@@ -3256,7 +4048,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الاحتكاك قوة تعارض الحركة بين سطحين متلامسين وتكون في اتجاه معاكس للحركة النسبية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير الاحتكاك واتجاهه",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q113",
@@ -3273,7 +4069,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الاحتكاك.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير الاحتكاك واتجاهه",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q114",
@@ -3290,7 +4090,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الاحتكاك يعارض اتجاه الحركة، لذلك يكون إلى اليسار.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير الاحتكاك واتجاهه",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q115",
@@ -3307,7 +4111,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "لكل قوة فعل قوة رد فعل مساوية لها في المقدار ومعاكسة لها في الاتجاه وتؤثر في جسم آخر.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح قانون نيوتن الثالث",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q116",
@@ -3324,7 +4132,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: قانون نيوتن الثالث.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح قانون نيوتن الثالث",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q117",
@@ -3341,7 +4153,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "دفع الماء إلى الخلف يقابله دفع الماء للسباح إلى الأمام.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "توضيح قانون نيوتن الثالث",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q118",
@@ -3358,7 +4174,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الجاذبية قوة جذب بين الأجسام، ووزن الجسم هو قوة الجاذبية المؤثرة فيه.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى أثر الجاذبية والوزن",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q119",
@@ -3375,7 +4195,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الجاذبية والوزن.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى أثر الجاذبية والوزن",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q120",
@@ -3392,7 +4216,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الوزن يعتمد على قوة الجاذبية، أما الكتلة فتبقى ثابتة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى أثر الجاذبية والوزن",
+      "sourcePage": "50–57",
+      "editableGroup": "newton-laws"
     },
     {
       "id": "q121",
@@ -3409,7 +4237,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "يحدث الشغل عندما تؤثر قوة في جسم فتحركه مسافة في اتجاه القوة، ويحسب من القوة × المسافة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد متى يحدث الشغل",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q122",
@@ -3426,7 +4258,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الشغل.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد متى يحدث الشغل",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q123",
@@ -3443,7 +4279,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الشغل = القوة × المسافة = 10 × 3 = 30 جول.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تحديد متى يحدث الشغل",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q124",
@@ -3460,7 +4300,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الجول هو وحدة قياس الشغل والطاقة في النظام الدولي.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى وحدة قياس الشغل",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q125",
@@ -3477,7 +4321,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: وحدة الشغل.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى وحدة قياس الشغل",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q126",
@@ -3494,7 +4342,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الشغل يقاس بوحدة الجول.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى وحدة قياس الشغل",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q127",
@@ -3511,7 +4363,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الآلة البسيطة أداة تسهل أداء الشغل بتغيير مقدار القوة أو اتجاهها أو المسافة التي تؤثر خلالها.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير فائدة الآلات البسيطة",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q128",
@@ -3528,7 +4384,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الآلة البسيطة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير فائدة الآلات البسيطة",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q129",
@@ -3545,7 +4405,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الآلة لا تلغي الشغل، لكنها قد تقلل القوة المطلوبة مقابل زيادة المسافة أو تغير الاتجاه.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير فائدة الآلات البسيطة",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q130",
@@ -3562,7 +4426,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الفائدة الآلية تقارن القوة الناتجة بالقوة المبذولة، وتبين مقدار تكبير الآلة للقوة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح معنى الفائدة الآلية",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q131",
@@ -3579,7 +4447,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الفائدة الآلية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح معنى الفائدة الآلية",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q132",
@@ -3596,7 +4468,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الفائدة الآلية = القوة الناتجة ÷ القوة المبذولة = 200 ÷ 50 = 4.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "توضيح معنى الفائدة الآلية",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q133",
@@ -3613,7 +4489,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الرافعة ساق صلبة تدور حول نقطة ثابتة تسمى نقطة الارتكاز.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف عمل الرافعة والبكرة",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q134",
@@ -3630,7 +4510,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الرافعة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف عمل الرافعة والبكرة",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q135",
@@ -3647,7 +4531,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تستخدم فتاحة الزجاجات مبدأ الرافعة حول نقطة ارتكاز.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "وصف عمل الرافعة والبكرة",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q136",
@@ -3664,7 +4552,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "البكرة عجلة ذات أخدود يمر فيه حبل، ويمكن أن تغير اتجاه القوة أو تقلل القوة المطلوبة عند استخدام عدة بكرات.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف عمل العجلة والمحور والمستوى المائل",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q137",
@@ -3681,7 +4573,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: البكرة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف عمل العجلة والمحور والمستوى المائل",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q138",
@@ -3698,7 +4594,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "البكرة الثابتة تسهل السحب بتغيير اتجاه القوة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "وصف عمل العجلة والمحور والمستوى المائل",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q139",
@@ -3715,7 +4615,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "العجلة والمحور يقللان القوة اللازمة للحركة الدورانية، والمستوى المائل يزيد المسافة لتقليل القوة اللازمة لرفع جسم.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى الإسفين والبرغي",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q140",
@@ -3732,7 +4636,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: العجلة والمحور والمستوى المائل.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى الإسفين والبرغي",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q141",
@@ -3749,7 +4657,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المستوى المائل يتيح بذل قوة أصغر عبر مسافة أطول.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى الإسفين والبرغي",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q142",
@@ -3766,7 +4678,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الإسفين مستوى مائل متحرك يستخدم للقطع أو الفصل، والبرغي مستوى مائل ملفوف حول أسطوانة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تطبيق مفاهيم الآلات في مواقف حياتية",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q143",
@@ -3783,7 +4699,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الإسفين والبرغي.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تطبيق مفاهيم الآلات في مواقف حياتية",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q144",
@@ -3800,7 +4720,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "نصل السكين إسفين، والمسمار اللولبي برغي.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تطبيق مفاهيم الآلات في مواقف حياتية",
+      "sourcePage": "58–64",
+      "editableGroup": "work-machines"
     },
     {
       "id": "q145",
@@ -3817,7 +4741,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الخاصية الفيزيائية يمكن ملاحظتها أو قياسها دون تغيير هوية المادة، مثل اللون والكثافة ودرجة الانصهار.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف المادة والخواص الفيزيائية",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q146",
@@ -3834,7 +4762,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الخاصية الفيزيائية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف المادة والخواص الفيزيائية",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q147",
@@ -3851,7 +4783,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الكثافة خاصية فيزيائية لأنها تقاس دون تغيير هوية المادة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تعريف المادة والخواص الفيزيائية",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q148",
@@ -3868,7 +4804,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الكتلة مقدار ما يحتويه الجسم من مادة، والحجم مقدار الحيز الذي يشغله.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز الكتلة والحجم",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q149",
@@ -3885,7 +4825,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الكتلة والحجم.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز الكتلة والحجم",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q150",
@@ -3902,7 +4846,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المخبار المدرج يستخدم لقياس حجم السوائل.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تمييز الكتلة والحجم",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q151",
@@ -3919,7 +4867,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الكثافة هي كتلة وحدة الحجوم من المادة وتحسب من الكتلة ÷ الحجم.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب الكثافة في مواقف بسيطة",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q152",
@@ -3936,7 +4888,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الكثافة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب الكثافة في مواقف بسيطة",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q153",
@@ -3953,7 +4909,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الكثافة = 40 ÷ 10 = 4 جم/سم³.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "حساب الكثافة في مواقف بسيطة",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q154",
@@ -3970,7 +4930,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الحالات الشائعة للمادة هي الصلبة والسائلة والغازية، وتختلف في ترتيب الجسيمات وحركتها وشكلها وحجمها.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف حالات المادة",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q155",
@@ -3987,7 +4951,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: حالات المادة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف حالات المادة",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q156",
@@ -4004,7 +4972,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "السائل يحافظ على حجمه تقريبًا لكنه يأخذ شكل الوعاء.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "وصف حالات المادة",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q157",
@@ -4021,7 +4993,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الانصهار تحول المادة من صلب إلى سائل، والتجمد تحولها من سائل إلى صلب.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير الانصهار والتجمد",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q158",
@@ -4038,7 +5014,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الانصهار والتجمد.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير الانصهار والتجمد",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q159",
@@ -4055,7 +5035,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الانصهار هو الانتقال من الحالة الصلبة إلى السائلة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير الانصهار والتجمد",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q160",
@@ -4072,7 +5056,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التبخر والغليان يحولان السائل إلى غاز، أما التكاثف فيحول الغاز إلى سائل.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير التبخر والغليان والتكاثف",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q161",
@@ -4089,7 +5077,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: التبخر والغليان والتكاثف.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير التبخر والغليان والتكاثف",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q162",
@@ -4106,7 +5098,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "بخار الماء في الهواء يتحول إلى سائل على السطح البارد.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير التبخر والغليان والتكاثف",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q163",
@@ -4123,7 +5119,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التسامي تحول المادة مباشرة من الحالة الصلبة إلى الغازية دون المرور بالحالة السائلة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى التسامي",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q164",
@@ -4140,7 +5140,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: التسامي.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى التسامي",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q165",
@@ -4157,7 +5161,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "هذا هو تعريف التسامي.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى التسامي",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q166",
@@ -4174,7 +5182,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التغير الفيزيائي يغير شكل المادة أو حجمها أو حالتها دون تكوين مادة جديدة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز التغير الفيزيائي عن التغير الكيميائي",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q167",
@@ -4191,7 +5203,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: التغير الفيزيائي.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز التغير الفيزيائي عن التغير الكيميائي",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q168",
@@ -4208,7 +5224,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التقطيع يغير الشكل والحجم ولا يكوّن مادة جديدة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تمييز التغير الفيزيائي عن التغير الكيميائي",
+      "sourcePage": "",
+      "editableGroup": "physical-properties"
     },
     {
       "id": "q169",
@@ -4225,7 +5245,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الخاصية الكيميائية تصف قدرة المادة على التفاعل وتكوين مواد جديدة، مثل القابلية للاحتراق أو التفاعل مع الأكسجين.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف الخاصية الكيميائية",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q170",
@@ -4242,7 +5266,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الخاصية الكيميائية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف الخاصية الكيميائية",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q171",
@@ -4259,7 +5287,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "القابلية للاحتراق تظهر عندما تتفاعل المادة وتنتج مواد جديدة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تعريف الخاصية الكيميائية",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q172",
@@ -4276,7 +5308,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التغير الكيميائي ينتج مادة أو مواد جديدة تختلف في خواصها عن المواد الأصلية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز التغير الكيميائي",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q173",
@@ -4293,7 +5329,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: التغير الكيميائي.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز التغير الكيميائي",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q174",
@@ -4310,7 +5350,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الصدأ ينتج مواد جديدة تختلف عن الحديد الأصلي.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تمييز التغير الكيميائي",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q175",
@@ -4327,7 +5371,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "من دلائل التغير الكيميائي تكون غاز أو راسب أو تغير اللون أو انبعاث حرارة أو ضوء أو رائحة جديدة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى دلائل التفاعل الكيميائي",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q176",
@@ -4344,7 +5392,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: دلائل التغير الكيميائي.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى دلائل التفاعل الكيميائي",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q177",
@@ -4361,7 +5413,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تكوّن راسب جديد من دلائل التفاعل الكيميائي.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى دلائل التفاعل الكيميائي",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q178",
@@ -4378,7 +5434,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المتفاعلات مواد تبدأ بها التفاعل الكيميائي، والنواتج مواد جديدة تتكون بعد التفاعل.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز المواد المتفاعلة والناتجة",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q179",
@@ -4395,7 +5455,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: المتفاعلات والنواتج.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز المواد المتفاعلة والناتجة",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q180",
@@ -4412,7 +5476,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المواد التي تدخل التفاعل تسمى المتفاعلات.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تمييز المواد المتفاعلة والناتجة",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q181",
@@ -4429,7 +5497,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "ينص قانون حفظ المادة على أن المادة لا تفنى ولا تستحدث في التفاعل؛ وتبقى الذرات محفوظة ويعاد ترتيبها.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تطبيق قانون حفظ المادة",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q182",
@@ -4446,7 +5518,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: قانون حفظ المادة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تطبيق قانون حفظ المادة",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q183",
@@ -4463,7 +5539,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "في النظام المغلق تحفظ الكتلة أثناء التفاعل الكيميائي.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تطبيق قانون حفظ المادة",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q184",
@@ -4480,7 +5560,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "في التغير الفيزيائي تبقى هوية المادة، أما التغير الكيميائي فينتج مواد جديدة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "المقارنة بين التغير الفيزيائي والكيميائي",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q185",
@@ -4497,7 +5581,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الفيزيائي مقابل الكيميائي.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "المقارنة بين التغير الفيزيائي والكيميائي",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q186",
@@ -4514,7 +5602,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الغليان تغير فيزيائي والاحتراق تغير كيميائي.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "المقارنة بين التغير الفيزيائي والكيميائي",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q187",
@@ -4531,7 +5623,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الصدأ مثال على تفاعل الحديد مع الأكسجين والرطوبة مكوّنًا مواد جديدة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى الاحتراق والأكسدة",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q188",
@@ -4548,7 +5644,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الأكسدة والصدأ.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى الاحتراق والأكسدة",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q189",
@@ -4565,7 +5665,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "عزل الحديد عن الماء والأكسجين يقلل فرص حدوث الصدأ.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى الاحتراق والأكسدة",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q190",
@@ -4582,7 +5686,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الاحتراق تغير كيميائي سريع نسبيًا يتفاعل فيه الوقود غالبًا مع الأكسجين ويطلق طاقة وينتج مواد جديدة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير بعض التغيرات الكيميائية في الحياة اليومية",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q191",
@@ -4599,7 +5707,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الاحتراق.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير بعض التغيرات الكيميائية في الحياة اليومية",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q192",
@@ -4616,7 +5728,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الاحتراق ينتج مواد جديدة ولا يعيد الخشب إلى حالته الأصلية بسهولة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير بعض التغيرات الكيميائية في الحياة اليومية",
+      "sourcePage": "",
+      "editableGroup": "chemical-properties"
     },
     {
       "id": "q193",
@@ -4633,7 +5749,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "اقترح بعض الفلاسفة القدماء أن المادة تتكون من دقائق صغيرة، بينما اعتقد آخرون أنها متصلة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تتبع تطور مفهوم الذرة",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q194",
@@ -4650,7 +5770,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الأفكار القديمة عن المادة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تتبع تطور مفهوم الذرة",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q195",
@@ -4667,7 +5791,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "فكرة تكون المادة من دقائق صغيرة كانت خطوة مبكرة نحو مفهوم الذرة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تتبع تطور مفهوم الذرة",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q196",
@@ -4684,7 +5812,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "اقترح دالتون أن المادة تتكون من ذرات، وأن ذرات العنصر الواحد متشابهة في خواص أساسية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى فكرة دالتون عن الذرات",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q197",
@@ -4701,7 +5833,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: نموذج دالتون.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى فكرة دالتون عن الذرات",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q198",
@@ -4718,7 +5854,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "فكرة دالتون الأساسية أن المادة تتكون من ذرات.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى فكرة دالتون عن الذرات",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q199",
@@ -4735,7 +5875,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "أدى اكتشاف الإلكترون إلى نموذج طومسون الذي تضمن جسيمات سالبة داخل مادة موجبة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف نموذج طومسون",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q200",
@@ -4752,7 +5896,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: نموذج طومسون.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف نموذج طومسون",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q201",
@@ -4769,7 +5917,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "طومسون اكتشف الإلكترون واقترح نموذجًا يفسر وجود الشحنة السالبة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "وصف نموذج طومسون",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q202",
@@ -4786,7 +5938,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "أظهرت تجربة رذرفورد أن معظم الذرة فراغ وأن الشحنة الموجبة ومعظم الكتلة تتركز في نواة صغيرة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير تجربة رذرفورد ووجود النواة",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q203",
@@ -4803,7 +5959,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: نموذج رذرفورد.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير تجربة رذرفورد ووجود النواة",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q204",
@@ -4820,7 +5980,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "مرور معظم الجسيمات يشير إلى أن معظم الذرة فراغ.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير تجربة رذرفورد ووجود النواة",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q205",
@@ -4837,7 +6001,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "البروتون موجب، والإلكترون سالب، والنيوترون متعادل كهربائيًا.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد مكونات الذرة وشحناتها",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q206",
@@ -4854,7 +6022,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الجسيمات دون الذرية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد مكونات الذرة وشحناتها",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q207",
@@ -4871,7 +6043,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الإلكترون شحنته سالبة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تحديد مكونات الذرة وشحناتها",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q208",
@@ -4888,7 +6064,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "النواة مركز صغير كثيف في الذرة يحتوي البروتونات والنيوترونات وتمثل معظم كتلة الذرة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين النواة والمنطقة المحيطة بها",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q209",
@@ -4905,7 +6085,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: النواة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين النواة والمنطقة المحيطة بها",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q210",
@@ -4922,7 +6106,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "البروتونات والنيوترونات في النواة تمثل معظم كتلة الذرة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التمييز بين النواة والمنطقة المحيطة بها",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q211",
@@ -4939,7 +6127,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "اقترح بور أن الإلكترونات توجد في مستويات طاقة محددة حول النواة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى نموذج بور بصورة مبسطة",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q212",
@@ -4956,7 +6148,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: نموذج بور.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى نموذج بور بصورة مبسطة",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q213",
@@ -4973,7 +6169,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "نموذج بور ينظم الإلكترونات في مستويات طاقة حول النواة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى نموذج بور بصورة مبسطة",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q214",
@@ -4990,7 +6190,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تكون الذرة متعادلة كهربائيًا عندما يتساوى عدد البروتونات الموجبة مع عدد الإلكترونات السالبة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير تعادل الذرة كهربائيًا",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q215",
@@ -5007,7 +6211,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: تعادل الذرة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير تعادل الذرة كهربائيًا",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q216",
@@ -5024,7 +6232,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تساوي عدد البروتونات والإلكترونات يجعل الشحنة الكلية صفرًا.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير تعادل الذرة كهربائيًا",
+      "sourcePage": "",
+      "editableGroup": "matter-structure"
     },
     {
       "id": "q217",
@@ -5041,7 +6253,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "العنصر مادة نقية تتكون من نوع واحد من الذرات ولا يمكن تحليلها كيميائيًا إلى مادة أبسط.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف العنصر",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q218",
@@ -5058,7 +6274,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: العنصر.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف العنصر",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q219",
@@ -5075,7 +6295,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الحديد مكوّن من نوع واحد من الذرات وهو عنصر.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تعريف العنصر",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q220",
@@ -5092,7 +6316,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "العدد الذري يساوي عدد البروتونات في نواة ذرة العنصر ويحدد هوية العنصر.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير معنى العدد الذري",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q221",
@@ -5109,7 +6337,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: العدد الذري.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير معنى العدد الذري",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q222",
@@ -5126,7 +6358,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "العدد الذري يساوي عدد البروتونات.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير معنى العدد الذري",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q223",
@@ -5143,7 +6379,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تنظم العناصر في الجدول الدوري في صفوف تسمى دورات وأعمدة تسمى مجموعات، وتتكرر الخواص بصورة دورية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "قراءة الصفوف والمجموعات في الجدول الدوري",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q224",
@@ -5160,7 +6400,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الجدول الدوري.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "قراءة الصفوف والمجموعات في الجدول الدوري",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q225",
@@ -5177,7 +6421,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الأعمدة الرأسية تسمى مجموعات.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "قراءة الصفوف والمجموعات في الجدول الدوري",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q226",
@@ -5194,7 +6442,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الفلزات غالبًا لامعة وموصلة، واللافلزات غالبًا ضعيفة التوصيل، وأشباه الفلزات لها خواص وسطية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين الفلزات واللافلزات وأشباه الفلزات",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q227",
@@ -5211,7 +6463,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الفلزات واللافلزات وأشباه الفلزات.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين الفلزات واللافلزات وأشباه الفلزات",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q228",
@@ -5228,7 +6484,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "هذه خواص شائعة للفلزات.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التمييز بين الفلزات واللافلزات وأشباه الفلزات",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q229",
@@ -5245,7 +6505,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المركب مادة نقية تنتج من اتحاد عنصرين أو أكثر كيميائيًا بنسب ثابتة وتختلف خواصه عن خواص عناصره.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف المركب والصيغة الكيميائية",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q230",
@@ -5262,7 +6526,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: المركب.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف المركب والصيغة الكيميائية",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q231",
@@ -5279,7 +6547,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الماء مركب لأن عناصره متحدة كيميائيًا بنسبة محددة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تعريف المركب والصيغة الكيميائية",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q232",
@@ -5296,7 +6568,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الصيغة الكيميائية تستخدم رموز العناصر والأرقام لتبين نوع الذرات وعددها النسبي في المركب.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز المخلوط عن المركب",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q233",
@@ -5313,7 +6589,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الصيغة الكيميائية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز المخلوط عن المركب",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q234",
@@ -5330,7 +6610,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الأرقام والرموز في الصيغة تبين أنواع الذرات وأعدادها.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تمييز المخلوط عن المركب",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q235",
@@ -5347,7 +6631,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المخلوط مزيج من مادتين أو أكثر تحتفظ فيه المواد بخواصها ويمكن أن تتغير نسب المكونات.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى المخاليط المتجانسة وغير المتجانسة",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q236",
@@ -5364,7 +6652,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: المخلوط.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى المخاليط المتجانسة وغير المتجانسة",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q237",
@@ -5381,7 +6673,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الهواء خليط من عدة غازات بنسب قد تتغير.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى المخاليط المتجانسة وغير المتجانسة",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q238",
@@ -5398,7 +6694,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "قد يكون المخلوط متجانسًا أو غير متجانس، ويمكن فصل مكوناته بطرائق فيزيائية مثل الترشيح أو التبخير أو المغناطيس.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد طرق فصل مخاليط بسيطة",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q239",
@@ -5415,7 +6715,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: المخاليط وطرق الفصل.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد طرق فصل مخاليط بسيطة",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q240",
@@ -5432,7 +6736,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الترشيح يفصل جسيمات الرمل غير الذائبة عن الماء.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تحديد طرق فصل مخاليط بسيطة",
+      "sourcePage": "",
+      "editableGroup": "elements-compounds-mixtures"
     },
     {
       "id": "q241",
@@ -5449,7 +6757,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المعدن مادة صلبة غير عضوية تتكون طبيعيًا، لها تركيب كيميائي محدد وبناء بلوري منتظم.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف المعدن",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q242",
@@ -5466,7 +6778,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: المعدن.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف المعدن",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q243",
@@ -5483,7 +6799,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "هذه الصفات الأساسية تميز المعدن.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تعريف المعدن",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q244",
@@ -5500,7 +6820,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "البناء البلوري ترتيب منتظم ومتكرر للذرات أو الأيونات في المعدن.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير معنى البناء البلوري",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q245",
@@ -5517,7 +6841,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: البناء البلوري.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير معنى البناء البلوري",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q246",
@@ -5534,7 +6862,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الترتيب الداخلي المنتظم ينعكس في الشكل البلوري.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير معنى البناء البلوري",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q247",
@@ -5551,7 +6883,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "اللون صفة ظاهرية قد تتغير بالشوائب، أما المخدش فهو لون مسحوق المعدن وقد يكون أكثر ثباتًا في التعرف إليه.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "استخدام اللون والمخدش في تعرف المعادن",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q248",
@@ -5568,7 +6904,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: اللون والمخدش.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "استخدام اللون والمخدش في تعرف المعادن",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q249",
@@ -5585,7 +6925,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المخدش هو لون مسحوق المعدن على لوح مخدش.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "استخدام اللون والمخدش في تعرف المعادن",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q250",
@@ -5602,7 +6946,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "البريق يصف طريقة انعكاس الضوء عن سطح المعدن، وقد يكون فلزيًا أو لافلزيًا.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز أنواع البريق",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q251",
@@ -5619,7 +6967,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: البريق.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تمييز أنواع البريق",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q252",
@@ -5636,7 +6988,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "انعكاس الضوء الشبيه بالفلز يسمى بريقًا فلزيًا.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تمييز أنواع البريق",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q253",
@@ -5653,7 +7009,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الصلادة مقاومة المعدن للخدش، ويقارن العلماء المعادن بمقياس موهس للصلادة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "استخدام مقياس الصلادة",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q254",
@@ -5670,7 +7030,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الصلادة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "استخدام مقياس الصلادة",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q255",
@@ -5687,7 +7051,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المعدن الأكثر صلادة يمكنه خدش الأقل صلادة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "استخدام مقياس الصلادة",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q256",
@@ -5704,7 +7072,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الانفصام هو انقسام المعدن على سطوح مستوية ملساء بسبب تركيبه الداخلي.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين الانفصام والمكسر",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q257",
@@ -5721,7 +7093,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الانفصام.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين الانفصام والمكسر",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q258",
@@ -5738,7 +7114,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الانفصام ينتج أسطحًا مستوية وفق البناء البلوري.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التمييز بين الانفصام والمكسر",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q259",
@@ -5755,7 +7135,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المكسر هو تكسر المعدن بسطوح غير مستوية أو غير منتظمة عندما لا ينفصم على مستويات محددة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى خواص خاصة لبعض المعادن",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q260",
@@ -5772,7 +7156,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: المكسر.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى خواص خاصة لبعض المعادن",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q261",
@@ -5789,7 +7177,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المكسر يصف شكل السطح غير المنتظم الناتج عن الكسر.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى خواص خاصة لبعض المعادن",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q262",
@@ -5806,7 +7198,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "يمكن التعرف إلى بعض المعادن بخواص مثل المغناطيسية أو التفاعل مع الحمض أو الكثافة، وتحدد خصائصها كثيرًا من استخداماتها.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "ربط خصائص المعادن باستخداماتها",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q263",
@@ -5823,7 +7219,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: خواص خاصة واستخدامات المعادن.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "ربط خصائص المعادن باستخداماتها",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q264",
@@ -5840,7 +7240,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المغناطيسية خاصية مميزة لبعض المعادن ويمكن استخدامها في التعرف إليها.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "ربط خصائص المعادن باستخداماتها",
+      "sourcePage": "",
+      "editableGroup": "earth-jewels"
     },
     {
       "id": "q265",
@@ -5857,7 +7261,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الصخر مادة طبيعية صلبة تتكون من معدن واحد أو أكثر.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف الصخر",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q266",
@@ -5874,7 +7282,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الصخر.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف الصخر",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q267",
@@ -5891,7 +7303,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الصخور تتكون من معدن واحد أو أكثر.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تعريف الصخر",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q268",
@@ -5908,7 +7324,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تتكون الصخور النارية من تبرد الصهارة أو اللابة وتصلبها.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف تكون الصخور النارية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q269",
@@ -5925,7 +7345,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الصخور النارية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف تكون الصخور النارية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q270",
@@ -5942,7 +7366,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الصخور النارية تنتج من تبرد الصهارة أو اللابة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "وصف تكون الصخور النارية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q271",
@@ -5959,7 +7387,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تتبرد الصهارة ببطء تحت سطح الأرض فتتكون صخور نارية جوفية غالبًا ذات بلورات أكبر.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين النارية السطحية والجوفية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q272",
@@ -5976,7 +7408,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الصخور النارية الجوفية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين النارية السطحية والجوفية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q273",
@@ -5993,7 +7429,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التبريد البطيء يتيح للبلورات وقتًا أطول للنمو.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التمييز بين النارية السطحية والجوفية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q274",
@@ -6010,7 +7450,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تتبرد اللابة بسرعة على سطح الأرض فتتكون صخور نارية سطحية غالبًا ذات بلورات صغيرة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف تكون الصخور الرسوبية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q275",
@@ -6027,7 +7471,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الصخور النارية السطحية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف تكون الصخور الرسوبية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q276",
@@ -6044,7 +7492,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التبريد السريع يقلل الوقت المتاح لنمو البلورات.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "وصف تكون الصخور الرسوبية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q277",
@@ -6061,7 +7513,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تتكون كثير من الصخور الرسوبية من تراكم الرواسب ثم تراصها وتماسكها، وقد تتكون أيضًا كيميائيًا أو من بقايا مخلوقات.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى بعض أنواع الصخور الرسوبية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q278",
@@ -6078,7 +7534,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الصخور الرسوبية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى بعض أنواع الصخور الرسوبية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q279",
@@ -6095,7 +7555,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تتراكم الرواسب ثم تتراص وتتماسك لتكون الصخر.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى بعض أنواع الصخور الرسوبية",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q280",
@@ -6112,7 +7576,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "من الصخور الرسوبية ما هو فتاتي أو كيميائي أو عضوي بحسب طريقة تكونه ومصدر مادته.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف تكون الصخور المتحولة",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q281",
@@ -6129,7 +7597,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: أنواع الصخور الرسوبية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "وصف تكون الصخور المتحولة",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q282",
@@ -6146,7 +7618,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المواد الناتجة من بقايا المخلوقات يمكن أن تكون صخورًا رسوبية عضوية.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "وصف تكون الصخور المتحولة",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q283",
@@ -6163,7 +7639,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تتكون الصخور المتحولة عندما تتعرض صخور سابقة لحرارة وضغط مرتفعين دون أن تنصهر بالكامل.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير أثر الحرارة والضغط في التحول",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q284",
@@ -6180,7 +7660,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الصخور المتحولة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير أثر الحرارة والضغط في التحول",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q285",
@@ -6197,7 +7681,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التحول يغير الصخر بفعل الحرارة والضغط دون وصوله إلى الانصهار الكامل.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير أثر الحرارة والضغط في التحول",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q286",
@@ -6214,7 +7702,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "دورة الصخور تصف تحول الصخور بين الأنواع النارية والرسوبية والمتحولة عبر عمليات مثل الانصهار والتبريد والتجوية والترسيب والحرارة والضغط.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح دورة الصخور",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q287",
@@ -6231,7 +7723,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: دورة الصخور.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح دورة الصخور",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q288",
@@ -6248,7 +7744,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الحرارة والضغط يمكن أن يحولا الصخر الرسوبي إلى متحول.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "توضيح دورة الصخور",
+      "sourcePage": "",
+      "editableGroup": "rock-types"
     },
     {
       "id": "q289",
@@ -6265,7 +7765,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "اقترح فجنر أن القارات كانت مجتمعة في كتلة واحدة ثم تحركت تدريجيًا إلى مواقعها الحالية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح فكرة انجراف القارات",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q290",
@@ -6282,7 +7786,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: انجراف القارات.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح فكرة انجراف القارات",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q291",
@@ -6299,7 +7807,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تطابق بعض الحواف من الأدلة التي دعمت فكرة اتصال القارات قديمًا.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "توضيح فكرة انجراف القارات",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q292",
@@ -6316,7 +7828,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "من أدلة انجراف القارات تشابه الأحافير والصخور والسلاسل الجبلية وآثار المناخ القديم في قارات متباعدة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى بعض أدلة فجنر",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q293",
@@ -6333,7 +7849,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: أدلة انجراف القارات.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى بعض أدلة فجنر",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q294",
@@ -6350,7 +7870,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تشابه الأحافير في قارات متباعدة يدعم اتصالها في الماضي.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى بعض أدلة فجنر",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q295",
@@ -6367,7 +7891,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "يتكون قاع محيط جديد عند ظهور وسط المحيط عندما تصعد الصهارة وتبرد، ثم يتحرك القاع مبتعدًا عن الظهر.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "شرح انتشار قاع المحيط",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q296",
@@ -6384,7 +7912,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: انتشار قاع المحيط.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "شرح انتشار قاع المحيط",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q297",
@@ -6401,7 +7933,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تنتج القشرة المحيطية الجديدة عند حدود متباعدة قرب ظهور وسط المحيط.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "شرح انتشار قاع المحيط",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q298",
@@ -6418,7 +7954,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الغلاف الصخري مقسم إلى صفائح كبيرة وصغيرة تتحرك ببطء فوق طبقة أكثر لدونة أسفلها.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف الصفائح الصخرية",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q299",
@@ -6435,7 +7975,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الصفائح الصخرية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف الصفائح الصخرية",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q300",
@@ -6452,7 +7996,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الصفائح الصخرية تتحرك ببطء فوق طبقة لدنة نسبيًا.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تعريف الصفائح الصخرية",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q301",
@@ -6469,7 +8017,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تنشأ تيارات حمل في مواد الوشاح بسبب اختلاف الحرارة والكثافة، وتسهم في حركة الصفائح.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير دور تيارات الحمل",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q302",
@@ -6486,7 +8038,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: تيارات الحمل.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير دور تيارات الحمل",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q303",
@@ -6503,7 +8059,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "اختلاف الحرارة والكثافة في الوشاح يولد تيارات حمل ترتبط بحركة الصفائح.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير دور تيارات الحمل",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q304",
@@ -6520,7 +8080,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "عند الحدود المتباعدة تتحرك صفيحتان مبتعدتين عن بعضهما وقد تتكون قشرة جديدة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين الحدود المتباعدة والمتقاربة والتحويلية",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q305",
@@ -6537,7 +8101,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الحدود المتباعدة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين الحدود المتباعدة والمتقاربة والتحويلية",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q306",
@@ -6554,7 +8122,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الابتعاد المتبادل يميز الحدود المتباعدة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التمييز بين الحدود المتباعدة والمتقاربة والتحويلية",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q307",
@@ -6571,7 +8143,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "عند الحدود المتقاربة تتحرك الصفائح نحو بعضها وقد تنغمس صفيحة أو تتكون جبال بحسب نوع الصفائح.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "ربط حركة الصفائح بالزلازل والبراكين",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q308",
@@ -6588,7 +8164,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الحدود المتقاربة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "ربط حركة الصفائح بالزلازل والبراكين",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q309",
@@ -6605,7 +8185,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الضغط الناتج عن تصادم الصفائح القارية يمكن أن يرفع القشرة ويكوّن جبالًا.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "ربط حركة الصفائح بالزلازل والبراكين",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q310",
@@ -6622,7 +8206,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "عند الحدود التحويلية تنزلق الصفائح بمحاذاة بعضها، ويكثر عندها حدوث الزلازل.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير تغير سطح الأرض نتيجة حركة الصفائح",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q311",
@@ -6639,7 +8227,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الحدود التحويلية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير تغير سطح الأرض نتيجة حركة الصفائح",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q312",
@@ -6656,7 +8248,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الحركة الجانبية المتعاكسة أو المتوازية تميز الحدود التحويلية.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير تغير سطح الأرض نتيجة حركة الصفائح",
+      "sourcePage": "",
+      "editableGroup": "plate-tectonics"
     },
     {
       "id": "q313",
@@ -6673,7 +8269,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التجوية هي تفتيت الصخور أو تغييرها وهي في مكانها على سطح الأرض أو قربه.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف التجوية",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q314",
@@ -6690,7 +8290,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: التجوية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف التجوية",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q315",
@@ -6707,7 +8311,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التجوية تحدث للصخر في موقعه، أما التعرية فتنقل الفتات.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تعريف التجوية",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q316",
@@ -6724,7 +8332,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التجوية الميكانيكية تكسر الصخور إلى قطع أصغر دون تغيير تركيبها الكيميائي، مثل تجمد الماء في الشقوق أو نمو الجذور.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين التجوية الميكانيكية والكيميائية",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q317",
@@ -6741,7 +8353,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: التجوية الميكانيكية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التمييز بين التجوية الميكانيكية والكيميائية",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q318",
@@ -6758,7 +8374,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تجمد الماء يوسع الشقوق ويكسر الصخر دون تغيير تركيبه الكيميائي.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التمييز بين التجوية الميكانيكية والكيميائية",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q319",
@@ -6775,7 +8395,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التجوية الكيميائية تغير تركيب المعادن في الصخور بتفاعلات مع الماء أو الأكسجين أو الأحماض.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى أمثلة التجوية بفعل الماء والجليد والجذور",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q320",
@@ -6792,7 +8416,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: التجوية الكيميائية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى أمثلة التجوية بفعل الماء والجليد والجذور",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q321",
@@ -6809,7 +8437,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التفاعل الكيميائي يغير تركيب المعدن.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى أمثلة التجوية بفعل الماء والجليد والجذور",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q322",
@@ -6826,7 +8458,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تتكون التربة من فتات الصخور ومواد عضوية وماء وهواء، وتتطور تدريجيًا بفعل التجوية ونشاط المخلوقات.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف التعرية",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q323",
@@ -6843,7 +8479,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: التربة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تعريف التعرية",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q324",
@@ -6860,7 +8500,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المادة العضوية المتحللة تضيف مغذيات وتحسن خصائص التربة.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تعريف التعرية",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q325",
@@ -6877,7 +8521,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "التعرية هي نقل نواتج التجوية من مكان إلى آخر.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد عوامل التعرية الرئيسة",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q326",
@@ -6894,7 +8542,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: التعرية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تحديد عوامل التعرية الرئيسة",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q327",
@@ -6911,7 +8563,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "انتقال الفتات نفسه من مكان إلى آخر هو تعرية.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تحديد عوامل التعرية الرئيسة",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q328",
@@ -6928,7 +8584,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "من عوامل التعرية الماء والرياح والجليد والجاذبية، وكل منها ينقل الرواسب بطرائق مختلفة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير الترسيب",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q329",
@@ -6945,7 +8605,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: عوامل التعرية.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "تفسير الترسيب",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q330",
@@ -6962,7 +8626,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "الماء الجاري قادر على حمل ونقل الرواسب.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "تفسير الترسيب",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q331",
@@ -6979,7 +8647,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "يحدث الترسيب عندما تفقد عوامل النقل قدرتها أو سرعتها فتسقط الرواسب وتتراكم.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح تكون التربة",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q332",
@@ -6996,7 +8668,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: الترسيب.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح تكون التربة",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q333",
@@ -7013,7 +8689,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "انخفاض طاقة الماء يقلل قدرته على النقل فتترسب المواد.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "توضيح تكون التربة",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q334",
@@ -7030,7 +8710,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "تقلل النباتات والمصاطب ومصدات الرياح وطرائق الزراعة المناسبة من انجراف التربة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى طرق الحد من التعرية وحماية التربة",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q335",
@@ -7047,7 +8731,11 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "المصطلح الصحيح هو: المحافظة على التربة.",
       "difficulty": "remember",
-      "track": "core"
+      "track": "core",
+      "grade": "1",
+      "objective": "التعرف إلى طرق الحد من التعرية وحماية التربة",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
     },
     {
       "id": "q336",
@@ -7064,7 +8752,910 @@ window.SCIENCE_DATA = {
       "answer": 0,
       "explain": "جذور النباتات تثبت التربة وتقلل أثر الماء والرياح.",
       "difficulty": "apply",
-      "track": "enrich"
+      "track": "enrich",
+      "grade": "1",
+      "objective": "التعرف إلى طرق الحد من التعرية وحماية التربة",
+      "sourcePage": "",
+      "editableGroup": "weathering-erosion"
+    },
+    {
+      "id": "q337",
+      "lesson": "science-processes",
+      "concept": "science",
+      "type": "choice",
+      "q": "أي عبارة تصف العلم كما يدرسه الطالب في هذا الدرس؟",
+      "options": [
+        "طريقة منظمة لدراسة العالم الطبيعي اعتمادًا على الملاحظة والأدلة",
+        "مجموعة آراء شخصية لا تحتاج إلى دليل",
+        "حفظ أسماء العلماء فقط",
+        "طريقة للإجابة عن جميع الأسئلة مهما كان نوعها"
+      ],
+      "answer": 0,
+      "explain": "العلم طريقة منظمة لدراسة العالم الطبيعي باستخدام الملاحظة والاستقصاء والأدلة.",
+      "grade": "1",
+      "objective": "تعرف العلوم وتحدد بعض الأسئلة التي لا يجيب عنها العلم",
+      "sourcePage": "16–21",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "science-processes"
+    },
+    {
+      "id": "q338",
+      "lesson": "science-processes",
+      "concept": "science",
+      "type": "choice",
+      "q": "أي موقف يمثل استخدامًا للعلم بصورة صحيحة؟",
+      "options": [
+        "قياس أثر كمية الضوء في نمو نباتات متماثلة",
+        "اختيار أجمل لون بناءً على الذوق الشخصي",
+        "تحديد أفضل هواية لكل الناس",
+        "الحكم على قيمة فنية دون معايير قابلة للقياس"
+      ],
+      "answer": 0,
+      "explain": "السؤال العلمي يمكن فحصه بالملاحظة أو القياس أو التجربة.",
+      "grade": "1",
+      "objective": "تعرف العلوم وتحدد بعض الأسئلة التي لا يجيب عنها العلم",
+      "sourcePage": "16–21",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "science-processes"
+    },
+    {
+      "id": "q339",
+      "lesson": "science-processes",
+      "concept": "science-questions",
+      "type": "choice",
+      "q": "أي سؤال مما يأتي يستطيع العلم دراسته مباشرة؟",
+      "options": [
+        "كيف تؤثر درجة الحرارة في سرعة ذوبان السكر في الماء؟",
+        "ما أجمل لون؟",
+        "من أفضل لاعب على الإطلاق؟",
+        "أي قصة هي الأمتع لكل الناس؟"
+      ],
+      "answer": 0,
+      "explain": "يمكن اختبار أثر درجة الحرارة بالقياس والتجربة، أما الأسئلة الأخرى فتعتمد على التفضيلات الشخصية.",
+      "grade": "1",
+      "objective": "تعرف العلوم وتحدد بعض الأسئلة التي لا يجيب عنها العلم",
+      "sourcePage": "16–21",
+      "difficulty": "remember",
+      "track": "core",
+      "editableGroup": "science-processes"
+    },
+    {
+      "id": "q340",
+      "lesson": "science-processes",
+      "concept": "science-questions",
+      "type": "choice",
+      "q": "أي سؤال لا يستطيع العلم أن يعطي عنه إجابة واحدة حاسمة لأنه يعتمد على تفضيل شخصي؟",
+      "options": [
+        "أي نكهة عصير هي الأفضل؟",
+        "ما كتلة جسم ما؟",
+        "كم يستغرق سقوط كرة من ارتفاع محدد؟",
+        "كيف تؤثر كمية الماء في نمو النبات؟"
+      ],
+      "answer": 0,
+      "explain": "تحديد النكهة الأفضل يعتمد على الذوق الشخصي، بينما بقية الأسئلة قابلة للملاحظة والقياس والتجربة.",
+      "grade": "1",
+      "objective": "تعرف العلوم وتحدد بعض الأسئلة التي لا يجيب عنها العلم",
+      "sourcePage": "16–21",
+      "difficulty": "understand",
+      "track": "core",
+      "editableGroup": "science-processes"
+    },
+    {
+      "id": "q341",
+      "lesson": "science-processes",
+      "concept": "science-questions",
+      "type": "choice",
+      "q": "قال طالبان: الأول يسأل «أي تربة تجعل النبات ينمو أسرع؟» والثاني يسأل «أي زهرة أجمل؟». أيهما يطرح سؤالًا علميًا قابلًا للاختبار؟",
+      "options": [
+        "الطالب الأول فقط",
+        "الطالب الثاني فقط",
+        "كلاهما",
+        "لا أحد منهما"
+      ],
+      "answer": 0,
+      "explain": "نمو النبات يمكن قياسه ومقارنته تجريبيًا، أما الجمال فهو حكم شخصي.",
+      "grade": "1",
+      "objective": "تعرف العلوم وتحدد بعض الأسئلة التي لا يجيب عنها العلم",
+      "sourcePage": "16–21",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "science-processes"
+    },
+    {
+      "id": "q342",
+      "lesson": "science-processes",
+      "concept": "observe-infer",
+      "type": "choice",
+      "q": "شاهد طالب قطرات ماء على السطح الخارجي لكأس بارد، ثم قال: «تكثف بخار الماء من الهواء». أي جزء يمثل الاستنتاج؟",
+      "options": [
+        "تكثف بخار الماء من الهواء",
+        "وجود قطرات ماء على الكأس",
+        "برودة سطح الكأس فقط",
+        "رؤية الكأس بالعين"
+      ],
+      "answer": 0,
+      "explain": "الاستنتاج تفسير منطقي للملاحظة، بينما رؤية القطرات ملاحظة مباشرة.",
+      "grade": "1",
+      "objective": "تميز الاختلاف بين الملاحظة والاستنتاج",
+      "sourcePage": "16–21",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "science-processes"
+    },
+    {
+      "id": "q343",
+      "lesson": "science-processes",
+      "concept": "method",
+      "type": "choice",
+      "q": "بعد اختبار فرضية وجمع النتائج، ما الإجراء العلمي المناسب قبل إعلان الاستنتاج؟",
+      "options": [
+        "تحليل البيانات ومقارنتها بالفرضية",
+        "تغيير النتائج لتوافق التوقع",
+        "تجاهل البيانات المخالفة",
+        "اختيار النتيجة المفضلة"
+      ],
+      "answer": 0,
+      "explain": "تحليل البيانات يسبق الاستنتاج ويساعد على الحكم على دعم النتائج للفرضية.",
+      "grade": "1",
+      "objective": "تطبق خطوات الطريقة العلمية في مواقف بسيطة",
+      "sourcePage": "16–21",
+      "difficulty": "apply",
+      "track": "enrich",
+      "editableGroup": "science-processes"
+    },
+    {
+      "id": "motion-calc-01",
+      "lesson": "motion",
+      "concept": "motion-units",
+      "type": "choice",
+      "q": "ما الوحدة الأنسب لقياس سرعة عدّاء يقطع مسافة قصيرة؟",
+      "options": [
+        "م/ث",
+        "م",
+        "ث",
+        "م/ث²"
+      ],
+      "answer": 0,
+      "explain": "السرعة تقاس بمقدار مسافة لكل زمن، ومن وحداتها المتر لكل ثانية (م/ث).",
+      "difficulty": "understand",
+      "track": "core",
+      "grade": "1",
+      "objective": "اختيار الوحدة المناسبة للمسافة والزمن والسرعة",
+      "sourcePage": "44–49",
+      "questionFamily": "units",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-02",
+      "lesson": "motion",
+      "concept": "motion-units",
+      "type": "choice",
+      "q": "أي وحدة مناسبة لقياس المسافة بين مدينتين؟",
+      "options": [
+        "الكيلومتر",
+        "الثانية",
+        "م/ث",
+        "م/ث²"
+      ],
+      "answer": 0,
+      "explain": "المسافات الكبيرة مثل المسافة بين المدن تقاس عادة بالكيلومتر.",
+      "difficulty": "remember",
+      "track": "core",
+      "grade": "1",
+      "objective": "اختيار الوحدة المناسبة للمسافة والزمن والسرعة",
+      "sourcePage": "44–49",
+      "questionFamily": "units",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-03",
+      "lesson": "motion",
+      "concept": "motion-units",
+      "type": "choice",
+      "q": "إذا كانت المسافة بالمتر والسرعة بالمتر/ثانية، فما وحدة الزمن الناتج من العلاقة: الزمن = المسافة ÷ السرعة؟",
+      "options": [
+        "الثانية",
+        "المتر",
+        "م/ث",
+        "م/ث²"
+      ],
+      "answer": 0,
+      "explain": "م ÷ (م/ث) = ث، لذلك وحدة الزمن هي الثانية.",
+      "difficulty": "understand",
+      "track": "core",
+      "grade": "1",
+      "objective": "اختيار الوحدة المناسبة للمسافة والزمن والسرعة",
+      "sourcePage": "44–49",
+      "questionFamily": "units",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-04",
+      "lesson": "motion",
+      "concept": "motion-units",
+      "type": "choice",
+      "q": "أي وحدة صحيحة للتسارع؟",
+      "options": [
+        "م/ث²",
+        "م/ث",
+        "م",
+        "ث"
+      ],
+      "answer": 0,
+      "explain": "التسارع هو تغير السرعة في وحدة الزمن؛ ووحدته الشائعة م/ث².",
+      "difficulty": "remember",
+      "track": "core",
+      "grade": "1",
+      "objective": "اختيار الوحدة الصحيحة للتسارع",
+      "sourcePage": "44–49",
+      "questionFamily": "units",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-05",
+      "lesson": "motion",
+      "concept": "motion-units",
+      "type": "choice",
+      "q": "قبل حساب سرعة جسم قطع 600 م خلال دقيقتين بوحدة م/ث، ما الخطوة الصحيحة؟",
+      "options": [
+        "تحويل الدقيقتين إلى 120 ثانية",
+        "تحويل 600 م إلى 600 ثانية",
+        "قسمة الزمن على المسافة",
+        "عدم الحاجة إلى أي تحويل"
+      ],
+      "answer": 0,
+      "explain": "للحصول على السرعة بوحدة م/ث يجب أن يكون الزمن بالثواني؛ دقيقتان = 120 ثانية.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "اختيار الوحدة المناسبة للمسافة والزمن والسرعة",
+      "sourcePage": "44–49",
+      "questionFamily": "units",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-06",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "قطع طالب 150 م خلال 30 ث. ما سرعته؟",
+      "options": [
+        "5 م/ث",
+        "30 م/ث",
+        "120 م/ث",
+        "4500 م/ث"
+      ],
+      "answer": 0,
+      "explain": "السرعة = المسافة ÷ الزمن = 150 ÷ 30 = 5 م/ث.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب السرعة من المسافة والزمن",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-07",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "قطعت دراجة 2 كم خلال نصف ساعة. ما سرعتها المتوسطة؟",
+      "options": [
+        "4 كم/س",
+        "2 كم/س",
+        "1 كم/س",
+        "0.25 كم/س"
+      ],
+      "answer": 0,
+      "explain": "نصف ساعة = 0.5 ساعة، والسرعة = 2 ÷ 0.5 = 4 كم/س.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب السرعة المتوسطة",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-08",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "قطع عدّاء 900 م خلال 3 دقائق. ما سرعته بوحدة م/ث؟",
+      "options": [
+        "5 م/ث",
+        "300 م/ث",
+        "15 م/ث",
+        "3 م/ث"
+      ],
+      "answer": 0,
+      "explain": "3 دقائق = 180 ث، والسرعة = 900 ÷ 180 = 5 م/ث.",
+      "difficulty": "apply",
+      "track": "enrich",
+      "grade": "1",
+      "objective": "حساب السرعة من المسافة والزمن",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-09",
+      "lesson": "motion",
+      "concept": "average-speed",
+      "type": "choice",
+      "q": "قطعت سيارة 72 كم خلال ساعتين. ما سرعتها المتوسطة؟",
+      "options": [
+        "36 كم/س",
+        "72 كم/س",
+        "144 كم/س",
+        "34 كم/س"
+      ],
+      "answer": 0,
+      "explain": "السرعة المتوسطة = 72 ÷ 2 = 36 كم/س.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب السرعة المتوسطة",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-10",
+      "lesson": "motion",
+      "concept": "speed",
+      "type": "choice",
+      "q": "جسم قطع 600 م خلال 60 ث. ما سرعته؟",
+      "options": [
+        "10 م/ث",
+        "6 م/ث",
+        "60 م/ث",
+        "36000 م/ث"
+      ],
+      "answer": 0,
+      "explain": "السرعة = 600 ÷ 60 = 10 م/ث.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب السرعة من المسافة والزمن",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-11",
+      "lesson": "motion",
+      "concept": "motion-formulas",
+      "type": "choice",
+      "q": "تحرك جسم بسرعة 8 م/ث لمدة 15 ث. ما المسافة التي قطعها؟",
+      "options": [
+        "120 م",
+        "23 م",
+        "0.53 م",
+        "8 م"
+      ],
+      "answer": 0,
+      "explain": "المسافة = السرعة × الزمن = 8 × 15 = 120 م.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب المسافة من السرعة والزمن",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-12",
+      "lesson": "motion",
+      "concept": "motion-formulas",
+      "type": "choice",
+      "q": "سيارة سرعتها 60 كم/س واستمرت ساعتين. ما المسافة التي قطعتها؟",
+      "options": [
+        "120 كم",
+        "30 كم",
+        "62 كم",
+        "60 كم"
+      ],
+      "answer": 0,
+      "explain": "المسافة = السرعة × الزمن = 60 × 2 = 120 كم.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب المسافة من السرعة والزمن",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-13",
+      "lesson": "motion",
+      "concept": "motion-formulas",
+      "type": "choice",
+      "q": "تحرك جسم بسرعة 5 م/ث لمدة 40 ث. ما المسافة؟",
+      "options": [
+        "200 م",
+        "45 م",
+        "8 م",
+        "0.125 م"
+      ],
+      "answer": 0,
+      "explain": "المسافة = 5 × 40 = 200 م.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب المسافة من السرعة والزمن",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-14",
+      "lesson": "motion",
+      "concept": "motion-formulas",
+      "type": "choice",
+      "q": "تسير سيارة بسرعة 90 كم/س لمدة نصف ساعة. ما المسافة التي تقطعها؟",
+      "options": [
+        "45 كم",
+        "180 كم",
+        "90 كم",
+        "30 كم"
+      ],
+      "answer": 0,
+      "explain": "نصف ساعة = 0.5 ساعة، والمسافة = 90 × 0.5 = 45 كم.",
+      "difficulty": "apply",
+      "track": "enrich",
+      "grade": "1",
+      "objective": "حساب المسافة من السرعة والزمن",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-15",
+      "lesson": "motion",
+      "concept": "motion-formulas",
+      "type": "choice",
+      "q": "قطع جسم 300 م بسرعة 6 م/ث. كم استغرق من الزمن؟",
+      "options": [
+        "50 ث",
+        "1800 ث",
+        "294 ث",
+        "2 ث"
+      ],
+      "answer": 0,
+      "explain": "الزمن = المسافة ÷ السرعة = 300 ÷ 6 = 50 ث.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب الزمن من المسافة والسرعة",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-16",
+      "lesson": "motion",
+      "concept": "motion-formulas",
+      "type": "choice",
+      "q": "قطعت سيارة 120 كم بسرعة 60 كم/س. ما الزمن المستغرق؟",
+      "options": [
+        "2 ساعة",
+        "60 ساعة",
+        "0.5 ساعة",
+        "180 ساعة"
+      ],
+      "answer": 0,
+      "explain": "الزمن = 120 ÷ 60 = ساعتين.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب الزمن من المسافة والسرعة",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-17",
+      "lesson": "motion",
+      "concept": "motion-formulas",
+      "type": "choice",
+      "q": "قطع جسم 400 م بسرعة 8 م/ث. ما الزمن؟",
+      "options": [
+        "50 ث",
+        "3200 ث",
+        "392 ث",
+        "8 ث"
+      ],
+      "answer": 0,
+      "explain": "الزمن = 400 ÷ 8 = 50 ث.",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب الزمن من المسافة والسرعة",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-18",
+      "lesson": "motion",
+      "concept": "motion-formulas",
+      "type": "choice",
+      "q": "قطع دراج 2 كم بسرعة 4 كم/س. كم يستغرق؟",
+      "options": [
+        "نصف ساعة",
+        "ساعتان",
+        "4 ساعات",
+        "8 ساعات"
+      ],
+      "answer": 0,
+      "explain": "الزمن = 2 ÷ 4 = 0.5 ساعة، أي نصف ساعة.",
+      "difficulty": "apply",
+      "track": "enrich",
+      "grade": "1",
+      "objective": "حساب الزمن من المسافة والسرعة",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-19",
+      "lesson": "motion",
+      "concept": "acceleration",
+      "type": "choice",
+      "q": "ازدادت سرعة جسم من 0 م/ث إلى 20 م/ث خلال 4 ث. ما تسارعه؟",
+      "options": [
+        "5 م/ث²",
+        "20 م/ث²",
+        "4 م/ث²",
+        "80 م/ث²"
+      ],
+      "answer": 0,
+      "explain": "التسارع = (20 - 0) ÷ 4 = 5 م/ث².",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب التسارع من تغير السرعة والزمن",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-20",
+      "lesson": "motion",
+      "concept": "acceleration",
+      "type": "choice",
+      "q": "ازدادت سرعة جسم من 10 م/ث إلى 25 م/ث خلال 3 ث. ما تسارعه؟",
+      "options": [
+        "5 م/ث²",
+        "15 م/ث²",
+        "35 م/ث²",
+        "8.3 م/ث²"
+      ],
+      "answer": 0,
+      "explain": "التغير في السرعة = 15 م/ث، والتسارع = 15 ÷ 3 = 5 م/ث².",
+      "difficulty": "apply",
+      "track": "core",
+      "grade": "1",
+      "objective": "حساب التسارع من تغير السرعة والزمن",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-21",
+      "lesson": "motion",
+      "concept": "acceleration",
+      "type": "choice",
+      "q": "انخفضت سرعة سيارة من 20 م/ث إلى 5 م/ث خلال 5 ث. ما مقدار التباطؤ؟",
+      "options": [
+        "3 م/ث²",
+        "5 م/ث²",
+        "15 م/ث²",
+        "25 م/ث²"
+      ],
+      "answer": 0,
+      "explain": "مقدار التغير في السرعة = 15 م/ث، ومقدار التباطؤ = 15 ÷ 5 = 3 م/ث².",
+      "difficulty": "apply",
+      "track": "enrich",
+      "grade": "1",
+      "objective": "حساب التسارع من تغير السرعة والزمن",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-22",
+      "lesson": "motion",
+      "concept": "acceleration",
+      "type": "choice",
+      "q": "تحرك جسم بسرعة ثابتة 12 م/ث لمدة 6 ث دون تغيير الاتجاه. ما تسارعه؟",
+      "options": [
+        "0 م/ث²",
+        "2 م/ث²",
+        "12 م/ث²",
+        "72 م/ث²"
+      ],
+      "answer": 0,
+      "explain": "لا يوجد تغير في مقدار السرعة أو اتجاهها؛ لذلك التسارع يساوي صفرًا.",
+      "difficulty": "understand",
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح معنى التسارع",
+      "sourcePage": "44–49",
+      "questionFamily": "calculation",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-23",
+      "lesson": "motion",
+      "concept": "acceleration",
+      "type": "choice",
+      "q": "سيارة تتحرك بسرعة ثابتة المقدار لكنها تغير اتجاهها في منعطف. ماذا يحدث؟",
+      "options": [
+        "تتسارع بسبب تغير الاتجاه",
+        "لا تتسارع لأن مقدار السرعة ثابت",
+        "تتوقف مباشرة",
+        "تصبح المسافة صفرًا"
+      ],
+      "answer": 0,
+      "explain": "التسارع يحدث عند تغير السرعة المتجهة، ويمكن أن يحدث بسبب تغير الاتجاه حتى مع ثبات مقدار السرعة.",
+      "difficulty": "understand",
+      "track": "core",
+      "grade": "1",
+      "objective": "توضيح معنى التسارع",
+      "sourcePage": "44–49",
+      "questionFamily": "concept",
+      "editableGroup": "motion"
+    },
+    {
+      "id": "motion-calc-24",
+      "lesson": "motion",
+      "concept": "motion-units",
+      "type": "choice",
+      "q": "أي مجموعة وحدات متوافقة مباشرة مع العلاقة: السرعة = المسافة ÷ الزمن؟",
+      "options": [
+        "المتر، الثانية، م/ث",
+        "الكيلومتر، الثانية، كيلوجرام",
+        "المتر، النيوتن، م/ث",
+        "الثانية، المتر، م/ث²"
+      ],
+      "answer": 0,
+      "explain": "عند قياس المسافة بالمتر والزمن بالثانية تكون السرعة بالمتر لكل ثانية.",
+      "difficulty": "understand",
+      "track": "core",
+      "grade": "1",
+      "objective": "اختيار الوحدة المناسبة للمسافة والزمن والسرعة",
+      "sourcePage": "44–49",
+      "questionFamily": "units",
+      "editableGroup": "motion"
     }
-  ]
+  ],
+  "meta": {
+    "version": "2026-09-23-objectives-v3-motion-units",
+    "grade": "1",
+    "subject": "العلوم",
+    "design": "كل سؤال مرتبط بالدرس والمفهوم وهدف التعلم، مع تجميع قابل للإدارة حسب الدرس. درس الحركة يتضمن مسائل حسابية ووحدات للسرعة والمسافة والزمن والتسارع.",
+    "sourceBasis": "الكتاب/العروض التعليمية والخطة الدراسية المتاحة للمستخدم، مع الحفاظ على بنية البنك الحالية لضمان استمرار التكليفات."
+  },
+  "bankConfig": {
+    "editableByLesson": true,
+    "selectionPolicy": "balanced-by-objective",
+    "description": "تجميع الأسئلة حسب الدرس مع دعم تطوير واجهة المعلم لتعديل مجموعة الدرس دفعة واحدة.",
+    "lessons": {
+      "science-processes": {
+        "title": "العلم وعملياته",
+        "questionCount": 31,
+        "objectives": [
+          "تعرف العلوم وتحدد بعض الأسئلة التي لا يجيب عنها العلم",
+          "تقارن بين النظريات العلمية والقوانين العلمية",
+          "تتعرف الفروع الثلاثة للعلوم",
+          "تحدد بعض المهارات التي يستخدمها العلماء",
+          "توضح المقصود بالفرضية وكيف يمكن اختبارها",
+          "تميز الاختلاف بين الملاحظة والاستنتاج",
+          "تميز بين المتغير المستقل والمتغير التابع والثوابت في التجربة",
+          "تطبق خطوات الطريقة العلمية في مواقف بسيطة"
+        ],
+        "sourcePages": "16–21"
+      },
+      "scientific-models": {
+        "title": "النماذج العلمية",
+        "questionCount": 24,
+        "objectives": [
+          "وصف أنواع مختلفة من النماذج",
+          "التمييز بين النموذج المادي والحاسوبي والفكري",
+          "توضيح أهمية النماذج في التواصل العلمي",
+          "شرح دور النماذج في اختبار التوقعات والفرضيات",
+          "تفسير سبب تغير النماذج مع تطور المعرفة"
+        ],
+        "sourcePages": "26–29"
+      },
+      "evaluate-explanations": {
+        "title": "تقويم التفسيرات العلمية",
+        "questionCount": 24,
+        "objectives": [
+          "تقويم الملاحظات والاستنتاجات",
+          "التمييز بين الدليل والادعاء",
+          "قراءة البيانات في الجداول والرسوم",
+          "الحكم على قوة الاستنتاج في ضوء الأدلة",
+          "توضيح أهمية تدوين الملاحظات وقابلية تكرار البيانات",
+          "تقويم بعض الإعلانات والمواد الدعائية علميًا"
+        ],
+        "sourcePages": "30–38"
+      },
+      "motion": {
+        "title": "الحركة",
+        "questionCount": 48,
+        "objectives": [
+          "تحديد الحركة باستخدام نقطة مرجعية",
+          "تفسير معنى المسافة والسرعة",
+          "اختيار الوحدة المناسبة للمسافة والزمن والسرعة",
+          "حساب السرعة من المسافة والزمن",
+          "حساب المسافة من السرعة والزمن",
+          "حساب الزمن من المسافة والسرعة",
+          "حساب السرعة المتوسطة",
+          "التمييز بين السرعة والسرعة المتجهة",
+          "توضيح معنى التسارع",
+          "حساب التسارع من تغير السرعة والزمن",
+          "اختيار الوحدة الصحيحة للتسارع",
+          "التعرف إلى السرعة اللحظية",
+          "تفسير تغير الحركة من خلال الرسوم أو البيانات"
+        ],
+        "sourcePages": "44–49"
+      },
+      "newton-laws": {
+        "title": "قوانين نيوتن للحركة",
+        "questionCount": 24,
+        "objectives": [
+          "تعريف القوة وقياسها",
+          "تحديد أثر القوة المحصلة في حركة الأجسام",
+          "التمييز بين القوى المتزنة وغير المتزنة",
+          "تفسير قانون نيوتن الأول والقصور الذاتي",
+          "استخدام قانون نيوتن الثاني في مواقف بسيطة",
+          "تفسير الاحتكاك واتجاهه",
+          "توضيح قانون نيوتن الثالث",
+          "التعرف إلى أثر الجاذبية والوزن"
+        ],
+        "sourcePages": "50–57"
+      },
+      "work-machines": {
+        "title": "الشغل والآلات البسيطة",
+        "questionCount": 24,
+        "objectives": [
+          "تحديد متى يحدث الشغل",
+          "التعرف إلى وحدة قياس الشغل",
+          "تفسير فائدة الآلات البسيطة",
+          "توضيح معنى الفائدة الآلية",
+          "وصف عمل الرافعة والبكرة",
+          "وصف عمل العجلة والمحور والمستوى المائل",
+          "التعرف إلى الإسفين والبرغي",
+          "تطبيق مفاهيم الآلات في مواقف حياتية"
+        ],
+        "sourcePages": "58–64"
+      },
+      "physical-properties": {
+        "title": "الخواص والتغيرات الفيزيائية",
+        "questionCount": 24,
+        "objectives": [
+          "تعريف المادة والخواص الفيزيائية",
+          "تمييز الكتلة والحجم",
+          "حساب الكثافة في مواقف بسيطة",
+          "وصف حالات المادة",
+          "تفسير الانصهار والتجمد",
+          "تفسير التبخر والغليان والتكاثف",
+          "التعرف إلى التسامي",
+          "تمييز التغير الفيزيائي عن التغير الكيميائي"
+        ],
+        "sourcePages": ""
+      },
+      "chemical-properties": {
+        "title": "الخواص والتغيرات الكيميائية",
+        "questionCount": 24,
+        "objectives": [
+          "تعريف الخاصية الكيميائية",
+          "تمييز التغير الكيميائي",
+          "التعرف إلى دلائل التفاعل الكيميائي",
+          "تمييز المواد المتفاعلة والناتجة",
+          "تطبيق قانون حفظ المادة",
+          "المقارنة بين التغير الفيزيائي والكيميائي",
+          "التعرف إلى الاحتراق والأكسدة",
+          "تفسير بعض التغيرات الكيميائية في الحياة اليومية"
+        ],
+        "sourcePages": ""
+      },
+      "matter-structure": {
+        "title": "تركيب المادة",
+        "questionCount": 24,
+        "objectives": [
+          "تتبع تطور مفهوم الذرة",
+          "التعرف إلى فكرة دالتون عن الذرات",
+          "وصف نموذج طومسون",
+          "تفسير تجربة رذرفورد ووجود النواة",
+          "تحديد مكونات الذرة وشحناتها",
+          "التمييز بين النواة والمنطقة المحيطة بها",
+          "التعرف إلى نموذج بور بصورة مبسطة",
+          "تفسير تعادل الذرة كهربائيًا"
+        ],
+        "sourcePages": ""
+      },
+      "elements-compounds-mixtures": {
+        "title": "العناصر والمركبات والمخاليط",
+        "questionCount": 24,
+        "objectives": [
+          "تعريف العنصر",
+          "تفسير معنى العدد الذري",
+          "قراءة الصفوف والمجموعات في الجدول الدوري",
+          "التمييز بين الفلزات واللافلزات وأشباه الفلزات",
+          "تعريف المركب والصيغة الكيميائية",
+          "تمييز المخلوط عن المركب",
+          "التعرف إلى المخاليط المتجانسة وغير المتجانسة",
+          "تحديد طرق فصل مخاليط بسيطة"
+        ],
+        "sourcePages": ""
+      },
+      "earth-jewels": {
+        "title": "جواهر الأرض",
+        "questionCount": 24,
+        "objectives": [
+          "تعريف المعدن",
+          "تفسير معنى البناء البلوري",
+          "استخدام اللون والمخدش في تعرف المعادن",
+          "تمييز أنواع البريق",
+          "استخدام مقياس الصلادة",
+          "التمييز بين الانفصام والمكسر",
+          "التعرف إلى خواص خاصة لبعض المعادن",
+          "ربط خصائص المعادن باستخداماتها"
+        ],
+        "sourcePages": ""
+      },
+      "rock-types": {
+        "title": "أنواع الصخور",
+        "questionCount": 24,
+        "objectives": [
+          "تعريف الصخر",
+          "وصف تكون الصخور النارية",
+          "التمييز بين النارية السطحية والجوفية",
+          "وصف تكون الصخور الرسوبية",
+          "التعرف إلى بعض أنواع الصخور الرسوبية",
+          "وصف تكون الصخور المتحولة",
+          "تفسير أثر الحرارة والضغط في التحول",
+          "توضيح دورة الصخور"
+        ],
+        "sourcePages": ""
+      },
+      "plate-tectonics": {
+        "title": "صفائح الأرض المتحركة",
+        "questionCount": 24,
+        "objectives": [
+          "توضيح فكرة انجراف القارات",
+          "التعرف إلى بعض أدلة فجنر",
+          "شرح انتشار قاع المحيط",
+          "تعريف الصفائح الصخرية",
+          "تفسير دور تيارات الحمل",
+          "التمييز بين الحدود المتباعدة والمتقاربة والتحويلية",
+          "ربط حركة الصفائح بالزلازل والبراكين",
+          "تفسير تغير سطح الأرض نتيجة حركة الصفائح"
+        ],
+        "sourcePages": ""
+      },
+      "weathering-erosion": {
+        "title": "التجوية والتعرية وأثرهما",
+        "questionCount": 24,
+        "objectives": [
+          "تعريف التجوية",
+          "التمييز بين التجوية الميكانيكية والكيميائية",
+          "التعرف إلى أمثلة التجوية بفعل الماء والجليد والجذور",
+          "تعريف التعرية",
+          "تحديد عوامل التعرية الرئيسة",
+          "تفسير الترسيب",
+          "توضيح تكون التربة",
+          "التعرف إلى طرق الحد من التعرية وحماية التربة"
+        ],
+        "sourcePages": ""
+      }
+    }
+  }
 };
