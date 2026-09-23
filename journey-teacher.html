@@ -564,8 +564,25 @@ function shortenShareUrl(longUrl){
   document.body.appendChild(script);
  });
 }
+function copyWithoutClipboardPermission(text){
+ const ta=document.createElement('textarea');
+ ta.value=String(text??'');
+ ta.setAttribute('readonly','');
+ ta.style.position='fixed';
+ ta.style.inset='-9999px auto auto -9999px';
+ ta.style.opacity='0';
+ document.body.appendChild(ta);
+ ta.focus();
+ ta.select();
+ try{ta.setSelectionRange(0,ta.value.length)}catch(e){}
+ let ok=false;
+ try{ok=document.execCommand('copy')}catch(e){ok=false}
+ ta.remove();
+ return ok;
+}
 async function copyTextSafely(text,message){
- try{await navigator.clipboard.writeText(text);alert(message)}catch(e){prompt('انسخ الرابط:',text)}
+ if(copyWithoutClipboardPermission(text)){alert(message);return}
+ prompt('انسخ الرابط:',text);
 }
 function renderTasks(){
  $('tasksBody').innerHTML=tasks.map(t=>{const link=new URL('j/',location.href).href+'?t='+encodeURIComponent(t.id);return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(taskLessonsLabel(t))}</td><td>${esc(normalizeClassName(t.className)||'الكل')}</td><td>${esc(fmt(t.startAt))}<br>${esc(fmt(t.endAt))}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td><button class="smallbtn copy" data-copy="${link}">نسخ رابط قصير</button></td><td><button class="smallbtn toggle" data-toggle="${t.id}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${t.id}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
@@ -1046,7 +1063,7 @@ function generatePortfolioReport(kind){
  $('reportModalTitle').textContent=title; $('reportPaper').classList.remove('student-portfolio-paper'); $('reportPaper').innerHTML=body; $('reportModal').classList.remove('hidden');
 }
 
-async function copyReportText(){const text=$('reportPaper').innerText;try{await navigator.clipboard.writeText(text);alert('تم نسخ نص التقرير.')}catch{prompt('انسخ نص التقرير:',text)}}
+async function copyReportText(){const text=$('reportPaper').innerText;if(copyWithoutClipboardPermission(text)){alert('تم نسخ نص التقرير.')}else{prompt('انسخ نص التقرير:',text)}}
 
 document.addEventListener('DOMContentLoaded',init);
 </script>
