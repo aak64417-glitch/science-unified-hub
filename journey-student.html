@@ -419,12 +419,45 @@ function isEnrichmentQuestion(q){
 function buildQuiz(){
  state.i=0;state.score=0;state.correct=0;state.streak=0;state.bestStreak=0;state.logs=[];
  const lessonIds=activeLessonIds();
- const pool=DATA.questions.filter(q=>lessonIds.includes(q.lesson));
- if(!pool.length){alert('لا توجد أسئلة متاحة للمحتوى المحدد.');return false}
- const corePool=pool.filter(q=>!isEnrichmentQuestion(q));
- const recallPool=corePool.filter(q=>!q.difficulty || q.difficulty==='remember');
 
- if(state.mode==='remedial'){
+let selectedIds=[];
+if(state.task?.questionIds){
+  try{
+    const parsed=JSON.parse(String(state.task.questionIds));
+    if(Array.isArray(parsed)){
+      selectedIds=parsed.map(String);
+    }
+  }catch(_){
+    selectedIds=String(state.task.questionIds)
+      .split(',')
+      .map(x=>x.trim())
+      .filter(Boolean);
+  }
+}
+
+let pool=DATA.questions.filter(
+  q=>lessonIds.includes(q.lesson)
+);
+
+if(selectedIds.length){
+  const wanted=new Set(selectedIds);
+  pool=pool.filter(q=>wanted.has(String(q.id)));
+}
+
+if(!pool.length){
+  alert('لا توجد أسئلة متاحة للمحتوى المحدد.');
+  return false;
+}
+
+const corePool=pool.filter(q=>!isEnrichmentQuestion(q));
+const recallPool=corePool.filter(
+  q=>!q.difficulty || q.difficulty==='remember'
+);
+
+if(selectedIds.length){
+  state.quiz=shuffle(pool).map(randomizeChoice);
+}
+else if(state.mode==='remedial'){
   const weakByLesson={};
   lessonIds.forEach(id=>weakByLesson[id]=readWeakConcepts(id));
   const weakRecall=recallPool.filter(q=>(weakByLesson[q.lesson]||[]).includes(q.concept));
