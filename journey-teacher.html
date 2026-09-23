@@ -180,6 +180,17 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
  .student-portfolio-paper .sp-chart{height:64mm}
 }
 
+
+.task-lessons-box{grid-column:1/-1;border:1px solid rgba(118,203,255,.18);border-radius:18px;padding:14px;background:rgba(255,255,255,.025)}
+.task-lessons-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.task-lesson-actions{display:flex;gap:8px;flex-wrap:wrap}
+.task-lesson-actions button{border:1px solid rgba(118,203,255,.22);background:rgba(255,255,255,.06);color:inherit;border-radius:12px;padding:8px 12px;font-weight:700}
+.task-lessons-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.task-lesson-option{display:flex;align-items:center;gap:10px;border:1px solid rgba(118,203,255,.16);border-radius:14px;padding:11px 12px;background:rgba(255,255,255,.035);cursor:pointer}
+.task-lesson-option input{width:auto;accent-color:var(--teal)}
+.task-lesson-option span{font-weight:800}
+.task-lesson-option:hover{border-color:rgba(66,222,212,.45)}
+@media(max-width:700px){.task-lessons-grid{grid-template-columns:1fr}}
 </style></head>
 <body><div class="wrap">
 <header class="topbar glass"><div class="brand"><div class="logo">📊</div><div><h1>لوحة المعلم</h1><p id="teacherSub"></p></div></div><div class="actions"><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="journey-student.html">معاينة منصة الطالب</a></div></header>
@@ -267,13 +278,16 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
       <div class="modal-actions"><button id="printReport" class="btn">طباعة / حفظ PDF</button><button id="copyReport" class="btn secondary">نسخ نص التقرير</button></div>
     </div></div>
 
-<div id="taskModal" class="modal hidden"><div class="modal-card glass"><div class="section-head" style="margin-top:0"><div><h3>إنشاء تكليف منزلي</h3><p>بعد الحفظ سيظهر رابط جاهز للإرسال للطلاب.</p></div><button id="closeTask" class="btn secondary">إغلاق</button></div><div class="form-grid"><div class="field"><label>اسم التكليف</label><input id="taskTitle" placeholder="مثال: تدريب النماذج العلمية"></div><div class="field"><label>النوع</label><select id="taskMode"><option value="training">تدريب</option><option value="exam">اختبار</option><option value="remedial">خطة علاجية</option><option value="enrich">إثراء</option></select></div><div class="field"><label>الدرس</label><select id="taskLesson"></select></div><div class="field"><label>الفصل المستهدف</label><select id="taskClass"><option>الكل</option></select></div><div class="field"><label>عدد الأسئلة</label><input id="taskCount" type="number" min="3" max="20" value="10"></div><div class="field"><label>زمن السؤال (للاختبار)</label><input id="taskTime" type="number" min="10" max="120" value="30"></div><div class="field"><label>عدد المحاولات</label><input id="taskAttempts" type="number" min="1" max="10" value="1"></div><div class="field"><label>بداية التكليف</label><input id="taskStart" type="datetime-local"></div><div class="field"><label>نهاية التكليف</label><input id="taskEnd" type="datetime-local"></div></div><div class="modal-actions"><button id="saveTask" class="btn">إنشاء التكليف والرابط</button></div></div></div>
+<div id="taskModal" class="modal hidden"><div class="modal-card glass"><div class="section-head" style="margin-top:0"><div><h3>إنشاء تكليف منزلي</h3><p>بعد الحفظ سيظهر رابط جاهز للإرسال للطلاب.</p></div><button id="closeTask" class="btn secondary">إغلاق</button></div><div class="form-grid"><div class="field"><label>اسم التكليف</label><input id="taskTitle" placeholder="مثال: تدريب النماذج العلمية"></div><div class="field"><label>النوع</label><select id="taskMode"><option value="training">تدريب</option><option value="exam">اختبار</option><option value="remedial">خطة علاجية</option><option value="enrich">إثراء</option></select></div><div class="task-lessons-box"><div class="task-lessons-head"><div><strong>الدروس المحددة للتكليف</strong><br><small>اختر درسًا واحدًا أو أكثر.</small></div><div class="task-lesson-actions"><button type="button" id="taskLessonsAll">تحديد الكل</button><button type="button" id="taskLessonsNone">إلغاء التحديد</button></div></div><div id="taskLessonChoices" class="task-lessons-grid"></div></div><div class="field"><label>الفصل المستهدف</label><select id="taskClass"><option>الكل</option></select></div><div class="field"><label>عدد الأسئلة</label><input id="taskCount" type="number" min="3" max="20" value="10"></div><div class="field"><label>زمن السؤال (للاختبار)</label><input id="taskTime" type="number" min="10" max="120" value="30"></div><div class="field"><label>عدد المحاولات</label><input id="taskAttempts" type="number" min="1" max="10" value="1"></div><div class="field"><label>بداية التكليف</label><input id="taskStart" type="datetime-local"></div><div class="field"><label>نهاية التكليف</label><input id="taskEnd" type="datetime-local"></div></div><div class="modal-actions"><button id="saveTask" class="btn">إنشاء التكليف والرابط</button></div></div></div>
 
 <script>
 const LESSONS={
  'science-processes':'العلم وعملياته',
  'scientific-models':'النماذج العلمية',
  'evaluate-explanations':'تقويم التفسيرات العلمية',
+ 'motion':'الحركة',
+ 'newton-laws':'قوانين نيوتن للحركة',
+ 'work-machines':'الشغل والآلات البسيطة',
  'all':'جميع الدروس'
 };
 const $=id=>document.getElementById(id);
@@ -439,7 +453,9 @@ function init(){
  $('teacherSub').textContent='مدرسة أبي الدرداء المتوسطة | المعلم: علي البقاشي';
  $('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام 1448هـ';
  CLASSES.forEach(c=>{$('classFilter').insertAdjacentHTML('beforeend',`<option>${c}</option>`);$('taskClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('portfolioClass')) $('portfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentsClass')) $('studentsClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentPortfolioClass')) $('studentPortfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`)});
- $('taskLesson').innerHTML='<option value="all">جميع الدروس</option>'+Object.entries(LESSONS).filter(([k])=>k!=='all').map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+ renderTaskLessonChoices();
+ if($('taskLessonsAll')) $('taskLessonsAll').onclick=()=>document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>x.checked=true);
+ if($('taskLessonsNone')) $('taskLessonsNone').onclick=()=>document.querySelectorAll('#taskLessonChoices input[type="checkbox"]').forEach(x=>x.checked=false);
  $('apiUrl').value=DEFAULT_API_URL; localStorage.setItem('sj_teacher_api',DEFAULT_API_URL);
  $('teacherKey').value=localStorage.getItem('sj_teacher_key')||'';
  $('lastUpdate').textContent='غير محمّل بعد';
@@ -473,9 +489,97 @@ function init(){
 function switchTab(tab){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));['tasks','results','students','portfolio'].forEach(x=>$(x+'Tab').classList.toggle('hidden',x!==tab));if(tab==='students')renderStudentsAdmin()}
 function renderAll(){stats();renderTasks();renderResults();renderStudentsAdmin()}
 function stats(){const students=new Set(results.map(x=>x.className+'-'+x.studentName)).size;$('sTasks').textContent=tasks.length;$('sStudents').textContent=students;$('sTraining').textContent=results.filter(x=>x.type!=='test'&&x.type!=='exam').length;$('sTests').textContent=results.filter(x=>x.type==='test'||x.type==='exam').length}
+function availableTaskLessons(){
+ return Object.entries(LESSONS).filter(([id])=>id!=='all');
+}
+function renderTaskLessonChoices(selected=[]){
+ const box=$('taskLessonChoices'); if(!box)return;
+ const chosen=new Set(Array.isArray(selected)?selected:selectedLessonIds({lessonIds:selected}));
+ box.innerHTML=availableTaskLessons().map(([id,title])=>`
+   <label class="task-lesson-option">
+     <input type="checkbox" value="${esc(id)}" ${chosen.has(id)?'checked':''}>
+     <span>${esc(title)}</span>
+   </label>`).join('');
+}
+function selectedTaskLessonIds(){
+ return [...document.querySelectorAll('#taskLessonChoices input[type="checkbox"]:checked')]
+   .map(x=>String(x.value||'').trim()).filter(Boolean);
+}
+function selectedLessonIds(task){
+ const raw=task?.lessonIds;
+ if(Array.isArray(raw)) return raw.map(String).map(x=>x.trim()).filter(Boolean);
+ if(raw){
+   try{const parsed=JSON.parse(String(raw)); if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean)}catch(_){}
+   return String(raw).split(',').map(x=>x.replace(/[\[\]"]/g,'').trim()).filter(Boolean);
+ }
+ const legacy=String(task?.lesson||'').trim();
+ if(!legacy || legacy==='all') return [];
+ try{const parsed=JSON.parse(legacy); if(Array.isArray(parsed)) return parsed.map(String).map(x=>x.trim()).filter(Boolean)}catch(_){}
+ return legacy.split(',').map(x=>x.replace(/[\[\]"]/g,'').trim()).filter(Boolean);
+}
+function taskLessonsLabel(task){
+ const ids=selectedLessonIds(task);
+ if(!ids.length){
+   const legacy=String(task?.lesson||'').trim();
+   return legacy==='all'?'جميع الدروس':(LESSONS[legacy]||legacy||'—');
+ }
+ return ids.map(id=>LESSONS[id]||id).join(' + ');
+}
+
+const SHORT_LINK_CACHE_KEY='sj_teacher_short_links_v1';
+function readShortLinkCache(){
+ try{return JSON.parse(localStorage.getItem(SHORT_LINK_CACHE_KEY)||'{}')||{}}catch(e){return {}}
+}
+function saveShortLinkCache(cache){
+ try{localStorage.setItem(SHORT_LINK_CACHE_KEY,JSON.stringify(cache||{}))}catch(e){}
+}
+function shortenShareUrl(longUrl){
+ const cache=readShortLinkCache();
+ if(cache[longUrl]) return Promise.resolve(cache[longUrl]);
+ return new Promise((resolve,reject)=>{
+  const callbackName='isgdShort_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+  const script=document.createElement('script');
+  let done=false;
+  const timer=setTimeout(()=>finish(new Error('انتهت مهلة إنشاء الرابط القصير.')),12000);
+  function cleanup(){
+   clearTimeout(timer);
+   try{script.remove()}catch(e){}
+   try{delete window[callbackName]}catch(e){window[callbackName]=undefined}
+  }
+  function finish(err,value){
+   if(done)return; done=true; cleanup();
+   if(err) reject(err); else resolve(value);
+  }
+  window[callbackName]=data=>{
+   if(data&&data.shorturl){
+    cache[longUrl]=String(data.shorturl);
+    saveShortLinkCache(cache);
+    finish(null,String(data.shorturl));
+   }else{
+    finish(new Error((data&&data.errormessage)||'تعذر إنشاء الرابط القصير.'));
+   }
+  };
+  script.onerror=()=>finish(new Error('تعذر الاتصال بخدمة اختصار الروابط.'));
+  script.src='https://is.gd/create.php?format=json&callback='+encodeURIComponent(callbackName)+'&url='+encodeURIComponent(longUrl);
+  document.body.appendChild(script);
+ });
+}
+async function copyTextSafely(text,message){
+ try{await navigator.clipboard.writeText(text);alert(message)}catch(e){prompt('انسخ الرابط:',text)}
+}
 function renderTasks(){
- $('tasksBody').innerHTML=tasks.map(t=>{const link=new URL('j/',location.href).href+'?t='+encodeURIComponent(t.id);return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(LESSONS[t.lesson]||t.lesson)}</td><td>${esc(t.className)}</td><td>${esc(fmt(t.startAt))}<br>${esc(fmt(t.endAt))}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td><button class="smallbtn copy" data-copy="${link}">نسخ الرابط</button></td><td><button class="smallbtn toggle" data-toggle="${t.id}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${t.id}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
- document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);alert('تم نسخ رابط التكليف.')}catch{prompt('انسخ رابط التكليف:',b.dataset.copy)}});
+ $('tasksBody').innerHTML=tasks.map(t=>{const link=new URL('j/',location.href).href+'?t='+encodeURIComponent(t.id);return `<tr><td><b>${esc(t.title)}</b><br><small>${esc(t.id)}</small></td><td>${esc(typeName(t.mode))}</td><td>${esc(taskLessonsLabel(t))}</td><td>${esc(normalizeClassName(t.className)||'الكل')}</td><td>${esc(fmt(t.startAt))}<br>${esc(fmt(t.endAt))}</td><td><span class="task-status ${t.active?'on':'off'}">${t.active?'مفعل':'موقوف'}</span></td><td><button class="smallbtn copy" data-copy="${link}">نسخ رابط قصير</button></td><td><button class="smallbtn toggle" data-toggle="${t.id}">${t.active?'إيقاف':'تفعيل'}</button> <button class="smallbtn remove" data-del="${t.id}">حذف</button></td></tr>`}).join('')||'<tr><td colspan="8">لا توجد تكليفات بعد.</td></tr>';
+ document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{
+  const originalText=b.textContent;
+  b.disabled=true; b.textContent='جارٍ الاختصار...';
+  try{
+   const shortUrl=await shortenShareUrl(b.dataset.copy);
+   await copyTextSafely(shortUrl,'تم نسخ الرابط القصير.');
+  }catch(e){
+   console.error(e);
+   await copyTextSafely(b.dataset.copy,'تعذر الاختصار مؤقتًا؛ تم نسخ الرابط الأصلي بدلًا منه.');
+  }finally{b.disabled=false;b.textContent=originalText}
+ });
  document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=async()=>{const t=tasks.find(x=>String(x.id)===String(b.dataset.toggle));if(!t)return;try{b.disabled=true;await apiAction('toggleTask',{id:t.id,active:String(!t.active)});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}});
  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('هل تريد حذف هذا التكليف؟'))return;try{b.disabled=true;await apiAction('deleteTask',{id:b.dataset.del});await loadTeacher()}catch(e){alert(e.message||e)}finally{b.disabled=false}})
 }
@@ -613,12 +717,25 @@ async function syncStudentsFromTracker(){
 async function createTask(){
  const title=$('taskTitle').value.trim();
  if(!title){alert('اكتب اسم التكليف.');return}
+ const lessonIds=selectedTaskLessonIds();
+ if(!lessonIds.length){alert('اختر درسًا واحدًا على الأقل لهذا التكليف.');return}
  const btn=$('saveTask');btn.disabled=true;
  try{
-  await apiAction('createTask',{title,mode:$('taskMode').value,lesson:$('taskLesson').value,className:$('taskClass').value,count:$('taskCount').value,timePerQuestion:$('taskTime').value,attempts:$('taskAttempts').value,startAt:$('taskStart').value,endAt:$('taskEnd').value});
+  await apiAction('createTask',{
+   title,
+   mode:$('taskMode').value,
+   lesson:lessonIds[0],
+   lessonIds:JSON.stringify(lessonIds),
+   className:$('taskClass').value,
+   count:$('taskCount').value,
+   timePerQuestion:$('taskTime').value,
+   attempts:$('taskAttempts').value,
+   startAt:$('taskStart').value,
+   endAt:$('taskEnd').value
+  });
   $('taskModal').classList.add('hidden');
   await loadTeacher();
-  alert('تم إنشاء التكليف وحفظه في قاعدة البيانات.');
+  alert(`تم إنشاء التكليف للدروس المحددة فقط (${lessonIds.length}).`);
  }catch(e){alert(e.message||e)}finally{btn.disabled=false}
 }
 const RESULT_CLASS_ORDER={'1/1':1,'2/1':2,'3/1':3,'4/1':4};
