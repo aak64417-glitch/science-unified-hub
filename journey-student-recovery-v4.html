@@ -11881,35 +11881,31 @@ async function sendResultFast(payload){
 
   queuePendingResult(payload);
 
-  // أولًا: ربما حُفظت سابقًا ولكن لم يصل التأكيد للجهاز.
-  try{
-    if(await confirmSavedResult(payload)){
-      markPendingSent(payload.submissionId);
-      return true;
-    }
-  }catch(e){}
+  const r = await jsonp({
+    action:'submitResult',
+    submissionId:payload.submissionId || '',
+    type:payload.type || 'training',
+    taskId:payload.taskId || '',
+    taskTitle:payload.taskTitle || '',
+    timestamp:payload.timestamp || new Date().toISOString(),
+    studentName:payload.studentName || '',
+    className:payload.className || '',
+    studentCode:payload.studentCode || '',
+    lesson:payload.lesson || '',
+    score:payload.score || 0,
+    total:payload.total || 0,
+    percent:payload.percent || 0,
+    level:payload.level || '',
+    durationSec:payload.durationSec || 0,
+    bestStreak:payload.bestStreak || 0
+  },15000);
 
-  // إرسال النتيجة.
-  await fetch(api(),{
-    method:'POST',
-    mode:'no-cors',
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body:JSON.stringify(payload)
-  });
-
-  // لا نحذفها من قائمة الانتظار إلا بعد التأكد من وجودها بالخادم.
-  for(let i=0;i<4;i++){
-    await waitResult(1000 + (i*750));
-
-    try{
-      if(await confirmSavedResult(payload)){
-        markPendingSent(payload.submissionId);
-        return true;
-      }
-    }catch(e){}
+  if(!r || r.ok === false){
+    throw new Error((r && r.message) || 'submit-failed');
   }
 
-  throw new Error('result-not-confirmed');
+  markPendingSent(payload.submissionId);
+  return true;
 }
 
 async function flushPendingResults(){
