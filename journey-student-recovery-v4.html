@@ -11869,7 +11869,7 @@ function confirmSavedResult(payload){
     taskId:payload.taskId||'',
     studentCode:payload.studentCode||'',
     timestamp:payload.timestamp||''
-  }).then(r=>!!(r && r.ok && r.found));
+},5000).then(r=>!!(r && r.ok && r.found));
 }
 
 function waitResult(ms){
@@ -11931,7 +11931,7 @@ async function finishQuiz(){clearInterval(state.timer);$('progressBar').style.wi
 }
 function resultNext(){const target=state.lesson==='all'?(state.logs[0]?.lesson||DATA.lessons[0].id):state.lesson;if(state.lastPct<80)openIdentity('remedial',target);else openIdentity('enrich',target)}
 
-function jsonp(params){return new Promise((resolve,reject)=>{const cb='cb_'+Date.now()+'_'+Math.floor(Math.random()*9999),s=document.createElement('script'),to=setTimeout(()=>{clean();reject(new Error('timeout'))},35000);window[cb]=d=>{clean();resolve(d)};function clean(){clearTimeout(to);delete window[cb];s.remove()}const u=new URL(api());Object.entries({...params,callback:cb}).forEach(([k,v])=>u.searchParams.set(k,v));s.src=u.toString();s.onerror=()=>{clean();reject(new Error('network'))};document.body.appendChild(s)})}
+function jsonp(params,timeoutMs=35000)){return new Promise((resolve,reject)=>{const cb='cb_'+Date.now()+'_'+Math.floor(Math.random()*9999),s=document.createElement('script'),to=setTimeout(()=>{clean();reject(new Error('timeout'))},timeoutMs);window[cb]=d=>{clean();resolve(d)};function clean(){clearTimeout(to);delete window[cb];s.remove()}const u=new URL(api());Object.entries({...params,callback:cb}).forEach(([k,v])=>u.searchParams.set(k,v));s.src=u.toString();s.onerror=()=>{clean();reject(new Error('network'))};document.body.appendChild(s)})}
 
 document.addEventListener('DOMContentLoaded',init);
 
