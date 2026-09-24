@@ -11758,8 +11758,14 @@ async function loadTask(id){
  if(!api()){document.documentElement.classList.remove('task-loading');alert('هذا رابط تكليف منزلي، لكن رابط منصة المعلم غير مضبوط على هذا الجهاز. افتح المنصة المنشورة بعد إتمام الربط.');return}
  try{
    const overridesPromise=loadQuestionOverridesFast();
-   let r=await jsonp({action:'getTaskBundle',id});
-   if(!r?.ok) r=await jsonp({action:'getTask',id});
+   let r;
+try{
+  r=await jsonp({action:'getTaskBundle',id});
+}catch(e){
+  console.warn('getTaskBundle failed; trying getTask',e);
+  r=null;
+}
+if(!r?.ok) r=await jsonp({action:'getTask',id});
    await overridesPromise;
    if(!r?.ok)throw new Error(r?.message||'تعذر فتح التكليف');
    const t=r.task;
