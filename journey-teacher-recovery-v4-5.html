@@ -488,21 +488,15 @@ async function loadTeacher(){
   updatePortfolioTasks();
   updateResultFilters();
   updateStudentPortfolioStudents();
-  try{
-   await loadAllStudents();
-   renderStudentsAdmin();
-   updateStudentPortfolioStudents();
-  }catch(studentErr){
-   console.warn('تعذر تحديث قوائم الطلاب دون التأثير على النتائج',studentErr);
-  }
+  
  }catch(err){
   console.error(err);
   if(hadCache){
-   setStatus('تعذر التحديث من الخادم؛ تم الإبقاء على آخر نتائج محفوظة على هذا الجهاز.');
+    setStatus('تعذر التحديث من الخادم؛ تم الإبقاء على آخر نتائج محفوظة على هذا الجهاز.');
   }else{
-   setStatus('تعذر تحميل لوحة المعلم: '+(err.message||err));
+    setStatus('تعذر تحميل لوحة المعلم: '+(err.message||err));
   }
- }finally{$('loadBtn').disabled=false}
+}finally{$('loadBtn').disabled=false}
 }
 async function apiAction(action,params={}){
  const key=getKey();
