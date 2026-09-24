@@ -11863,17 +11863,66 @@ function pendingResults(){try{return JSON.parse(localStorage.getItem(PENDING_RES
 function savePendingResults(rows){try{localStorage.setItem(PENDING_RESULTS_KEY,JSON.stringify((rows||[]).slice(-20)))}catch(e){}}
 function queuePendingResult(payload){const rows=pendingResults();if(!rows.some(x=>x.submissionId===payload.submissionId))rows.push(payload);savePendingResults(rows)}
 function markPendingSent(id){savePendingResults(pendingResults().filter(x=>x.submissionId!==id))}
-function sendResultFast(payload){
- if(!api())return Promise.reject(new Error('no-api'));
- queuePendingResult(payload);
- return fetch(api(),{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
-  .then(()=>{markPendingSent(payload.submissionId);return true});
+function confirmSavedResult(payload){
+  return jsonp({
+    action:'confirmResult',
+    taskId:payload.taskId||'',
+    studentCode:payload.studentCode||'',
+    timestamp:payload.timestamp||''
+  }).then(r=>!!(r && r.ok && r.found));
 }
+
+function waitResult(ms){
+  return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+async function sendResultFast(payload){
+  if(!api()) throw new Error('no-api');
+
+  queuePendingResult(payload);
+
+  // أولًا: ربما حُفظت سابقًا ولكن لم يصل التأكيد للجهاز.
+  try{
+    if(await confirmSavedResult(payload)){
+      markPendingSent(payload.submissionId);
+      return true;
+    }
+  }catch(e){}
+
+  // إرسال النتيجة.
+  await fetch(api(),{
+    method:'POST',
+    mode:'no-cors',
+    keepalive:true,
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(payload)
+  });
+
+  // لا نحذفها من قائمة الانتظار إلا بعد التأكد من وجودها بالخادم.
+  for(let i=0;i<4;i++){
+    await waitResult(1000 + (i*750));
+
+    try{
+      if(await confirmSavedResult(payload)){
+        markPendingSent(payload.submissionId);
+        return true;
+      }
+    }catch(e){}
+  }
+
+  throw new Error('result-not-confirmed');
+}
+
 async function flushPendingResults(){
- if(!api())return;
- for(const payload of pendingResults()){
-   try{await fetch(api(),{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});markPendingSent(payload.submissionId)}catch(e){break}
- }
+  if(!api()) return;
+
+  for(const payload of pendingResults()){
+    try{
+      await sendResultFast(payload);
+    }catch(e){
+      break;
+    }
+  }
 }
 
 async function finishQuiz(){clearInterval(state.timer);$('progressBar').style.width='100%';const total=state.quiz.length,pct=Math.round(state.score/total*100),lvl=level(pct),bd=breakdown(),duration=Math.round((Date.now()-state.startedAt)/1000),weak=weakConcepts();if(state.lesson!=='all')localStorage.setItem('weak_concepts_'+state.lesson,JSON.stringify(weak));screen('resultScreen');$('scorePct').textContent=pct+'%';$('scoreRing').style.setProperty('--pct',pct+'%');$('resultTitle').textContent=state.mode==='exam'||state.task?.mode==='exam'?'نتيجة الاختبار':state.mode==='remedial'?'نتيجة المسار العلاجي':state.mode==='enrich'?'نتيجة المسار الإثرائي':'نتيجة التدريب';$('resultLevel').textContent=lvl;$('resultText').textContent=`${state.student.name} — حصلت على ${state.score} من ${total}. أعلى سلسلة صحيحة: ${state.bestStreak}. زمن النشاط: ${duration} ثانية.`;$('breakdown').innerHTML=DATA.lessons.map(l=>{const x=bd[l.id],p=x.total?Math.round(x.correct/x.total*100):0;return `<div class="break"><span>${esc(l.title)}</span><strong>${x.correct}/${x.total} (${p}%)</strong></div>`}).join('');let rec=[];if(weak.length)rec.push({h:'🩺 مفاهيم تحتاج تعزيزًا',p:weak.map(x=>conceptName(state.lesson==='all'?state.logs.find(z=>z.concept===x)?.lesson:state.lesson,x)).join('، ')});else rec.push({h:'🏅 مستوى إتقان مرتفع',p:'أظهرت النتائج إتقانًا جيدًا للمفاهيم التي ظهرت في هذه الجولة.'});rec.push({h:'الخطوة المقترحة',p:pct<80?'انتقل إلى المسار العلاجي ثم أعد التدريب.':'انتقل إلى المسار الإثرائي أو الاختبار الشامل لتثبيت الإتقان.'});$('recommendations').innerHTML=rec.map(x=>`<div class="rec"><h4>${esc(x.h)}</h4><p>${esc(x.p)}</p></div>`).join('');$('resultAction').textContent=pct<80?'ابدأ المسار العلاجي':'ابدأ المسار الإثرائي';$('sendStatus').textContent=api()?'جاري إرسال التقرير إلى منصة المعلم...':'تم حفظ النتيجة على هذا الجهاز. بعد ربط المنصة تصل التقارير إلى المعلم تلقائيًا.';
