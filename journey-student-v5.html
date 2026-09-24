@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>رحلة عالم العلوم V5</title>
+<style>
+body{
+  margin:0;
+  background:#07111f;
+  color:white;
+  font-family:Tahoma,Arial,sans-serif;
+  display:grid;
+  place-items:center;
+  min-height:100vh;
+}
+#msg{
+  padding:25px;
+  text-align:center;
+  font-size:1.15rem;
+}
+</style>
+</head>
+<body>
+
+<div id="msg">جاري تشغيل رحلة عالم العلوم V5...</div>
+
+<script>
+(async function(){
+
+  const stamp = Date.now();
+
+  const sources = [
+    './journey-student-recovery-v4.html?_v=' + stamp,
+    'https://raw.githubusercontent.com/aak64417-glitch/science-unified-hub/main/journey-student-recovery-v4.html?_v=' + stamp
+  ];
+
+  let html = '';
+
+  for(const src of sources){
+    try{
+      const r = await fetch(src,{
+        cache:'no-store'
+      });
+
+      if(r.ok){
+        html = await r.text();
+        if(html.includes('function sendResultFast')){
+          break;
+        }
+      }
+    }catch(e){}
+  }
+
+  if(!html){
+    document.getElementById('msg').textContent =
+      'تعذر تحميل منصة الطالب V5.';
+    return;
+  }
+
+  html = html.replace(
+    '<title>رحلة عالم العلوم - نسخة الاستعادة</title>',
+    '<title>رحلة عالم العلوم V5</title>'
+  );
+
+  document.open();
+  document.write(html);
+  document.close();
+
+})();
+</script>
+
+</body>
+</html>
