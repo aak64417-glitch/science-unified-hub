@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>رحلة عالم العلوم V5 Final</title>
+<style>
+body{
+  margin:0;background:#07111f;color:#fff;
+  font-family:Tahoma,Arial,sans-serif;
+  min-height:100vh;display:grid;place-items:center
+}
+#boot{padding:30px;text-align:center;font-size:20px}
+</style>
+</head>
+<body>
+
+<div id="boot">جاري تشغيل رحلة عالم العلوم V5...</div>
+
+<script>
+(async function(){
+
+const src =
+'https://raw.githubusercontent.com/aak64417-glitch/science-unified-hub/main/journey-student-recovery-v4.html?v='
++ Date.now();
+
+const res = await fetch(src,{cache:'no-store'});
+
+if(!res.ok){
+  throw new Error('تعذر تحميل منصة العلوم');
+}
+
+let html = await res.text();
+
+const startText = 'async function finishQuiz(){';
+const endText = '\nfunction resultNext()';
+
+const start = html.indexOf(startText);
+const end = html.indexOf(endText,start);
+
+if(start < 0 || end < 0){
+  throw new Error('تعذر تجهيز V5');
+}
+
+const finishV5 = `
+async function finishQuiz(){
+
+  try{ clearInterval(state.timer); }catch(e){}
+
+  const total = Math.max(
+    1,
+    Array.isArray(state.quiz) ? state.quiz.length : 0
+  );
+
+  const score = Number(state.score || 0);
+  const pct = Math.round((score / total) * 100);
+
+  let lvl = '';
+  try{
+    lvl = level(pct);
+  }catch(e){
+    lvl = pct >= 80 ? 'متقن' : 'يحتاج تعزيز';
+  }
+
+  const duration = Math.max(
+    0,
+    Math.round(
+      (Date.now() - (state.startedAt || Date.now())) / 1000
+    )
+  );
+
+  let weak = [];
+  try{
+    weak = weakConcepts();
+  }catch(e){}
+
+  /* عرض النتيجة - أي خطأ هنا لا يمنع الإرسال */
+  try{
+    screen('resultScreen');
+
+    if($('progressBar'))
+      $('progressBar').style.width='100%';
+
+    if($('scorePct'))
+      $('scorePct').textContent=pct+'%';
+
+    if($('scoreRing'))
+      $('scoreRing').style.setProperty('--pct',pct+'%');
+
+    if($('resultTitle'))
+      $('resultTitle').textContent =
+        state.task?.mode === 'exam' || state.mode === 'exam'
+        ? 'نتيجة الاختبار'
+        : 'نتيجة التدريب';
+
+    if($('resultLevel'))
+      $('resultLevel').textContent=lvl;
+
+    if($('resultText')){
+      $('resultText').textContent =
+        (state.student?.name || 'الطالب') +
+        ' — حصلت على ' + score +
+        ' من ' + total +
+        '. زمن النشاط: ' + duration + ' ثانية.';
+    }
+
+    /*
+      في التكليف لا نظهر مسار علاجي أو إثرائي للطالب
+      بعد نهاية التكليف.
+    */
+    if(state.task && $('resultAction')){
+      $('resultAction').style.display='none';
+    }
+
+  }catch(e){
+    console.warn('V5 result UI:',e);
+  }
+
+  const payload = {
+    submissionId:
+      'V5_' + Date.now() + '_' +
+      Math.random().toString(36).slice(2,8),
+
+    type:
+      (state.mode === 'exam' || state.task?.mode === 'exam')
+      ? 'test'
+      : 'training',
+
+    taskId: state.task?.id || '',
+    taskTitle: state.task?.title || '',
+
+    timestamp: new Date().toISOString(),
+
+    studentName: state.student?.name || '',
+    className: state.student?.className || '',
+    studentCode: state.student?.code || '',
+
+    lesson:
+      state.lesson ||
+      state.task?.lessonIds?.[0] ||
+      '',
+
+    score: score,
+    total: total,
+    percent: pct,
+    level: lvl,
+    durationSec: duration,
+    bestStreak: Number(state.bestStreak || 0)
+  };
+
+  /* نسخة احتياطية فقط - لا توقف الإرسال */
+  try{
+    localStorage.setItem(
+      'last_science_result_v5',
+      JSON.stringify(payload)
+    );
+  }catch(e){}
+
+  try{
+
+    if($('sendStatus'))
+      $('sendStatus').textContent =
+        'جاري إرسال التقرير إلى منصة المعلم...';
+
+    if(!api()){
+      throw new Error('رابط منصة المعلم غير متاح');
+    }
+
+    /*
+      نفس مسار submitResult الذي نجح
+      في اختبار V5 ووصل بالفعل للوحة المعلم.
+    */
+    const r = await jsonp({
+
+      action:'submitResult',
+
+      submissionId:payload.submissionId,
+      type:payload.type,
+
+      taskId:payload.taskId,
+      taskTitle:payload.taskTitle,
+
+      timestamp:payload.timestamp,
+
+      studentName:payload.studentName,
+      className:payload.className,
+      studentCode:payload.studentCode,
+
+      lesson:payload.lesson,
+
+      score:payload.score,
+      total:payload.total,
+      percent:payload.percent,
+
+      level:payload.level,
+      durationSec:payload.durationSec,
+      bestStreak:payload.bestStreak
+
+    },20000);
+
+    if(!r || r.ok === false){
+      throw new Error(
+        (r && r.message)
+        ? r.message
+        : 'رفض الخادم النتيجة'
+      );
+    }
+
+    if($('sendStatus'))
+      $('sendStatus').textContent =
+        '✅ تم إرسال تقرير الأداء إلى منصة المعلم.';
+
+  }catch(err){
+
+    console.error('V5 submitResult:',err);
+
+    if($('sendStatus'))
+      $('sendStatus').textContent =
+        '❌ تعذر إرسال التقرير: ' +
+        (err?.message || 'خطأ غير معروف');
+  }
+
+  state.lastPct = pct;
+  state.lastWeak = weak;
+}
+`;
+
+html =
+  html.slice(0,start) +
+  finishV5 +
+  html.slice(end);
+
+html = html.replace(
+  '<title>رحلة عالم العلوم - نسخة الاستعادة</title>',
+  '<title>رحلة عالم العلوم V5 Final</title>'
+);
+
+document.open();
+document.write(html);
+document.close();
+
+})().catch(function(err){
+
+  document.getElementById('boot').textContent =
+    'تعذر تشغيل V5: ' + err.message;
+
+  console.error(err);
+
+});
+</script>
+
+</body>
+</html>
