@@ -11,7 +11,7 @@
 (function(){
   const p=new URLSearchParams(location.search);
   const task=(p.get('t')||p.get('task')||'').trim();
-  const target=new URL('../journey-student.html',location.href);
+  const target=new URL('../journey/',location.href);
   if(task) target.searchParams.set('task',task);
   location.replace(target.href);
 })();
