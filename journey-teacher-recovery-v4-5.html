@@ -1018,12 +1018,12 @@ function filteredRawResults(){
  const c=$('classFilter').value,n=$('nameFilter').value.trim().toLowerCase(),task=$('resultTaskFilter')?.value||'',type=$('resultTypeFilter')?.value||'';
  return results.filter(x=>(!c||x.className===c)&&(!n||x.studentName.toLowerCase().includes(n))&&(!task||resultTitle(x)===task)&&(!type||x.type===type));
 }
-function aggregateResults(){
+function aggregateResults(raw){
  const map=new Map();
  const selectedTask=$('resultTaskFilter')?.value||'';
  const selectedType=$('resultTypeFilter')?.value||'';
 
- filteredRawResults().forEach(r=>{
+ (raw||[]).forEach(r=>{
   // صف واحد فقط لكل طالب داخل الفصل، وتُجمع تحته جميع محاولاته الظاهرة.
   const key=[r.className,String(r.studentCode||''),String(r.studentName||'')].join('|');
   if(!map.has(key)){
@@ -1079,7 +1079,7 @@ function aggregateResults(){
  });
 }
 function renderResults(){
- const raw=filteredRawResults(),rows=aggregateResults();
+ const raw=filteredRawResults(),rows=aggregateResults(raw);
  const unique=new Set(raw.map(r=>r.className+'|'+r.studentName)).size;
  const avg=raw.length?Math.round(raw.reduce((s,r)=>s+resultPercent(r),0)/raw.length):0;
  const repeat=rows.length?(raw.length/rows.length):0;
