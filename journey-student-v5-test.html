@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اختبار V5 لإرسال النتائج</title>
+<style>
+body{
+  font-family:Tahoma,Arial,sans-serif;
+  background:#07111f;color:#fff;
+  margin:0;padding:25px
+}
+.box{
+  max-width:650px;margin:auto;
+  background:#102039;
+  border:1px solid #ffffff22;
+  border-radius:22px;padding:24px
+}
+h1{color:#42ded4}
+label{display:block;margin-top:15px;margin-bottom:6px}
+input,select,button{
+  width:100%;box-sizing:border-box;
+  padding:13px;border-radius:12px;
+  font:inherit
+}
+input,select{
+  background:#07182a;color:#fff;
+  border:1px solid #ffffff33
+}
+button{
+  margin-top:15px;border:0;
+  background:#42ded4;color:#07111f;
+  font-weight:bold
+}
+.status{
+  margin-top:18px;padding:14px;
+  border-radius:12px;background:#0b1c30;
+  line-height:1.8
+}
+.ok{border:1px solid #5be38b;color:#caffda}
+.err{border:1px solid #ff7c8e;color:#ffd2d9}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h1>اختبار إرسال النتائج V5</h1>
+  <p>هذه الصفحة للتجربة فقط ولن تحل محل منصة الطلاب الحالية.</p>
+
+  <label>رقم التكليف</label>
+  <input id="taskId" placeholder="مثال: T2026092314120051">
+
+  <button onclick="loadTask()">تحميل التكليف</button>
+
+  <label>الطالب</label>
+  <select id="student">
+    <option value="">حمّل التكليف أولًا</option>
+  </select>
+
+  <button id="sendBtn" onclick="sendTest()" disabled>
+    إرسال نتيجة تجريبية
+  </button>
+
+  <div id="status" class="status">جاهز للاختبار.</div>
+</div>
+
+<script>
+const API_URL =
+'https://script.google.com/macros/s/AKfycbxp-t4JgGO5WiK6hoacjTyBqFnG-9bSWClplOpVV4VDuTV7T4tY0swB1Ll36kr_djJ7nQ/exec';
+
+let currentTask = null;
+
+function setStatus(text,type=''){
+  const el=document.getElementById('status');
+  el.textContent=text;
+  el.className='status '+type;
+}
+
+function jsonp(params,timeoutMs=20000){
+  return new Promise((resolve,reject)=>{
+    const cb='v5cb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
+    const s=document.createElement('script');
+
+    const clean=()=>{
+      clearTimeout(timer);
+      try{delete window[cb]}catch(e){}
+      try{s.remove()}catch(e){}
+    };
+
+    const timer=setTimeout(()=>{
+      clean();
+      reject(new Error('انتهت مهلة الاتصال بالخادم'));
+    },timeoutMs);
+
+    window[cb]=data=>{
+      clean();
+      resolve(data);
+    };
+
+    s.onerror=()=>{
+      clean();
+      reject(new Error('تعذر الاتصال بالخادم'));
+    };
+
+    const u=new URL(API_URL);
+    Object.entries({
+      ...params,
+      callback:cb,
+      _:Date.now()
+    }).forEach(([k,v])=>u.searchParams.set(k,v));
+
+    s.src=u.toString();
+    document.body.appendChild(s);
+  });
+}
+
+async function loadTask(){
+  const id=document.getElementById('taskId').value.trim();
+
+  if(!id){
+    setStatus('أدخل رقم التكليف أولًا.','err');
+    return;
+  }
+
+  setStatus('جاري تحميل التكليف...');
+
+  try{
+    let r;
+
+    try{
+      r=await jsonp({
+        action:'getTaskBundle',
+        id:id
+      });
+    }catch(e){
+      r=null;
+    }
+
+    if(!r || !r.ok){
+      r=await jsonp({
+        action:'getTask',
+        id:id
+      });
+    }
+
+    if(!r || !r.ok){
+      throw new Error(
+        (r && r.message) || 'تعذر تحميل التكليف'
+      );
+    }
+
+    currentTask=r.task;
+
+    if(currentTask.status &&
+       currentTask.status!=='open'){
+      throw new Error(
+        currentTask.message || 'التكليف غير مفتوح'
+      );
+    }
+
+    let students=
+      Array.isArray(r.students) ? r.students : [];
+
+    if(!students.length){
+      const sr=await jsonp({
+        action:'getStudents',
+        className:currentTask.className
+      });
+
+      if(sr && sr.ok && Array.isArray(sr.students)){
+        students=sr.students;
+      }
+    }
+
+    if(!students.length){
+      throw new Error('لم يتم العثور على طلاب الفصل');
+    }
+
+    const select=document.getElementById('student');
+    select.innerHTML=
+      '<option value="">اختر الطالب</option>'+
+      students.map(s=>
+        `<option value="${String(s.code)}"
+          data-name="${String(s.name)}">
+          ${String(s.name)}
+        </option>`
+      ).join('');
+
+    document.getElementById('sendBtn').disabled=false;
+
+    setStatus(
+      'تم تحميل التكليف والطلاب بنجاح. اختر طالبًا ثم أرسل النتيجة التجريبية.',
+      'ok'
+    );
+
+  }catch(e){
+    setStatus('خطأ: '+e.message,'err');
+  }
+}
+
+async function sendTest(){
+  if(!currentTask){
+    setStatus('حمّل التكليف أولًا.','err');
+    return;
+  }
+
+  const select=document.getElementById('student');
+  const code=select.value;
+
+  if(!code){
+    setStatus('اختر طالبًا أولًا.','err');
+    return;
+  }
+
+  const studentName=
+    select.selectedOptions[0].dataset.name || '';
+
+  setStatus('جاري إرسال النتيجة التجريبية...');
+
+  try{
+    const lessonIds=
+      Array.isArray(currentTask.lessonIds)
+      ? currentTask.lessonIds
+      : [];
+
+    const r=await jsonp({
+      action:'submitResult',
+      submissionId:
+        'V5TEST_'+Date.now()+'_'+
+        Math.random().toString(36).slice(2,7),
+
+      type:'training',
+
+      taskId:
+        currentTask.id ||
+        document.getElementById('taskId').value.trim(),
+
+      taskTitle:
+        '[V5 TEST] '+(currentTask.title || 'اختبار V5'),
+
+      timestamp:new Date().toISOString(),
+
+      studentName:studentName,
+      className:currentTask.className,
+      studentCode:code,
+
+      lesson:
+        lessonIds[0] ||
+        currentTask.lesson ||
+        'v5-test',
+
+      score:1,
+      total:1,
+      percent:100,
+
+      level:'اختبار اتصال V5',
+      durationSec:1,
+      bestStreak:1
+    });
+
+    if(!r || r.ok===false){
+      throw new Error(
+        (r && r.message) || 'رفض الخادم النتيجة'
+      );
+    }
+
+    setStatus(
+      '✅ نجح الاختبار: وصلت النتيجة إلى الخادم وحُفظت.',
+      'ok'
+    );
+
+  }catch(e){
+    setStatus(
+      '❌ فشل الإرسال: '+e.message,
+      'err'
+    );
+  }
+}
+
+const q=new URLSearchParams(location.search).get('task');
+if(q){
+  document.getElementById('taskId').value=q;
+  setTimeout(loadTask,300);
+}
+</script>
+
+</body>
+</html>
