@@ -724,7 +724,35 @@ function postBridgeForm(action,fields={}){
    const form=document.createElement('form');form.method='POST';form.enctype='application/x-www-form-urlencoded';form.acceptCharset='UTF-8'; form.action=apiUrl;form.target=frameName;form.style.display='none';document.body.appendChild(form);
    const payload={action,key:getKey(),transport:'bridge',requestId,...fields};Object.entries(payload).forEach(([k,v])=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=String(v??'');form.appendChild(i)});
    let timer;const cleanup=()=>{clearTimeout(timer);window.removeEventListener('message',onMsg);form.remove();setTimeout(()=>iframe.remove(),50)};
-   const onMsg=e=>{const m=e.data;if(!m||m.type!=='science-apps-script-bridge'||String(m.requestId)!==requestId)return;cleanup();const d=m.data;if(!d||d.ok===false)reject(new Error(d?.message||'تعذر تنفيذ العملية.'));else resolve(d)};
+   const onMsg=e=>{
+  let m=e.data;
+  try{
+    if(typeof m==='string') m=JSON.parse(m);
+  }catch(_){}
+  if(!m)return;
+
+  const rid=String(
+    m.requestId ??
+    m.data?.requestId ??
+    ''
+  );
+
+  if(rid!==requestId)return;
+
+  const d=(m.data&&typeof m.data==='object')
+    ? m.data
+    : m;
+
+  cleanup();
+
+  if(d.ok===false){
+    reject(new Error(
+      d.message||'تعذر تنفيذ العملية.'
+    ));
+  }else{
+    resolve(d);
+  }
+};
    window.addEventListener('message',onMsg);timer=setTimeout(()=>{cleanup();reject(new Error('انتهت مهلة العملية. أعد المحاولة.'))},90000);form.submit();
  });
 }
