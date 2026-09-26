@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>تجربة إضافة سؤال بصورة | رحلة عالم العلوم</title>
+<style>
+:root{--bg:#07111f;--card:#102039;--card2:#132944;--text:#f7fbff;--muted:#9fb2c8;--teal:#42ded4;--indigo:#8190ff;--gold:#ffd166;--green:#5be38b;--red:#ff7c8e;--line:rgba(255,255,255,.11)}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,"Noto Sans Arabic",Arial,sans-serif;background:linear-gradient(180deg,#06101d,#0a1728 50%,#07111f);color:var(--text);min-height:100vh}.wrap{max-width:1100px;margin:auto;padding:18px}.top{position:sticky;top:8px;z-index:10;padding:14px 16px;border-radius:22px;background:rgba(13,31,52,.96);border:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;backdrop-filter:blur(10px)}h1,h2,h3,p{margin-top:0}.muted{color:var(--muted)}.pill{display:inline-flex;padding:7px 10px;border:1px solid var(--line);border-radius:999px;color:#d9e8f6;background:rgba(255,255,255,.04);font-size:.82rem}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:16px}.card{background:linear-gradient(180deg,rgba(18,40,65,.96),rgba(10,25,43,.98));border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2)}.field{margin-bottom:13px}.field label{display:block;color:#cfe1f0;font-weight:800;margin-bottom:7px}.field input,.field select,.field textarea{width:100%;padding:12px 13px;border-radius:14px;border:1px solid var(--line);background:#09182a;color:white;font:inherit;outline:none}.field textarea{min-height:92px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(66,222,212,.08)}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btns{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:14px;padding:11px 15px;font:inherit;font-weight:900;cursor:pointer;background:var(--teal);color:#07111f}.btn.secondary{background:#203652;color:white;border:1px solid var(--line)}.btn.gold{background:var(--gold)}.btn.red{background:var(--red);color:white}.btn.indigo{background:var(--indigo);color:white}.uploadBox{padding:14px;border:1px dashed rgba(66,222,212,.5);border-radius:18px;background:rgba(66,222,212,.05)}.preview{margin-top:12px;display:none}.preview.on{display:block}.preview img{display:block;max-width:100%;max-height:360px;margin:auto;border-radius:16px;border:1px solid var(--line);background:white}.file-note{font-size:.82rem;color:var(--muted);margin-top:8px;line-height:1.7}.qpreview{border:1px solid rgba(129,144,255,.3);border-radius:20px;padding:17px;background:#0c1d32}.qpreview img{width:100%;max-height:360px;object-fit:contain;background:#fff;border-radius:15px;margin:10px 0}.answer{padding:12px 13px;border:1px solid var(--line);border-radius:13px;background:#10243e;margin:8px 0}.answer.correct{border-color:var(--green);background:rgba(91,227,139,.10)}.list{margin-top:16px;display:grid;gap:10px}.item{padding:13px;border-radius:15px;background:#0c1d32;border:1px solid var(--line)}.itemHead{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.item small{color:var(--muted)}.thumb{width:92px;height:68px;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:#fff}.hiddenInput{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}.status{padding:10px 12px;border-radius:13px;margin:10px 0;display:none}.status.on{display:block}.status.ok{background:rgba(91,227,139,.09);border:1px solid rgba(91,227,139,.3);color:#caffda}.status.bad{background:rgba(255,124,142,.09);border:1px solid rgba(255,124,142,.3);color:#ffd6dc}.divider{height:1px;background:var(--line);margin:18px 0}@media(max-width:820px){.grid,.row{grid-template-columns:1fr}.top{position:relative}.btn{flex:1 1 auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h2 style="margin:0 0 4px">🧪 تجربة إضافة سؤال بصورة</h2><div class="muted">نسخة تجريبية مستقلة — لا تغيّر المنصة الحية ولا التكليفات الحالية</div></div>
+    <span class="pill" id="bankState">جاري تحميل بنك الأسئلة…</span>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>إضافة / تعديل سؤال</h2>
+      <div class="row">
+        <div class="field"><label>الصف</label><select id="grade"><option value="3">ثالث متوسط</option><option value="1">أول متوسط</option></select></div>
+        <div class="field"><label>الدرس</label><select id="lesson"></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>نوع السؤال</label><select id="type"><option value="choice">اختيار من متعدد</option></select></div>
+        <div class="field"><label>مستوى الصعوبة</label><select id="difficulty"><option value="remember">تذكر</option><option value="understand">فهم</option><option value="apply">تطبيق</option><option value="reasoning">استدلال</option></select></div>
+      </div>
+      <div class="field"><label>نص السؤال <span class="muted">(اختياري إذا كانت الصورة تحتوي السؤال كاملًا)</span></label><textarea id="q" placeholder="اكتب نص السؤال أو اتركه فارغًا إذا كانت الصورة كافية"></textarea></div>
+
+      <div class="uploadBox">
+        <h3 style="margin-bottom:10px">صورة السؤال</h3>
+        <div class="btns">
+          <button class="btn gold" type="button" id="cameraBtn">📷 تصوير بالكاميرا</button>
+          <button class="btn secondary" type="button" id="galleryBtn">🖼️ اختيار صورة</button>
+          <button class="btn red" type="button" id="removeImageBtn" disabled>🗑️ حذف الصورة</button>
+        </div>
+        <input class="hiddenInput" id="cameraInput" type="file" accept="image/*" capture="environment">
+        <input class="hiddenInput" id="galleryInput" type="file" accept="image/*">
+        <div class="preview" id="imagePreview"><img id="previewImg" alt="معاينة صورة السؤال"><div class="file-note" id="imageInfo"></div></div>
+        <div class="file-note">تُضغط الصورة تلقائيًا لتسريع فتح السؤال على التابلت والجوال. في هذه النسخة التجريبية تُحفظ محليًا على نفس الجهاز فقط.</div>
+      </div>
+
+      <div class="divider"></div>
+      <h3>الخيارات والإجابة الصحيحة</h3>
+      <div class="field"><label>الخيار أ</label><input id="opt0"></div>
+      <div class="field"><label>الخيار ب</label><input id="opt1"></div>
+      <div class="field"><label>الخيار ج</label><input id="opt2"></div>
+      <div class="field"><label>الخيار د</label><input id="opt3"></div>
+      <div class="field"><label>الإجابة الصحيحة</label><select id="answer"><option value="0">أ</option><option value="1">ب</option><option value="2">ج</option><option value="3">د</option></select></div>
+      <div class="field"><label>التفسير بعد الإجابة <span class="muted">(اختياري)</span></label><textarea id="explain" placeholder="تفسير أو تغذية راجعة مختصرة"></textarea></div>
+      <div class="status" id="status"></div>
+      <div class="btns">
+        <button class="btn" type="button" id="saveBtn">💾 حفظ السؤال التجريبي</button>
+        <button class="btn indigo" type="button" id="newBtn">➕ سؤال جديد</button>
+      </div>
+    </section>
+
+    <aside>
+      <section class="card">
+        <h2>معاينة كما ستظهر للطالب</h2>
+        <div class="qpreview" id="studentPreview"></div>
+      </section>
+      <section class="card" style="margin-top:16px">
+        <div class="itemHead"><div><h2 style="margin-bottom:4px">الأسئلة المصورة التجريبية</h2><small>محفوظة على هذا الجهاز فقط</small></div><span class="pill" id="customCount">0</span></div>
+        <div class="list" id="customList"></div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script src="question-bank.js"></script>
+<script src="third-grade-bank.js"></script>
+<script>
+(function(){
+  const STORAGE='science_custom_image_questions_test_v1';
+  const $=id=>document.getElementById(id);
+  let imageData=''; let editingId='';
+  const letters=['أ','ب','ج','د'];
+
+  function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  function lessons(){return (window.SCIENCE_DATA?.lessons||[]);}
+  function loadLessons(){
+    const grade=$('grade').value;
+    const arr=lessons().filter(x=>String(x.grade||'1')===grade);
+    $('lesson').innerHTML=arr.map(x=>`<option value="${esc(x.id)}">${esc(x.title)}</option>`).join('')||'<option value="">لا توجد دروس</option>';
+    $('bankState').textContent=`البنك: ${arr.length} درسًا للصف المختار`;
+    updatePreview();
+  }
+  function readCustom(){try{return JSON.parse(localStorage.getItem(STORAGE)||'[]')}catch(e){return[]}}
+  function writeCustom(a){localStorage.setItem(STORAGE,JSON.stringify(a)); renderCustom();}
+  function show(msg,bad=false){const s=$('status');s.textContent=msg;s.className='status on '+(bad?'bad':'ok');}
+  function clearStatus(){$('status').className='status';}
+  function reset(){editingId='';imageData='';$('q').value='';['opt0','opt1','opt2','opt3','explain'].forEach(id=>$(id).value='');$('answer').value='0';$('difficulty').value='remember';$('previewImg').src='';$('imagePreview').className='preview';$('imageInfo').textContent='';$('removeImageBtn').disabled=true;clearStatus();updatePreview();}
+
+  async function compressImage(file){
+    if(!file||!file.type.startsWith('image/')) throw new Error('الملف المختار ليس صورة.');
+    const data=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)});
+    const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=data});
+    const max=1600,scale=Math.min(1,max/Math.max(img.width,img.height));
+    const w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
+    const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+    let quality=.82; let out=c.toDataURL('image/jpeg',quality);
+    while(out.length>850000 && quality>.48){quality-=.08;out=c.toDataURL('image/jpeg',quality)}
+    if(out.length>1200000) throw new Error('الصورة كبيرة جدًا. قرّب السؤال بالكاميرا ثم أعد التصوير.');
+    return {data:out,w,h,approx:Math.round(out.length*0.75/1024)};
+  }
+  async function handleFile(file){
+    try{
+      show('جاري تجهيز الصورة…');
+      const x=await compressImage(file); imageData=x.data;$('previewImg').src=imageData;$('imagePreview').className='preview on';$('imageInfo').textContent=`${x.w} × ${x.h} — نحو ${x.approx} كيلوبايت بعد الضغط`;$('removeImageBtn').disabled=false;show('تم تجهيز الصورة بنجاح.');updatePreview();
+    }catch(e){show(e.message||'تعذر قراءة الصورة.',true)}
+  }
+
+  function snapshot(){
+    return {id:editingId||('imgq-'+Date.now()),grade:$('grade').value,lesson:$('lesson').value,type:'choice',difficulty:$('difficulty').value,q:$('q').value.trim(),options:[0,1,2,3].map(i=>$('opt'+i).value.trim()),answer:Number($('answer').value),explain:$('explain').value.trim(),image:imageData,source:'إضافة المعلم بصورة',createdAt:new Date().toISOString()};
+  }
+  function validate(x){
+    if(!x.lesson) return 'اختر الدرس.';
+    if(!x.q && !x.image) return 'أضف نص السؤال أو صورة السؤال على الأقل.';
+    if(x.options.some(v=>!v)) return 'أكمل الخيارات الأربعة.';
+    return '';
+  }
+  function save(){
+    const x=snapshot(),err=validate(x);if(err)return show(err,true);
+    const a=readCustom();const ix=a.findIndex(v=>v.id===x.id);if(ix>=0)a[ix]=x;else a.unshift(x);
+    try{writeCustom(a);editingId=x.id;show('تم حفظ السؤال التجريبي على هذا الجهاز.');}
+    catch(e){show('تعذر الحفظ: مساحة التخزين المحلية امتلأت. احذف بعض الصور أو استخدم صورة أصغر.',true)}
+  }
+  function edit(id){
+    const x=readCustom().find(v=>v.id===id);if(!x)return;
+    editingId=x.id;$('grade').value=x.grade;loadLessons();$('lesson').value=x.lesson;$('difficulty').value=x.difficulty||'remember';$('q').value=x.q||'';x.options.forEach((v,i)=>$('opt'+i).value=v||'');$('answer').value=String(x.answer??0);$('explain').value=x.explain||'';imageData=x.image||'';
+    if(imageData){$('previewImg').src=imageData;$('imagePreview').className='preview on';$('removeImageBtn').disabled=false;$('imageInfo').textContent='صورة محفوظة مع السؤال.'}else{$('imagePreview').className='preview';$('removeImageBtn').disabled=true}
+    updatePreview();window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function remove(id){if(!confirm('حذف هذا السؤال التجريبي؟'))return;writeCustom(readCustom().filter(v=>v.id!==id));if(editingId===id)reset();}
+  function renderCustom(){
+    const a=readCustom();$('customCount').textContent=a.length;
+    $('customList').innerHTML=a.length?a.map(x=>`<div class="item"><div class="itemHead"><div><b>${esc(x.q||'سؤال بصورة فقط')}</b><div><small>${esc(lessons().find(l=>l.id===x.lesson)?.title||x.lesson)}</small></div></div>${x.image?`<img class="thumb" src="${x.image}" alt="صورة السؤال">`:''}</div><div class="btns" style="margin-top:10px"><button class="btn secondary" onclick="window.__imgQEdit('${esc(x.id)}')">تعديل</button><button class="btn red" onclick="window.__imgQRemove('${esc(x.id)}')">حذف</button></div></div>`).join(''):'<div class="muted">لم تحفظ أسئلة مصورة بعد.</div>';
+  }
+  function updatePreview(){
+    const x=snapshot(); const title=lessons().find(l=>l.id===x.lesson)?.title||'الدرس';
+    $('studentPreview').innerHTML=`<div class="pill">${esc(title)}</div>${x.q?`<h3 style="margin-top:12px">${esc(x.q)}</h3>`:'<h3 style="margin-top:12px">تأمل الصورة ثم أجب:</h3>'}${x.image?`<img src="${x.image}" alt="صورة السؤال">`:'<div class="muted" style="padding:25px;text-align:center">لا توجد صورة مرفقة</div>'}<div>${x.options.map((v,i)=>`<div class="answer ${Number(x.answer)===i?'correct':''}"><b>${letters[i]}.</b> ${esc(v||'الخيار '+letters[i])}</div>`).join('')}</div>`;
+  }
+
+  $('grade').addEventListener('change',loadLessons);$('lesson').addEventListener('change',updatePreview);['q','opt0','opt1','opt2','opt3','answer','difficulty','explain'].forEach(id=>$(id).addEventListener('input',updatePreview));
+  $('cameraBtn').onclick=()=>$('cameraInput').click();$('galleryBtn').onclick=()=>$('galleryInput').click();$('cameraInput').onchange=e=>handleFile(e.target.files[0]);$('galleryInput').onchange=e=>handleFile(e.target.files[0]);
+  $('removeImageBtn').onclick=()=>{imageData='';$('previewImg').src='';$('imagePreview').className='preview';$('removeImageBtn').disabled=true;updatePreview();show('تم حذف الصورة من السؤال الحالي.');};
+  $('saveBtn').onclick=save;$('newBtn').onclick=reset;window.__imgQEdit=edit;window.__imgQRemove=remove;
+  loadLessons();renderCustom();updatePreview();
+})();
+</script>
+</body></html>
