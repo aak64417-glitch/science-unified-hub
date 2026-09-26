@@ -721,7 +721,7 @@ function postBridgeForm(action,fields={}){
    const apiUrl=getApi();if(!apiUrl){reject(new Error('رابط الخادم غير مضبوط.'));return}
    const requestId='bridge_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),frameName='bridge_'+requestId;
    const iframe=document.createElement('iframe');iframe.name=frameName;iframe.style.display='none';document.body.appendChild(iframe);
-   const form=document.createElement('form');form.method='POST';form.action=apiUrl;form.target=frameName;form.style.display='none';document.body.appendChild(form);
+   const form=document.createElement('form');form.method='POST';form.enctype='application/x-www-form-urlencoded';form.acceptCharset='UTF-8'; form.action=apiUrl;form.target=frameName;form.style.display='none';document.body.appendChild(form);
    const payload={action,key:getKey(),transport:'bridge',requestId,...fields};Object.entries(payload).forEach(([k,v])=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=String(v??'');form.appendChild(i)});
    let timer;const cleanup=()=>{clearTimeout(timer);window.removeEventListener('message',onMsg);form.remove();setTimeout(()=>iframe.remove(),50)};
    const onMsg=e=>{const m=e.data;if(!m||m.type!=='science-apps-script-bridge'||String(m.requestId)!==requestId)return;cleanup();const d=m.data;if(!d||d.ok===false)reject(new Error(d?.message||'تعذر تنفيذ العملية.'));else resolve(d)};
