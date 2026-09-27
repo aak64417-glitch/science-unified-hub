@@ -20,6 +20,8 @@ body{
 <script>
 (async function(){
 
+window.__journeyLoginAt = window.__journeyLoginAt || new Date().toISOString();
+
 const src = 'journey-student-recovery-v4.html?v=' + Date.now();
 
 const res = await fetch(src,{cache:'no-store'});
@@ -127,7 +129,10 @@ async function finishQuiz(){
     taskId: state.task?.id || '',
     taskTitle: state.task?.title || '',
 
+    loginAt: window.__journeyLoginAt || new Date().toISOString(),
+    startedAt: state.startedAt ? new Date(state.startedAt).toISOString() : (window.__journeyLoginAt || new Date().toISOString()),
     timestamp: new Date().toISOString(),
+    submittedAt: new Date().toISOString(),
 
     studentName: state.student?.name || '',
     className: state.student?.className || '',
@@ -178,7 +183,10 @@ async function finishQuiz(){
       taskId:payload.taskId,
       taskTitle:payload.taskTitle,
 
+      loginAt:payload.loginAt,
+      startedAt:payload.startedAt,
       timestamp:payload.timestamp,
+      submittedAt:payload.submittedAt,
 
       studentName:payload.studentName,
       className:payload.className,

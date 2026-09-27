@@ -47,6 +47,105 @@ button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:90
       '<title>لوحة المعلم | رحلة عالم العلوم</title>'
     );
 
+
+    const loginTimePatch = `
+<script>
+(function(){
+  function journeyResultLoginTime(r){
+    if(r && r.loginAt) return r.loginAt;
+    if(r && r.startedAt) return r.startedAt;
+
+    // توافق آمن مع النتائج القديمة: وقت تقريبي لبداية المحاولة
+    const submitted = r && (r.submittedAt || r.timestamp);
+    const t = new Date(submitted || '').getTime();
+    const durationMs = Math.max(0, Number(r && r.durationSec || 0)) * 1000;
+    if(Number.isFinite(t)) return new Date(Math.max(0, t - durationMs)).toISOString();
+    return '';
+  }
+
+  // نغلف الدالة الحالية ولا نستبدل منطقها.
+  if(typeof renderResults === 'function'){
+    const originalRenderResults = renderResults;
+    renderResults = function(){
+      const value = originalRenderResults.apply(this, arguments);
+
+      try{
+        const head = document.querySelector('#resultsTab thead tr');
+        if(head && !head.querySelector('[data-journey-login]')){
+          const th = document.createElement('th');
+          th.dataset.journeyLogin = '1';
+          th.textContent = 'وقت الدخول';
+          head.insertBefore(th, head.lastElementChild);
+        }
+
+        const raw = typeof filteredRawResults === 'function' ? filteredRawResults() : [];
+        const rows = typeof aggregateResults === 'function' ? aggregateResults(raw) : [];
+        const trs = [...document.querySelectorAll('#resultsBody tr')];
+
+        rows.forEach((r,i)=>{
+          const tr = trs[i];
+          if(!tr || tr.querySelector('[data-journey-login-cell]')) return;
+          const latest = (r.rows && r.rows.length) ? r.rows[r.rows.length-1] : r;
+          const td = document.createElement('td');
+          td.dataset.journeyLoginCell = '1';
+          const v = journeyResultLoginTime(latest);
+          td.textContent = v ? fmt(v) : '—';
+          tr.insertBefore(td, tr.lastElementChild);
+        });
+      }catch(e){
+        console.warn('Journey login-time results patch:', e);
+      }
+
+      return value;
+    };
+  }
+
+  // نغلف جدول التقارير الحالي ونضيف عمودًا فقط.
+  if(typeof reportRowsTable === 'function'){
+    const originalReportRowsTable = reportRowsTable;
+    reportRowsTable = function(rows){
+      const html = originalReportRowsTable.apply(this, arguments);
+      try{
+        if(!Array.isArray(rows) || !rows.length) return html;
+
+        const tpl = document.createElement('template');
+        tpl.innerHTML = html;
+        const table = tpl.content.querySelector('table');
+        if(!table) return html;
+
+        const hr = table.querySelector('thead tr');
+        if(hr && !hr.querySelector('[data-journey-login-report]')){
+          const th = document.createElement('th');
+          th.dataset.journeyLoginReport = '1';
+          th.textContent = 'وقت الدخول';
+          hr.appendChild(th);
+        }
+
+        const bodyRows = [...table.querySelectorAll('tbody tr')];
+        rows.forEach((r,i)=>{
+          const tr = bodyRows[i];
+          if(!tr || tr.querySelector('[data-journey-login-report-cell]')) return;
+          const td = document.createElement('td');
+          td.dataset.journeyLoginReportCell = '1';
+          const v = journeyResultLoginTime(r);
+          td.textContent = v ? fmt(v) : '—';
+          tr.appendChild(td);
+        });
+
+        return tpl.innerHTML;
+      }catch(e){
+        console.warn('Journey login-time report patch:', e);
+        return html;
+      }
+    };
+  }
+
+  window.journeyResultLoginTime = journeyResultLoginTime;
+})();
+<\/script>
+`;
+    html=html.replace('</body>',loginTimePatch+'</body>');
+
     document.open();
     document.write(html);
     document.close();
