@@ -9,6 +9,7 @@ if(new URLSearchParams(location.search).has('task')){
 }
 </script>
 <style>
+  .topbar,#homeScreen,#lessonScreen,.footer,#identityScreen .backline .btn.secondary{display:none!important}
 :root{
  --bg:#07111f;--bg2:#0a1728;--card:#102039;--card2:#132944;--text:#f7fbff;--muted:#9fb2c8;
  --teal:#42ded4;--indigo:#8190ff;--gold:#ffd166;--green:#5be38b;--red:#ff7c8e;--line:rgba(255,255,255,.10);
@@ -11757,8 +11758,14 @@ async function loadTask(id){
  if(!api()){document.documentElement.classList.remove('task-loading');alert('هذا رابط تكليف منزلي، لكن رابط منصة المعلم غير مضبوط على هذا الجهاز. افتح المنصة المنشورة بعد إتمام الربط.');return}
  try{
    const overridesPromise=loadQuestionOverridesFast();
-   let r=await jsonp({action:'getTaskBundle',id});
-   if(!r?.ok) r=await jsonp({action:'getTask',id});
+   let r;
+try{
+  r=await jsonp({action:'getTaskBundle',id});
+}catch(e){
+  console.warn('getTaskBundle failed; trying getTask',e);
+  r=null;
+}
+if(!r?.ok) r=await jsonp({action:'getTask',id});
    await overridesPromise;
    if(!r?.ok)throw new Error(r?.message||'تعذر فتح التكليف');
    const t=r.task;
@@ -11856,26 +11863,70 @@ function pendingResults(){try{return JSON.parse(localStorage.getItem(PENDING_RES
 function savePendingResults(rows){try{localStorage.setItem(PENDING_RESULTS_KEY,JSON.stringify((rows||[]).slice(-20)))}catch(e){}}
 function queuePendingResult(payload){const rows=pendingResults();if(!rows.some(x=>x.submissionId===payload.submissionId))rows.push(payload);savePendingResults(rows)}
 function markPendingSent(id){savePendingResults(pendingResults().filter(x=>x.submissionId!==id))}
-function sendResultFast(payload){
- if(!api())return Promise.reject(new Error('no-api'));
- queuePendingResult(payload);
- return fetch(api(),{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
-  .then(()=>{markPendingSent(payload.submissionId);return true});
+function confirmSavedResult(payload){
+  return jsonp({
+    action:'confirmResult',
+    taskId:payload.taskId||'',
+    studentCode:payload.studentCode||'',
+    timestamp:payload.timestamp||''
+},5000).then(r=>!!(r && r.ok && r.found));
 }
+
+function waitResult(ms){
+  return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+async function sendResultFast(payload){
+  if(!api()) throw new Error('no-api');
+
+  queuePendingResult(payload);
+
+  const r = await jsonp({
+    action:'submitResult',
+    submissionId:payload.submissionId || '',
+    type:payload.type || 'training',
+    taskId:payload.taskId || '',
+    taskTitle:payload.taskTitle || '',
+    timestamp:payload.timestamp || new Date().toISOString(),
+    studentName:payload.studentName || '',
+    className:payload.className || '',
+    studentCode:payload.studentCode || '',
+    lesson:payload.lesson || '',
+    score:payload.score || 0,
+    total:payload.total || 0,
+    percent:payload.percent || 0,
+    level:payload.level || '',
+    durationSec:payload.durationSec || 0,
+    bestStreak:payload.bestStreak || 0
+  },15000);
+
+  if(!r || r.ok === false){
+    throw new Error((r && r.message) || 'submit-failed');
+  }
+
+  markPendingSent(payload.submissionId);
+  return true;
+}
+
 async function flushPendingResults(){
- if(!api())return;
- for(const payload of pendingResults()){
-   try{await fetch(api(),{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});markPendingSent(payload.submissionId)}catch(e){break}
- }
+  if(!api()) return;
+
+  for(const payload of pendingResults()){
+    try{
+      await sendResultFast(payload);
+    }catch(e){
+      break;
+    }
+  }
 }
 
 async function finishQuiz(){clearInterval(state.timer);$('progressBar').style.width='100%';const total=state.quiz.length,pct=Math.round(state.score/total*100),lvl=level(pct),bd=breakdown(),duration=Math.round((Date.now()-state.startedAt)/1000),weak=weakConcepts();if(state.lesson!=='all')localStorage.setItem('weak_concepts_'+state.lesson,JSON.stringify(weak));screen('resultScreen');$('scorePct').textContent=pct+'%';$('scoreRing').style.setProperty('--pct',pct+'%');$('resultTitle').textContent=state.mode==='exam'||state.task?.mode==='exam'?'نتيجة الاختبار':state.mode==='remedial'?'نتيجة المسار العلاجي':state.mode==='enrich'?'نتيجة المسار الإثرائي':'نتيجة التدريب';$('resultLevel').textContent=lvl;$('resultText').textContent=`${state.student.name} — حصلت على ${state.score} من ${total}. أعلى سلسلة صحيحة: ${state.bestStreak}. زمن النشاط: ${duration} ثانية.`;$('breakdown').innerHTML=DATA.lessons.map(l=>{const x=bd[l.id],p=x.total?Math.round(x.correct/x.total*100):0;return `<div class="break"><span>${esc(l.title)}</span><strong>${x.correct}/${x.total} (${p}%)</strong></div>`}).join('');let rec=[];if(weak.length)rec.push({h:'🩺 مفاهيم تحتاج تعزيزًا',p:weak.map(x=>conceptName(state.lesson==='all'?state.logs.find(z=>z.concept===x)?.lesson:state.lesson,x)).join('، ')});else rec.push({h:'🏅 مستوى إتقان مرتفع',p:'أظهرت النتائج إتقانًا جيدًا للمفاهيم التي ظهرت في هذه الجولة.'});rec.push({h:'الخطوة المقترحة',p:pct<80?'انتقل إلى المسار العلاجي ثم أعد التدريب.':'انتقل إلى المسار الإثرائي أو الاختبار الشامل لتثبيت الإتقان.'});$('recommendations').innerHTML=rec.map(x=>`<div class="rec"><h4>${esc(x.h)}</h4><p>${esc(x.p)}</p></div>`).join('');$('resultAction').textContent=pct<80?'ابدأ المسار العلاجي':'ابدأ المسار الإثرائي';$('sendStatus').textContent=api()?'جاري إرسال التقرير إلى منصة المعلم...':'تم حفظ النتيجة على هذا الجهاز. بعد ربط المنصة تصل التقارير إلى المعلم تلقائيًا.';
- const payload={submissionId:'S'+Date.now()+'_'+Math.random().toString(36).slice(2,9),type:(state.mode==='exam'||state.task?.mode==='exam')?'test':state.mode,taskId:state.task?.id||'',taskTitle:state.task?.title||'',timestamp:new Date().toISOString(),studentName:state.student.name,className:state.student.className,studentCode:state.student.code,lesson:state.lesson,score,total,percent:pct,level:lvl,durationSec:duration,bestStreak:state.bestStreak,breakdown:bd,weakConcepts:weak,answers:state.logs};localStorage.setItem('last_science_result',JSON.stringify(payload));if(api()){ $('sendStatus').textContent='تم حفظ النتيجة، وتجري مزامنتها مع منصة المعلم في الخلفية...'; sendResultFast(payload).then(()=>{$('sendStatus').textContent='تم إرسال تقرير الأداء إلى منصة المعلم.'}).catch(()=>{$('sendStatus').textContent='تم حفظ النتيجة على الجهاز وستعاد محاولة إرسالها تلقائيًا.'}); }
+ const payload={submissionId:'S'+Date.now()+'_'+Math.random().toString(36).slice(2,9),type:(state.mode==='exam'||state.task?.mode==='exam')?'test':state.mode,taskId:state.task?.id||'',taskTitle:state.task?.title||'',timestamp:new Date().toISOString(),studentName:state.student.name,className:state.student.className,studentCode:state.student.code,lesson:state.lesson,score,total,percent:pct,level:lvl,durationSec:duration,bestStreak:state.bestStreak,breakdown:bd,weakConcepts:weak,answers:state.logs};try{localStorage.setItem('last_science_result',JSON.stringify(payload));}catch(e){console.warn('تعذر الحفظ المحلي، سيتم الإرسال مباشرة',e);}if(api()){ $('sendStatus').textContent='تم حفظ النتيجة، وتجري مزامنتها مع منصة المعلم في الخلفية...'; sendResultFast(payload).then(()=>{$('sendStatus').textContent='تم إرسال تقرير الأداء إلى منصة المعلم.'}).catch(()=>{$('sendStatus').textContent='تم حفظ النتيجة على الجهاز وستعاد محاولة إرسالها تلقائيًا.'}); }
  state.lastPct=pct;state.lastWeak=weak;
 }
 function resultNext(){const target=state.lesson==='all'?(state.logs[0]?.lesson||DATA.lessons[0].id):state.lesson;if(state.lastPct<80)openIdentity('remedial',target);else openIdentity('enrich',target)}
 
-function jsonp(params){return new Promise((resolve,reject)=>{const cb='cb_'+Date.now()+'_'+Math.floor(Math.random()*9999),s=document.createElement('script'),to=setTimeout(()=>{clean();reject(new Error('timeout'))},12000);window[cb]=d=>{clean();resolve(d)};function clean(){clearTimeout(to);delete window[cb];s.remove()}const u=new URL(api());Object.entries({...params,callback:cb}).forEach(([k,v])=>u.searchParams.set(k,v));s.src=u.toString();s.onerror=()=>{clean();reject(new Error('network'))};document.body.appendChild(s)})}
+function jsonp(params,timeoutMs=35000){return new Promise((resolve,reject)=>{const cb='cb_'+Date.now()+'_'+Math.floor(Math.random()*9999),s=document.createElement('script'),to=setTimeout(()=>{clean();reject(new Error('timeout'))},timeoutMs);window[cb]=d=>{clean();resolve(d)};function clean(){clearTimeout(to);delete window[cb];s.remove()}const u=new URL(api());Object.entries({...params,callback:cb}).forEach(([k,v])=>u.searchParams.set(k,v));s.src=u.toString();s.onerror=()=>{clean();reject(new Error('network'))};document.body.appendChild(s)})}
 
 document.addEventListener('DOMContentLoaded',init);
 
