@@ -155,6 +155,116 @@ button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:90
     };
   }
 
+
+  // إضافة تاريخ ووقت الدخول إلى تقرير المشاركة الخاص بالتكليف.
+  function journeyParticipationLatestResult(taskId,p,d){
+    try{
+      const selectedTask = taskId && typeof taskById === 'function' ? taskById(taskId) : null;
+      const wantedName = typeof normalizeStudentNameKey === 'function'
+        ? normalizeStudentNameKey(p && p.studentName || '')
+        : String(p && p.studentName || '').trim();
+
+      const wantedClass = typeof normalizeClassName === 'function'
+        ? normalizeClassName((p && p.className) || (d && d.className) || (selectedTask && selectedTask.className) || '')
+        : String((p && p.className) || (d && d.className) || '').trim();
+
+      let rows = (Array.isArray(results) ? results : []).filter(function(r){
+        const rn = typeof normalizeStudentNameKey === 'function'
+          ? normalizeStudentNameKey(r && r.studentName || '')
+          : String(r && r.studentName || '').trim();
+
+        const rc = typeof normalizeClassName === 'function'
+          ? normalizeClassName(r && r.className || '')
+          : String(r && r.className || '').trim();
+
+        if(rn !== wantedName) return false;
+        if(wantedClass && rc !== wantedClass) return false;
+        if(taskId) return String(r && r.taskId || '') === String(taskId);
+        return true;
+      });
+
+      if(!rows.length && selectedTask && typeof participationTitleKey === 'function'){
+        const wantedTitle = participationTitleKey((d && d.title) || selectedTask.title || '');
+        rows = (Array.isArray(results) ? results : []).filter(function(r){
+          const rn = typeof normalizeStudentNameKey === 'function'
+            ? normalizeStudentNameKey(r && r.studentName || '')
+            : String(r && r.studentName || '').trim();
+
+          const rc = typeof normalizeClassName === 'function'
+            ? normalizeClassName(r && r.className || '')
+            : String(r && r.className || '').trim();
+
+          if(rn !== wantedName) return false;
+          if(wantedClass && rc !== wantedClass) return false;
+          if(typeof participationModeMatches === 'function' && !participationModeMatches(r,selectedTask)) return false;
+
+          const rt = participationTitleKey(
+            typeof resultTitle === 'function' ? resultTitle(r) : (r && (r.taskTitle || r.lesson) || '')
+          );
+          if(!wantedTitle || !rt) return false;
+          return rt === wantedTitle || rt.includes(wantedTitle) || wantedTitle.includes(rt);
+        });
+      }
+
+      rows.sort(function(a,b){
+        const at = new Date(typeof resultTime === 'function' ? resultTime(a) : (a && (a.timestamp || a.submittedAt) || '')).getTime() || 0;
+        const bt = new Date(typeof resultTime === 'function' ? resultTime(b) : (b && (b.timestamp || b.submittedAt) || '')).getTime() || 0;
+        return at - bt;
+      });
+
+      return rows.length ? rows[rows.length-1] : null;
+    }catch(e){
+      console.warn('Journey participation latest-result lookup:',e);
+      return null;
+    }
+  }
+
+  if(typeof generateParticipationReport === 'function'){
+    const originalGenerateParticipationReport = generateParticipationReport;
+
+    generateParticipationReport = async function(taskId=''){
+      const result = await originalGenerateParticipationReport.apply(this, arguments);
+
+      try{
+        const d = typeof participationData === 'function' ? participationData(taskId) : null;
+        if(!d || !Array.isArray(d.participants)) return result;
+
+        const modal = document.getElementById('reportModal');
+        if(!modal) return result;
+
+        const tables = [...modal.querySelectorAll('table')];
+        const table = tables.length ? tables[tables.length-1] : null;
+        if(!table) return result;
+
+        const head = table.querySelector('thead tr');
+        if(head && !head.querySelector('[data-journey-participation-login]')){
+          const th = document.createElement('th');
+          th.dataset.journeyParticipationLogin = '1';
+          th.textContent = 'تاريخ ووقت الدخول';
+          head.appendChild(th);
+        }
+
+        const bodyRows = [...table.querySelectorAll('tbody tr')];
+        d.participants.forEach(function(participant,i){
+          const tr = bodyRows[i];
+          if(!tr || tr.querySelector('[data-journey-participation-login-cell]')) return;
+
+          const latest = journeyParticipationLatestResult(taskId,participant,d);
+          const td = document.createElement('td');
+          td.dataset.journeyParticipationLoginCell = '1';
+
+          const v = journeyResultLoginTime(latest);
+          td.textContent = journeyFormatLoginDateTime(v);
+          tr.appendChild(td);
+        });
+      }catch(e){
+        console.warn('Journey participation login-time patch:',e);
+      }
+
+      return result;
+    };
+  }
+
   window.journeyResultLoginTime = journeyResultLoginTime;
   window.journeyFormatLoginDateTime = journeyFormatLoginDateTime;
 
