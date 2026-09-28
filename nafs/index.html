@@ -49,6 +49,13 @@
     .checkrow{display:flex;gap:9px;align-items:flex-start;margin:13px 0;font-size:13px;font-weight:700}.checkrow input{width:18px;height:18px;accent-color:var(--purple)}
     .loading{position:fixed;inset:0;background:rgba(247,249,253,.76);display:grid;place-items:center;z-index:100;backdrop-filter:blur(4px)}.spinner{width:48px;height:48px;border-radius:50%;border:5px solid #e5e9f4;border-top-color:var(--purple);animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 
+
+    .student-id-card{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,#f7f5ff,#eefbfc);border:1px solid #ddd8ff}
+    .student-id-main{display:flex;align-items:center;gap:14px}.student-id-icon{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;background:#6554d9;color:#fff;font-size:27px;box-shadow:0 8px 22px rgba(101,84,217,.22)}
+    .student-id-card strong{display:block;font-size:20px;color:var(--navy);margin-bottom:5px}.student-id-card span{color:var(--muted);font-size:13px;font-weight:700}.student-class-badge{padding:9px 14px;border-radius:999px;background:#fff;border:1px solid #d9d4ff;color:#4d3eb3!important;font-size:14px!important;font-weight:900!important;white-space:nowrap}
+    .barcode-required{text-align:center;padding:20px;border:1px dashed #e1b26e;background:#fff9ef;border-radius:18px;color:#7a551a;line-height:1.8}.barcode-required b{display:block;font-size:18px;color:#5c3d10;margin-bottom:5px}
+    @media(max-width:600px){.student-id-card{align-items:flex-start;flex-direction:column}.student-class-badge{align-self:stretch;text-align:center}}
+
     .nafs-inline-brand{display:flex;align-items:center;gap:12px;padding:10px 13px;margin-bottom:14px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(90deg,#fff,#faf9ff)}
     .nafs-inline-brand img{width:58px;height:50px;object-fit:contain;border-radius:10px;background:#fff}
     .nafs-inline-brand b{display:block;color:var(--navy);font-size:15px}
@@ -77,16 +84,18 @@
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">ابدأ من هنا</h3><p class="panel-sub">اكتب اسمك وحدد فصلك، ثم اختر التدريب أو الاختبار.</p>
-        <div class="form-grid">
-          <div class="field"><label>اسم الطالب الكامل</label><input id="studentName" class="input" placeholder="اكتب الاسم هنا" autocomplete="name"></div>
-          <div class="field"><label>الفصل</label><select id="className" class="input"><option value="">اختر الفصل</option><option>الفصل الأول</option><option>الفصل الثاني</option><option>الفصل الثالث</option><option>الفصل الرابع</option></select></div>
-          <div class="field"><label>&nbsp;</label><button class="btn btn-primary" onclick="saveIdentity()">حفظ البيانات ✓</button></div>
+        <h3 class="panel-title">دخول الطالب</h3><p class="panel-sub">الدخول يتم تلقائيًا من الباركود الشخصي المخصص لكل طالب.</p>
+        <input id="studentName" type="hidden">
+        <input id="className" type="hidden">
+        <div id="studentIdentityCard" class="student-id-card hidden">
+          <div class="student-id-main"><div class="student-id-icon">👨‍🎓</div><div><strong id="studentDisplayName">—</strong><span>تم التعرف على الطالب من الباركود الشخصي</span></div></div>
+          <span id="studentDisplayClass" class="student-class-badge">—</span>
         </div>
+        <div id="barcodeRequired" class="barcode-required hidden"><b>استخدم الباركود الشخصي للدخول</b>هذه الصفحة لا تقبل كتابة الاسم يدويًا. افتح الباركود المخصص لك من المعلم.</div>
         <div id="identityMsg"></div>
       </div>
 
-      <div class="mode-grid">
+      <div id="modeGrid" class="mode-grid hidden">
         <article class="mode-card training"><div class="mode-icon">🧠</div><h2>تدريب نافس</h2><p>جرّب أكثر من مرة، اعرف الإجابة الصحيحة فورًا، وتدرّب على المهارات التي تحتاج تعزيزًا.</p><div class="chips"><span class="chip">إعادة بلا حدود</span><span class="chip">شرح فوري</span><span class="chip">أسئلة عشوائية</span></div><button class="btn btn-green" style="width:100%" onclick="openTrainingMenu()">ابدأ التدريب</button></article>
         <article class="mode-card test"><div class="mode-icon">⏱️</div><h2>اختبار نافس</h2><p>محاولة واحدة فقط. لكل سؤال زمن محدد، وعند انتهائه ينتقل الاختبار تلقائيًا للسؤال التالي.</p><div class="chips"><span class="chip">24 سؤالًا</span><span class="chip">مؤقت مستقل</span><span class="chip">حفظ لحظي</span></div><button id="testEntryBtn" class="btn btn-primary" style="width:100%" onclick="prepareTest()">دخول الاختبار</button></article>
       </div>
@@ -124,7 +133,7 @@
 <script src="config.js"></script>
 <script>
   window.__nafsLoginAt = window.__nafsLoginAt || new Date().toISOString();
-  const state={identity:null,mode:null,topic:null,questions:[],index:0,answers:{},correct:0,wrongIds:[],lastWrongQuestions:[],startAt:0,attemptId:null,timerId:null,timeLeft:0,questionStartedAt:0,submitting:false};
+  const state={identity:null,mode:null,topic:null,questions:[],index:0,answers:{},correct:0,wrongIds:[],lastWrongQuestions:[],startAt:0,attemptId:null,timerId:null,timeLeft:0,questionStartedAt:0,submitting:false,sessionId:'',heartbeatId:null};
   const $=id=>document.getElementById(id);
   const sections=['landing','trainingMenu','quiz','result'];
   function show(id){sections.forEach(s=>$(s).classList.toggle('hidden',s!==id));window.scrollTo({top:0,behavior:'smooth'});} 
@@ -148,26 +157,119 @@
     if(fn==='getTrainingQuestions')return localTrainingQuestions(args[0],12);
     if(!HAS_API)return localServer(fn,args);
     if(fn==='getPublicConfig')return jsonp({action:'config'});
+    if(fn==='getStudentInfo')return jsonp({action:'studentInfo',code:args[0]||''});
+    if(fn==='sessionStart')return jsonp({action:'sessionStart',data:JSON.stringify(args[0]||{})});
+    if(fn==='sessionTouch')return jsonp({action:'sessionTouch',data:JSON.stringify(args[0]||{})});
+    if(fn==='sessionFinish')return jsonp({action:'sessionFinish',data:JSON.stringify(args[0]||{})});
     if(fn==='saveTrainingResult')return jsonp({action:'saveTraining',data:JSON.stringify(args[0]||{})});
     if(fn==='getStudentStatus')return jsonp({action:'status',studentName:args[0]||'',className:args[1]||'',studentCode:state.identity?.studentCode||''});
-    if(fn==='startTest'){const r=await jsonp({action:'startTest',studentName:args[0]||'',className:args[1]||'',studentCode:state.identity?.studentCode||'',loginAt:window.__nafsLoginAt});return {...r,questions:balancedTestQuestions()};}
+    if(fn==='startTest'){
+      const r=await jsonp({action:'startTest',studentName:args[0]||'',className:args[1]||'',studentCode:state.identity?.studentCode||'',loginAt:window.__nafsLoginAt,sessionId:state.sessionId||''});
+      return {...r,questions:balancedTestQuestions()};
+    }
     if(fn==='saveTestAnswer')return {ok:true};
     if(fn==='finishTest')return jsonp({action:'finishTest',data:JSON.stringify(args[0]||{})},25000);
     throw new Error('وظيفة غير معروفة: '+fn);
   }
 
-  async function init(){try{const qp=new URLSearchParams(location.search),qs=qp.get('student')||'',qc=qp.get('class')||'',qcode=qp.get('code')||'';const saved=JSON.parse(localStorage.getItem('nafsIdentity')||'null');if(qs&&qc){$('studentName').value=qs;$('className').value=qc;state.identity={studentName:qs,className:qc,studentCode:qcode};$('studentName').readOnly=true;$('className').disabled=true;localStorage.setItem('nafsIdentity',JSON.stringify(state.identity));}else if(saved){$('studentName').value=saved.studentName||'';$('className').value=saved.className||'';state.identity=saved;}const cfg=await server('getPublicConfig');$('bankCount').textContent=Number(cfg.questionCount||LOCAL_QUESTIONS.length);if(!HAS_API)notice($('identityMsg'),'نسخة التدريب جاهزة ببنك 240 سؤالًا. الاختبار الرسمي والتقارير بانتظار ربط Apps Script.','success');else notice($('identityMsg'),'تم الاتصال بخادم نافس بنجاح.','success');}catch(e){notice($('identityMsg'),'تعذر تهيئة المنصة: '+e.message)}finally{setLoading(false)}}
-  function saveIdentity(){const n=$('studentName').value.trim(),c=$('className').value;if(n.length<3)return notice($('identityMsg'),'اكتب اسم الطالب الكامل.');if(!c)return notice($('identityMsg'),'اختر الفصل.');const old=state.identity||{};state.identity={studentName:n,className:c,studentCode:old.studentCode||new URLSearchParams(location.search).get('code')||''};localStorage.setItem('nafsIdentity',JSON.stringify(state.identity));notice($('identityMsg'),'تم حفظ البيانات، اختر التدريب أو الاختبار.','success');}
-  function ensureIdentity(){saveIdentity();return !!state.identity&&state.identity.studentName&&state.identity.className;}
+  const THIRD_CLASSES=['1/3','2/3','3/3','4/3'];
+
+  function makeSessionId(){
+    return 'NS_'+Date.now()+'_'+Math.random().toString(36).slice(2,9);
+  }
+
+  async function startStudentSession(){
+    if(!state.identity||!HAS_API)return;
+    state.sessionId=makeSessionId();
+    try{
+      await server('sessionStart',{
+        sessionId:state.sessionId,
+        studentCode:state.identity.studentCode,
+        studentName:state.identity.studentName,
+        className:state.identity.className,
+        loginAt:window.__nafsLoginAt,
+        lastAction:'فتح المنصة'
+      });
+      if(state.heartbeatId)clearInterval(state.heartbeatId);
+      state.heartbeatId=setInterval(()=>{
+        if(document.visibilityState==='visible')touchStudentSession('نشاط داخل المنصة');
+      },60000);
+    }catch(e){console.warn('sessionStart',e)}
+  }
+
+  async function touchStudentSession(lastAction,finished=false){
+    if(!state.identity||!state.sessionId||!HAS_API)return;
+    try{
+      await server(finished?'sessionFinish':'sessionTouch',{
+        sessionId:state.sessionId,
+        studentCode:state.identity.studentCode,
+        lastAction:lastAction||'نشاط',
+        at:new Date().toISOString()
+      });
+    }catch(e){console.warn('sessionTouch',e)}
+  }
+
+  async function init(){
+    try{
+      const qp=new URLSearchParams(location.search);
+      const qcode=(qp.get('code')||'').trim();
+
+      if(qcode&&HAS_API){
+        const info=await server('getStudentInfo',qcode);
+        if(!info||!info.student||!THIRD_CLASSES.includes(info.student.className)){
+          throw new Error('الباركود غير صالح أو الطالب غير مسجل.');
+        }
+        const s=info.student;
+        state.identity={studentName:s.name,className:s.className,studentCode:s.code};
+        $('studentName').value=s.name;
+        $('className').value=s.className;
+        $('studentDisplayName').textContent=s.name;
+        $('studentDisplayClass').textContent='الفصل '+s.className;
+        $('studentIdentityCard').classList.remove('hidden');
+        $('barcodeRequired').classList.add('hidden');
+        $('modeGrid').classList.remove('hidden');
+        await startStudentSession();
+      }else{
+        state.identity=null;
+        $('studentIdentityCard').classList.add('hidden');
+        $('barcodeRequired').classList.remove('hidden');
+        $('modeGrid').classList.add('hidden');
+      }
+
+      const cfg=await server('getPublicConfig');
+      $('bankCount').textContent=Number(cfg.questionCount||LOCAL_QUESTIONS.length);
+
+      if(state.identity){
+        notice($('identityMsg'),'تم التعرف على الطالب والاتصال بخادم نافس بنجاح. أهلاً '+state.identity.studentName+'.','success');
+      }else if(!HAS_API){
+        notice($('identityMsg'),'التدريب المحلي متاح، لكن الدخول الشخصي بالباركود يحتاج ربط Apps Script.','success');
+      }
+    }catch(e){
+      state.identity=null;
+      $('studentIdentityCard').classList.add('hidden');
+      $('barcodeRequired').classList.remove('hidden');
+      $('modeGrid').classList.add('hidden');
+      notice($('identityMsg'),'تعذر الدخول: '+e.message);
+    }finally{
+      setLoading(false)
+    }
+  }
+
+  function saveIdentity(){return !!(state.identity&&state.identity.studentName&&THIRD_CLASSES.includes(state.identity.className));}
+  function ensureIdentity(){
+    const ok=saveIdentity();
+    if(!ok)notice($('identityMsg'),'افتح الباركود الشخصي المخصص لك للدخول إلى المنصة.');
+    return ok;
+  }
   function goHome(){stopTimer();show('landing')}
   function openTrainingMenu(){if(!ensureIdentity())return;show('trainingMenu');if(state.lastWrongQuestions.length)$('mistakesBtn').disabled=false;}
 
-  async function startTraining(topic,provided){if(!ensureIdentity())return;setLoading(true);try{state.mode='training';state.topic=topic;state.questions=provided||await server('getTrainingQuestions',topic);if(!state.questions||!state.questions.length)throw new Error('لم يتم العثور على أسئلة. شغّل setupPlatform مرة واحدة من Apps Script ثم أعد فتح الرابط.');state.index=0;state.answers={};state.correct=0;state.wrongIds=[];state.startAt=Date.now();show('quiz');$('timer').classList.add('hidden');$('prevBtn').classList.remove('hidden');$('quizModeLabel').textContent='تدريب · '+topic;renderQuestion();}catch(e){alert(e.message)}finally{setLoading(false)}}
+  async function startTraining(topic,provided){if(!ensureIdentity())return;touchStudentSession('بدء تدريب: '+topic);setLoading(true);try{state.mode='training';state.topic=topic;state.questions=provided||await server('getTrainingQuestions',topic);if(!state.questions||!state.questions.length)throw new Error('لم يتم العثور على أسئلة. شغّل setupPlatform مرة واحدة من Apps Script ثم أعد فتح الرابط.');state.index=0;state.answers={};state.correct=0;state.wrongIds=[];state.startAt=Date.now();show('quiz');$('timer').classList.add('hidden');$('prevBtn').classList.remove('hidden');$('quizModeLabel').textContent='تدريب · '+topic;renderQuestion();}catch(e){alert(e.message)}finally{setLoading(false)}}
   function trainMistakes(){if(!state.lastWrongQuestions.length)return alert('لا توجد أخطاء محفوظة من التدريب الأخير.');startTraining('أخطائي',state.lastWrongQuestions.slice());}
 
   async function prepareTest(){if(!ensureIdentity())return;setLoading(true);try{const s=await server('getStudentStatus',state.identity.studentName,state.identity.className);if(!s.canTest){notice($('identityMsg'),s.message);$('testEntryBtn').disabled=true;return;}$('testModal').classList.remove('hidden');$('agreeTest').checked=false;$('startTestBtn').disabled=true;}catch(e){notice($('identityMsg'),e.message)}finally{setLoading(false)}}
   function closeTestModal(){$('testModal').classList.add('hidden')}
-  async function startOfficialTest(){closeTestModal();setLoading(true);try{const res=await server('startTest',state.identity.studentName,state.identity.className);state.mode='test';state.topic='اختبار رسمي';state.questions=res.questions;state.attemptId=res.attemptId;state.index=0;state.answers={};state.startAt=Date.now();show('quiz');$('prevBtn').classList.add('hidden');$('timer').classList.remove('hidden');$('quizModeLabel').textContent='اختبار نافس · محاولة واحدة';renderQuestion();}catch(e){notice($('identityMsg'),e.message);show('landing')}finally{setLoading(false)}}
+  async function startOfficialTest(){closeTestModal();touchStudentSession('بدء اختبار نافس');setLoading(true);try{const res=await server('startTest',state.identity.studentName,state.identity.className);state.mode='test';state.topic='اختبار رسمي';state.questions=res.questions;state.attemptId=res.attemptId;state.index=0;state.answers={};state.startAt=Date.now();show('quiz');$('prevBtn').classList.add('hidden');$('timer').classList.remove('hidden');$('quizModeLabel').textContent='اختبار نافس · محاولة واحدة';renderQuestion();}catch(e){notice($('identityMsg'),e.message);show('landing')}finally{setLoading(false)}}
 
   function renderQuestion(){const q=state.questions[state.index];if(!q)return finishCurrent();$('counter').textContent=`${state.index+1} / ${state.questions.length}`;$('progressFill').style.width=`${((state.index)/state.questions.length)*100}%`;$('lessonTag').textContent=q.lesson;$('skillTag').textContent=q.skill;$('difficultyTag').textContent=q.difficulty;$('questionText').textContent=q.text;
     const mb=$('mediaBox');
@@ -199,7 +301,7 @@
   function stopTimer(){if(state.timerId){clearInterval(state.timerId);state.timerId=null}}
   async function timeoutQuestion(){if(state.mode!=='test'||state.submitting)return;state.submitting=true;const q=state.questions[state.index];document.querySelectorAll('.option').forEach(o=>o.disabled=true);notice($('quizMsg'),'انتهى وقت السؤال، جارٍ الانتقال تلقائيًا...','error');try{const chosen=state.answers[state.index];await server('saveTestAnswer',{attemptId:state.attemptId,questionId:q.id,questionOrder:state.index+1,answerIndex:chosen===undefined?null:chosen,elapsedSec:Number(q.timeSec||60),timedOut:chosen===undefined});state.index++;if(state.index>=state.questions.length)await finishCurrent();else renderQuestion();}catch(e){notice($('quizMsg'),'تعذر حفظ السؤال: '+e.message)}finally{state.submitting=false}}
 
-  async function finishCurrent(){stopTimer();setLoading(true);try{if(state.mode==='training'){let correct=0,wrong=[];state.questions.forEach((q,i)=>{if(state.answers[i]===q.correctIndex)correct++;else wrong.push(q)});state.correct=correct;state.lastWrongQuestions=wrong;$('mistakesBtn').disabled=!wrong.length;const total=state.questions.length,pct=Math.round(correct/total*100);await server('saveTrainingResult',{studentName:state.identity.studentName,className:state.identity.className,studentCode:state.identity.studentCode||'',topic:state.topic,loginAt:window.__nafsLoginAt,startedAt:new Date(state.startAt).toISOString(),submittedAt:new Date().toISOString(),correct,total,percent:pct,durationSec:Math.round((Date.now()-state.startAt)/1000),wrongQuestionIds:wrong.map(q=>q.id)});renderResult({score:correct,total,percent:pct,showResult:true},true)}else{let score=0;const specialtyResults={};const answers=state.questions.map((q,i)=>{const chosen=state.answers[i];const ok=chosen===q.correctIndex;if(ok)score++;if(!specialtyResults[q.lesson])specialtyResults[q.lesson]={score:0,total:0};specialtyResults[q.lesson].total++;if(ok)specialtyResults[q.lesson].score++;return {id:q.id,answer:chosen===undefined?null:chosen,correct:ok?1:0};});const total=state.questions.length,pct=total?Math.round(score/total*100):0;const res=await server('finishTest',{attemptId:state.attemptId,studentName:state.identity.studentName,className:state.identity.className,studentCode:state.identity.studentCode||'',loginAt:window.__nafsLoginAt,startedAt:new Date(state.startAt).toISOString(),submittedAt:new Date().toISOString(),durationSec:Math.round((Date.now()-state.startAt)/1000),score,total,percent:pct,specialtyResults,answers});renderResult(res||{score,total,percent:pct,showResult:false,specialtyResults},false);$('testEntryBtn').disabled=true;}}catch(e){alert(e.message)}finally{setLoading(false)}}
+  async function finishCurrent(){stopTimer();setLoading(true);try{if(state.mode==='training'){let correct=0,wrong=[];state.questions.forEach((q,i)=>{if(state.answers[i]===q.correctIndex)correct++;else wrong.push(q)});state.correct=correct;state.lastWrongQuestions=wrong;$('mistakesBtn').disabled=!wrong.length;const total=state.questions.length,pct=Math.round(correct/total*100);await server('saveTrainingResult',{studentName:state.identity.studentName,className:state.identity.className,studentCode:state.identity.studentCode||'',topic:state.topic,loginAt:window.__nafsLoginAt,startedAt:new Date(state.startAt).toISOString(),submittedAt:new Date().toISOString(),correct,total,percent:pct,durationSec:Math.round((Date.now()-state.startAt)/1000),wrongQuestionIds:wrong.map(q=>q.id),sessionId:state.sessionId||''});await touchStudentSession('إنهاء تدريب: '+state.topic,true);renderResult({score:correct,total,percent:pct,showResult:true},true)}else{let score=0;const specialtyResults={};const answers=state.questions.map((q,i)=>{const chosen=state.answers[i];const ok=chosen===q.correctIndex;if(ok)score++;if(!specialtyResults[q.lesson])specialtyResults[q.lesson]={score:0,total:0};specialtyResults[q.lesson].total++;if(ok)specialtyResults[q.lesson].score++;return {id:q.id,answer:chosen===undefined?null:chosen,correct:ok?1:0};});const total=state.questions.length,pct=total?Math.round(score/total*100):0;const res=await server('finishTest',{attemptId:state.attemptId,studentName:state.identity.studentName,className:state.identity.className,studentCode:state.identity.studentCode||'',loginAt:window.__nafsLoginAt,startedAt:new Date(state.startAt).toISOString(),submittedAt:new Date().toISOString(),durationSec:Math.round((Date.now()-state.startAt)/1000),score,total,percent:pct,specialtyResults,answers,sessionId:state.sessionId||''});await touchStudentSession('إنهاء اختبار نافس',true);renderResult(res||{score,total,percent:pct,showResult:false,specialtyResults},false);$('testEntryBtn').disabled=true;}}catch(e){alert(e.message)}finally{setLoading(false)}}
 
   function renderResult(r,isTraining){show('result');const pct=Number(r.percent||0);$('scoreRing').style.setProperty('--scoredeg',(pct*3.6)+'deg');$('scorePercent').textContent=(isTraining||r.showResult)?pct+'%':'✓';$('resultTitle').textContent=isTraining?(pct>=80?'ممتاز، أداء متقن!':pct>=60?'أداء جيد، واصل التدريب':'المحاولة تصنع الإتقان'):'تم إرسال الاختبار بنجاح';$('resultText').textContent=isTraining?`أجبت عن ${r.score} من ${r.total} إجابة صحيحة. يمكنك إعادة التدريب أو مراجعة أخطائك.`:(r.showResult?`تم حفظ النتيجة: ${r.score} من ${r.total} (${pct}%).`:'تم حفظ إجاباتك وإرسالها إلى منصة المعلم.');
     $('retryBtn').classList.toggle('hidden',!isTraining);$('mistakeResultBtn').classList.toggle('hidden',!isTraining||!state.lastWrongQuestions.length);

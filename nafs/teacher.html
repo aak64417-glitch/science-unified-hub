@@ -1,19 +1,200 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تدريب نافس | لوحة المعلم</title><style>
-:root{--n:#17224d;--p:#6554d9;--c:#23b6c8;--g:#23a86b;--bg:#f3f6fc;--line:#e2e7f1}*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:var(--bg);color:#18223a}.wrap{max-width:1250px;margin:auto;padding:18px}.hero{background:linear-gradient(125deg,#17224d,#3d3b8c 55%,#1e8f9d);color:#fff;padding:24px;border-radius:25px}.hero h1{margin:0 0 6px}.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:14px;box-shadow:0 10px 30px #1f295b12}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:150px}input,select,button{font:inherit;padding:11px 12px;border-radius:12px;border:1px solid var(--line)}button{border:0;background:var(--p);color:#fff;font-weight:800;cursor:pointer}.ghost{background:#eef1f8;color:var(--n)}.danger{background:#d94f62}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.stat{background:#f7f9fd;padding:14px;border-radius:15px;text-align:center}.stat b{display:block;font-size:25px}table{width:100%;border-collapse:collapse;min-width:1150px}.tw{overflow:auto;border:1px solid var(--line);border-radius:15px;margin-top:12px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right;font-size:13px}th{background:#eef2fa;position:sticky;top:0}.msg{margin-top:10px;padding:10px;border-radius:12px;background:#eef8f5;color:#186645}.err{background:#fff0f2;color:#9b3040}@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
-.brandhead{display:flex;align-items:center;gap:16px}.brandhead img{width:92px;height:78px;object-fit:contain;background:#fff;border-radius:16px;padding:5px}.brandhead h1{margin:0 0 5px}.brandhead .sub{opacity:.92;line-height:1.7}
-.report-note{margin-top:10px;font-size:12px;opacity:.9}.report-footer{text-align:center;color:#6f7890;font-size:12px;padding:14px}
-@media print{
- body{background:#fff}.wrap{max-width:none;padding:0}.hero{border-radius:0;background:#fff!important;color:#18223a;border-bottom:3px solid #6554d9}
- .card:first-of-type,.card:last-of-type{display:none!important}.card{box-shadow:none;border:0;padding:0}
- .tw{border:0;overflow:visible}table{min-width:0}th,td{font-size:10px;padding:6px}.danger{display:none!important}
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>تدريب نافس | لوحة المعلم</title>
+<style>
+:root{--n:#17224d;--p:#6554d9;--c:#23b6c8;--g:#23a86b;--o:#f5a623;--r:#d94f62;--bg:#f3f6fc;--line:#e2e7f1;--muted:#6f7890}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:#18223a}.wrap{max-width:1280px;margin:auto;padding:16px}.hidden{display:none!important}
+.hero{background:linear-gradient(125deg,#17224d,#3d3b8c 55%,#1e8f9d);color:#fff;padding:22px;border-radius:24px;display:flex;gap:16px;align-items:center}.hero img{width:88px;height:76px;object-fit:contain;background:#fff;border-radius:16px;padding:5px}.hero h1{margin:0 0 5px}.hero p{margin:0;line-height:1.7;opacity:.95}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:17px;margin-top:13px;box-shadow:0 8px 28px #1f295b12}.row{display:flex;gap:9px;flex-wrap:wrap}.row>*{flex:1;min-width:145px}input,select,button,textarea{font:inherit;padding:10px 11px;border-radius:12px;border:1px solid var(--line);background:#fff}button{border:0;background:var(--p);color:#fff;font-weight:800;cursor:pointer}.ghost{background:#eef1f8;color:var(--n)}.green{background:var(--g)}.danger{background:var(--r)}.orange{background:var(--o);color:#35240a}.small{padding:7px 9px;font-size:12px}
+.tabs{display:flex;gap:7px;overflow:auto;margin-top:13px;padding-bottom:3px}.tabbtn{white-space:nowrap;background:#e8ebf4;color:#34405e}.tabbtn.active{background:var(--p);color:#fff}.tab{display:none}.tab.active{display:block}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}.stat{background:#f7f9fd;border:1px solid var(--line);padding:13px;border-radius:15px;text-align:center}.stat b{display:block;font-size:24px}.stat span{font-size:11px;color:var(--muted);font-weight:700}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:15px;margin-top:11px}table{width:100%;border-collapse:collapse;min-width:980px}th,td{padding:9px;border-bottom:1px solid var(--line);text-align:right;font-size:12px;vertical-align:middle}th{background:#eef2fa;position:sticky;top:0}.muted{color:var(--muted)}.msg{margin-top:9px;padding:10px;border-radius:12px;background:#eef8f5;color:#186645}.msg.err{background:#fff0f2;color:#9b3040}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef1f8;font-size:11px;font-weight:800}.ok{background:#e8f8ef;color:#167344}.no{background:#fff0f2;color:#a23545}
+.manage-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.panel{border:1px solid var(--line);border-radius:17px;padding:14px;background:#fbfcff}.panel h3{margin:0 0 10px}.panel textarea{width:100%;min-height:110px;resize:vertical}
+.student-card{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff}.qrbox{width:190px;height:190px;margin:auto;display:grid;place-items:center}.qrbox img,.qrbox canvas{max-width:190px!important;max-height:190px!important}.modal{position:fixed;inset:0;background:#10162b99;z-index:50;display:flex;align-items:center;justify-content:center;padding:14px}.modalbox{width:min(900px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:22px;padding:18px;box-shadow:0 25px 70px #0005}.modalhead{display:flex;justify-content:space-between;gap:10px;align-items:center}.modalhead h3{margin:0}.close{background:#eef1f8;color:#17224d;min-width:44px}
+.report-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}.mini{background:#f7f9fd;border-radius:13px;padding:11px;text-align:center}.mini b{display:block;font-size:20px}.specialties{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.spec{border:1px solid var(--line);border-radius:13px;padding:11px;text-align:center}.spec b{display:block}
+.portfolio{background:#fff;padding:28px;direction:rtl;color:#17224d;max-width:900px;margin:auto}.portfolio .pf-head{display:flex;align-items:center;gap:18px;border-bottom:3px solid #6554d9;padding-bottom:15px}.portfolio .pf-head img{width:110px}.portfolio h1{margin:0;color:#3d3b8c}.portfolio h2{margin:22px 0 9px;color:#3d3b8c}.portfolio p,.portfolio li{line-height:1.9}.pf-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.pf-stat{border:1px solid #e2e7f1;border-radius:13px;padding:12px;text-align:center}.pf-stat b{display:block;font-size:25px;color:#6554d9}.pf-sign{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:20px;text-align:center}.evidence{border:1px solid #e2e7f1;background:#f8f9fc;border-radius:14px;padding:13px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(3,1fr)}.manage-grid{grid-template-columns:1fr}.specialties{grid-template-columns:1fr 1fr}.report-hero{grid-template-columns:1fr 1fr}}
+@media(max-width:550px){.stats{grid-template-columns:1fr 1fr}.portfolio{padding:16px}.pf-stats{grid-template-columns:1fr}.pf-sign{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <img src="nafs-logo.jpg" alt="شعار نافس">
+    <div><h1>لوحة المعلم – تدريب نافس</h1><p>علوم الصف الثالث المتوسط · إعداد مدرسة أبي الدرداء المتوسطة<br>إدارة الطلاب، الباركود، التقارير، وسجل ملف الإنجاز</p></div>
+  </section>
+
+  <section class="card">
+    <div class="row"><input id="key" type="password" placeholder="مفتاح المعلم"><button onclick="loadDashboard()">تحديث البيانات</button></div>
+    <div id="msg"></div>
+  </section>
+
+  <div class="tabs">
+    <button class="tabbtn active" data-tab="dash" onclick="openTab('dash',this)">نظرة عامة</button>
+    <button class="tabbtn" data-tab="students" onclick="openTab('students',this)">إدارة الطلاب</button>
+    <button class="tabbtn" data-tab="reports" onclick="openTab('reports',this)">تقارير الطلاب</button>
+    <button class="tabbtn" data-tab="portfolio" onclick="openTab('portfolio',this)">ملف الإنجاز</button>
+    <button class="tabbtn" data-tab="settings" onclick="openTab('settings',this)">الإعدادات</button>
+  </div>
+
+  <section id="tab-dash" class="tab active">
+    <div class="card"><div class="stats">
+      <div class="stat"><b id="dRegistered">0</b><span>الطلاب المسجلون</span></div>
+      <div class="stat"><b id="dEntered">0</b><span>دخلوا المنصة</span></div>
+      <div class="stat"><b id="dNotEntered">0</b><span>لم يدخلوا</span></div>
+      <div class="stat"><b id="dTraining">0</b><span>شاركوا في التدريب</span></div>
+      <div class="stat"><b id="dTest">0</b><span>أدوا الاختبار</span></div>
+      <div class="stat"><b id="dAvg">0%</b><span>متوسط الأداء</span></div>
+    </div></div>
+    <div class="card">
+      <div class="row"><select id="dashClass" onchange="renderDashboard()"><option value="">كل الفصول</option><option>1/3</option><option>2/3</option><option>3/3</option><option>4/3</option></select><input id="dashSearch" placeholder="بحث باسم الطالب" oninput="renderDashboard()"></div>
+      <div class="tw"><table><thead><tr><th>الطالب</th><th>الفصل</th><th>حالة الدخول</th><th>آخر دخول</th><th>آخر نشاط/إنهاء</th><th>التدريبات</th><th>الاختبار</th><th>آخر نسبة</th><th>تقرير</th></tr></thead><tbody id="dashTb"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="tab-students" class="tab">
+    <div class="card manage-grid">
+      <div class="panel"><h3>إضافة طالب</h3><div class="row"><input id="addName" placeholder="اسم الطالب"><select id="addClass"><option value="">الفصل</option><option>1/3</option><option>2/3</option><option>3/3</option><option>4/3</option></select><button onclick="addStudent()">إضافة</button></div></div>
+      <div class="panel"><h3>إضافة مجموعة</h3><select id="bulkClass"><option value="">اختر الفصل</option><option>1/3</option><option>2/3</option><option>3/3</option><option>4/3</option></select><textarea id="bulkNames" placeholder="اسم طالب في كل سطر"></textarea><button class="green" onclick="bulkAdd()">إضافة الأسماء</button></div>
+    </div>
+    <div class="card">
+      <div class="row"><select id="studentClassF" onchange="renderStudents()"><option value="">كل الفصول</option><option>1/3</option><option>2/3</option><option>3/3</option><option>4/3</option></select><input id="studentSearch" placeholder="بحث باسم الطالب" oninput="renderStudents()"></div>
+      <div class="tw"><table><thead><tr><th>الطالب</th><th>الفصل</th><th>الكود</th><th>آخر دخول</th><th>آخر نشاط</th><th>الإجراءات</th></tr></thead><tbody id="studentsTb"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="tab-reports" class="tab">
+    <div class="card">
+      <div class="row"><select id="reportClass" onchange="updateStudentSelect()"><option value="">كل الفصول</option><option>1/3</option><option>2/3</option><option>3/3</option><option>4/3</option></select><select id="reportStudent"><option value="">اختر الطالب</option></select><button onclick="showSelectedStudentReport()">عرض تقرير الطالب</button></div>
+    </div>
+    <div class="card">
+      <h3>من دخل / من لم يدخل</h3>
+      <div id="participationSummary" class="stats"></div>
+      <div class="tw"><table><thead><tr><th>الطالب</th><th>الفصل</th><th>دخل المنصة</th><th>تاريخ ووقت الدخول</th><th>آخر نشاط/إنهاء</th><th>عدد النتائج</th></tr></thead><tbody id="participationTb"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="tab-portfolio" class="tab">
+    <div class="card">
+      <h3>ملف إنجاز منصة تدريب نافس</h3>
+      <p class="muted">يُنشأ تلقائيًا من أحدث بيانات المنصة، ويشمل الفكرة والأهداف وآلية العمل والإحصاءات والشواهد الرقمية والأثر التعليمي.</p>
+      <div class="row"><button class="green" onclick="generatePortfolioPdf()">إنشاء ملف الإنجاز PDF</button><button class="ghost" onclick="sharePortfolioSummary()">مشاركة ملخص ملف الإنجاز</button></div>
+      <div id="portfolioStatus"></div>
+    </div>
+    <div class="card"><div id="portfolioPreview"></div></div>
+  </section>
+
+  <section id="tab-settings" class="tab">
+    <div class="card"><h3>إعدادات الاختبار</h3><div class="row"><select id="testOpen"><option value="TRUE">الاختبار مفتوح</option><option value="FALSE">الاختبار مغلق</option></select><select id="showResult"><option value="TRUE">إظهار النتيجة للطالب</option><option value="FALSE">إخفاء النتيجة</option></select><button onclick="saveSettings()">حفظ الإعدادات</button></div></div>
+  </section>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modalbox"><div class="modalhead"><h3 id="modalTitle"></h3><button class="close" onclick="closeModal()">×</button></div><div id="modalBody"></div></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="config.js"></script>
+<script>
+const CLASSES=['1/3','2/3','3/3','4/3'];
+let data={students:[],results:[],sessions:[],config:{}};
+const $=id=>document.getElementById(id);
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function api(){return String(window.NAFS_API_URL||'').trim()}
+function key(){const v=$('key').value.trim();if(v)localStorage.setItem('nafsTeacherKey',v);return v||localStorage.getItem('nafsTeacherKey')||''}
+function msg(t,e=false){$('msg').innerHTML='<div class="msg '+(e?'err':'')+'">'+esc(t)+'</div>'}
+function jsonp(p,timeout=25000){return new Promise((res,rej)=>{if(!api())return rej(new Error('رابط Apps Script غير موجود'));const cb='tc_'+Date.now()+'_'+Math.floor(Math.random()*99999),s=document.createElement('script'),to=setTimeout(()=>{clean();rej(new Error('انتهت مهلة الاتصال'))},timeout);function clean(){clearTimeout(to);try{delete window[cb]}catch(e){};s.remove()}window[cb]=d=>{clean();d&&d.ok===false?rej(new Error(d.message||'رفض الخادم الطلب')):res(d)};const u=new URL(api());Object.entries({...p,callback:cb}).forEach(([k,v])=>u.searchParams.set(k,v??''));s.src=u.toString();s.onerror=()=>{clean();rej(new Error('تعذر الاتصال بالخادم'))};document.body.appendChild(s)})}
+function fmt(v){if(!v)return '—';try{return new Intl.DateTimeFormat('ar-SA',{year:'numeric',month:'2-digit',day:'2-digit',hour:'numeric',minute:'2-digit'}).format(new Date(v))}catch(e){return String(v)}}
+function dur(s){s=Number(s||0);return Math.floor(s/60)+'د '+Math.round(s%60)+'ث'}
+function openTab(name,btn){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tabbtn').forEach(x=>x.classList.remove('active'));$('tab-'+name).classList.add('active');btn?.classList.add('active');if(name==='portfolio')renderPortfolio()}
+function closeModal(){$('modal').classList.add('hidden')}
+function showModal(title,html){$('modalTitle').textContent=title;$('modalBody').innerHTML=html;$('modal').classList.remove('hidden')}
+function latestSession(code){return data.sessions.filter(x=>x.studentCode===code).sort((a,b)=>String(b.loginAt).localeCompare(String(a.loginAt)))[0]||null}
+function studentResults(code){return data.results.filter(x=>x.studentCode===code)}
+function studentByCode(code){return data.students.find(x=>x.code===code)}
+function latestResult(code){return studentResults(code).sort((a,b)=>String(b.submittedAt).localeCompare(String(a.submittedAt)))[0]||null}
+function hasMode(code,mode){return studentResults(code).some(x=>x.mode===mode)}
+function lastPct(code){const r=latestResult(code);return r?Number(r.percent||0):null}
+
+async function loadDashboard(){
+  try{
+    msg('جاري تحميل أحدث بيانات نافس...');
+    const r=await jsonp({action:'dashboard',key:key()});
+    data.students=r.students||[];data.results=r.results||[];data.sessions=r.sessions||[];data.config=r.config||{};
+    $('testOpen').value=String(data.config.testOpen).toUpperCase();
+    $('showResult').value=String(data.config.showResultToStudent).toUpperCase();
+    renderAll();msg('تم تحديث البيانات.');
+  }catch(e){msg(e.message,true)}
 }
-</style></head><body><div class="wrap"><section class="hero"><div class="brandhead"><img src="nafs-logo.jpg" alt="شعار نافس"><div><h1>لوحة المعلم – تدريب نافس</h1><div class="sub">علوم الصف الثالث المتوسط<br><b>إعداد مدرسة أبي الدرداء المتوسطة</b></div><div class="report-note">تقارير الأداء والتدريب والاختبار</div></div></div></section>
-<section class="card"><div class="row"><input id="key" type="password" placeholder="مفتاح المعلم"><button onclick="loadAll()">تحديث النتائج</button><button class="ghost" onclick="exportCsv()">تصدير CSV</button><button class="ghost" onclick="window.print()">طباعة</button></div><div id="msg"></div></section>
-<section class="card"><div style="margin-bottom:8px"><b>تقرير أداء الطلاب – تدريب نافس</b><div style="font-size:12px;color:#6f7890">علوم الصف الثالث المتوسط · إعداد مدرسة أبي الدرداء المتوسطة</div></div><div class="row"><select id="modeF" onchange="render()"><option value="">كل الأنشطة</option><option value="training">التدريب</option><option value="test">الاختبار</option></select><input id="classF" placeholder="تصفية الفصل" oninput="render()"><input id="nameF" placeholder="بحث باسم الطالب" oninput="render()"></div><div class="stats"><div class="stat"><b id="sRows">0</b><span>النتائج</span></div><div class="stat"><b id="sStudents">0</b><span>الطلاب</span></div><div class="stat"><b id="sTests">0</b><span>اختبارات</span></div><div class="stat"><b id="sAvg">0%</b><span>متوسط الأداء</span></div></div><div class="tw"><table><thead><tr><th>#</th><th>الطالب</th><th>الفصل</th><th>النوع</th><th>المجال</th><th>الدرجة</th><th>النسبة</th><th>تاريخ ووقت الدخول</th><th>وقت التسليم</th><th>المدة</th><th>الإجراء</th></tr></thead><tbody id="tb"></tbody></table></div></section>
-<section class="card"><h3>إعدادات الاختبار</h3><div class="row"><select id="testOpen"><option value="TRUE">الاختبار مفتوح</option><option value="FALSE">الاختبار مغلق</option></select><select id="showResult"><option value="TRUE">إظهار النتيجة للطالب</option><option value="FALSE">إخفاء النتيجة</option></select><button onclick="saveSettings()">حفظ الإعدادات</button></div></section><div class="report-footer">تدريب نافس · علوم الصف الثالث المتوسط · إعداد مدرسة أبي الدرداء المتوسطة</div></div><script src="config.js"></script><script>
-let rows=[];const $=id=>document.getElementById(id);function msg(t,e=false){$('msg').innerHTML='<div class="msg '+(e?'err':'')+'">'+esc(t)+'</div>'}function esc(s){return String(s??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]))}function api(){return String(window.NAFS_API_URL||'').trim()}function jsonp(p,timeout=20000){return new Promise((res,rej)=>{if(!api())return rej(new Error('ضع رابط Apps Script في config.js أولًا'));const cb='tcb_'+Date.now()+'_'+Math.floor(Math.random()*9999),s=document.createElement('script'),to=setTimeout(()=>{clean();rej(new Error('انتهت مهلة الاتصال'))},timeout);function clean(){clearTimeout(to);try{delete window[cb]}catch(e){};s.remove()}window[cb]=d=>{clean();d&&d.ok===false?rej(new Error(d.message||'رفض الخادم الطلب')):res(d)};const u=new URL(api());Object.entries({...p,callback:cb}).forEach(([k,v])=>u.searchParams.set(k,v??''));s.src=u;s.onerror=()=>{clean();rej(new Error('تعذر الاتصال'))};document.body.appendChild(s)})}
-function key(){const v=$('key').value.trim();if(v)localStorage.setItem('nafsTeacherKey',v);return v||localStorage.getItem('nafsTeacherKey')||''}function fmt(v){if(!v)return '—';try{return new Intl.DateTimeFormat('ar-SA',{year:'numeric',month:'2-digit',day:'2-digit',hour:'numeric',minute:'2-digit',second:'2-digit'}).format(new Date(v))}catch(e){return v}}function dur(s){s=Number(s||0);return Math.floor(s/60)+'د '+(s%60)+'ث'}
-async function loadAll(){try{msg('جاري تحميل أحدث النتائج...');const r=await jsonp({action:'results',key:key()});rows=r.results||[];if(r.config){$('testOpen').value=String(r.config.testOpen).toUpperCase();$('showResult').value=String(r.config.showResultToStudent).toUpperCase()}render();msg('تم تحديث النتائج.')}catch(e){msg(e.message,true)}}
-function filtered(){const m=$('modeF').value,c=$('classF').value.trim(),n=$('nameF').value.trim();return rows.filter(r=>(!m||r.mode===m)&&(!c||String(r.className).includes(c))&&(!n||String(r.studentName).includes(n)))}function render(){const a=filtered();$('sRows').textContent=a.length;$('sStudents').textContent=new Set(a.map(r=>r.className+'|'+r.studentName)).size;$('sTests').textContent=a.filter(r=>r.mode==='test').length;const vals=a.map(r=>Number(r.percent)).filter(Number.isFinite);$('sAvg').textContent=(vals.length?Math.round(vals.reduce((x,y)=>x+y,0)/vals.length):0)+'%';$('tb').innerHTML=a.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.studentName)}</td><td>${esc(r.className)}</td><td>${r.mode==='test'?'اختبار':'تدريب'}</td><td>${esc(r.topic||'شامل')}</td><td>${esc(r.score)} / ${esc(r.total)}</td><td>${esc(r.percent)}%</td><td>${esc(fmt(r.loginAt))}</td><td>${esc(fmt(r.submittedAt))}</td><td>${esc(dur(r.durationSec))}</td><td>${r.mode==='test'?`<button class="danger" onclick="resetAttempt('${esc(r.attemptId)}')">حذف المحاولة</button>`:'—'}</td></tr>`).join('')}
-async function resetAttempt(id){if(!confirm('حذف محاولة الاختبار والسماح للطالب بإعادة الاختبار؟'))return;try{await jsonp({action:'deleteAttempt',key:key(),attemptId:id});await loadAll()}catch(e){msg(e.message,true)}}async function saveSettings(){try{await jsonp({action:'setConfig',key:key(),testOpen:$('testOpen').value,showResult:$('showResult').value});msg('تم حفظ الإعدادات.')}catch(e){msg(e.message,true)}}function exportCsv(){const a=filtered(),head=['المنصة','الطالب','الفصل','النوع','المجال','الدرجة','الإجمالي','النسبة','وقت الدخول','وقت التسليم','المدة'];const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv='\ufeff'+[head,...a.map(r=>['تدريب نافس',r.studentName,r.className,r.mode,r.topic,r.score,r.total,r.percent,r.loginAt,r.submittedAt,r.durationSec])].map(x=>x.map(q).join(',')).join('\n');const b=new Blob([csv],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a1=document.createElement('a');a1.href=u;a1.download='تقرير-نتائج-تدريب-نافس.csv';a1.click();URL.revokeObjectURL(u)}$('key').value=localStorage.getItem('nafsTeacherKey')||'';
-</script></body></html>
+function renderAll(){renderDashboard();renderStudents();updateStudentSelect();renderParticipation();renderPortfolio()}
+function filteredStudents(cls,search){return data.students.filter(s=>(!cls||s.className===cls)&&(!search||s.name.includes(search)))}
+function renderDashboard(){
+  const list=filteredStudents($('dashClass').value,$('dashSearch').value.trim());
+  const entered=list.filter(s=>latestSession(s.code));
+  const training=list.filter(s=>hasMode(s.code,'training'));
+  const tests=list.filter(s=>hasMode(s.code,'test'));
+  const pcts=list.map(s=>lastPct(s.code)).filter(x=>x!==null&&Number.isFinite(x));
+  $('dRegistered').textContent=list.length;$('dEntered').textContent=entered.length;$('dNotEntered').textContent=list.length-entered.length;$('dTraining').textContent=training.length;$('dTest').textContent=tests.length;$('dAvg').textContent=(pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0)+'%';
+  $('dashTb').innerHTML=list.map(s=>{const se=latestSession(s.code),r=latestResult(s.code),count=studentResults(s.code).filter(x=>x.mode==='training').length;return `<tr><td>${esc(s.name)}</td><td>${esc(s.className)}</td><td>${se?'<span class="badge ok">دخل</span>':'<span class="badge no">لم يدخل</span>'}</td><td>${esc(fmt(se?.loginAt))}</td><td>${esc(fmt(se?.finishedAt||se?.lastActivityAt))}</td><td>${count}</td><td>${hasMode(s.code,'test')?'تم':'—'}</td><td>${r?esc(r.percent)+'%':'—'}</td><td><button class="small" onclick="studentReport('${esc(s.code)}')">عرض</button></td></tr>`}).join('');
+}
+function renderStudents(){
+  const list=filteredStudents($('studentClassF').value,$('studentSearch').value.trim());
+  $('studentsTb').innerHTML=list.map(s=>{const se=latestSession(s.code);return `<tr><td>${esc(s.name)}</td><td>${esc(s.className)}</td><td>${esc(s.code)}</td><td>${esc(fmt(se?.loginAt))}</td><td>${esc(fmt(se?.finishedAt||se?.lastActivityAt))}</td><td><button class="small" onclick="showQr('${esc(s.code)}')">باركود</button> <button class="small ghost" onclick="editStudent('${esc(s.code)}')">تعديل/نقل</button> <button class="small ghost" onclick="studentReport('${esc(s.code)}')">تقرير</button> <button class="small danger" onclick="deleteStudent('${esc(s.code)}')">حذف</button></td></tr>`}).join('');
+}
+async function addStudent(){const name=$('addName').value.trim(),cls=$('addClass').value;if(!name||!CLASSES.includes(cls))return msg('اكتب اسم الطالب واختر الفصل.',true);try{await jsonp({action:'addStudent',key:key(),name,className:cls});$('addName').value='';await loadDashboard()}catch(e){msg(e.message,true)}}
+async function bulkAdd(){const cls=$('bulkClass').value,names=$('bulkNames').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(!CLASSES.includes(cls)||!names.length)return msg('اختر الفصل والصق الأسماء.',true);try{const r=await jsonp({action:'bulkAddStudents',key:key(),data:JSON.stringify({className:cls,names})});$('bulkNames').value='';msg('تمت إضافة '+r.added+' طالب، وتجاوز '+r.skipped+' اسم مكرر.');await loadDashboard()}catch(e){msg(e.message,true)}}
+function editStudent(code){const s=studentByCode(code);if(!s)return;showModal('تعديل / نقل الطالب',`<div class="row"><input id="editName" value="${esc(s.name)}"><select id="editClass">${CLASSES.map(c=>`<option ${c===s.className?'selected':''}>${c}</option>`).join('')}</select><button onclick="saveStudentEdit('${esc(code)}')">حفظ التعديل</button></div><p class="muted">يبقى باركود الطالب نفسه صالحًا بعد تغيير الاسم أو الفصل.</p>`)}
+async function saveStudentEdit(code){try{await jsonp({action:'updateStudent',key:key(),code,name:$('editName').value.trim(),className:$('editClass').value});closeModal();await loadDashboard()}catch(e){alert(e.message)}}
+async function deleteStudent(code){const s=studentByCode(code);if(!s||!confirm('حذف '+s.name+' من قائمة الطلاب؟ ستبقى نتائجه السابقة محفوظة كسجل تاريخي.'))return;try{await jsonp({action:'deleteStudent',key:key(),code});await loadDashboard()}catch(e){msg(e.message,true)}}
+function personalUrl(code){const u=new URL('index.html',location.href);u.searchParams.set('code',code);return u.toString()}
+function showQr(code){const s=studentByCode(code);if(!s)return;const url=personalUrl(code);showModal('باركود الطالب',`<div class="student-card" style="text-align:center"><div id="oneQr" class="qrbox"></div><h3>${esc(s.name)}</h3><div class="badge">الفصل ${esc(s.className)}</div><p class="muted">${esc(s.code)}</p><div class="row"><button onclick="shareStudentLink('${esc(code)}')">مشاركة الرابط</button><button class="ghost" onclick="copyStudentLink('${esc(code)}')">نسخ الرابط</button><button class="green" onclick="window.open('${esc(url)}','_blank')">فتح كتجربة</button></div></div>`);setTimeout(()=>{if(typeof QRCode!=='undefined')new QRCode($('oneQr'),{text:url,width:190,height:190,colorDark:'#17224d',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M})},50)}
+async function copyStudentLink(code){const u=personalUrl(code);try{await navigator.clipboard.writeText(u);alert('تم نسخ رابط الطالب.')}catch(e){prompt('انسخ الرابط:',u)}}
+async function shareStudentLink(code){const s=studentByCode(code),u=personalUrl(code);const text=`باركود/رابط تدريب نافس\nالطالب: ${s.name}\nالفصل: ${s.className}`;if(navigator.share){try{await navigator.share({title:'تدريب نافس',text,url:u});return}catch(e){}}copyStudentLink(code)}
+function updateStudentSelect(){const cls=$('reportClass').value;const list=filteredStudents(cls,'');$('reportStudent').innerHTML='<option value="">اختر الطالب</option>'+list.map(s=>`<option value="${esc(s.code)}">${esc(s.name)} – ${esc(s.className)}</option>`).join('')}
+function showSelectedStudentReport(){const code=$('reportStudent').value;if(code)studentReport(code)}
+function specialtyStats(code){
+  const agg={'أحياء':[],'كيمياء':[],'فيزياء':[],'علوم الأرض والفضاء':[]};
+  studentResults(code).forEach(r=>{
+    if(r.mode==='training'&&agg[r.topic])agg[r.topic].push(Number(r.percent||0));
+    if(r.mode==='test'&&r.specialtyResults){try{const o=typeof r.specialtyResults==='string'?JSON.parse(r.specialtyResults):r.specialtyResults;Object.keys(agg).forEach(k=>{if(o&&o[k]&&Number(o[k].total)>0)agg[k].push(Math.round(Number(o[k].score)/Number(o[k].total)*100))})}catch(e){}}
+  });
+  const out={};Object.keys(agg).forEach(k=>out[k]=agg[k].length?Math.round(agg[k].reduce((a,b)=>a+b,0)/agg[k].length):null);return out;
+}
+function studentReport(code){
+  const s=studentByCode(code);if(!s)return;const rr=studentResults(code).sort((a,b)=>String(b.submittedAt).localeCompare(String(a.submittedAt))),ss=data.sessions.filter(x=>x.studentCode===code).sort((a,b)=>String(b.loginAt).localeCompare(String(a.loginAt))),sp=specialtyStats(code),avg=rr.length?Math.round(rr.reduce((a,r)=>a+Number(r.percent||0),0)/rr.length):0;
+  const specs=Object.entries(sp).map(([k,v])=>`<div class="spec"><b>${v===null?'—':v+'%'}</b><span>${esc(k)}</span></div>`).join('');
+  const resRows=rr.map(r=>`<tr><td>${r.mode==='test'?'اختبار':'تدريب'}</td><td>${esc(r.topic)}</td><td>${esc(r.score)} / ${esc(r.total)}</td><td>${esc(r.percent)}%</td><td>${esc(fmt(r.loginAt))}</td><td>${esc(fmt(r.submittedAt))}</td><td>${esc(dur(r.durationSec))}</td><td>${r.mode==='test'?`<button class="small danger" onclick="resetAttempt('${esc(r.attemptId)}')">حذف المحاولة</button>`:'—'}</td></tr>`).join('');
+  const logRows=ss.map(x=>`<tr><td>${esc(fmt(x.loginAt))}</td><td>${esc(fmt(x.finishedAt||x.lastActivityAt))}</td><td>${esc(x.lastAction||'—')}</td></tr>`).join('');
+  showModal('تقرير الطالب – '+s.name,`<div class="report-hero"><div class="mini"><b>${rr.length}</b><span>النتائج</span></div><div class="mini"><b>${ss.length}</b><span>مرات الدخول</span></div><div class="mini"><b>${hasMode(code,'test')?'تم':'—'}</b><span>الاختبار</span></div><div class="mini"><b>${avg}%</b><span>متوسط الأداء</span></div></div><div class="specialties">${specs}</div><h4>الأداء</h4><div class="tw"><table><thead><tr><th>النوع</th><th>المجال</th><th>الدرجة</th><th>النسبة</th><th>الدخول</th><th>التسليم</th><th>المدة</th><th>الإجراء</th></tr></thead><tbody>${resRows||'<tr><td colspan="8">لا توجد نتائج بعد.</td></tr>'}</tbody></table></div><h4>سجل الدخول والنشاط</h4><div class="tw"><table><thead><tr><th>تاريخ ووقت الدخول</th><th>آخر نشاط/إنهاء</th><th>آخر إجراء</th></tr></thead><tbody>${logRows||'<tr><td colspan="3">لم يدخل الطالب بعد.</td></tr>'}</tbody></table></div><div class="row" style="margin-top:12px"><button onclick="shareStudentSummary('${esc(code)}')">مشاركة ملخص الطالب</button><button class="ghost" onclick="showQr('${esc(code)}')">عرض الباركود</button></div>`)
+}
+async function resetAttempt(id){if(!id||!confirm('حذف محاولة الاختبار والسماح للطالب بإعادة الاختبار؟'))return;try{await jsonp({action:'deleteAttempt',key:key(),attemptId:id});closeModal();await loadDashboard()}catch(e){msg(e.message,true)}}
+async function shareStudentSummary(code){const s=studentByCode(code),se=latestSession(code),rr=studentResults(code),r=latestResult(code);const text=`تقرير تدريب نافس\nالطالب: ${s.name}\nالفصل: ${s.className}\nآخر دخول: ${fmt(se?.loginAt)}\nعدد النتائج: ${rr.length}\nآخر نسبة: ${r?r.percent+'%':'لا توجد نتيجة'}\nإعداد مدرسة أبي الدرداء المتوسطة`;if(navigator.share){try{await navigator.share({title:'تقرير الطالب – تدريب نافس',text});return}catch(e){}}try{await navigator.clipboard.writeText(text);alert('تم نسخ ملخص الطالب.')}catch(e){prompt('انسخ الملخص:',text)}}
+function renderParticipation(){
+  const students=data.students,entered=new Set(data.sessions.map(x=>x.studentCode));const byClass=CLASSES.map(c=>{const a=students.filter(s=>s.className===c);return {c,total:a.length,in:a.filter(s=>entered.has(s.code)).length}});
+  $('participationSummary').innerHTML=byClass.map(x=>`<div class="stat"><b>${x.in}/${x.total}</b><span>الفصل ${x.c}</span></div>`).join('');
+  $('participationTb').innerHTML=students.map(s=>{const se=latestSession(s.code);return `<tr><td>${esc(s.name)}</td><td>${esc(s.className)}</td><td>${se?'<span class="badge ok">نعم</span>':'<span class="badge no">لا</span>'}</td><td>${esc(fmt(se?.loginAt))}</td><td>${esc(fmt(se?.finishedAt||se?.lastActivityAt))}</td><td>${studentResults(s.code).length}</td></tr>`}).join('');
+}
+function portfolioStats(){const students=data.students,entered=new Set(data.sessions.map(x=>x.studentCode)),training=new Set(data.results.filter(r=>r.mode==='training').map(r=>r.studentCode)),tests=new Set(data.results.filter(r=>r.mode==='test').map(r=>r.studentCode)),p=data.results.map(r=>Number(r.percent)).filter(Number.isFinite);return {registered:students.length,entered:[...entered].filter(c=>studentByCode(c)).length,notEntered:students.filter(s=>!entered.has(s.code)).length,training:[...training].filter(c=>studentByCode(c)).length,tests:[...tests].filter(c=>studentByCode(c)).length,avg:p.length?Math.round(p.reduce((a,b)=>a+b,0)/p.length):0,results:data.results.length,sessions:data.sessions.length}}
+function renderPortfolio(){
+  const st=portfolioStats(),now=fmt(new Date().toISOString());
+  $('portfolioPreview').innerHTML=`<div id="portfolioDoc" class="portfolio"><div class="pf-head"><img src="nafs-logo.jpg"><div><h1>تقرير تنفيذ منصة تدريب نافس</h1><div>علوم الصف الثالث المتوسط</div><b>إعداد مدرسة أبي الدرداء المتوسطة</b></div></div><h2>بيانات التنفيذ</h2><p><b>المعلم:</b> علي طاهر البقاشي<br><b>مدير المدرسة:</b> فوزي محمد الهلال<br><b>تاريخ تحديث التقرير:</b> ${esc(now)}</p><h2>فكرة المنصة</h2><p>منصة تدريب مدرسية تفاعلية لإعداد طلاب الصف الثالث المتوسط للاختبارات الوطنية «نافس»، تجمع التدريب المتكرر والاختبار المحاكي ومتابعة الأداء والدخول الفردي بالباركود.</p><h2>الأهداف</h2><ul><li>رفع جاهزية الطلاب للاختبارات الوطنية.</li><li>تقديم بنك تدريبي متنوع من 240 سؤالًا في الأحياء والكيمياء والفيزياء وعلوم الأرض والفضاء.</li><li>تحديد جوانب القوة والاحتياج لكل طالب من خلال تقارير الأداء.</li><li>متابعة المشاركة وتاريخ ووقت الدخول وآخر نشاط بصورة مباشرة.</li></ul><h2>آلية التنفيذ</h2><p>يدخل كل طالب من باركود شخصي ثابت مرتبط باسمه وفصله، ثم يختار التدريب أو الاختبار. التدريب متعدد المحاولات، أما الاختبار فمحاولة واحدة ما لم يحذف المعلم المحاولة لإتاحتها من جديد.</p><h2>مؤشرات التنفيذ الحالية</h2><div class="pf-stats"><div class="pf-stat"><b>${st.registered}</b>طالب مسجل</div><div class="pf-stat"><b>${st.entered}</b>دخلوا المنصة</div><div class="pf-stat"><b>${st.training}</b>شاركوا في التدريب</div><div class="pf-stat"><b>${st.tests}</b>أدوا الاختبار</div><div class="pf-stat"><b>${st.avg}%</b>متوسط الأداء</div><div class="pf-stat"><b>${st.results}</b>نتيجة مسجلة</div></div><h2>الشواهد الرقمية</h2><div class="evidence">عدد جلسات الدخول المسجلة: <b>${st.sessions}</b><br>عدد الطلاب الذين لم يدخلوا بعد: <b>${st.notEntered}</b><br>تعتمد المنصة سجلًا رقميًا لوقت الدخول وآخر نشاط/إنهاء ونتائج التدريب والاختبار.</div><h2>الأثر التعليمي</h2><p>تدعم المنصة المتابعة المستمرة والتدريب الذاتي، وتوفر للمعلم مؤشرات مباشرة تساعد في توجيه الدعم للطلاب وفق مستوى المشاركة والأداء، مع إمكانية مشاركة ملخص فردي للطالب وولي الأمر.</p><h2>التوصيات</h2><ul><li>الاستمرار في متابعة الطلاب الذين لم يدخلوا المنصة.</li><li>تكثيف التدريب في التخصصات التي يظهر فيها انخفاض في الأداء.</li><li>تحديث بنك الأسئلة دوريًا وربطه بنواتج التعلم المستهدفة.</li></ul><div class="pf-sign"><div>المعلم<br><b>علي طاهر البقاشي</b></div><div>مدير المدرسة<br><b>فوزي محمد الهلال</b></div></div></div>`;
+}
+async function generatePortfolioPdf(){
+  renderPortfolio();const st=$('portfolioStatus');st.innerHTML='<div class="msg">جاري إنشاء ملف الإنجاز PDF...</div>';
+  try{
+    if(typeof html2canvas==='undefined'||!window.jspdf)throw new Error('تعذر تحميل أداة PDF. تحقق من الإنترنت وأعد فتح الصفحة.');
+    const el=$('portfolioDoc'),canvas=await html2canvas(el,{scale:1.6,useCORS:true,backgroundColor:'#ffffff'}),img=canvas.toDataURL('image/jpeg',0.92),{jsPDF}=window.jspdf,pdf=new jsPDF('p','mm','a4'),pw=210,ph=297,margin=8,w=pw-margin*2,h=canvas.height*w/canvas.width,pageH=ph-margin*2;
+    let y=0;while(y<h){pdf.addImage(img,'JPEG',margin,margin-y,w,h);y+=pageH;if(y<h)pdf.addPage()}
+    pdf.save('ملف-إنجاز-منصة-تدريب-نافس.pdf');st.innerHTML='<div class="msg">تم إنشاء ملف الإنجاز PDF.</div>';
+  }catch(e){st.innerHTML='<div class="msg err">'+esc(e.message)+'</div>'}
+}
+async function sharePortfolioSummary(){const st=portfolioStats();const text=`ملف إنجاز منصة تدريب نافس\nعلوم الصف الثالث المتوسط – مدرسة أبي الدرداء المتوسطة\nالمعلم: علي طاهر البقاشي\nالطلاب المسجلون: ${st.registered}\nدخلوا المنصة: ${st.entered}\nشاركوا في التدريب: ${st.training}\nأدوا الاختبار: ${st.tests}\nمتوسط الأداء: ${st.avg}%\nبنك الأسئلة: 240 سؤالًا`;if(navigator.share){try{await navigator.share({title:'ملف إنجاز تدريب نافس',text});return}catch(e){}}try{await navigator.clipboard.writeText(text);alert('تم نسخ ملخص ملف الإنجاز.')}catch(e){prompt('انسخ الملخص:',text)}}
+async function saveSettings(){try{await jsonp({action:'setConfig',key:key(),testOpen:$('testOpen').value,showResult:$('showResult').value});msg('تم حفظ الإعدادات.');await loadDashboard()}catch(e){msg(e.message,true)}}
+$('key').value=localStorage.getItem('nafsTeacherKey')||'';
+renderPortfolio();
+</script>
+</body></html>
