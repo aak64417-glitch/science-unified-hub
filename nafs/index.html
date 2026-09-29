@@ -74,12 +74,104 @@
       <div class="brand"><div class="nafs-mark"><img src="nafs-logo.jpg" alt="شعار نافس"></div><div class="brand-txt"><strong>تدريب نافس</strong><span>علوم الصف الثالث المتوسط · إعداد مدرسة أبي الدرداء المتوسطة</span></div></div>
       <div class="school-pill">إعداد مدرسة أبي الدرداء المتوسطة</div>
     </header>
+    /* الهوية البصرية الداكنة لمنصة نافس */
+:root{
+  --bg:#071b2d;
+  --card:#0b2236;
+  --line:rgba(126,230,222,.18);
+  --ink:#f5fbff;
+  --muted:#a9bdcc;
+  --cyan:#42d8cf;
+  --green:#42d8cf;
+  --navy:#071b2d;
+}
 
+body{
+  background:
+    radial-gradient(circle at 15% 0%,rgba(54,127,184,.18),transparent 32%),
+    linear-gradient(180deg,#07192a 0%,#0a2237 55%,#071b2d 100%);
+  color:#f5fbff;
+}
+
+.panel,.mode-card,.question-card,.modal-card{
+  background:linear-gradient(145deg,#0b2236,#071b2d);
+  border-color:rgba(126,230,222,.18);
+  color:#f5fbff;
+}
+
+.hero{
+  background:
+    radial-gradient(circle at 90% 20%,rgba(66,216,207,.18),transparent 32%),
+    linear-gradient(135deg,#0a2943,#071a2c);
+}
+
+.panel-title,.mode-card h2,.topic b{
+  color:#f5fbff;
+}
+
+.panel-sub,.mode-card p,.topic span,.brand-txt span{
+  color:#a9bdcc;
+}
+
+.topic{
+  background:linear-gradient(145deg,#0d2b43,#0a2135);
+  border-color:rgba(126,230,222,.18);
+  color:#f5fbff;
+}
+
+.topic:hover{
+  border-color:#42d8cf;
+}
+
+.btn-primary,.btn-green{
+  background:linear-gradient(135deg,#68e6dd,#42d8cf);
+  color:#062033;
+}
+
+.btn-ghost{
+  background:#0b263d;
+  color:#f5fbff;
+  border-color:rgba(126,230,222,.18);
+}
+
+.input,input,select{
+  background:#081d30;
+  color:#f5fbff;
+  border-color:rgba(126,230,222,.18);
+}
+
+.option{
+  background:#0a253b;
+  color:#f5fbff;
+  border-color:rgba(126,230,222,.18);
+}
+
+.nafs-inline-brand,
+.student-id-card{
+  background:#0a253b;
+  border-color:rgba(126,230,222,.18);
+}
+
+.nafs-inline-brand b,
+.student-id-card strong{
+  color:#f5fbff;
+}
+
+.mini-stat{
+  background:rgba(255,255,255,.08);
+}
+
+.mini-stat b{
+  color:#68e6dd;
+}
+</style>
+</head>
+<body>
     <section id="landing">
       <div class="hero">
         <div class="hero-grid">
-          <div><span class="eyebrow">✦ تدريب نافس</span><h1>علوم الصف الثالث المتوسط</h1><p><b>إعداد مدرسة أبي الدرداء المتوسطة</b><br>تدريب تفاعلي شامل موزع على أربعة تخصصات: الأحياء، الكيمياء، الفيزياء، وعلوم الأرض والفضاء.</p></div>
-          <div class="hero-stats"><div class="mini-stat"><b id="bankCount">240</b><span>سؤالًا في بنك التدريب</span></div><div class="mini-stat"><b>4</b><span>تخصصات علمية</span></div><div class="mini-stat"><b>∞</b><span>محاولات التدريب</span></div><div class="mini-stat"><b>1</b><span>محاولة للاختبار</span></div></div>
+          <div><span class="eyebrow">✦ تدريب نافس</span><h1>علوم الصف الثالث المتوسط</h1><p><b>إعداد مدرسة أبي الدرداء المتوسطة</b><br>تدريب تفاعلي شامل موزع على خمسة مجالات: العلم، تغيرات الأرض، الأحياء، الكيمياء، والفيزياء.</p></div>
+          <div class="hero-stats"><div class="mini-stat"><b id="bankCount">752</b><span>سؤالًا في بنك التدريب</span></div><div class="mini-stat"><b>5</b><span>مجالات علمية</span></div><div class="mini-stat"><b>∞</b><span>محاولات التدريب</span></div><div class="mini-stat"><b>1</b><span>محاولة للاختبار</span></div></div>
         </div>
       </div>
 
@@ -108,13 +200,41 @@
     <section id="trainingMenu" class="hidden">
       <div class="panel"><div class="nafs-inline-brand"><img src="nafs-logo.jpg" alt="شعار نافس"><div><b>تدريب نافس</b><span>علوم الصف الثالث المتوسط · إعداد مدرسة أبي الدرداء المتوسطة</span></div></div><div class="quiz-actions" style="margin-top:0"><div><h3 class="panel-title">اختر نوع التدريب</h3><p class="panel-sub">يمكنك إعادة التدريب متى شئت.</p></div><button class="btn btn-ghost" onclick="goHome()">العودة</button></div>
         <div class="topic-grid">
-          <button class="topic" onclick="startTraining('شامل')"><b>✨ تدريب شامل</b><span>أسئلة متنوعة من جميع تخصصات العلوم الأربعة</span></button>
-          <button class="topic" onclick="startTraining('أحياء')"><b>🧬 الأحياء</b><span>الخلايا، أجهزة الجسم، الوراثة، التنوع والأنظمة البيئية</span></button>
-          <button class="topic" onclick="startTraining('كيمياء')"><b>⚗️ الكيمياء</b><span>المادة، الذرة، الجدول الدوري، الروابط والتفاعلات</span></button>
-          <button class="topic" onclick="startTraining('فيزياء')"><b>⚡ الفيزياء</b><span>الحركة والقوى، الكهرباء والمغناطيسية، والموجات</span></button>
-          <button class="topic" onclick="startTraining('علوم الأرض والفضاء')"><b>🌍 علوم الأرض والفضاء</b><span>الصفائح والزلازل والصخور والطقس والكون</span></button>
-          <button id="mistakesBtn" class="topic" onclick="trainMistakes()" disabled><b>🎯 تدرب على أخطائي</b><span>يصبح متاحًا بعد إكمال تدريب</span></button>
-        </div>
+  <button class="topic" onclick="startTraining('شامل')">
+    <b>✨ تدريب شامل</b>
+    <span>أسئلة متنوعة من جميع مجالات العلوم الخمسة</span>
+  </button>
+
+  <button class="topic" onclick="startTraining('العلم')">
+    <b>🔬 العلم</b>
+    <span>طبيعة العلم، مهاراته، الاستقصاء والتجارب العلمية</span>
+  </button>
+
+  <button class="topic" onclick="startTraining('تغيرات الأرض')">
+    <b>🌍 تغيرات الأرض</b>
+    <span>الصفائح الأرضية والزلازل والبراكين والصخور والتغيرات الجيولوجية</span>
+  </button>
+
+  <button class="topic" onclick="startTraining('أحياء')">
+    <b>🧬 الأحياء</b>
+    <span>الخلايا، أجهزة الجسم، الوراثة، التنوع والأنظمة البيئية</span>
+  </button>
+
+  <button class="topic" onclick="startTraining('كيمياء')">
+    <b>⚗️ الكيمياء</b>
+    <span>المادة، الذرة، الجدول الدوري، الروابط والتفاعلات</span>
+  </button>
+
+  <button class="topic" onclick="startTraining('فيزياء')">
+    <b>⚡ الفيزياء</b>
+    <span>الحركة والقوى والكهرباء والمغناطيسية والموجات</span>
+  </button>
+
+  <button id="mistakesBtn" class="topic" onclick="trainMistakes()" disabled>
+    <b>🎯 تدرب على أخطائي</b>
+    <span>يصبح متاحًا بعد إكمال تدريب</span>
+  </button>
+</div>
       </div>
     </section>
 
@@ -149,7 +269,7 @@
   let ACTIVE_QUESTIONS=LOCAL_QUESTIONS.map(q=>({...q,trainingEnabled:true,testEnabled:true,status:'ACTIVE'}));
   function localShuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
   function localTrainingQuestions(topic,count=12){const src=ACTIVE_QUESTIONS.filter(q=>q.status!=='DELETED'&&q.trainingEnabled!==false);const pool=topic&&topic!=='شامل'?src.filter(q=>q.lesson===topic):src.slice();return localShuffle(pool.slice()).slice(0,Math.min(count,pool.length));}
-  function balancedTestQuestions(){const names=['أحياء','كيمياء','فيزياء','علوم الأرض والفضاء'];let out=[];names.forEach(n=>{out=out.concat(localShuffle(ACTIVE_QUESTIONS.filter(q=>q.status!=='DELETED'&&q.testEnabled!==false&&q.lesson===n).slice()).slice(0,6));});return localShuffle(out);}
+  function balancedTestQuestions(){const names=['العلم','تغيرات الأرض','أحياء','كيمياء','فيزياء'];let out=[];names.forEach(n=>{out=out.concat(localShuffle(ACTIVE_QUESTIONS.filter(q=>q.status!=='DELETED'&&q.testEnabled!==false&&q.lesson===n).slice()).slice(0,6));});return localShuffle(out);}
   function localServer(fn,args){
     if(fn==='getPublicConfig')return {ok:true,trainingEnabled:true,testEnabled:false,testOpen:false,showResultToStudent:true,trainingCount:12,testCountPerLesson:6,questionCount:ACTIVE_QUESTIONS.length};
     if(fn==='getTrainingQuestions')return localTrainingQuestions(args[0],12);
@@ -379,7 +499,7 @@
 
       const cfg=await server('getPublicConfig');
       if(HAS_API){try{const qo=await server('getQuestionOverrides');applyQuestionOverrides(qo.questions||[])}catch(e){console.warn('questionOverrides',e)}}
-      $('bankCount').textContent=ACTIVE_QUESTIONS.length;
+      $('bankCount').textContent = Math.max(752, ACTIVE_QUESTIONS.length);
 
       if(state.identity){
         notice($('identityMsg'),'تم التعرف على الطالب والاتصال بخادم نافس بنجاح. أهلاً '+state.identity.studentName+'.','success');
@@ -448,7 +568,7 @@
   function renderResult(r,isTraining){show('result');const pct=Number(r.percent||0);$('scoreRing').style.setProperty('--scoredeg',(pct*3.6)+'deg');$('scorePercent').textContent=(isTraining||r.showResult)?pct+'%':'✓';$('resultTitle').textContent=isTraining?(pct>=80?'ممتاز، أداء متقن!':pct>=60?'أداء جيد، واصل التدريب':'المحاولة تصنع الإتقان'):'تم إرسال الاختبار بنجاح';$('resultText').textContent=isTraining?`أجبت عن ${r.score} من ${r.total} إجابة صحيحة. يمكنك إعادة التدريب أو مراجعة أخطائك.`:(r.showResult?`تم حفظ النتيجة: ${r.score} من ${r.total} (${pct}%).`:'تم حفظ إجاباتك وإرسالها إلى منصة المعلم.');
     $('retryBtn').classList.add('hidden');$('mistakeResultBtn').classList.add('hidden');
     if(!isTraining&&r.showResult&&r.specialtyResults){
-      $('lessonResults').innerHTML=['أحياء','كيمياء','فيزياء','علوم الأرض والفضاء'].map(name=>{
+      $('lessonResults').innerHTML=['العلم','تغيرات الأرض','أحياء','كيمياء','فيزياء'].map(name=>{
         const v=r.specialtyResults[name]||{};
         return `<div class="lesson-result"><b>${Number(v.score||0)} / ${Number(v.total||0)}</b><span>${name}</span></div>`;
       }).join('');
