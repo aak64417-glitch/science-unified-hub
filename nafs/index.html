@@ -157,7 +157,59 @@
     if(fn==='getStudentStatus')return {canTest:false,status:'PREVIEW',message:'التدريب يعمل الآن. الاختبار الرسمي والتقارير سيتاحان بعد ربط ملف config.js برابط Apps Script.'};
     throw new Error('هذه الوظيفة تحتاج ربط Apps Script.');
   }
-  function jsonp(params,timeout=30000){return new Promise((resolve,reject)=>{if(!API_URL)return reject(new Error('رابط Apps Script غير موجود'));const rid='nafs_'+Date.now()+'_'+Math.floor(Math.random()*99999),frame=document.createElement('iframe');let done=false;frame.style.display='none';frame.setAttribute('aria-hidden','true');const t=setTimeout(()=>{clean();reject(new Error('انتهت مهلة الاتصال'))},timeout);function clean(){if(done)return;done=true;clearTimeout(t);window.removeEventListener('message',onMessage);frame.remove()}function onMessage(ev){const m=ev&&ev.data;if(!m||m.source!=='NAFS_BRIDGE'||m.rid!==rid)return;clean();const d=m.data;if(d&&d.ok===false)reject(new Error(d.message||'رفض الخادم الطلب'));else resolve(d)}window.addEventListener('message',onMessage);const u=new URL(API_URL);Object.entries({...params,bridge:'1',rid}).forEach(([k,v])=>u.searchParams.set(k,v==null?'':String(v)));frame.src=u.toString();frame.onerror=()=>{clean();reject(new Error('تعذر الاتصال بالخادم'))};document.body.appendChild(frame)})}
+  function jsonp(params,timeout=45000){
+    return new Promise((resolve,reject)=>{
+      if(!API_URL) return reject(new Error('رابط Apps Script غير موجود'));
+
+      const cb='nafsCb'+Date.now()+Math.floor(Math.random()*100000);
+      const s=document.createElement('script');
+      let done=false;
+
+      const timer=setTimeout(()=>{
+        clean();
+        reject(new Error('انتهت مهلة الاتصال'));
+      },timeout);
+
+      function clean(){
+        if(done) return;
+        done=true;
+        clearTimeout(timer);
+        try{ delete window[cb]; }catch(e){ window[cb]=undefined; }
+        try{ s.remove(); }catch(e){}
+      }
+
+      window[cb]=function(d){
+        clean();
+        if(d && d.ok===false){
+          reject(new Error(d.message||'رفض الخادم الطلب'));
+        }else{
+          resolve(d);
+        }
+      };
+
+      const sep=API_URL.includes('?')?'&':'?';
+      const q=new URLSearchParams();
+
+      Object.entries(params||{}).forEach(([k,v])=>{
+        q.set(k,v==null?'':String(v));
+      });
+
+      q.set('callback',cb);
+      q.set('_',String(Date.now()));
+
+      s.async=true;
+      s.type='text/javascript';
+      s.referrerPolicy='no-referrer';
+      s.src=API_URL+sep+q.toString();
+
+      s.onerror=function(){
+        clean();
+        reject(new Error('تعذر الاتصال بالخادم'));
+      };
+
+      document.head.appendChild(s);
+    });
+  }
   async function server(fn,...args){
     if(fn==='getTrainingQuestions')return localTrainingQuestions(args[0],12);
     if(!HAS_API)return localServer(fn,args);

@@ -283,7 +283,60 @@ function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function api(){return String(window.NAFS_API_URL||'').trim()}
 function key(){const v=$('key').value.trim();if(v)localStorage.setItem('nafsTeacherKey',v);return v||localStorage.getItem('nafsTeacherKey')||''}
 function msg(t,e=false){$('msg').innerHTML='<div class="msg '+(e?'err':'')+'">'+esc(t)+'</div>'}
-function jsonp(p,timeout=60000){return new Promise((res,rej)=>{if(!api())return rej(new Error('رابط Apps Script غير موجود'));const rid='nafs_'+Date.now()+'_'+Math.floor(Math.random()*99999),frame=document.createElement('iframe');let done=false;frame.style.display='none';frame.setAttribute('aria-hidden','true');const to=setTimeout(()=>{clean();rej(new Error('انتهت مهلة الاتصال'))},timeout);function clean(){if(done)return;done=true;clearTimeout(to);window.removeEventListener('message',onMessage);frame.remove()}function onMessage(ev){const m=ev&&ev.data;if(!m||m.source!=='NAFS_BRIDGE'||m.rid!==rid)return;clean();const d=m.data;d&&d.ok===false?rej(new Error(d.message||'رفض الخادم الطلب')):res(d)}window.addEventListener('message',onMessage);const u=new URL(api());Object.entries({...p,bridge:'1',rid}).forEach(([k,v])=>u.searchParams.set(k,v??''));frame.src=u.toString();frame.onerror=()=>{clean();rej(new Error('تعذر الاتصال بالخادم'))};document.body.appendChild(frame)})}
+function jsonp(p,timeout=60000){
+  return new Promise((res,rej)=>{
+    if(!api()) return rej(new Error('رابط Apps Script غير موجود'));
+
+    const cb='nafsCb'+Date.now()+Math.floor(Math.random()*100000);
+    const s=document.createElement('script');
+    let done=false;
+
+    const timer=setTimeout(()=>{
+      clean();
+      rej(new Error('انتهت مهلة الاتصال'));
+    },timeout);
+
+    function clean(){
+      if(done) return;
+      done=true;
+      clearTimeout(timer);
+      try{ delete window[cb]; }catch(e){ window[cb]=undefined; }
+      try{ s.remove(); }catch(e){}
+    }
+
+    window[cb]=function(d){
+      clean();
+      if(d && d.ok===false){
+        rej(new Error(d.message||'رفض الخادم الطلب'));
+      }else{
+        res(d);
+      }
+    };
+
+    const base=api();
+    const sep=base.includes('?')?'&':'?';
+    const q=new URLSearchParams();
+
+    Object.entries(p||{}).forEach(([k,v])=>{
+      q.set(k,v==null?'':String(v));
+    });
+
+    q.set('callback',cb);
+    q.set('_',String(Date.now()));
+
+    s.async=true;
+    s.type='text/javascript';
+    s.referrerPolicy='no-referrer';
+    s.src=base+sep+q.toString();
+
+    s.onerror=function(){
+      clean();
+      rej(new Error('تعذر الاتصال بالخادم'));
+    };
+
+    document.head.appendChild(s);
+  });
+}
 function fmt(v){if(!v)return '—';try{return new Intl.DateTimeFormat('ar-SA',{year:'numeric',month:'2-digit',day:'2-digit',hour:'numeric',minute:'2-digit'}).format(new Date(v))}catch(e){return String(v)}}
 function dur(s){s=Number(s||0);return Math.floor(s/60)+'د '+Math.round(s%60)+'ث'}
 function openTab(name,btn){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tabbtn').forEach(x=>x.classList.remove('active'));$('tab-'+name).classList.add('active');btn?.classList.add('active');if(name==='portfolio')renderPortfolio()}
