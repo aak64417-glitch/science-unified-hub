@@ -172,7 +172,7 @@ body{
       <div class="hero">
         <div class="hero-grid">
           <div><span class="eyebrow">✦ تدريب نافس</span><h1>علوم الصف الثالث المتوسط</h1><p><b>إعداد مدرسة أبي الدرداء المتوسطة</b><br>تدريب تفاعلي شامل موزع على خمسة مجالات: العلم، تغيرات الأرض، الأحياء، الكيمياء، والفيزياء.</p></div>
-          <div class="hero-stats"><div class="mini-stat"><b id="bankCount">752</b><span>سؤالًا في بنك التدريب</span></div><div class="mini-stat"><b>5</b><span>مجالات علمية</span></div><div class="mini-stat"><b>∞</b><span>محاولات التدريب</span></div><div class="mini-stat"><b>1</b><span>محاولة للاختبار</span></div></div>
+          <div class="hero-stats"><div class="mini-stat"><b>5</b><span>مجالات علمية</span></div><div class="mini-stat"><b>∞</b><span>محاولات التدريب</span></div><div class="mini-stat"><b>1</b><span>محاولة للاختبار</span></div></div>
         </div>
       </div>
 
@@ -500,7 +500,7 @@ body{
 
       const cfg=await server('getPublicConfig');
       if(HAS_API){try{const qo=await server('getQuestionOverrides');applyQuestionOverrides(qo.questions||[])}catch(e){console.warn('questionOverrides',e)}}
-      $('bankCount').textContent = Math.max(752, ACTIVE_QUESTIONS.length);
+      
 
       if(state.identity){
         notice($('identityMsg'),'تم التعرف على الطالب والاتصال بخادم نافس بنجاح. أهلاً '+state.identity.studentName+'.','success');
