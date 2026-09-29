@@ -375,7 +375,34 @@ function renderStudents(){
   $('studentsTb').innerHTML=list.map(s=>{const se=latestSession(s.code);return `<tr><td>${esc(s.name)}</td><td>${esc(s.className)}</td><td>${esc(s.code)}</td><td>${esc(fmt(se?.loginAt))}</td><td>${esc(fmt(se?.finishedAt||se?.lastActivityAt))}</td><td><button class="small" onclick="showQr('${esc(s.code)}')">باركود</button> <button class="small ghost" onclick="editStudent('${esc(s.code)}')">تعديل/نقل</button> <button class="small ghost" onclick="studentReport('${esc(s.code)}')">تقرير</button> <button class="small danger" onclick="deleteStudent('${esc(s.code)}')">حذف</button></td></tr>`}).join('');
 }
 async function addStudent(){const name=$('addName').value.trim(),cls=$('addClass').value;if(!name||!CLASSES.includes(cls))return msg('اكتب اسم الطالب واختر الفصل.',true);try{await jsonp({action:'addStudent',key:key(),name,className:cls});$('addName').value='';await loadDashboard()}catch(e){msg(e.message,true)}}
-async function bulkAdd(){const cls=$('bulkClass').value,names=$('bulkNames').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(!CLASSES.includes(cls)||!names.length)return msg('اختر الفصل والصق الأسماء.',true);try{const r=await jsonp({action:'bulkAddStudents',key:key(),data:JSON.stringify({className:cls,names})});$('bulkNames').value='';msg('تمت إضافة '+r.added+' طالب، وتجاوز '+r.skipped+' اسم مكرر.');await loadDashboard()}catch(e){msg(e.message,true)}}
+async function bulkAdd(){
+  const cls=$('bulkClass').value;
+  const names=$('bulkNames').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  if(!CLASSES.includes(cls)||!names.length)return msg('اختر الفصل والصق الأسماء.',true);
+
+  const CHUNK_SIZE=5;
+  let added=0,skipped=0;
+
+  try{
+    for(let i=0;i<names.length;i+=CHUNK_SIZE){
+      const chunk=names.slice(i,i+CHUNK_SIZE);
+      const done=Math.min(i+chunk.length,names.length);
+      msg('جاري إضافة الأسماء: '+done+' من '+names.length+'...');
+      const r=await jsonp({
+        action:'bulkAddStudents',
+        key:key(),
+        data:JSON.stringify({className:cls,names:chunk})
+      },60000);
+      added+=Number(r.added||0);
+      skipped+=Number(r.skipped||0);
+    }
+    $('bulkNames').value='';
+    msg('تمت إضافة '+added+' طالب، وتجاوز '+skipped+' اسم مكرر.');
+    await loadDashboard();
+  }catch(e){
+    msg('توقف الإدخال بعد إضافة '+added+' طالب. '+e.message,true);
+  }
+}
 async function importJourneyStudents(){
   if(!confirm('سيتم استيراد طلاب 1/3 و2/3 و3/3 و4/3 من منصة رحلة العلوم دون تكرار الأسماء. متابعة؟'))return;
   try{
