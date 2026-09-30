@@ -483,7 +483,7 @@ function ensureQuestionBankReady(){
   }
   async function loadStudentTasks(){
     if(!state.identity||!HAS_API)return;
-    setLoading(true);
+    
     try{
       const r=await server('getStudentTasks');
       state.tasks=Array.isArray(r.tasks)?r.tasks:[];
@@ -494,7 +494,7 @@ function ensureQuestionBankReady(){
     }catch(e){
       $('taskList').innerHTML='';$('taskEmpty').classList.remove('hidden');
       $('taskEmpty').innerHTML='<b>تعذر تحميل التكليفات</b>'+escapeHtml(e.message);
-    }finally{setLoading(false)}
+    }
   }
   function taskQuestions(task){
     const ids=Array.isArray(task.questionIds)?task.questionIds:[];
@@ -600,7 +600,7 @@ function ensureQuestionBankReady(){
 startStudentSession();
 
 // عرض التكليفات مباشرة
-await loadStudentTasks();
+loadStudentTasks();
       }else{
         state.identity=null;
         $('studentIdentityCard').classList.add('hidden');
@@ -608,7 +608,7 @@ await loadStudentTasks();
         $('modeGrid').classList.add('hidden');
       }
 
-      const cfg=await server('getPublicConfig');
+      server('getPublicConfig').catch(e=>console.warn('publicConfig',e));
       
       // تحميل بنك الأسئلة في الخلفية بعد فتح صفحة الطالب
 ensureQuestionBankReady().catch(e=>{
