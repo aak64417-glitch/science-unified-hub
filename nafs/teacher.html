@@ -349,16 +349,52 @@ function latestResult(code){return studentResults(code).sort((a,b)=>String(b.sub
 function hasMode(code,mode){return studentResults(code).some(x=>x.mode===mode)}
 function lastPct(code){const r=latestResult(code);return r?Number(r.percent||0):null}
 
-async function loadDashboard(){
+let dashboardRefreshing=false;
+
+async function loadDashboard(silent=false){
+  if(dashboardRefreshing)return;
+  if(!key())return;
+
+  dashboardRefreshing=true;
+
   try{
-    msg('جاري تحميل أحدث بيانات نافس...');
+    if(!silent)msg('جاري تحميل أحدث بيانات نافس...');
+
     const r=await jsonp({action:'dashboard',key:key()});
-    data.students=r.students||[];data.results=r.results||[];data.sessions=r.sessions||[];data.config=r.config||{};data.questionOverrides=r.questionOverrides||[];data.tasks=r.tasks||[];
+
+    data.students=r.students||[];
+    data.results=r.results||[];
+    data.sessions=r.sessions||[];
+    data.config=r.config||{};
+    data.questionOverrides=r.questionOverrides||[];
+    data.tasks=r.tasks||[];
+
     $('testOpen').value=String(data.config.testOpen).toUpperCase();
     $('showResult').value=String(data.config.showResultToStudent).toUpperCase();
-    renderAll();msg('تم تحديث البيانات.');
-  }catch(e){msg(e.message,true)}
+
+    renderAll();
+
+    if(!silent)msg('تم تحديث البيانات.');
+  }catch(e){
+    if(!silent)msg(e.message,true);
+  }finally{
+    dashboardRefreshing=false;
+  }
 }
+
+// تحديث تلقائي كل 30 ثانية
+setInterval(()=>{
+  if(document.visibilityState==='visible' && key()){
+    loadDashboard(true);
+  }
+},30000);
+
+// تحديث مباشر عند الرجوع للصفحة
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible' && key()){
+    loadDashboard(true);
+  }
+});
 function renderAll(){renderDashboard();renderStudents();updateStudentSelect();renderParticipation();renderQuestions();renderTasks();renderPaths();renderPortfolio()}
 function filteredStudents(cls,search){return data.students.filter(s=>(!cls||s.className===cls)&&(!search||s.name.includes(search)))}
 function renderDashboard(){
@@ -422,20 +458,86 @@ async function copyStudentLink(code){const u=personalUrl(code);try{await navigat
 async function shareStudentLink(code){const s=studentByCode(code),u=personalUrl(code);const text=`باركود/رابط تدريب نافس\nالطالب: ${s.name}\nالفصل: ${s.className}`;if(navigator.share){try{await navigator.share({title:'تدريب نافس',text,url:u});return}catch(e){}}copyStudentLink(code)}
 function updateStudentSelect(){const cls=$('reportClass').value;const list=filteredStudents(cls,'');$('reportStudent').innerHTML='<option value="">اختر الطالب</option>'+list.map(s=>`<option value="${esc(s.code)}">${esc(s.name)} – ${esc(s.className)}</option>`).join('')}
 function showSelectedStudentReport(){const code=$('reportStudent').value;if(code)studentReport(code)}
+  function actualTrainingPath(r){
+  const task=(data.tasks||[]).find(
+    t=>String(t.taskId||'')===String(r.taskId||'')
+  );
+
+  if(!task){
+    return r.topic||r.taskTitle||'—';
+  }
+
+  const ids=Array.isArray(task.questionIds)?task.questionIds:[];
+  const qmap=new Map(
+    mergedQuestions().map(q=>[String(q.id),q])
+  );
+
+  const domains=[
+    ...new Set(
+      ids
+        .map(id=>qmap.get(String(id))?.lesson)
+        .filter(Boolean)
+    )
+  ];
+
+  return domains.length
+    ? domains.join('، ')
+    : (r.topic||r.taskTitle||'—');
+}
 function specialtyStats(code){
-  const agg={'أحياء':[],'كيمياء':[],'فيزياء':[],'علوم الأرض والفضاء':[]};
+  const agg={
+    'العلم':[],
+    'تغيرات الأرض':[],
+    'أحياء':[],
+    'كيمياء':[],
+    'فيزياء':[]
+  };
+
   studentResults(code).forEach(r=>{
-    if(r.mode==='training'&&agg[r.topic])agg[r.topic].push(Number(r.percent||0));
-    if(r.mode==='test'&&r.specialtyResults){try{const o=typeof r.specialtyResults==='string'?JSON.parse(r.specialtyResults):r.specialtyResults;Object.keys(agg).forEach(k=>{if(o&&o[k]&&Number(o[k].total)>0)agg[k].push(Math.round(Number(o[k].score)/Number(o[k].total)*100))})}catch(e){}}
+    if(r.mode==='training'){
+      const paths=actualTrainingPath(r)
+        .split('،')
+        .map(x=>x.trim())
+        .filter(Boolean);
+
+      // نحسب البطاقة عندما يكون التدريب في مجال واحد
+      if(paths.length===1 && agg[paths[0]]){
+        agg[paths[0]].push(Number(r.percent||0));
+      }
+    }
+
+    if(r.mode==='test' && r.specialtyResults){
+      try{
+        const o=typeof r.specialtyResults==='string'
+          ?JSON.parse(r.specialtyResults)
+          :r.specialtyResults;
+
+        Object.keys(agg).forEach(k=>{
+          if(o?.[k] && Number(o[k].total)>0){
+            agg[k].push(
+              Math.round(Number(o[k].score)/Number(o[k].total)*100)
+            );
+          }
+        });
+      }catch(e){}
+    }
   });
-  const out={};Object.keys(agg).forEach(k=>out[k]=agg[k].length?Math.round(agg[k].reduce((a,b)=>a+b,0)/agg[k].length):null);return out;
+
+  const out={};
+  Object.keys(agg).forEach(k=>{
+    out[k]=agg[k].length
+      ?Math.round(agg[k].reduce((a,b)=>a+b,0)/agg[k].length)
+      :null;
+  });
+
+  return out;
 }
 function studentReport(code){
   const s=studentByCode(code);if(!s)return;const rr=studentResults(code).sort((a,b)=>String(b.submittedAt).localeCompare(String(a.submittedAt))),ss=data.sessions.filter(x=>x.studentCode===code).sort((a,b)=>String(b.loginAt).localeCompare(String(a.loginAt))),sp=specialtyStats(code),avg=rr.length?Math.round(rr.reduce((a,r)=>a+Number(r.percent||0),0)/rr.length):0;
   const specs=Object.entries(sp).map(([k,v])=>`<div class="spec"><b>${v===null?'—':v+'%'}</b><span>${esc(k)}</span></div>`).join('');
-  const resRows=rr.map(r=>`<tr><td>${r.mode==='test'?'اختبار':'تدريب'}</td><td>${esc(r.topic)}</td><td>${esc(r.score)} / ${esc(r.total)}</td><td>${esc(r.percent)}%</td><td>${esc(fmt(r.loginAt))}</td><td>${esc(fmt(r.submittedAt))}</td><td>${esc(dur(r.durationSec))}</td><td>${r.mode==='test'?`<button class="small danger" onclick="resetAttempt('${esc(r.attemptId)}')">حذف المحاولة</button>`:'—'}</td></tr>`).join('');
+  const resRows=rr.map(r=>`<tr><td>${r.mode==='test'?'اختبار':'تدريب'}</td><td>${esc(actualTrainingPath(r))}</td><td>${esc(r.score)} / ${esc(r.total)}</td><td>${esc(r.percent)}%</td><td>${esc(fmt(r.loginAt))}</td><td>${esc(fmt(r.submittedAt))}</td><td>${esc(dur(r.durationSec))}</td><td>${r.mode==='test'?`<button class="small danger" onclick="resetAttempt('${esc(r.attemptId)}')">حذف المحاولة</button>`:'—'}</td></tr>`).join('');
   const logRows=ss.map(x=>`<tr><td>${esc(fmt(x.loginAt))}</td><td>${esc(fmt(x.finishedAt||x.lastActivityAt))}</td><td>${esc(x.lastAction||'—')}</td></tr>`).join('');
-  showModal('تقرير الطالب – '+s.name,`<div class="report-hero"><div class="mini"><b>${rr.length}</b><span>النتائج</span></div><div class="mini"><b>${ss.length}</b><span>مرات الدخول</span></div><div class="mini"><b>${hasMode(code,'test')?'تم':'—'}</b><span>الاختبار</span></div><div class="mini"><b>${avg}%</b><span>متوسط الأداء</span></div></div><div class="specialties">${specs}</div><h4>الأداء</h4><div class="tw"><table><thead><tr><th>النوع</th><th>المجال</th><th>الدرجة</th><th>النسبة</th><th>الدخول</th><th>التسليم</th><th>المدة</th><th>الإجراء</th></tr></thead><tbody>${resRows||'<tr><td colspan="8">لا توجد نتائج بعد.</td></tr>'}</tbody></table></div><h4>سجل الدخول والنشاط</h4><div class="tw"><table><thead><tr><th>تاريخ ووقت الدخول</th><th>آخر نشاط/إنهاء</th><th>آخر إجراء</th></tr></thead><tbody>${logRows||'<tr><td colspan="3">لم يدخل الطالب بعد.</td></tr>'}</tbody></table></div><div class="row" style="margin-top:12px"><button onclick="shareStudentSummary('${esc(code)}')">مشاركة ملخص الطالب</button><button class="ghost" onclick="showQr('${esc(code)}')">عرض الباركود</button></div>`)
+  showModal('تقرير الطالب – '+s.name,`<div class="report-hero"><div class="mini"><b>${rr.length}</b><span>النتائج</span></div><div class="mini"><b>${ss.length}</b><span>مرات الدخول</span></div><div class="mini"><b>${hasMode(code,'test')?'تم':'—'}</b><span>الاختبار</span></div><div class="mini"><b>${avg}%</b><span>متوسط الأداء</span></div></div><div class="specialties">${specs}</div><h4>الأداء</h4><div class="tw"><table><thead><tr><th>النوع</th><th>المسار الفعلي</th><th>الدرجة</th><th>النسبة</th><th>الدخول</th><th>التسليم</th><th>المدة</th><th>الإجراء</th></tr></thead><tbody>${resRows||'<tr><td colspan="8">لا توجد نتائج بعد.</td></tr>'}</tbody></table></div><h4>سجل الدخول والنشاط</h4><div class="tw"><table><thead><tr><th>تاريخ ووقت الدخول</th><th>آخر نشاط/إنهاء</th><th>آخر إجراء</th></tr></thead><tbody>${logRows||'<tr><td colspan="3">لم يدخل الطالب بعد.</td></tr>'}</tbody></table></div><div class="row" style="margin-top:12px"><button onclick="shareStudentSummary('${esc(code)}')">مشاركة ملخص الطالب</button><button class="ghost" onclick="showQr('${esc(code)}')">عرض الباركود</button></div>`)
 }
 async function resetAttempt(id){if(!id||!confirm('حذف محاولة الاختبار والسماح للطالب بإعادة الاختبار؟'))return;try{await jsonp({action:'deleteAttempt',key:key(),attemptId:id});closeModal();await loadDashboard()}catch(e){msg(e.message,true)}}
 async function shareStudentSummary(code){const s=studentByCode(code),se=latestSession(code),rr=studentResults(code),r=latestResult(code);const text=`تقرير تدريب نافس\nالطالب: ${s.name}\nالفصل: ${s.className}\nآخر دخول: ${fmt(se?.loginAt)}\nعدد النتائج: ${rr.length}\nآخر نسبة: ${r?r.percent+'%':'لا توجد نتيجة'}\nإعداد مدرسة أبي الدرداء المتوسطة`;if(navigator.share){try{await navigator.share({title:'تقرير الطالب – تدريب نافس',text});return}catch(e){}}try{await navigator.clipboard.writeText(text);alert('تم نسخ ملخص الطالب.')}catch(e){prompt('انسخ الملخص:',text)}}
