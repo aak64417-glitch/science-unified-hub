@@ -372,13 +372,15 @@ async function loadDashboard(silent=false){
   try{
     if(!silent)msg('جاري تحميل أحدث بيانات نافس...');
 
-    const r=await jsonp({action:'dashboard',key:key()});
+    let r;  if(silent){   try{     r=await jsonp({action:'dashboardLite',key:key()});   }catch(e){     r=await jsonp({action:'dashboard',key:key()});   } }else{   r=await jsonp({action:'dashboard',key:key()}); }
 
     data.students=r.students||[];
     data.results=r.results||[];
     data.sessions=r.sessions||[];
     data.config=r.config||{};
-    data.questionOverrides=r.questionOverrides||[];
+    if(Array.isArray(r.questionOverrides)){
+  data.questionOverrides=r.questionOverrides;
+}
     data.tasks=r.tasks||[];
 
     $('testOpen').value=String(data.config.testOpen).toUpperCase();
