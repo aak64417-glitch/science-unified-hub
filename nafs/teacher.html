@@ -529,9 +529,10 @@ function renderTasks(){
   if(!$('tasksTb'))return;
   const status=$('taskStatusF')?.value||'',cls=$('taskClassF')?.value||'',search=$('taskSearch')?.value.trim()||'';
   const all=data.tasks||[];
-  const count=s=>all.filter(t=>taskEffectiveStatus(t)===s).length;
-  $('tTotal').textContent=all.length;$('tOpen').textContent=count('OPEN');$('tScheduled').textContent=count('SCHEDULED');$('tClosed').textContent=count('CLOSED');$('tArchived').textContent=count('ARCHIVED');$('tDraft').textContent=count('DRAFT');
-  const list=all.filter(t=>(!status||taskEffectiveStatus(t)===status)&&(!cls||t.className===cls)&&(!search||String(t.title||'').includes(search)));
+  const filteredByClass=all.filter(t=>!cls||String(t.className||'').trim()===String(cls).trim());
+const count=s=>filteredByClass.filter(t=>taskEffectiveStatus(t)===s).length;
+  $('tTotal').textContent=filteredByClass.length;$('tOpen').textContent=count('OPEN');$('tScheduled').textContent=count('SCHEDULED');$('tClosed').textContent=count('CLOSED');$('tArchived').textContent=count('ARCHIVED');$('tDraft').textContent=count('DRAFT');
+  const list=filteredByClass.filter(t=>   (!status||taskEffectiveStatus(t)===status) &&   (!search||String(t.title||'').includes(search)) );
   $('tasksTb').innerHTML=list.map(t=>{
     const st=taskEffectiveStatus(t),targets=t.targetMode==='SELECTED'?`${(t.studentCodes||[]).length} طالب`:`الفصل ${esc(t.className)}`;
     const actions=st==='ARCHIVED'
