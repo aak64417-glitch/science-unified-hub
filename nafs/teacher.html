@@ -535,8 +535,14 @@ function renderTasks(){
   $('tasksTb').innerHTML=list.map(t=>{
     const st=taskEffectiveStatus(t),targets=t.targetMode==='SELECTED'?`${(t.studentCodes||[]).length} طالب`:`الفصل ${esc(t.className)}`;
     const actions=st==='ARCHIVED'
-      ?`<button class="small green" onclick="setTaskStatus('${esc(t.taskId)}','DRAFT')">استعادة كمسودة</button>`
-      :`<button class="small" onclick="editTask('${esc(t.taskId)}')">تعديل</button> ${st!=='OPEN'?`<button class="small green" onclick="setTaskStatus('${esc(t.taskId)}','ACTIVE')">تفعيل</button>`:`<button class="small orange" onclick="setTaskStatus('${esc(t.taskId)}','CLOSED')">إغلاق</button>`} <button class="small ghost" onclick="duplicateTask('${esc(t.taskId)}')">نسخ</button> <button class="small danger" onclick="setTaskStatus('${esc(t.taskId)}','ARCHIVED')">أرشفة</button>`;
+  ?`<button class="small green" onclick="setTaskStatus('${esc(t.taskId)}','DRAFT')">استعادة كمسودة</button>
+    <button class="small danger" onclick="deleteTask('${esc(t.taskId)}')">حذف</button>`
+  :`<button class="small" onclick="editTask('${esc(t.taskId)}')">تعديل</button>
+    ${st!=='OPEN'
+      ?`<button class="small green" onclick="setTaskStatus('${esc(t.taskId)}','ACTIVE')">تفعيل</button>`
+      :`<button class="small orange" onclick="setTaskStatus('${esc(t.taskId)}','CLOSED')">إغلاق</button>`}
+    <button class="small ghost" onclick="setTaskStatus('${esc(t.taskId)}','ARCHIVED')">أرشفة</button>
+    <button class="small danger" onclick="deleteTask('${esc(t.taskId)}')">حذف</button>`;
     return `<tr><td><b>${esc(t.title)}</b><br><span class="muted">${esc(t.taskId)}</span></td><td>${taskTypeAr(t.type)}</td><td>${targets}</td><td>${(t.questionIds||[]).length}</td><td>${esc(fmt(t.openAt))}</td><td>${esc(fmt(t.closeAt))}</td><td><span class="badge ${st==='OPEN'?'ok':st==='CLOSED'||st==='ARCHIVED'?'no':''}">${taskStatusAr(st)}</span></td><td>${taskParticipation(t)} طالب</td><td>${actions}</td></tr>`;
   }).join('');
 }
@@ -831,6 +837,28 @@ async function setTaskStatus(id,status){
   const text=status==='ARCHIVED'?'أرشفة التكليف؟ لن يظهر للطلاب ويمكن استعادته لاحقًا.':'تغيير حالة التكليف؟';
   if(!confirm(text))return;
   try{await jsonp({action:'setTaskStatus',key:key(),taskId:id,status},30000);await loadDashboard()}catch(e){msg(e.message,true)}
+}
+  async function deleteTask(id){
+  const t=(data.tasks||[]).find(x=>String(x.taskId)===String(id));
+  const title=t?.title||id;
+
+  if(!confirm(
+    'هل تريد حذف التكليف "'+title+'" نهائيًا؟\n\n'+
+    'لن يتم حذف نتائج الطلاب السابقة.'
+  )) return;
+
+  try{
+    await jsonp({
+      action:'deleteTask',
+      key:key(),
+      taskId:id
+    },30000);
+
+    await loadDashboard();
+    alert('تم حذف التكليف بنجاح.');
+  }catch(e){
+    alert('تعذر حذف التكليف: '+e.message);
+  }
 }
 function weakestSpecialty(code){
   const sp=specialtyStats(code),arr=Object.entries(sp).filter(([,v])=>v!==null).sort((a,b)=>a[1]-b[1]);return arr.length?arr[0][0]:'شامل';
