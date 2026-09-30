@@ -559,6 +559,54 @@ function renderTaskQuestionPicker(){
   $('teQCount').textContent=taskQuestionSelection.size;
   box.innerHTML=list.map(q=>`<tr><td><input type="checkbox" ${taskQuestionSelection.has(q.id)?'checked':''} onchange="toggleTaskQuestion('${esc(q.id)}',this.checked)"></td><td>${esc(q.id)}</td><td>${esc(q.lesson)}</td><td style="min-width:340px">${esc(q.text)}</td><td>${esc(q.difficulty)}</td></tr>`).join('');
 }
+  function autoSelectTaskQuestions(){
+  const domains=[...document.querySelectorAll('.teDomain:checked')].map(x=>x.value);
+  const count=Math.max(1,parseInt($('teAutoCount')?.value||0,10));
+
+  if(!domains.length){
+    alert('اختر مجالًا واحدًا على الأقل.');
+    return;
+  }
+
+  const type=$('teType')?.value||'training';
+
+  let pool=taskQuestionRows().filter(q=>
+    domains.includes(q.lesson) &&
+    q.status!=='DELETED' &&
+    (type==='test' ? q.testEnabled!==false : q.trainingEnabled!==false)
+  );
+
+  if(!pool.length){
+    alert('لا توجد أسئلة متاحة في المجالات المحددة.');
+    return;
+  }
+
+  if(count>pool.length){
+    alert('عدد الأسئلة المطلوب أكبر من عدد الأسئلة المتاحة في المجالات المحددة. المتاح: '+pool.length);
+    return;
+  }
+
+  // خلط الأسئلة عشوائيًا
+  pool=pool.slice();
+  for(let i=pool.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [pool[i],pool[j]]=[pool[j],pool[i]];
+  }
+
+  // استبدال الاختيار السابق بالاختيار الجديد
+  taskQuestionSelection.clear();
+
+  pool.slice(0,count).forEach(q=>{
+    taskQuestionSelection.add(q.id);
+  });
+
+  renderTaskQuestionPicker();
+
+  alert(
+    'تم اختيار '+taskQuestionSelection.size+
+    ' سؤالًا من المجالات: '+domains.join('، ')
+  );
+}
 function toggleTaskQuestion(id,on){on?taskQuestionSelection.add(id):taskQuestionSelection.delete(id);$('teQCount').textContent=taskQuestionSelection.size}
 function selectVisibleTaskQuestions(on){
   const lesson=$('teQLesson').value,diff=$('teQDiff').value,search=$('teQSearch').value.trim(),type=$('teType').value;
@@ -574,10 +622,39 @@ function taskForm(t){
     <div id="taskTargetBox" class="hidden" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:7px;margin-top:10px"></div>
     <div class="row" style="margin-top:10px"><label>يفتح تلقائيًا<input id="teOpen" type="datetime-local" value="${localInputValue(t.openAt)}"></label><label>يغلق تلقائيًا<input id="teClose" type="datetime-local" value="${localInputValue(t.closeAt)}"></label></div>
     <textarea id="teNotes" style="width:100%;min-height:70px;margin-top:10px" placeholder="ملاحظات للمعلم">${esc(t.notes||'')}</textarea>
+    <div style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:16px">
+  <h4 style="margin-top:0">اختيار تلقائي من بنك الأسئلة</h4>
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+    <label><input type="checkbox" class="teDomain" value="العلم"> العلم</label>
+    <label><input type="checkbox" class="teDomain" value="تغيرات الأرض"> تغيرات الأرض</label>
+    <label><input type="checkbox" class="teDomain" value="أحياء"> الأحياء</label>
+    <label><input type="checkbox" class="teDomain" value="كيمياء"> الكيمياء</label>
+    <label><input type="checkbox" class="teDomain" value="فيزياء"> الفيزياء</label>
+  </div>
+
+  <div class="row">
+    <input id="teAutoCount"
+           type="number"
+           min="1"
+           value="10"
+           placeholder="عدد الأسئلة">
+
+    <button type="button"
+            class="green"
+            onclick="autoSelectTaskQuestions()">
+      اختيار الأسئلة تلقائيًا
+    </button>
+  </div>
+
+  <p class="muted" style="margin-bottom:0">
+    حدد مجالًا واحدًا أو أكثر، ثم حدد عدد الأسئلة المطلوب.
+  </p>
+</div>
     <h4>اختيار الأسئلة <span class="badge"><b id="teQCount">${taskQuestionSelection.size}</b> محدد</span></h4>
     <div class="row"><select id="teQLesson" onchange="renderTaskQuestionPicker()"><option value="">كل المجالات</option><option>العلم</option><option>تغيرات الأرض</option><option>أحياء</option><option>كيمياء</option><option>فيزياء</option></select><select id="teQDiff" onchange="renderTaskQuestionPicker()"><option value="">كل المستويات</option><option>سهل</option><option>متوسط</option><option>صعب</option></select><input id="teQSearch" placeholder="بحث في الأسئلة" oninput="renderTaskQuestionPicker()"></div>
     <div class="row" style="margin-top:8px"><button class="ghost small" onclick="selectVisibleTaskQuestions(true)">اختيار الظاهر</button><button class="ghost small" onclick="selectVisibleTaskQuestions(false)">إلغاء اختيار الظاهر</button></div>
-    <div class="tw" style="max-height:380px"><table><thead><tr><th>اختيار</th><th>الرمز</th><th>التخصص</th><th>السؤال</th><th>المستوى</th></tr></thead><tbody id="taskQuestionRows"></tbody></table></div>
+    <div class="tw" style="max-height:380px"><table><thead><tr><th>اختيار</th><th>الرمز</th><th>المجال</th><th>السؤال</th><th>المستوى</th></tr></thead><tbody id="taskQuestionRows"></tbody></table></div>
     <div style="margin-top:12px"><button class="green" style="width:100%" onclick="saveTask('${esc(t.taskId||'')}')">حفظ التكليف</button></div>
   </div>`;
 }
@@ -589,7 +666,20 @@ function duplicateTask(id){const t=(data.tasks||[]).find(x=>String(x.taskId)===S
 async function saveTask(id){
   const title=$('teTitle').value.trim(),type=$('teType').value,cls=$('teClass').value,targetMode=$('teTargetMode').value;
   if(!title)return alert('اكتب اسم التكليف.');
-  if(!taskQuestionSelection.size)return alert('اختر سؤالًا واحدًا على الأقل.');
+  if(!taskQuestionSelection.size){
+  return alert('اختر سؤالًا واحدًا على الأقل، أو استخدم الاختيار التلقائي من المجالات.');
+}
+
+const autoCount=parseInt($('teAutoCount')?.value||0,10);
+const selectedDomains=[...document.querySelectorAll('.teDomain:checked')].map(x=>x.value);
+
+if(selectedDomains.length && autoCount>0 && taskQuestionSelection.size!==autoCount){
+  return alert(
+    'عدد الأسئلة المختارة حاليًا '+taskQuestionSelection.size+
+    ' بينما العدد المطلوب '+autoCount+
+    '. اضغط «اختيار الأسئلة تلقائيًا» مرة أخرى.'
+  );
+}
   if(targetMode==='SELECTED'&&!taskTargetSelection.size)return alert('اختر الطلاب المستهدفين.');
   const d={taskId:id,title,type,className:cls,targetMode,studentCodes:[...taskTargetSelection],questionIds:[...taskQuestionSelection],openAt:isoFromLocal($('teOpen').value),closeAt:isoFromLocal($('teClose').value),status:$('teStatus').value,attemptPolicy:$('teAttempt').value,notes:$('teNotes').value.trim()};
   try{await jsonp({action:'saveTask',key:key(),data:JSON.stringify(d)},60000);closeModal();await loadDashboard()}catch(e){alert(e.message)}
