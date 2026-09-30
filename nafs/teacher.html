@@ -620,7 +620,43 @@ function taskForm(t){
     <div class="row"><input id="teTitle" value="${esc(t.title||'')}" placeholder="اسم التكليف"><select id="teType" onchange="renderTaskQuestionPicker();syncAttemptPolicy()"><option value="training" ${t.type==='training'?'selected':''}>تدريب</option><option value="test" ${t.type==='test'?'selected':''}>اختبار</option><option value="remedial" ${t.type==='remedial'?'selected':''}>مسار علاجي</option><option value="enrichment" ${t.type==='enrichment'?'selected':''}>مسار إثرائي</option></select><select id="teClass" onchange="taskTargetSelection.clear();renderTaskTargets()">${CLASSES.map(c=>`<option ${c===t.className?'selected':''}>${c}</option>`).join('')}</select></div>
     <div class="row" style="margin-top:10px"><select id="teTargetMode" onchange="renderTaskTargets()"><option value="ALL" ${t.targetMode!=='SELECTED'?'selected':''}>جميع طلاب الفصل</option><option value="SELECTED" ${t.targetMode==='SELECTED'?'selected':''}>طلاب محددون</option></select><select id="teAttempt"><option value="UNLIMITED" ${t.attemptPolicy!=='ONE'?'selected':''}>محاولات مفتوحة</option><option value="ONE" ${t.attemptPolicy==='ONE'?'selected':''}>محاولة واحدة</option></select><select id="teStatus"><option value="DRAFT" ${t.status==='DRAFT'?'selected':''}>حفظ كمسودة</option><option value="ACTIVE" ${t.status==='ACTIVE'?'selected':''}>تفعيل التكليف</option><option value="CLOSED" ${t.status==='CLOSED'?'selected':''}>مغلق</option></select></div>
     <div id="taskTargetBox" class="hidden" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:7px;margin-top:10px"></div>
-    <div class="row" style="margin-top:10px"><label>يفتح تلقائيًا<input id="teOpen" type="datetime-local" value="${localInputValue(t.openAt)}"></label><label>يغلق تلقائيًا<input id="teClose" type="datetime-local" value="${localInputValue(t.closeAt)}"></label></div>
+    <div class="row" style="margin-top:10px">
+  <label>
+    يفتح تلقائيًا
+    <select id="teOpenMode" onchange="toggleTaskDateLists('Open')">
+      <option value="NOW">يفتح فورًا</option>
+      <option value="SCHEDULED">تحديد موعد</option>
+    </select>
+  </label>
+
+  <label>
+    يغلق تلقائيًا
+    <select id="teCloseMode" onchange="toggleTaskDateLists('Close')">
+      <option value="NONE">بدون إغلاق تلقائي</option>
+      <option value="SCHEDULED">تحديد موعد</option>
+    </select>
+  </label>
+</div>
+
+<div id="teOpenLists" class="row hidden" style="margin-top:8px">
+  <select id="teOpenDate"></select>
+  <select id="teOpenHour"></select>
+  <select id="teOpenMinute"></select>
+  <select id="teOpenPeriod">
+    <option value="AM">ص</option>
+    <option value="PM">م</option>
+  </select>
+</div>
+
+<div id="teCloseLists" class="row hidden" style="margin-top:8px">
+  <select id="teCloseDate"></select>
+  <select id="teCloseHour"></select>
+  <select id="teCloseMinute"></select>
+  <select id="teClosePeriod">
+    <option value="AM">ص</option>
+    <option value="PM">م</option>
+  </select>
+</div>
     <textarea id="teNotes" style="width:100%;min-height:70px;margin-top:10px" placeholder="ملاحظات للمعلم">${esc(t.notes||'')}</textarea>
     <div style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:16px">
   <h4 style="margin-top:0">اختيار تلقائي من بنك الأسئلة</h4>
@@ -658,8 +694,89 @@ function taskForm(t){
     <div style="margin-top:12px"><button class="green" style="width:100%" onclick="saveTask('${esc(t.taskId||'')}')">حفظ التكليف</button></div>
   </div>`;
 }
+  function toggleTaskDateLists(kind){
+  const mode=$('te'+kind+'Mode')?.value;
+  const box=$('te'+kind+'Lists');
+  if(!box)return;
+  box.classList.toggle('hidden',mode!=='SCHEDULED');
+}
+
+function fillTaskDateLists(kind){
+  const date=$('te'+kind+'Date');
+  const hour=$('te'+kind+'Hour');
+  const minute=$('te'+kind+'Minute');
+  if(!date||!hour||!minute)return;
+
+  const now=new Date();
+
+  date.innerHTML='';
+  for(let i=0;i<31;i++){
+    const d=new Date(now);
+    d.setDate(now.getDate()+i);
+    const value=
+      d.getFullYear()+'-'+
+      String(d.getMonth()+1).padStart(2,'0')+'-'+
+      String(d.getDate()).padStart(2,'0');
+
+    const label=i===0?'اليوم':i===1?'غدًا':
+      d.toLocaleDateString('ar-SA',{day:'numeric',month:'short'});
+
+    date.add(new Option(label,value));
+  }
+
+  hour.innerHTML='';
+  for(let h=1;h<=12;h++){
+    hour.add(new Option(String(h),String(h)));
+  }
+
+  minute.innerHTML='';
+  ['00','15','30','45'].forEach(m=>{
+    minute.add(new Option(m,m));
+  });
+}
+
+function taskDateValue(kind){
+  const mode=$('te'+kind+'Mode')?.value;
+
+  if(kind==='Open' && mode==='NOW') return '';
+  if(kind==='Close' && mode==='NONE') return '';
+  if(mode!=='SCHEDULED') return '';
+
+  const date=$('te'+kind+'Date').value;
+  let hour=parseInt($('te'+kind+'Hour').value,10);
+  const minute=$('te'+kind+'Minute').value;
+  const period=$('te'+kind+'Period').value;
+
+  if(period==='PM' && hour<12)hour+=12;
+  if(period==='AM' && hour===12)hour=0;
+
+  return date+'T'+String(hour).padStart(2,'0')+':'+minute;
+}
 function syncAttemptPolicy(){if($('teType')?.value==='test')$('teAttempt').value='ONE'}
-function openTaskEditor(t){showModal(t?.taskId?'تعديل التكليف':'إنشاء تكليف جديد',taskForm(t));setTimeout(()=>{renderTaskTargets();renderTaskQuestionPicker()},30)}
+function openTaskEditor(t){
+  showModal(t?.taskId?'تعديل التكليف':'إنشاء تكليف جديد',taskForm(t));
+
+  setTimeout(()=>{
+    renderTaskTargets();
+    renderTaskQuestionPicker();
+
+    fillTaskDateLists('Open');
+    fillTaskDateLists('Close');
+
+    if(t?.openAt){
+      $('teOpenMode').value='SCHEDULED';
+      setTaskDateListsValue('Open',t.openAt);
+    }
+
+    if(t?.closeAt){
+      $('teCloseMode').value='SCHEDULED';
+      setTaskDateListsValue('Close',t.closeAt);
+    }
+
+    toggleTaskDateLists('Open');
+    toggleTaskDateLists('Close');
+  },30);
+}
 function newTask(){openTaskEditor(null)}
 function editTask(id){const t=(data.tasks||[]).find(x=>String(x.taskId)===String(id));if(t)openTaskEditor(t)}
 function duplicateTask(id){const t=(data.tasks||[]).find(x=>String(x.taskId)===String(id));if(!t)return;openTaskEditor({...t,taskId:'',title:(t.title||'')+' - نسخة',status:'DRAFT'})}
@@ -681,7 +798,7 @@ if(selectedDomains.length && autoCount>0 && taskQuestionSelection.size!==autoCou
   );
 }
   if(targetMode==='SELECTED'&&!taskTargetSelection.size)return alert('اختر الطلاب المستهدفين.');
-  const d={taskId:id,title,type,className:cls,targetMode,studentCodes:[...taskTargetSelection],questionIds:[...taskQuestionSelection],openAt:isoFromLocal($('teOpen').value),closeAt:isoFromLocal($('teClose').value),status:$('teStatus').value,attemptPolicy:$('teAttempt').value,notes:$('teNotes').value.trim()};
+  const d={taskId:id,title,type,className:cls,targetMode,studentCodes:[...taskTargetSelection],questionIds:[...taskQuestionSelection],openAt:taskDateValue('Open'),closeAt:taskDateValue('Close'),status:$('teStatus').value,attemptPolicy:$('teAttempt').value,notes:$('teNotes').value.trim()};
   try{await jsonp({action:'saveTask',key:key(),data:JSON.stringify(d)},60000);closeModal();await loadDashboard()}catch(e){alert(e.message)}
 }
 async function setTaskStatus(id,status){
