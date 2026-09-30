@@ -639,7 +639,7 @@ function taskForm(t){
 </div>
 
 <div id="teOpenLists" class="row hidden" style="margin-top:8px">
-  <select id="teOpenDate"></select>
+  <select id="teOpenYear"></select> <select id="teOpenMonth"></select> <select id="teOpenDay"></select>
   <select id="teOpenHour"></select>
   <select id="teOpenMinute"></select>
   <select id="teOpenPeriod">
@@ -649,7 +649,7 @@ function taskForm(t){
 </div>
 
 <div id="teCloseLists" class="row hidden" style="margin-top:8px">
-  <select id="teCloseDate"></select>
+  <select id="teCloseYear"></select> <select id="teCloseMonth"></select> <select id="teCloseDay"></select>
   <select id="teCloseHour"></select>
   <select id="teCloseMinute"></select>
   <select id="teClosePeriod">
@@ -702,37 +702,60 @@ function taskForm(t){
 }
 
 function fillTaskDateLists(kind){
-  const date=$('te'+kind+'Date');
+  const year=$('te'+kind+'Year');
+  const month=$('te'+kind+'Month');
+  const day=$('te'+kind+'Day');
   const hour=$('te'+kind+'Hour');
   const minute=$('te'+kind+'Minute');
-  if(!date||!hour||!minute)return;
+
+  if(!year || !month || !day || !hour || !minute) return;
 
   const now=new Date();
 
-  date.innerHTML='';
-  for(let i=0;i<31;i++){
-    const d=new Date(now);
-    d.setDate(now.getDate()+i);
-    const value=
-      d.getFullYear()+'-'+
-      String(d.getMonth()+1).padStart(2,'0')+'-'+
-      String(d.getDate()).padStart(2,'0');
-
-    const label=i===0?'اليوم':i===1?'غدًا':
-      d.toLocaleDateString('ar-SA',{day:'numeric',month:'short'});
-
-    date.add(new Option(label,value));
+  year.innerHTML='';
+  for(let y=now.getFullYear(); y<=now.getFullYear()+5; y++){
+    year.innerHTML+=`<option value="${y}">${y}</option>`;
   }
+
+  month.innerHTML='';
+  const months=[
+    'يناير','فبراير','مارس','أبريل','مايو','يونيو',
+    'يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'
+  ];
+  months.forEach((m,i)=>{
+    month.innerHTML+=`<option value="${i+1}">${m}</option>`;
+  });
+
+  function fillDays(){
+    const y=parseInt(year.value,10);
+    const m=parseInt(month.value,10);
+    const days=new Date(y,m,0).getDate();
+    const oldDay=parseInt(day.value,10) || now.getDate();
+
+    day.innerHTML='';
+    for(let d=1;d<=days;d++){
+      day.innerHTML+=`<option value="${d}">${d}</option>`;
+    }
+    day.value=String(Math.min(oldDay,days));
+  }
+
+  year.value=String(now.getFullYear());
+  month.value=String(now.getMonth()+1);
+  fillDays();
+
+  year.onchange=fillDays;
+  month.onchange=fillDays;
 
   hour.innerHTML='';
   for(let h=1;h<=12;h++){
-    hour.add(new Option(String(h),String(h)));
+    hour.innerHTML+=`<option value="${h}">${h}</option>`;
   }
 
   minute.innerHTML='';
-  ['00','15','30','45'].forEach(m=>{
-    minute.add(new Option(m,m));
-  });
+  for(let m=0;m<60;m+=5){
+    const v=String(m).padStart(2,'0');
+    minute.innerHTML+=`<option value="${v}">${v}</option>`;
+  }
 }
 
 function taskDateValue(kind){
@@ -742,15 +765,18 @@ function taskDateValue(kind){
   if(kind==='Close' && mode==='NONE') return '';
   if(mode!=='SCHEDULED') return '';
 
-  const date=$('te'+kind+'Date').value;
+  const year=$('te'+kind+'Year').value;
+  const month=String($('te'+kind+'Month').value).padStart(2,'0');
+  const day=String($('te'+kind+'Day').value).padStart(2,'0');
+
   let hour=parseInt($('te'+kind+'Hour').value,10);
   const minute=$('te'+kind+'Minute').value;
   const period=$('te'+kind+'Period').value;
 
-  if(period==='PM' && hour<12)hour+=12;
-  if(period==='AM' && hour===12)hour=0;
+  if(period==='PM' && hour<12) hour+=12;
+  if(period==='AM' && hour===12) hour=0;
 
-  return date+'T'+String(hour).padStart(2,'0')+':'+minute;
+  return year+'-'+month+'-'+day+'T'+String(hour).padStart(2,'0')+':'+minute;
 }
 function syncAttemptPolicy(){if($('teType')?.value==='test')$('teAttempt').value='ONE'}
 function openTaskEditor(t){
