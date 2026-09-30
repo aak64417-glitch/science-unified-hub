@@ -425,7 +425,7 @@ body{
         $('quizModeLabel').textContent='اختبار · '+task.title;renderQuestion();
       }catch(e){notice($('identityMsg'),e.message)}finally{setLoading(false)}
     }else{
-      state.mode='training';state.topic=task.title;state.questions=qs;state.attemptId=null;
+      state.mode='training'; state.topic=[...new Set(qs.map(q=>q.lesson).filter(Boolean))].join('، ')||task.title; state.questions=qs; state.attemptId=null;
       state.index=0;state.answers={};state.correct=0;state.wrongIds=[];state.startAt=Date.now();
       touchStudentSession('بدء تكليف: '+task.title);
       show('quiz');$('timer').classList.add('hidden');$('prevBtn').classList.remove('hidden');
