@@ -372,7 +372,7 @@ async function loadDashboard(silent=false){
   try{
     if(!silent)msg('جاري تحميل أحدث بيانات نافس...');
 
-    let r;  if(silent || (Array.isArray(data.questionOverrides) && data.questionOverrides.length)){   try{     r=await jsonp({action:'dashboardLite',key:key()});   }catch(e){     r=await jsonp({action:'dashboard',key:key()});   } }else{   r=await jsonp({action:'dashboard',key:key()}); }
+    let r; try{   r=await jsonp({action:'dashboardLite',key:key()}); }catch(e){   r=await jsonp({action:'dashboard',key:key()}); } && data.questionOverrides.length)){   try{     r=await jsonp({action:'dashboardLite',key:key()});   }catch(e){     r=await jsonp({action:'dashboard',key:key()});   } }else{   r=await jsonp({action:'dashboard',key:key()}); }
 
     data.students=r.students||[];
     data.results=r.results||[];
