@@ -474,7 +474,7 @@ document.addEventListener('visibilitychange',()=>{
 
   if(active==='tab-portfolio') renderPortfolio();
 }
-function filteredStudents(cls,search){return ...}
+function filteredStudents(cls,search){return data.students.filter(s=>(!cls||s.className===cls)&&(!search||s.name.includes(search)))}
 function renderDashboard(){
   const list=filteredStudents($('dashClass').value,$('dashSearch').value.trim());
   const entered=list.filter(s=>latestSession(s.code));
