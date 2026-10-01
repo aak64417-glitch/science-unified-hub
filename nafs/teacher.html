@@ -347,6 +347,8 @@ function openTab(name,btn){
   btn?.classList.add('active');
 
   // تحميل الأجزاء الثقيلة فقط عند فتحها
+if(name==='students') renderStudents();
+if(name==='reports'){ updateStudentSelect(); renderParticipation(); }  
   if(name==='questions') renderQuestions();
   if(name==='portfolio') renderPortfolio();
   if(name==='tasks') renderTasks();
@@ -416,7 +418,9 @@ document.addEventListener('visibilitychange',()=>{
     loadDashboard(true);
   }
 });
-function renderAll(){   renderDashboard();   renderStudents();   updateStudentSelect();   renderParticipation();   renderTasks();   renderPaths(); }
+function renderAll(){
+  renderDashboard();
+}
 function filteredStudents(cls,search){return data.students.filter(s=>(!cls||s.className===cls)&&(!search||s.name.includes(search)))}
 function renderDashboard(){
   const list=filteredStudents($('dashClass').value,$('dashSearch').value.trim());
