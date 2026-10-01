@@ -371,33 +371,69 @@ async function loadDashboard(silent=false){
 
   dashboardRefreshing=true;
 
+  const totalStart=performance.now();
+  let liteMs=0;
+  let fullMs=0;
+  let renderMs=0;
+  let source='dashboardLite';
+  let liteError='';
+
   try{
     if(!silent)msg('جاري تحميل أحدث بيانات نافس...');
 
     let r;
-try{
-  r=await jsonp({action:'dashboardLite',key:key()});
-}catch(e){
-  r=await jsonp({action:'dashboard',key:key()});
-}
+    let t=performance.now();
+
+    try{
+      r=await jsonp({action:'dashboardLite',key:key()});
+      liteMs=performance.now()-t;
+    }catch(e){
+      liteMs=performance.now()-t;
+      liteError=e.message||String(e);
+      source='dashboard';
+
+      t=performance.now();
+      r=await jsonp({action:'dashboard',key:key()});
+      fullMs=performance.now()-t;
+    }
 
     data.students=r.students||[];
     data.results=r.results||[];
     data.sessions=r.sessions||[];
     data.config=r.config||{};
+
     if(Array.isArray(r.questionOverrides)){
-  data.questionOverrides=r.questionOverrides;
-}
+      data.questionOverrides=r.questionOverrides;
+    }
+
     data.tasks=r.tasks||[];
 
     $('testOpen').value=String(data.config.testOpen).toUpperCase();
     $('showResult').value=String(data.config.showResultToStudent).toUpperCase();
 
+    const renderStart=performance.now();
+
     renderAll();
-if(currentStudentReportCode && !$('modal').classList.contains('hidden')){
-  studentReport(currentStudentReportCode);
-}
-    if(!silent)msg('تم تحديث البيانات.');
+
+    if(currentStudentReportCode && !$('modal').classList.contains('hidden')){
+      studentReport(currentStudentReportCode);
+    }
+
+    renderMs=performance.now()-renderStart;
+
+    const totalMs=performance.now()-totalStart;
+
+    if(!silent){
+      msg(
+        'تم التحديث | المصدر: '+source+
+        ' | Lite: '+(liteMs/1000).toFixed(1)+'ث'+
+        (fullMs ? ' | Full: '+(fullMs/1000).toFixed(1)+'ث' : '')+
+        ' | الرسم: '+(renderMs/1000).toFixed(1)+'ث'+
+        ' | الإجمالي: '+(totalMs/1000).toFixed(1)+'ث'+
+        (liteError ? ' | خطأ Lite: '+liteError : '')
+      );
+    }
+
   }catch(e){
     if(!silent)msg(e.message,true);
   }finally{
