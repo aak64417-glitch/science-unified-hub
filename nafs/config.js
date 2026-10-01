@@ -79,37 +79,77 @@ window.NAFS_API_URL = 'https://script.google.com/macros/s/AKfycbyCZB1jIsV2tH3g3e
       }
     }
 
-    // تحديث الخادم في الخلفية
+    // تحديث الخادم (يُظهر النتيجة الحقيقية)
+    function isBusy(){
+      return typeof dashboardRefreshing!=='undefined' && dashboardRefreshing;
+    }
+
+    function waitIdle(maxMs=130000){
+      return new Promise(res=>{
+        const start=Date.now();
+        (function check(){
+          if(!isBusy() || Date.now()-start>maxMs) return res();
+          setTimeout(check,250);
+        })();
+      });
+    }
+
+    let queuedRun=null;
+
+    async function runRefresh(silent){
+      await originalLoadDashboard(silent);
+
+      if(pendingDeleteIds.size){
+        data.tasks=(data.tasks||[]).filter(
+          t=>!pendingDeleteIds.has(String(t.taskId))
+        );
+        if(document.querySelector('.tab.active')?.id==='tab-tasks'){
+          renderTasks();
+        }
+      }
+
+      // الحفظ في الكاش بعد النجاح فقط
+      saveTeacherCache();
+      return true;
+    }
+
     window.loadDashboard=async function(silent=false){
 
-      if(deleteBusy) return;
+      if(!key()){
+        if(!silent) msg('أدخل مفتاح المعلم أولًا.',true);
+        return false;
+      }
 
       try{
-        await originalLoadDashboard(true);
 
-        if(pendingDeleteIds.size){
-          data.tasks=(data.tasks||[]).filter(
-            t=>!pendingDeleteIds.has(String(t.taskId))
-          );
+        // أثناء الحذف أو وجود تحديث جارٍ: جدولة تحديث جديد بعده بدل تجاهل الطلب
+        if(deleteBusy || isBusy()){
 
-          if(
-            document.querySelector('.tab.active')?.id
-            ==='tab-tasks'
-          ){
-            renderTasks();
+          if(!silent) msg('يوجد تحديث جارٍ، سيتم جلب أحدث البيانات فور انتهائه...');
+
+          // تحديث تلقائي متكرر لا داعي لجدولته
+          if(silent && !deleteBusy) return false;
+
+          if(!queuedRun){
+            queuedRun=(async()=>{
+              await waitIdle();
+              while(deleteBusy) await new Promise(r=>setTimeout(r,250));
+              try{ return await runRefresh(silent); }
+              finally{ queuedRun=null; }
+            })();
           }
+          return await queuedRun;
         }
 
-        saveTeacherCache();
-
-        if(!silent){
-          msg('تم تحديث البيانات.');
-        }
+        return await runRefresh(silent);
 
       }catch(e){
         if(!silent){
-          msg(e.message,true);
+          // نعرض الخطأ دون رميه، حتى لا تظهر عمليات الحفظ الناجحة كأنها فشلت
+          msg('تعذر تحديث العرض: '+(e.message||e)+' — ما حفظته محفوظ في الخادم، اضغط "تحديث البيانات" بعد قليل.',true);
+          return false;
         }
+        throw e;
       }
     };
 
@@ -159,7 +199,7 @@ window.NAFS_API_URL = 'https://script.google.com/macros/s/AKfycbyCZB1jIsV2tH3g3e
 
         // مزامنة صامتة بعد الحذف
         setTimeout(()=>{
-          loadDashboard(true);
+          loadDashboard(true).catch(()=>{});
         },300);
 
       }catch(e){
@@ -185,25 +225,20 @@ window.NAFS_API_URL = 'https://script.google.com/macros/s/AKfycbyCZB1jIsV2tH3g3e
 
     if(key()){
 
-      if(restored){
+      msg(restored
+        ?'تم فتح آخر البيانات، ويجري تحديثها في الخلفية...'
+        :'جاري تجهيز البيانات لأول مرة...');
 
-        // تظهر الصفحة فورًا مثل صفحة الطالب
-        msg('تم فتح آخر البيانات، ويجري تحديثها في الخلفية.');
-
-        setTimeout(()=>{
-          loadDashboard(true);
-        },10);
-
-      }else{
-
-        // يحدث مرة واحدة فقط أول استخدام
-        msg('جاري تجهيز البيانات لأول مرة...');
-
-        setTimeout(async()=>{
-          await loadDashboard(true);
-          saveTeacherCache();
-        },10);
-      }
+      setTimeout(async()=>{
+        try{
+          const ok=await loadDashboard(true);
+          if(ok) msg('تم تحديث البيانات.');
+        }catch(e){
+          msg((restored
+            ?'تعذر التحديث، المعروض آخر نسخة محفوظة: '
+            :'تعذر تحميل البيانات: ')+(e.message||e),true);
+        }
+      },10);
     }
 
   });
