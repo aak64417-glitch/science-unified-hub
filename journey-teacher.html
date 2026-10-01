@@ -280,7 +280,8 @@ button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:90
 <\/script>
 `;
     html=html.replace('</body>',loginTimePatch+'</body>');
-
+const datePickerPatch='<scr'+'ipt src="journey-teacher-date-picker.js?v=20261001-1"></scr'+'ipt>';
+html=html.replace('</body>',datePickerPatch+'</body>');
     document.open();
     document.write(html);
     document.close();
