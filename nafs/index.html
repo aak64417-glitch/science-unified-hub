@@ -263,73 +263,75 @@
 
 
 <style>
-/* ===== أزرار المجالات الفعلية ===== */
-.domain-switcher{
-  width:min(1180px,calc(100% - 24px));
-  margin:-10px auto 20px;
-  padding:13px 14px 14px;
+/* ===== اسم الطالب أعلى يمين اللوحة ===== */
+.approved-student-visual{position:relative}
+.hero-student-badge{
+  position:absolute;
+  top:2.1%;
+  right:2.0%;
+  z-index:8;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:220px;
+  max-width:34%;
+  padding:10px 13px;
   border-radius:22px;
   background:rgba(255,255,255,.96);
-  border:1px solid #d7e6f3;
-  box-shadow:0 12px 32px rgba(21,78,123,.09);
+  border:1px solid rgba(185,211,233,.95);
+  box-shadow:0 9px 24px rgba(25,75,120,.18);
+  direction:rtl;
 }
-.domain-switcher-title{
-  text-align:center;
-  color:#496985;
-  font-size:13px;
-  font-weight:900;
-  margin-bottom:9px;
+.hero-student-avatar{
+  width:44px;height:44px;min-width:44px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:linear-gradient(145deg,#eef8ff,#e9f0ff);
+  font-size:24px;
+  border:1px solid #cfe2f3;
 }
-.domain-switcher-buttons{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:9px;
-}
-.domain-switch-btn{
-  min-height:48px;
-  border-radius:15px;
-  border:1px solid #d7e6f3;
-  background:#fff;
-  color:#173f6b;
-  font:inherit;
-  font-size:15px;
-  font-weight:900;
-  cursor:pointer;
-  transition:.18s ease;
-}
-.domain-switch-btn:hover{transform:translateY(-1px)}
-.domain-switch-btn.life{background:linear-gradient(145deg,#f8f1ff,#effdf6)}
-.domain-switch-btn.physics{background:linear-gradient(145deg,#fff8e9,#fff3df)}
-.domain-switch-btn.earth{background:linear-gradient(145deg,#ebf8ff,#eef0ff)}
-.domain-switch-btn.active{
-  border:2px solid #1979c8;
-  color:#0b4f8c;
-  box-shadow:0 8px 18px rgba(22,112,187,.15);
-}
-.start-selected-domain{
+.hero-student-copy{min-width:0;line-height:1.22}
+.hero-student-copy span{
   display:block;
-  width:min(420px,100%);
-  margin:11px auto 0;
-  border:0;
-  border-radius:999px;
-  padding:12px 18px;
-  background:linear-gradient(135deg,#12a86e,#1f84d2);
-  color:#fff;
-  font:inherit;
-  font-size:16px;
-  font-weight:1000;
-  cursor:pointer;
-  box-shadow:0 9px 22px rgba(20,119,154,.20);
+  color:#54718d;
+  font-size:11px;
+  font-weight:800;
 }
-@media(max-width:700px){
-  .domain-switcher{width:calc(100% - 12px);margin:-4px auto 14px;padding:10px}
-  .domain-switcher-buttons{grid-template-columns:1fr}
-  .domain-switch-btn{min-height:44px}
+.hero-student-copy strong{
+  display:block;
+  color:#0f315b;
+  font-size:18px;
+  font-weight:1000;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.hero-student-copy small{
+  display:block;
+  color:#54718d;
+  font-size:10px;
+  font-weight:800;
+  margin-top:2px;
+}
+@media(max-width:760px){
+  .hero-student-badge{
+    top:1.4%;right:1.5%;
+    min-width:0;
+    width:39%;
+    max-width:39%;
+    padding:7px 8px;
+    border-radius:15px;
+    gap:6px;
+  }
+  .hero-student-avatar{width:31px;height:31px;min-width:31px;font-size:17px}
+  .hero-student-copy span{font-size:8px}
+  .hero-student-copy strong{font-size:11px}
+  .hero-student-copy small{font-size:8px}
 }
 </style>
 
 </head>
-<body data-visual-base="agreed-nafs-dynamic-fields-clickable-final-2026-10-02">
+<body data-visual-base="nafs-teacher-controlled-fields-final-2026-10-02">
 <div id="trainingWelcome" class="training-welcome" aria-live="polite">
   <div class="training-welcome-card">
     <div class="welcome-glow"></div>
@@ -546,18 +548,16 @@ body{min-height:100vh}
 <body>
     <section id="landing">
 
-      <div class="approved-student-visual" id="approvedStudentVisual" aria-label="الهوية البصرية المتغيرة لمنصة نافس">
+      <div class="approved-student-visual" id="approvedStudentVisual" aria-label="الهوية البصرية المتغيرة تلقائيًا حسب تكليف المعلم">
         <img id="landingThemeImage" src="" alt="">
-      </div>
-
-      <div class="domain-switcher" aria-label="اختيار مجال التدريب">
-        <div class="domain-switcher-title">اختر المجال لتتغير الصفحة مباشرة</div>
-        <div class="domain-switcher-buttons">
-          <button id="themeLifeBtn" class="domain-switch-btn life" type="button" onclick="selectLandingField('علوم الحياة')">🧬 علوم الحياة</button>
-          <button id="themePhysicsBtn" class="domain-switch-btn physics" type="button" onclick="selectLandingField('علوم الفيزياء')">⚛️ علوم الفيزياء</button>
-          <button id="themeEarthBtn" class="domain-switch-btn earth" type="button" onclick="selectLandingField('علوم الأرض والفضاء')">🌍 علوم الأرض والفضاء</button>
+        <div id="heroStudentBadge" class="hero-student-badge hidden">
+          <div class="hero-student-avatar">👨‍🎓</div>
+          <div class="hero-student-copy">
+            <span>أهلًا بك</span>
+            <strong id="heroStudentName">—</strong>
+            <small id="heroStudentClass">—</small>
+          </div>
         </div>
-        <button id="startSelectedDomainBtn" class="start-selected-domain" type="button" onclick="startSelectedLandingField()">ابدأ تدريب المجال المختار</button>
       </div>
 
 <div class="panel">
@@ -605,49 +605,6 @@ body{min-height:100vh}
             <b>لا يوجد تكليف متاح الآن</b>
             سيظهر التكليف هنا تلقائيًا عند فتحه من لوحة المعلم.
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="trainingMenu" class="hidden">
-      <div class="panel">
-        <div class="nafs-inline-brand">
-          <img src="nafs-logo.jpg" alt="شعار نافس">
-          <div><b>تدريب نافس</b><span>علوم الصف الثالث المتوسط</span></div>
-        </div>
-        <div class="quiz-actions" style="margin-top:0">
-          <div>
-            <h3 class="panel-title">اختر مجال التدريب</h3>
-            <p class="panel-sub">المجالات مرتبة وفق الهيكل العلمي المعتمد في المنصة.</p>
-          </div>
-          <button class="btn btn-ghost" onclick="goHome()">العودة</button>
-        </div>
-
-        <div class="topic-grid">
-          <button class="topic" onclick="startTraining('شامل')">
-            <b>✨ تدريب شامل</b>
-            <span>أسئلة متنوعة من المجالات العلمية الثلاثة.</span>
-          </button>
-
-          <button class="topic life-topic" onclick="startTraining('علوم الحياة')">
-            <b>🧬 علوم الحياة</b>
-            <span>الخلايا، أجهزة الجسم، الوراثة، التنوع والأنظمة البيئية.</span>
-          </button>
-
-          <button class="topic physics-topic" onclick="startTraining('علوم الفيزياء')">
-            <b>⚛️ علوم الفيزياء</b>
-            <span>المادة والكيمياء، الحركة والقوى، الطاقة، الكهرباء والموجات.</span>
-          </button>
-
-          <button class="topic earth-topic" onclick="startTraining('علوم الأرض والفضاء')">
-            <b>🌍 علوم الأرض والفضاء</b>
-            <span>الصخور والمعادن، الصفائح، الزلازل والبراكين، الموارد والفضاء.</span>
-          </button>
-
-          <button id="mistakesBtn" class="topic" onclick="trainMistakes()" disabled>
-            <b>🎯 تدرب على أخطائي</b>
-            <span>يصبح متاحًا بعد إكمال تدريب.</span>
-          </button>
         </div>
       </div>
     </section>
@@ -707,16 +664,6 @@ body{min-height:100vh}
     if(wrap) wrap.classList.add('theme-swapping');
     img.src=cfg.src;
     img.alt=cfg.alt;
-    const btnMap={
-      'علوم الحياة':'themeLifeBtn',
-      'علوم الفيزياء':'themePhysicsBtn',
-      'علوم الأرض والفضاء':'themeEarthBtn'
-    };
-    ['themeLifeBtn','themePhysicsBtn','themeEarthBtn'].forEach(id=>{
-      const b=$(id); if(b)b.classList.remove('active');
-    });
-    const activeId=btnMap[key];
-    if(activeId && $(activeId))$(activeId).classList.add('active');
     if(persist){
       state.preferredTrack=key;
       try{localStorage.setItem('nafsPreferredTrack',key);}catch(_e){}
@@ -724,22 +671,8 @@ body{min-height:100vh}
     setTimeout(()=>wrap&&wrap.classList.remove('theme-swapping'),180);
   }
 
-  function selectLandingField(topic){
-    applyLandingTheme(topic,true);
-    const visual=$('approvedStudentVisual');
-    if(visual){
-      try{visual.scrollIntoView({behavior:'smooth',block:'center'});}catch(_e){}
-    }
-  }
-
-  function startSelectedLandingField(){
-    const key=normalizeLandingTrack(state.preferredTrack);
-    if(key==='شامل')return openTrainingMenu();
-    startTraining(key);
-  }
-
   const $=id=>document.getElementById(id);
-  const sections=['landing','trainingMenu','quiz','result'];
+  const sections=['landing','quiz','result'];
   function show(id){sections.forEach(s=>$(s).classList.toggle('hidden',s!==id));window.scrollTo({top:0,behavior:'smooth'});} 
   function setLoading(v){$('loading').classList.toggle('hidden',!v)}
   function notice(el,msg,type='error'){el.innerHTML=msg?`<div class="notice ${type}">${msg}</div>`:''}
@@ -962,9 +895,21 @@ body{min-height:100vh}
       const r=await server('getStudentTasks');
       state.tasks=Array.isArray(r.tasks)?r.tasks:[];
       const box=$('taskList'),empty=$('taskEmpty');
-      if(!state.tasks.length){box.innerHTML='';empty.classList.remove('hidden');return;}
+      if(!state.tasks.length){
+        box.innerHTML='';
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      // المجال لا يختاره الطالب: الصورة تتبع التكليف الذي أرسله المعلم.
+      applyTeacherTaskTheme(state.tasks[0],true);
+
       empty.classList.add('hidden');
-      box.innerHTML=state.tasks.map(t=>`<button class="topic" onclick="startStudentTask('${escapeHtml(t.taskId)}')"><b>${taskIcon(t.type)} ${escapeHtml(t.title)}</b><span>${taskTypeLabel(t.type)} · ${Number(t.questionCount||0)} سؤال${t.closeAt?' · حتى '+escapeHtml(fmtStudentTime(t.closeAt)):''}</span></button>`).join('');
+      box.innerHTML=state.tasks.map(t=>{
+        const field=teacherSelectedTheme(t);
+        const fieldText=field==='شامل'?'مجال التكليف':field;
+        return `<button class="topic" onclick="startStudentTask('${escapeHtml(t.taskId)}')"><b>${taskIcon(t.type)} ${escapeHtml(t.title)}</b><span>${escapeHtml(fieldText)} · ${taskTypeLabel(t.type)} · ${Number(t.questionCount||0)} سؤال${t.closeAt?' · حتى '+escapeHtml(fmtStudentTime(t.closeAt)):''}</span></button>`;
+      }).join('');
     }catch(e){
       $('taskList').innerHTML='';$('taskEmpty').classList.remove('hidden');
       $('taskEmpty').innerHTML='<b>تعذر تحميل التكليفات</b>'+escapeHtml(e.message);
@@ -985,6 +930,29 @@ body{min-height:100vh}
     });
   }
 
+
+  function teacherSelectedTheme(task){
+    if(!task)return 'شامل';
+
+    // Prefer an explicit domain stored by the teacher, if present.
+    const explicit =
+      task.domain || task.field || task.officialDomain ||
+      task.scienceDomain || task.platformSection || task.section || '';
+
+    const explicitTheme=normalizeLandingTrack(explicit);
+    if(explicitTheme!=='شامل')return explicitTheme;
+
+    // Otherwise infer it from the exact question IDs selected by the teacher.
+    const qs=taskQuestions(task);
+    return themeFromQuestions(qs);
+  }
+
+  function applyTeacherTaskTheme(task,persist=true){
+    const theme=teacherSelectedTheme(task);
+    applyLandingTheme(theme,persist);
+    return theme;
+  }
+
   function taskQuestions(task){
     const ids=Array.isArray(task.questionIds)?task.questionIds:[];
     const map=new Map(ACTIVE_QUESTIONS.filter(q=>q.status!=='DELETED').map(q=>[q.id,q]));
@@ -993,6 +961,7 @@ body{min-height:100vh}
   async function startStudentTask(taskId){
     const task=state.tasks.find(t=>String(t.taskId)===String(taskId));
     if(!task)return alert('هذا التكليف غير متاح الآن.');
+    applyTeacherTaskTheme(task,true);
     await showPersonalWelcome();
     if(!questionBankReady){
   setLoading(true);
@@ -1008,7 +977,6 @@ body{min-height:100vh}
 }
     const qs=taskQuestions(task);
     if(!qs.length)return alert('لا توجد أسئلة متاحة في هذا التكليف. تواصل مع المعلم.');
-    applyLandingTheme(themeFromQuestions(qs),true);
     state.currentTask=task;
     if(task.type==='test'){
       setLoading(true);
@@ -1085,6 +1053,9 @@ body{min-height:100vh}
         $('className').value=s.className;
         $('studentDisplayName').textContent=s.name;
         $('studentDisplayClass').textContent='الفصل '+s.className;
+        $('heroStudentName').textContent=s.name;
+        $('heroStudentClass').textContent='الفصل '+s.className;
+        $('heroStudentBadge').classList.remove('hidden');
         $('studentIdentityCard').classList.remove('hidden');
         $('barcodeRequired').classList.add('hidden');
         $('modeGrid').classList.remove('hidden');
@@ -1099,6 +1070,7 @@ ensureQuestionBankReady().then(loadStudentTasks).catch(e=>{
       }else{
         state.identity=null;
         $('studentIdentityCard').classList.add('hidden');
+        $('heroStudentBadge').classList.add('hidden');
         $('barcodeRequired').classList.remove('hidden');
         $('modeGrid').classList.add('hidden');
       }
@@ -1118,6 +1090,7 @@ ensureQuestionBankReady().catch(e=>{
     }catch(e){
       state.identity=null;
       $('studentIdentityCard').classList.add('hidden');
+      $('heroStudentBadge').classList.add('hidden');
       $('barcodeRequired').classList.remove('hidden');
       $('modeGrid').classList.add('hidden');
       notice($('identityMsg'),'تعذر الدخول: '+e.message);
@@ -1132,10 +1105,22 @@ ensureQuestionBankReady().catch(e=>{
     if(!ok)notice($('identityMsg'),'افتح الباركود الشخصي المخصص لك للدخول إلى المنصة.');
     return ok;
   }
-  function goHome(){stopTimer();applyLandingTheme(state.preferredTrack,false);show('landing')}
-  function openTrainingMenu(){if(!ensureIdentity())return;show('trainingMenu');if(state.lastWrongQuestions.length)$('mistakesBtn').disabled=false;}
+  function goHome(){stopTimer();applyLandingTheme(state.preferredTrack,false);show('landing');if(state.identity)loadStudentTasks();}
+  function openTrainingMenu(){
+    if(!ensureIdentity())return;
+    notice($('identityMsg'),'مجال التدريب يحدده المعلم من التكليف، وسيظهر لك تلقائيًا.','success');
+    loadStudentTasks();
+    show('landing');
+  }
 
-  async function startTraining(topic,provided){if(!ensureIdentity())return;if(!provided)applyLandingTheme(topic,true);await showPersonalWelcome();touchStudentSession('بدء تدريب: '+topic);setLoading(true);try{await ensureQuestionBankReady();state.mode='training';state.topic=topic;state.questions=provided||await server('getTrainingQuestions',topic);if(!state.questions||!state.questions.length)throw new Error('لم يتم العثور على أسئلة. شغّل setupPlatform مرة واحدة من Apps Script ثم أعد فتح الرابط.');state.index=0;state.answers={};state.correct=0;state.wrongIds=[];state.startAt=Date.now();show('quiz');$('timer').classList.add('hidden');$('prevBtn').classList.remove('hidden');$('quizModeLabel').textContent='تدريب · '+topic;renderQuestion();}catch(e){alert(e.message)}finally{setLoading(false)}}
+  async function startTraining(topic,provided){
+    if(!ensureIdentity())return;
+    if(!provided && !state.currentTask){
+      notice($('identityMsg'),'ابدأ من التكليف الذي حدده المعلم؛ لا يوجد اختيار يدوي للمجال في صفحة الطالب.','success');
+      show('landing');
+      return;
+    }
+    await showPersonalWelcome();touchStudentSession('بدء تدريب: '+topic);setLoading(true);try{await ensureQuestionBankReady();state.mode='training';state.topic=topic;state.questions=provided||await server('getTrainingQuestions',topic);if(!state.questions||!state.questions.length)throw new Error('لم يتم العثور على أسئلة. شغّل setupPlatform مرة واحدة من Apps Script ثم أعد فتح الرابط.');state.index=0;state.answers={};state.correct=0;state.wrongIds=[];state.startAt=Date.now();show('quiz');$('timer').classList.add('hidden');$('prevBtn').classList.remove('hidden');$('quizModeLabel').textContent='تدريب · '+topic;renderQuestion();}catch(e){alert(e.message)}finally{setLoading(false)}}
   function trainMistakes(){if(!state.lastWrongQuestions.length)return alert('لا توجد أخطاء محفوظة من التدريب الأخير.');startTraining('أخطائي',state.lastWrongQuestions.slice());}
 
   async function prepareTest(){if(!ensureIdentity())return;setLoading(true);try{const s=await server('getStudentStatus',state.identity.studentName,state.identity.className);if(!s.canTest){notice($('identityMsg'),s.message);$('testEntryBtn').disabled=true;return;}$('testModal').classList.remove('hidden');$('agreeTest').checked=false;$('startTestBtn').disabled=true;}catch(e){notice($('identityMsg'),e.message)}finally{setLoading(false)}}
