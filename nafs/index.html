@@ -261,8 +261,75 @@
 }
 </style>
 
+
+<style>
+/* ===== أزرار المجالات الفعلية ===== */
+.domain-switcher{
+  width:min(1180px,calc(100% - 24px));
+  margin:-10px auto 20px;
+  padding:13px 14px 14px;
+  border-radius:22px;
+  background:rgba(255,255,255,.96);
+  border:1px solid #d7e6f3;
+  box-shadow:0 12px 32px rgba(21,78,123,.09);
+}
+.domain-switcher-title{
+  text-align:center;
+  color:#496985;
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:9px;
+}
+.domain-switcher-buttons{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+}
+.domain-switch-btn{
+  min-height:48px;
+  border-radius:15px;
+  border:1px solid #d7e6f3;
+  background:#fff;
+  color:#173f6b;
+  font:inherit;
+  font-size:15px;
+  font-weight:900;
+  cursor:pointer;
+  transition:.18s ease;
+}
+.domain-switch-btn:hover{transform:translateY(-1px)}
+.domain-switch-btn.life{background:linear-gradient(145deg,#f8f1ff,#effdf6)}
+.domain-switch-btn.physics{background:linear-gradient(145deg,#fff8e9,#fff3df)}
+.domain-switch-btn.earth{background:linear-gradient(145deg,#ebf8ff,#eef0ff)}
+.domain-switch-btn.active{
+  border:2px solid #1979c8;
+  color:#0b4f8c;
+  box-shadow:0 8px 18px rgba(22,112,187,.15);
+}
+.start-selected-domain{
+  display:block;
+  width:min(420px,100%);
+  margin:11px auto 0;
+  border:0;
+  border-radius:999px;
+  padding:12px 18px;
+  background:linear-gradient(135deg,#12a86e,#1f84d2);
+  color:#fff;
+  font:inherit;
+  font-size:16px;
+  font-weight:1000;
+  cursor:pointer;
+  box-shadow:0 9px 22px rgba(20,119,154,.20);
+}
+@media(max-width:700px){
+  .domain-switcher{width:calc(100% - 12px);margin:-4px auto 14px;padding:10px}
+  .domain-switcher-buttons{grid-template-columns:1fr}
+  .domain-switch-btn{min-height:44px}
+}
+</style>
+
 </head>
-<body data-visual-base="agreed-nafs-dynamic-fields-final-2026-10-02">
+<body data-visual-base="agreed-nafs-dynamic-fields-clickable-final-2026-10-02">
 <div id="trainingWelcome" class="training-welcome" aria-live="polite">
   <div class="training-welcome-card">
     <div class="welcome-glow"></div>
@@ -483,6 +550,16 @@ body{min-height:100vh}
         <img id="landingThemeImage" src="" alt="">
       </div>
 
+      <div class="domain-switcher" aria-label="اختيار مجال التدريب">
+        <div class="domain-switcher-title">اختر المجال لتتغير الصفحة مباشرة</div>
+        <div class="domain-switcher-buttons">
+          <button id="themeLifeBtn" class="domain-switch-btn life" type="button" onclick="selectLandingField('علوم الحياة')">🧬 علوم الحياة</button>
+          <button id="themePhysicsBtn" class="domain-switch-btn physics" type="button" onclick="selectLandingField('علوم الفيزياء')">⚛️ علوم الفيزياء</button>
+          <button id="themeEarthBtn" class="domain-switch-btn earth" type="button" onclick="selectLandingField('علوم الأرض والفضاء')">🌍 علوم الأرض والفضاء</button>
+        </div>
+        <button id="startSelectedDomainBtn" class="start-selected-domain" type="button" onclick="startSelectedLandingField()">ابدأ تدريب المجال المختار</button>
+      </div>
+
 <div class="panel">
         <div class="nafs-inline-brand">
           <img src="nafs-logo.jpg" alt="شعار نافس">
@@ -630,11 +707,35 @@ body{min-height:100vh}
     if(wrap) wrap.classList.add('theme-swapping');
     img.src=cfg.src;
     img.alt=cfg.alt;
+    const btnMap={
+      'علوم الحياة':'themeLifeBtn',
+      'علوم الفيزياء':'themePhysicsBtn',
+      'علوم الأرض والفضاء':'themeEarthBtn'
+    };
+    ['themeLifeBtn','themePhysicsBtn','themeEarthBtn'].forEach(id=>{
+      const b=$(id); if(b)b.classList.remove('active');
+    });
+    const activeId=btnMap[key];
+    if(activeId && $(activeId))$(activeId).classList.add('active');
     if(persist){
       state.preferredTrack=key;
       try{localStorage.setItem('nafsPreferredTrack',key);}catch(_e){}
     }
     setTimeout(()=>wrap&&wrap.classList.remove('theme-swapping'),180);
+  }
+
+  function selectLandingField(topic){
+    applyLandingTheme(topic,true);
+    const visual=$('approvedStudentVisual');
+    if(visual){
+      try{visual.scrollIntoView({behavior:'smooth',block:'center'});}catch(_e){}
+    }
+  }
+
+  function startSelectedLandingField(){
+    const key=normalizeLandingTrack(state.preferredTrack);
+    if(key==='شامل')return openTrainingMenu();
+    startTraining(key);
   }
 
   const $=id=>document.getElementById(id);
