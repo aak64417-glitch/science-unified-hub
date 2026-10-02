@@ -99,8 +99,168 @@
     }
 
 </style>
+
+<style>
+/* ===== الهوية البصرية المعتمدة – المصدر الأساسي للتصميم ===== */
+.approved-student-visual{
+  width:min(1536px,calc(100% - 24px));
+  margin:16px auto 22px;
+  border-radius:28px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid #d8e7f4;
+  box-shadow:0 20px 55px rgba(24,91,145,.16);
+}
+.approved-student-visual img{
+  width:100%;
+  height:auto;
+  display:block;
+}
+@media(max-width:760px){
+  .approved-student-visual{
+    width:calc(100% - 12px);
+    margin:8px auto 14px;
+    border-radius:18px;
+  }
+}
+</style>
+
+
+<style>
+</style>
+
+
+<style>
+/* ===== شاشة ترحيب شخصية تظهر فقط بعد بدء التدريب ===== */
+.training-welcome{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  background:
+    radial-gradient(circle at 50% 30%,rgba(65,165,232,.18),transparent 35%),
+    rgba(7,28,62,.70);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .25s ease,visibility .25s ease;
+}
+.training-welcome.show{
+  opacity:1;
+  visibility:visible;
+}
+.training-welcome-card{
+  position:relative;
+  width:min(620px,92vw);
+  text-align:center;
+  overflow:hidden;
+  border-radius:32px;
+  padding:28px 28px 24px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.98),rgba(246,251,255,.96));
+  border:1px solid rgba(190,222,245,.95);
+  box-shadow:0 30px 90px rgba(3,32,75,.35), inset 0 1px 0 #fff;
+  transform:translateY(12px) scale(.97);
+  transition:transform .28s ease;
+}
+.training-welcome.show .training-welcome-card{
+  transform:translateY(0) scale(1);
+}
+.welcome-glow{
+  position:absolute;
+  width:230px;height:230px;border-radius:50%;
+  top:-145px;left:50%;transform:translateX(-50%);
+  background:radial-gradient(circle,rgba(67,171,235,.28),rgba(67,171,235,0) 70%);
+}
+.welcome-badge{
+  display:inline-block;
+  padding:6px 14px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#0d6fc2,#48b5ea);
+  color:#fff;
+  font-weight:900;
+  font-size:15px;
+  box-shadow:0 8px 18px rgba(13,111,194,.22);
+  margin-bottom:11px;
+}
+.welcome-small{
+  color:#6080a0;
+  font-size:17px;
+  font-weight:800;
+}
+.training-welcome-name{
+  color:#082e68;
+  font-size:clamp(38px,6vw,64px);
+  line-height:1.25;
+  font-weight:1000;
+  margin:5px 0 10px;
+  text-shadow:0 2px 0 #fff,0 8px 24px rgba(11,65,123,.12);
+  overflow-wrap:anywhere;
+}
+.training-welcome-class{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:110px;
+  padding:7px 17px;
+  border-radius:999px;
+  background:#eef7ff;
+  color:#0b5b9d;
+  border:1px solid #c8e1f4;
+  font-size:18px;
+  font-weight:900;
+}
+.training-welcome-message{
+  margin-top:16px;
+  color:#294f77;
+  font-size:18px;
+  line-height:1.8;
+  font-weight:800;
+}
+.welcome-progress{
+  height:6px;
+  margin:18px auto 0;
+  width:min(360px,75%);
+  background:#e7f0f8;
+  border-radius:999px;
+  overflow:hidden;
+}
+.welcome-progress span{
+  display:block;
+  height:100%;
+  width:0;
+  border-radius:999px;
+  background:linear-gradient(90deg,#16a873,#1a83d5);
+}
+.training-welcome.show .welcome-progress span{
+  animation:welcomeFill 1.15s linear forwards;
+}
+@keyframes welcomeFill{to{width:100%}}
+@media(max-width:600px){
+  .training-welcome-card{border-radius:24px;padding:24px 17px 20px}
+  .training-welcome-name{font-size:clamp(34px,10vw,50px)}
+  .training-welcome-message{font-size:16px}
+}
+</style>
+
 </head>
-<body>
+<body data-visual-base="agreed-nafs-student-welcome-after-start-2026-10-02">
+<div id="trainingWelcome" class="training-welcome" aria-live="polite">
+  <div class="training-welcome-card">
+    <div class="welcome-glow"></div>
+    <div class="welcome-badge">نافس ✦</div>
+    <div class="welcome-small">أهلاً بك</div>
+    <div id="trainingWelcomeName" class="training-welcome-name">اسم الطالب</div>
+    <div id="trainingWelcomeClass" class="training-welcome-class">الفصل</div>
+    <div class="training-welcome-message">ابدأ جولتك بثقة… وكل محاولة تقرّبك من الإتقان</div>
+    <div class="welcome-progress"><span></span></div>
+  </div>
+</div>
+
   <div id="loading" class="loading hidden"><div class="spinner"></div></div>
   <main class="shell">
     <header class="topbar">
@@ -304,56 +464,15 @@ body{min-height:100vh}
 </head>
 <body>
     <section id="landing">
-      <div class="hero">
-        <div class="hero-new-grid">
-          <div>
-            <span class="eyebrow">🏆 نحو إنجاز أعلى في نافس</span>
-            <h1>جاهز لتحقيق إنجاز في نافس؟</h1>
-            <p>تدريب علوم الصف الثالث المتوسط في تجربة قصيرة، بصرية، ومتدرجة تساعدك على الإتقان خطوة بخطوة.</p>
 
-            <div class="challenge-strip">
-              <div>
-                <strong>🌍 التحدي الحالي: تغيّرات الأرض</strong>
-                <span>الصخور والمعادن • الزلازل والبراكين • حركة الصفائح الأرضية</span>
-              </div>
-              <span>ابدأ من التكليف الذي فعّله معلمك</span>
-            </div>
-
-            <div class="hero-stats">
-              <div class="mini-stat"><b>30</b><span>سؤالًا أسبوعيًا</span></div>
-              <div class="mini-stat"><b>3 × 10</b><span>ثلاث جولات قصيرة</span></div>
-              <div class="mini-stat"><b>10–15</b><span>دقيقة تقريبًا للجولة</span></div>
-            </div>
-          </div>
-
-          <div class="hero-illustration" aria-hidden="true">
-            <span class="globe">🌍</span>
-            <span class="atom">⚛️</span>
-            <span class="dna">🧬</span>
-            <span class="volcano">🌋</span>
-          </div>
-        </div>
+      <div class="approved-student-visual" id="approvedStudentVisual" aria-label="الهوية البصرية المعتمدة لمنصة نافس">
+        <img src="student-nafs-agreed.png"
+             alt="التصميم المعتمد لصفحة الطالب في منصة نافس: طالب سعودي وتحدي تغيّرات الأرض ومسارات علوم الحياة والفيزياء والأرض والفضاء">
+      </div>
+      </div>
       </div>
 
-      <div class="domain-showcase">
-        <div class="domain-card life">
-          <span class="domain-icon">🧬</span>
-          <b>علوم الحياة</b>
-          <p>الخلايا، أجهزة الجسم، الوراثة، التنوع الحيوي والأنظمة البيئية.</p>
-        </div>
-        <div class="domain-card physics">
-          <span class="domain-icon">⚛️</span>
-          <b>علوم الفيزياء</b>
-          <p>المادة والكيمياء، الحركة والقوى، الطاقة، الكهرباء والموجات.</p>
-        </div>
-        <div class="domain-card earth">
-          <span class="domain-icon">🌍</span>
-          <b>علوم الأرض والفضاء</b>
-          <p>الصخور والمعادن، الصفائح، الزلازل والبراكين، الموارد والفضاء.</p>
-        </div>
-      </div>
-
-      <div class="panel">
+<div class="panel">
         <div class="nafs-inline-brand">
           <img src="nafs-logo.jpg" alt="شعار نافس">
           <div><b>دخول الطالب</b><span>الدخول آمن من الباركود الشخصي المخصص لك</span></div>
@@ -698,6 +817,21 @@ body{min-height:100vh}
       $('taskEmpty').innerHTML='<b>تعذر تحميل التكليفات</b>'+escapeHtml(e.message);
     }
   }
+  function showPersonalWelcome(duration=1200){
+    return new Promise(resolve=>{
+      if(!state.identity){resolve();return;}
+      const box=$('trainingWelcome');
+      if(!box){resolve();return;}
+      $('trainingWelcomeName').textContent=state.identity.studentName||'';
+      $('trainingWelcomeClass').textContent='الفصل '+(state.identity.className||'');
+      box.classList.add('show');
+      setTimeout(()=>{
+        box.classList.remove('show');
+        setTimeout(resolve,260);
+      },duration);
+    });
+  }
+
   function taskQuestions(task){
     const ids=Array.isArray(task.questionIds)?task.questionIds:[];
     const map=new Map(ACTIVE_QUESTIONS.filter(q=>q.status!=='DELETED').map(q=>[q.id,q]));
@@ -706,6 +840,7 @@ body{min-height:100vh}
   async function startStudentTask(taskId){
     const task=state.tasks.find(t=>String(t.taskId)===String(taskId));
     if(!task)return alert('هذا التكليف غير متاح الآن.');
+    await showPersonalWelcome();
     if(!questionBankReady){
   setLoading(true);
 
@@ -845,12 +980,12 @@ ensureQuestionBankReady().catch(e=>{
   function goHome(){stopTimer();show('landing')}
   function openTrainingMenu(){if(!ensureIdentity())return;show('trainingMenu');if(state.lastWrongQuestions.length)$('mistakesBtn').disabled=false;}
 
-  async function startTraining(topic,provided){if(!ensureIdentity())return;touchStudentSession('بدء تدريب: '+topic);setLoading(true);try{await ensureQuestionBankReady();state.mode='training';state.topic=topic;state.questions=provided||await server('getTrainingQuestions',topic);if(!state.questions||!state.questions.length)throw new Error('لم يتم العثور على أسئلة. شغّل setupPlatform مرة واحدة من Apps Script ثم أعد فتح الرابط.');state.index=0;state.answers={};state.correct=0;state.wrongIds=[];state.startAt=Date.now();show('quiz');$('timer').classList.add('hidden');$('prevBtn').classList.remove('hidden');$('quizModeLabel').textContent='تدريب · '+topic;renderQuestion();}catch(e){alert(e.message)}finally{setLoading(false)}}
+  async function startTraining(topic,provided){if(!ensureIdentity())return;await showPersonalWelcome();touchStudentSession('بدء تدريب: '+topic);setLoading(true);try{await ensureQuestionBankReady();state.mode='training';state.topic=topic;state.questions=provided||await server('getTrainingQuestions',topic);if(!state.questions||!state.questions.length)throw new Error('لم يتم العثور على أسئلة. شغّل setupPlatform مرة واحدة من Apps Script ثم أعد فتح الرابط.');state.index=0;state.answers={};state.correct=0;state.wrongIds=[];state.startAt=Date.now();show('quiz');$('timer').classList.add('hidden');$('prevBtn').classList.remove('hidden');$('quizModeLabel').textContent='تدريب · '+topic;renderQuestion();}catch(e){alert(e.message)}finally{setLoading(false)}}
   function trainMistakes(){if(!state.lastWrongQuestions.length)return alert('لا توجد أخطاء محفوظة من التدريب الأخير.');startTraining('أخطائي',state.lastWrongQuestions.slice());}
 
   async function prepareTest(){if(!ensureIdentity())return;setLoading(true);try{const s=await server('getStudentStatus',state.identity.studentName,state.identity.className);if(!s.canTest){notice($('identityMsg'),s.message);$('testEntryBtn').disabled=true;return;}$('testModal').classList.remove('hidden');$('agreeTest').checked=false;$('startTestBtn').disabled=true;}catch(e){notice($('identityMsg'),e.message)}finally{setLoading(false)}}
   function closeTestModal(){$('testModal').classList.add('hidden')}
-  async function startOfficialTest(){closeTestModal();touchStudentSession('بدء اختبار نافس');setLoading(true);try{const res=await server('startTest',state.identity.studentName,state.identity.className);state.mode='test';state.topic='اختبار رسمي';state.questions=res.questions;state.attemptId=res.attemptId;state.index=0;state.answers={};state.startAt=Date.now();show('quiz');$('prevBtn').classList.add('hidden');$('timer').classList.remove('hidden');$('quizModeLabel').textContent='اختبار نافس · محاولة واحدة';renderQuestion();}catch(e){notice($('identityMsg'),e.message);show('landing')}finally{setLoading(false)}}
+  async function startOfficialTest(){closeTestModal();await showPersonalWelcome();touchStudentSession('بدء اختبار نافس');setLoading(true);try{const res=await server('startTest',state.identity.studentName,state.identity.className);state.mode='test';state.topic='اختبار رسمي';state.questions=res.questions;state.attemptId=res.attemptId;state.index=0;state.answers={};state.startAt=Date.now();show('quiz');$('prevBtn').classList.add('hidden');$('timer').classList.remove('hidden');$('quizModeLabel').textContent='اختبار نافس · محاولة واحدة';renderQuestion();}catch(e){notice($('identityMsg'),e.message);show('landing')}finally{setLoading(false)}}
 
   function renderQuestion(){const q=state.questions[state.index];if(!q)return finishCurrent();$('counter').textContent=`${state.index+1} / ${state.questions.length}`;$('progressFill').style.width=`${((state.index)/state.questions.length)*100}%`;$('lessonTag').textContent=q.officialDomain==='العلوم الفيزيائية'?'علوم الفيزياء':(q.officialDomain||q.lesson);$('skillTag').textContent=q.skill;$('difficultyTag').textContent=q.difficulty;$('questionText').textContent=q.text;
     const mb=$('mediaBox');
