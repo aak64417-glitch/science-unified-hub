@@ -225,7 +225,7 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
 
 </style>
 </head>
-<body>
+<body data-refresh-fix="server-first-2026-10-02">
 <div class="app">
   <header class="topbar">
     <div class="brand">
@@ -311,7 +311,7 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
       </select>
       <input id="studentSearch" placeholder="بحث باسم الطالب أو الكود" oninput="renderStudents()">
       <button class="btn-mini btn-view" onclick="openBulkStudents()">إضافة مجموعة</button>
-      <button class="btn-mini btn-edit" onclick="refreshData()">تحديث الطلاب</button>
+      <button class="btn-mini btn-edit" onclick="refreshData()">تحديث الطلاب من الخادم</button>
     </div>
 
     <div id="studentSummary" class="student-summary">الطلاب المحملون: 0</div>
@@ -570,7 +570,7 @@ function goTo(id){
   if(id==='assignments')renderTasks();
   if(id==='students'){
     renderStudents();
-    if(teacherKey() && !(dashboardData.students||[]).length){
+    if(teacherKey()){
       refreshData(true).then(renderStudents).catch(()=>{});
     }
   }
@@ -646,11 +646,18 @@ function normalizeBase(x,i){
     trainingEnabled:true,testEnabled:true,isBase:true
   }
 }
-async function loadBank(){
+let bankLoadPromise=null;
+function loadBank(force=false){
+  if(bankBase.length&&!force)return Promise.resolve();
+  if(bankLoadPromise&&!force)return bankLoadPromise;
+  bankLoadPromise=loadBankNow().finally(()=>{bankLoadPromise=null});
+  return bankLoadPromise;
+}
+async function loadBankNow(){
   const status=document.getElementById('bankLoadStatus');
   try{
     if(status)status.textContent='جاري التحميل...';
-    const r=await fetch(BANK_FILE+'?v=20261002a',{cache:'no-store'});
+    const r=await fetch(BANK_FILE+'?v=20261002a');
     if(!r.ok)throw new Error('HTTP '+r.status);
     const raw=await r.json();
     bankBase=(Array.isArray(raw)?raw:[]).map(normalizeBase);
@@ -1097,21 +1104,54 @@ function updateDashboardStats(){
   const stats=[students.length,entered.size,Math.max(0,students.length-entered.size),training.size,tests.size,vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length)+'%':'0%'];
   document.querySelectorAll('.stats .stat strong').forEach((el,i)=>{if(i<stats.length)el.textContent=stats[i]});
 }
-async function refreshData(silent=false){
-  await loadBank();
-  if(!teacherKey()){
-    notice('تم تحميل بنك الأسئلة. أدخل مفتاح المعلم ثم اضغط «تحديث البيانات» لجلب الطلاب والتكليفات من الخادم.');
-    return;
-  }
+const DASH_CACHE_KEY='nafsTeacherFinalCacheV1';
+let refreshPromise=null,refreshStartedAt=0;
+function applyServerData(r){
+  dashboardData.students=r.students||[];dashboardData.results=r.results||[];dashboardData.sessions=r.sessions||[];
+  bankOverrides=Array.isArray(r.questionOverrides)?r.questionOverrides:[];
+  tasks=Array.isArray(r.tasks)?r.tasks:[];
+  updateDashboardStats();syncOutcomeOptions();renderBank();renderTasks();renderStudents();syncReportStudents();renderStudentReports();renderAchievementSummary();updateBankStats();
+}
+function saveServerCache(r){
+  try{localStorage.setItem(DASH_CACHE_KEY,JSON.stringify({students:r.students||[],results:r.results||[],sessions:r.sessions||[],questionOverrides:r.questionOverrides||[],tasks:r.tasks||[],savedAt:Date.now()}))}catch(e){}
+}
+function restoreServerCache(){
+  try{const c=JSON.parse(localStorage.getItem(DASH_CACHE_KEY)||'null');if(!c)return 0;applyServerData(c);return c.savedAt||1}catch(e){return 0}
+}
+async function fetchDashboard(){
+  const fresh=Date.now();
   try{
-    if(!silent)notice('جاري تحديث بيانات نافس من الخادم...');
-    let r;try{r=await jsonp({action:'dashboardLite',key:teacherKey()},60000)}catch(e){r=await jsonp({action:'dashboard',key:teacherKey()},60000)}
-    dashboardData.students=r.students||[];dashboardData.results=r.results||[];dashboardData.sessions=r.sessions||[];
-    bankOverrides=Array.isArray(r.questionOverrides)?r.questionOverrides:[];
-    tasks=Array.isArray(r.tasks)?r.tasks:[];
-    updateDashboardStats();syncOutcomeOptions();renderBank();renderTasks();renderStudents();syncReportStudents();renderStudentReports();renderAchievementSummary();updateBankStats();
-    notice('تم الربط: بنك الأسئلة + بيانات المعلم + التكليفات محدثة من الخادم.');
-  }catch(e){notice('تم تحميل البنك، لكن تعذر تحديث بيانات الخادم: '+e.message,true)}
+    // المصدر الأساسي: النسخة الكاملة من الخادم حتى تظهر تغييرات الطلاب والفصول فورًا.
+    return await jsonp({action:'dashboard',key:teacherKey(),fresh},60000);
+  }catch(e){
+    // النسخة الخفيفة احتياطية فقط عند تعذر الطلب الكامل.
+    return await jsonp({action:'dashboardLite',key:teacherKey(),fresh},60000);
+  }
+}
+function refreshData(silent=false){
+  if(refreshPromise){
+    if(!silent)notice('يوجد تحديث جارٍ منذ '+Math.round((Date.now()-refreshStartedAt)/1000)+'ث، ستظهر نتيجته عند انتهائه...');
+    return refreshPromise;
+  }
+  refreshStartedAt=Date.now();
+  refreshPromise=(async()=>{
+    const bankReady=loadBank();
+    if(!teacherKey()){
+      await bankReady;
+      notice('تم تحميل بنك الأسئلة. أدخل مفتاح المعلم ثم اضغط «تحديث البيانات» لجلب الطلاب والتكليفات من الخادم.');
+      return;
+    }
+    let tick=null;
+    if(!silent){notice('جاري تحديث بيانات نافس من الخادم...');tick=setInterval(()=>notice('جاري تحديث بيانات نافس من الخادم... '+Math.round((Date.now()-refreshStartedAt)/1000)+'ث'),1000)}
+    try{
+      const res=await Promise.all([fetchDashboard(),bankReady]);
+      applyServerData(res[0]);saveServerCache(res[0]);
+      notice('تم التحديث خلال '+((Date.now()-refreshStartedAt)/1000).toFixed(1)+'ث: بنك الأسئلة + بيانات المعلم + التكليفات.');
+    }catch(e){
+      notice('تعذر تحديث بيانات الخادم: '+e.message+'. المعروض آخر نسخة محفوظة، أعد المحاولة بعد قليل.',true);
+    }finally{if(tick)clearInterval(tick)}
+  })().finally(()=>{refreshPromise=null});
+  return refreshPromise;
 }
 
 
@@ -1539,7 +1579,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   applyIdentity();
   loadIdentityIntoForm();
   const k=localStorage.getItem('nafsTeacherKey');if(k&&document.getElementById('teacherKey'))document.getElementById('teacherKey').value=k;
-  loadBank();
+  loadBank().then(()=>{
+    if(!teacherKey())return;
+    const saved=restoreServerCache();
+    if(saved)notice('تم عرض آخر بيانات محفوظة، ويجري تحديثها في الخلفية...');
+    refreshData(!!saved).catch(()=>{});
+  });
 });
 
 </script>
