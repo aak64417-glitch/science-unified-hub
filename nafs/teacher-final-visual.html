@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>لوحة المعلم – تدريب نافس علوم ثالث متوسط</title>
+<title>لوحة المعلم – تدريب نافس علوم ثالث متوسط | إصلاح 2</title>
 <style>
 :root{
   --navy:#0a2e67; --blue:#1168d7; --sky:#e9f6ff; --cyan:#22c8c3;
@@ -130,6 +130,15 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
 .modal-card{width:min(1050px,100%);max-height:92vh;overflow:auto;background:white;border-radius:24px;padding:20px;box-shadow:0 30px 80px rgba(0,0,0,.3)}
 .modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .modal-head h3{margin:0}.modal-close{border:0;background:#eef4fa;color:#17376c;border-radius:12px;padding:9px 13px;font-weight:900;cursor:pointer}
+.task-date-field{display:flex;flex-direction:column;gap:7px;font-weight:900;color:#17376c}
+.task-date-field span{font-size:14px}
+.task-date-field input{width:100%;direction:ltr;text-align:left}
+.student-controls{display:grid;grid-template-columns:180px 1fr auto auto;gap:10px;margin:14px 0}
+.student-summary{margin:10px 0;padding:11px 14px;background:#eef8ff;border:1px solid #cfe5f8;border-radius:14px;font-weight:800}
+.qrbox{width:210px;height:210px;margin:12px auto;display:grid;place-items:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px}
+.qrbox img,.qrbox canvas{max-width:190px!important;max-height:190px!important}
+@media(max-width:760px){.student-controls{grid-template-columns:1fr}.task-date-field{grid-column:1/-1}}
+
 .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.form-grid.two{grid-template-columns:repeat(2,1fr)}
 .full{grid-column:1/-1}.option-row{display:grid;grid-template-columns:42px 1fr;gap:8px;align-items:center;margin-top:8px}
 .option-row span{font-weight:900;background:#eef6ff;border-radius:10px;text-align:center;padding:10px}
@@ -197,9 +206,9 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
     margin-top:10px !important;
     text-align:right !important;
   }
-  .user #uiTeacherPrimary{font-size:20px !important;}
-  .user #uiTeacherColleague{font-size:15px !important;}
-  .user #uiSchoolTop{font-size:17px !important;}
+  .user #uiTeacherPrimary{font-size:20px !important;font-weight:900;}
+  .user #uiTeacherColleague{font-size:20px !important;font-weight:900;display:block;color:var(--ink);margin-top:4px;}
+  .user #uiSchoolTop{font-size:17px !important;font-weight:800;margin-top:5px;}
 }
 
 </style>
@@ -278,12 +287,28 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
   </section>
 
   <section id="students" class="section">
-    <div class="section-head"><div><h2>إدارة الطلاب</h2><small>إضافة • تعديل • حذف • نقل فصل • باركود شخصي</small></div><button class="primary">+ إضافة طالب</button></div>
-    <div class="tools">
-      <div class="tool"><b>➕ إضافة طالب</b><span>إضافة الاسم والفصل والرمز السري.</span></div>
-      <div class="tool"><b>🔁 نقل بين الفصول</b><span>نقل الطالب مع الاحتفاظ بسجل نتائجه.</span></div>
-      <div class="tool"><b>▦ إدارة الباركود</b><span>إنشاء وطباعة بطاقات الدخول الشخصية.</span></div>
-      <div class="tool"><b>🧾 قائمة الطلاب</b><span>تعديل أو حذف أو تحديث بيانات أي طالب.</span></div>
+    <div class="section-head">
+      <div><h2>إدارة الطلاب</h2><small>إضافة • تعديل • حذف • نقل فصل • باركود شخصي</small></div>
+      <button class="primary" onclick="openStudentEditor()">+ إضافة طالب</button>
+    </div>
+
+    <div class="student-controls">
+      <select id="studentClassF" onchange="renderStudents()">
+        <option value="">كل الفصول</option>
+        <option>1/3</option><option>2/3</option><option>3/3</option><option>4/3</option>
+      </select>
+      <input id="studentSearch" placeholder="بحث باسم الطالب أو الكود" oninput="renderStudents()">
+      <button class="btn-mini btn-view" onclick="openBulkStudents()">إضافة مجموعة</button>
+      <button class="btn-mini btn-edit" onclick="refreshData()">تحديث الطلاب</button>
+    </div>
+
+    <div id="studentSummary" class="student-summary">الطلاب المحملون: 0</div>
+
+    <div class="bank-table-wrap">
+      <table>
+        <thead><tr><th>الطالب</th><th>الفصل</th><th>الكود</th><th>الإجراءات</th></tr></thead>
+        <tbody id="studentsRows"><tr><td colspan="4" style="text-align:center">اضغط «تحديث البيانات» بعد إدخال مفتاح المعلم لعرض الطلاب.</td></tr></tbody>
+      </table>
     </div>
   </section>
 
@@ -316,7 +341,7 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
         <option value="العلوم الفيزيائية">علوم الفيزياء</option>
         <option>علوم الأرض والفضاء</option>
       </select>
-      <select id="bankUnit" onchange="renderBank()">
+      <select id="bankUnit" onchange="syncOutcomeOptions();renderBank()">
         <option value="">كل الوحدات</option>
         <option>الأحياء</option><option>الكيمياء</option><option>الفيزياء</option><option>تغيرات الأرض</option>
       </select>
@@ -465,6 +490,7 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
     </footer>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="config.js?v=20261002a"></script>
 <script src="visual-media.js?v=20261002-final"></script>
 <script>
@@ -484,6 +510,12 @@ function goTo(id){
   document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
   if(id==='questions')renderBank();
   if(id==='assignments')renderTasks();
+  if(id==='students'){
+    renderStudents();
+    if(teacherKey() && !(dashboardData.students||[]).length){
+      refreshData(true).then(renderStudents).catch(()=>{});
+    }
+  }
 }
 buttons.forEach(b=>b.addEventListener('click',()=>goTo(b.dataset.target)));
 
@@ -580,12 +612,19 @@ function updateBankStats(){
 }
 function syncOutcomeOptions(){
   const sel=document.getElementById('bankOutcome');if(!sel)return;
-  const current=sel.value, domain=document.getElementById('bankDomain')?.value||'';
-  const rows=mergedBank().filter(q=>q.status!=='DELETED'&&(!domain||q.domain===domain));
+  const current=sel.value;
+  const domain=document.getElementById('bankDomain')?.value||'';
+  const unit=document.getElementById('bankUnit')?.value||'';
+  const rows=mergedBank().filter(q=>
+    q.status!=='DELETED' &&
+    (!domain||q.domain===domain) &&
+    (!unit||q.lesson===unit)
+  );
   const map=new Map();
   rows.forEach(q=>{if(q.outcomeCode)map.set(q.outcomeCode,q.outcomeTitle||q.outcomeCode)});
   sel.innerHTML='<option value="">كل نواتج التعلم</option>'+[...map.entries()].sort().map(([c,t])=>`<option value="${esc(c)}">${esc(c)} — ${esc(t)}</option>`).join('');
   if([...map.keys()].includes(current))sel.value=current;
+  else sel.value='';
 }
 function filteredBank(){
   const domain=document.getElementById('bankDomain')?.value||'';
@@ -713,6 +752,150 @@ async function hideQuestion(id){
   if(teacherKey()){try{await jsonp({action:'deleteQuestion',key:teacherKey(),id},30000)}catch(e){}}
   renderBank();updateBankStats();
 }
+
+function studentByCode(code){
+  return (dashboardData.students||[]).find(x=>String(x.code||'')===String(code||''))||null;
+}
+function filteredStudents(){
+  const cls=document.getElementById('studentClassF')?.value||'';
+  const search=(document.getElementById('studentSearch')?.value||'').trim();
+  return (dashboardData.students||[]).filter(x=>
+    (!cls||x.className===cls) &&
+    (!search||String(x.name||'').includes(search)||String(x.code||'').includes(search))
+  );
+}
+function renderStudents(){
+  const body=document.getElementById('studentsRows');if(!body)return;
+  const all=dashboardData.students||[];
+  const list=filteredStudents();
+  const sm=document.getElementById('studentSummary');
+  if(sm)sm.textContent='الطلاب المحملون: '+all.length+' • الظاهر بعد التصفية: '+list.length;
+  if(!all.length){
+    body.innerHTML='<tr><td colspan="4" style="text-align:center">لا توجد بيانات طلاب محمّلة. أدخل مفتاح المعلم ثم اضغط «تحديث البيانات».</td></tr>';
+    return;
+  }
+  body.innerHTML=list.map(st=>`<tr>
+    <td><b>${esc(st.name||'')}</b></td>
+    <td>${esc(st.className||'')}</td>
+    <td>${esc(st.code||'')}</td>
+    <td style="white-space:nowrap">
+      <button class="btn-mini btn-view" onclick="showStudentQr('${esc(st.code||'')}')">باركود</button>
+      <button class="btn-mini btn-edit" onclick="openStudentEditor('${esc(st.code||'')}')">تعديل/نقل</button>
+      <button class="btn-mini btn-hide" onclick="deleteStudentRecord('${esc(st.code||'')}')">حذف</button>
+    </td>
+  </tr>`).join('') || '<tr><td colspan="4" style="text-align:center">لا توجد نتائج مطابقة.</td></tr>';
+}
+function openStudentEditor(code=''){
+  const st=code?studentByCode(code):null;
+  openModal(st?'تعديل / نقل الطالب':'إضافة طالب',`<div class="form-grid">
+    <label class="full">اسم الطالب
+      <input id="seName" value="${esc(st?.name||'')}" placeholder="اسم الطالب">
+    </label>
+    <label>الفصل
+      <select id="seClass">${CLASSES.map(c=>`<option ${st?.className===c?'selected':''}>${c}</option>`).join('')}</select>
+    </label>
+    <div style="display:flex;align-items:end">
+      <button class="primary" style="width:100%" onclick="saveStudentRecord('${esc(code)}')">${st?'حفظ التعديل':'إضافة الطالب'}</button>
+    </div>
+  </div>
+  ${st?'<div class="helper">يبقى كود الطالب ورابطه الشخصي كما هو عند تغيير الاسم أو الفصل.</div>':''}`);
+}
+async function saveStudentRecord(code=''){
+  if(!teacherKey())return alert('أدخل مفتاح المعلم أولًا.');
+  const name=(document.getElementById('seName')?.value||'').trim();
+  const className=document.getElementById('seClass')?.value||'';
+  if(!name||!CLASSES.includes(className))return alert('اكتب اسم الطالب واختر الفصل.');
+  try{
+    if(code){
+      await jsonp({action:'updateStudent',key:teacherKey(),code,name,className},60000);
+    }else{
+      await jsonp({action:'addStudent',key:teacherKey(),name,className},60000);
+    }
+    closeAppModal();
+    await refreshData(true);
+    renderStudents();
+    notice(code?'تم تحديث بيانات الطالب.':'تمت إضافة الطالب.');
+  }catch(e){alert('تعذر حفظ الطالب: '+e.message)}
+}
+function openBulkStudents(){
+  openModal('إضافة مجموعة طلاب',`<div class="form-grid">
+    <label>الفصل
+      <select id="bulkStudentClass">${CLASSES.map(c=>`<option>${c}</option>`).join('')}</select>
+    </label>
+    <label class="full">الأسماء — اسم طالب في كل سطر
+      <textarea id="bulkStudentNames" style="min-height:220px" placeholder="الطالب الأول&#10;الطالب الثاني&#10;الطالب الثالث"></textarea>
+    </label>
+    <button class="primary full" onclick="saveBulkStudents()">إضافة الأسماء</button>
+  </div>`);
+}
+async function saveBulkStudents(){
+  if(!teacherKey())return alert('أدخل مفتاح المعلم أولًا.');
+  const className=document.getElementById('bulkStudentClass')?.value||'';
+  const names=(document.getElementById('bulkStudentNames')?.value||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  if(!CLASSES.includes(className)||!names.length)return alert('اختر الفصل وأدخل أسماء الطلاب.');
+  let added=0,skipped=0;
+  try{
+    for(let i=0;i<names.length;i+=5){
+      const chunk=names.slice(i,i+5);
+      const r=await jsonp({action:'bulkAddStudents',key:teacherKey(),data:JSON.stringify({className,names:chunk})},60000);
+      added+=Number(r.added||0);skipped+=Number(r.skipped||0);
+    }
+    closeAppModal();
+    await refreshData(true);
+    renderStudents();
+    notice('تمت إضافة '+added+' طالب، وتجاوز '+skipped+' اسم مكرر.');
+  }catch(e){alert('تعذر إكمال إضافة المجموعة: '+e.message)}
+}
+async function deleteStudentRecord(code){
+  const st=studentByCode(code);if(!st)return;
+  if(!confirm('حذف '+st.name+' من قائمة الطلاب؟ ستبقى النتائج السابقة كسجل تاريخي.'))return;
+  if(!teacherKey())return alert('أدخل مفتاح المعلم أولًا.');
+  try{
+    await jsonp({action:'deleteStudent',key:teacherKey(),code},60000);
+    await refreshData(true);renderStudents();notice('تم حذف الطالب من القائمة.');
+  }catch(e){alert('تعذر حذف الطالب: '+e.message)}
+}
+function studentPersonalUrl(code){
+  const u=new URL('index.html',location.href);
+  u.searchParams.set('code',code);
+  return u.toString();
+}
+function showStudentQr(code){
+  const st=studentByCode(code);if(!st)return;
+  const url=studentPersonalUrl(code);
+  openModal('باركود الطالب',`<div style="text-align:center">
+    <div id="studentQrBox" class="qrbox"></div>
+    <h3>${esc(st.name||'')}</h3>
+    <div class="bank-pill" style="display:inline-block">الفصل ${esc(st.className||'')}</div>
+    <p>${esc(st.code||'')}</p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-mini btn-view" onclick="copyStudentLink('${esc(code)}')">نسخ الرابط</button>
+      <button class="btn-mini btn-edit" onclick="shareStudentLink('${esc(code)}')">مشاركة</button>
+      <button class="primary" onclick="window.open('${esc(url)}','_blank')">فتح كتجربة</button>
+    </div>
+  </div>`);
+  setTimeout(()=>{
+    const box=document.getElementById('studentQrBox');
+    if(box&&typeof QRCode!=='undefined'){
+      box.innerHTML='';
+      new QRCode(box,{text:url,width:190,height:190,colorDark:'#10234f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+    }else if(box){
+      box.innerHTML='<div class="warning-box">تعذر تحميل مولّد الباركود. استخدم زر نسخ الرابط.</div>';
+    }
+  },60);
+}
+async function copyStudentLink(code){
+  const u=studentPersonalUrl(code);
+  try{await navigator.clipboard.writeText(u);alert('تم نسخ رابط الطالب.')}
+  catch(e){prompt('انسخ الرابط:',u)}
+}
+async function shareStudentLink(code){
+  const st=studentByCode(code),url=studentPersonalUrl(code);
+  const text='رابط تدريب نافس\nالطالب: '+(st?.name||'')+'\nالفصل: '+(st?.className||'');
+  if(navigator.share){try{await navigator.share({title:'تدريب نافس',text,url});return}catch(e){}}
+  await copyStudentLink(code);
+}
+
 function taskQuestionPool(){
   return mergedBank().filter(q=>q.status!=='DELETED'&&q.trainingEnabled!==false);
 }
@@ -723,14 +906,18 @@ function openTaskEditor(task=null){
     <select id="teClass">${CLASSES.map(c=>`<option ${task?.className===c?'selected':''}>${c}</option>`).join('')}</select>
     <select id="teType"><option value="training">تدريب</option><option value="test">اختبار</option><option value="remedial">علاجي</option><option value="enrichment">إثرائي</option></select>
     <select id="teAttempt"><option value="UNLIMITED">محاولات مفتوحة</option><option value="ONE">محاولة واحدة</option></select>
-    <input id="teOpen" type="datetime-local" value="${task?.openAt?localDateInput(task.openAt):''}">
-    <input id="teClose" type="datetime-local" value="${task?.closeAt?localDateInput(task.closeAt):''}">
+    <label class="task-date-field"><span>📅 بدء التكليف — التاريخ والوقت</span>
+      <input id="teOpen" type="datetime-local" dir="ltr" value="${task?.openAt?localDateInput(task.openAt):defaultTaskOpenInput()}">
+    </label>
+    <label class="task-date-field"><span>📅 انتهاء التكليف — التاريخ والوقت</span>
+      <input id="teClose" type="datetime-local" dir="ltr" value="${task?.closeAt?localDateInput(task.closeAt):defaultTaskCloseInput()}">
+    </label>
     <select id="teStatus"><option value="DRAFT">حفظ كمسودة</option><option value="ACTIVE">تفعيل التكليف</option><option value="CLOSED">مغلق</option></select>
   </div>
   <div class="helper">يمكنك اختيار الأسئلة يدويًا، أو استخدام <b>اقتراح أسئلة</b> ثم تعديل الاختيار كما تريد.</div>
   <div class="picker-tools">
     <select id="tpDomain" onchange="syncTaskOutcome();renderTaskPicker()"><option value="">كل الأقسام</option><option>علوم الحياة</option><option value="العلوم الفيزيائية">علوم الفيزياء</option><option>علوم الأرض والفضاء</option></select>
-    <select id="tpUnit" onchange="renderTaskPicker()"><option value="">كل الوحدات</option><option>الأحياء</option><option>الكيمياء</option><option>الفيزياء</option><option>تغيرات الأرض</option></select>
+    <select id="tpUnit" onchange="syncTaskOutcome();renderTaskPicker()"><option value="">كل الوحدات</option><option>الأحياء</option><option>الكيمياء</option><option>الفيزياء</option><option>تغيرات الأرض</option></select>
     <select id="tpOutcome" onchange="renderTaskPicker()"><option value="">كل نواتج التعلم</option></select>
     <select id="tpLevel" onchange="renderTaskPicker()"><option value="">كل المستويات</option><option>معرفة</option><option>تطبيق</option><option>استدلال</option></select>
     <input id="tpSearch" placeholder="بحث" oninput="renderTaskPicker()">
@@ -749,12 +936,26 @@ function openTaskEditor(task=null){
   setTimeout(()=>{if(task){document.getElementById('teType').value=task.type||'training';document.getElementById('teAttempt').value=task.attemptPolicy||'UNLIMITED';document.getElementById('teStatus').value=task.status||'DRAFT'}syncTaskOutcome();renderTaskPicker()},0);
 }
 function localDateInput(v){const d=new Date(v);if(isNaN(d))return '';const z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${z(d.getHours())}:${z(d.getMinutes())}`}
+function defaultTaskOpenInput(){
+  const d=new Date();d.setSeconds(0,0);
+  return localDateInput(d);
+}
+function defaultTaskCloseInput(){
+  const d=new Date();d.setDate(d.getDate()+7);d.setHours(23,59,0,0);
+  return localDateInput(d);
+}
 function syncTaskOutcome(){
   const sel=document.getElementById('tpOutcome');if(!sel)return;
+  const current=sel.value;
   const domain=document.getElementById('tpDomain')?.value||'';
+  const unit=document.getElementById('tpUnit')?.value||'';
   const map=new Map();
-  taskQuestionPool().filter(q=>!domain||q.domain===domain).forEach(q=>{if(q.outcomeCode)map.set(q.outcomeCode,q.outcomeTitle)});
+  taskQuestionPool()
+    .filter(q=>(!domain||q.domain===domain)&&(!unit||q.lesson===unit))
+    .forEach(q=>{if(q.outcomeCode)map.set(q.outcomeCode,q.outcomeTitle)});
   sel.innerHTML='<option value="">كل نواتج التعلم</option>'+[...map.entries()].sort().map(([c,t])=>`<option value="${esc(c)}">${esc(c)} — ${esc(t)}</option>`).join('');
+  if([...map.keys()].includes(current))sel.value=current;
+  else sel.value='';
 }
 function currentTaskFiltered(){
   const domain=document.getElementById('tpDomain')?.value||'',unit=document.getElementById('tpUnit')?.value||'',outcome=document.getElementById('tpOutcome')?.value||'',level=document.getElementById('tpLevel')?.value||'',search=(document.getElementById('tpSearch')?.value||'').trim();
@@ -838,7 +1039,7 @@ async function refreshData(silent=false){
     dashboardData.students=r.students||[];dashboardData.results=r.results||[];dashboardData.sessions=r.sessions||[];
     bankOverrides=Array.isArray(r.questionOverrides)?r.questionOverrides:[];
     tasks=Array.isArray(r.tasks)?r.tasks:[];
-    updateDashboardStats();syncOutcomeOptions();renderBank();renderTasks();updateBankStats();
+    updateDashboardStats();syncOutcomeOptions();renderBank();renderTasks();renderStudents();updateBankStats();
     notice('تم الربط: بنك الأسئلة + بيانات المعلم + التكليفات محدثة من الخادم.');
   }catch(e){notice('تم تحميل البنك، لكن تعذر تحديث بيانات الخادم: '+e.message,true)}
 }
