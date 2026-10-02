@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>لوحة المعلم – تدريب نافس علوم ثالث متوسط | إصلاح 2</title>
+<title>لوحة المعلم – تدريب نافس علوم ثالث متوسط | إصلاح ملف الإنجاز</title>
 <style>
 :root{
   --navy:#0a2e67; --blue:#1168d7; --sky:#e9f6ff; --cyan:#22c8c3;
@@ -420,10 +420,30 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
   </section>
 
   <section id="achievement" class="section">
-    <div class="section-head"><div><h2>ملف الإنجاز</h2><small>إحصاءات التنفيذ والشواهد والتقارير النهائية</small></div></div>
+    <div class="section-head">
+      <div><h2>ملف الإنجاز</h2><small>إحصاءات التنفيذ والشواهد والتقارير النهائية</small></div>
+      <button class="primary" onclick="refreshData(true).then(renderAchievementSummary)">تحديث بيانات التقرير</button>
+    </div>
+    <div class="helper" style="margin-bottom:14px">
+      يعرض التقرير بيانات الطلاب والتكليفات والنتائج التي تم تحميلها من الخادم. اضغط «تحديث البيانات» أولًا إذا كانت الأرقام صفرًا.
+    </div>
+    <div id="achievementSummary" class="stats" style="margin-bottom:16px">
+      <div class="stat"><strong>0</strong><span>الطلاب المسجلون</span></div>
+      <div class="stat"><strong>0</strong><span>دخلوا المنصة</span></div>
+      <div class="stat"><strong>0</strong><span>شاركوا في التدريب</span></div>
+      <div class="stat"><strong>0</strong><span>التكليفات</span></div>
+      <div class="stat"><strong>0</strong><span>المحاولات</span></div>
+      <div class="stat"><strong>0%</strong><span>متوسط الأداء</span></div>
+    </div>
     <div class="tools">
-      <div class="tool"><b>📈 تقرير الإنجاز</b><span>مشاركة الطلاب ومتوسط الإتقان والتحسن الأسبوعي.</span></div>
-      <div class="tool"><b>🖨 تصدير وطباعة</b><span>نسخة مناسبة لملف الإنجاز المدرسي.</span></div>
+      <div class="tool" onclick="openAchievementReport()" role="button" tabindex="0">
+        <b>📈 تقرير الإنجاز</b>
+        <span>عرض تقرير شامل لمشاركة الطلاب والتكليفات ومتوسط الأداء.</span>
+      </div>
+      <div class="tool" onclick="printAchievementReport()" role="button" tabindex="0">
+        <b>🖨 تصدير وطباعة</b>
+        <span>فتح نسخة منسقة للطباعة والحفظ PDF لملف الإنجاز المدرسي.</span>
+      </div>
     </div>
   </section>
 
@@ -514,6 +534,12 @@ function goTo(id){
     renderStudents();
     if(teacherKey() && !(dashboardData.students||[]).length){
       refreshData(true).then(renderStudents).catch(()=>{});
+    }
+  }
+  if(id==='achievement'){
+    renderAchievementSummary();
+    if(teacherKey() && !(dashboardData.students||[]).length){
+      refreshData(true).then(renderAchievementSummary).catch(()=>{});
     }
   }
 }
@@ -1039,9 +1065,137 @@ async function refreshData(silent=false){
     dashboardData.students=r.students||[];dashboardData.results=r.results||[];dashboardData.sessions=r.sessions||[];
     bankOverrides=Array.isArray(r.questionOverrides)?r.questionOverrides:[];
     tasks=Array.isArray(r.tasks)?r.tasks:[];
-    updateDashboardStats();syncOutcomeOptions();renderBank();renderTasks();renderStudents();updateBankStats();
+    updateDashboardStats();syncOutcomeOptions();renderBank();renderTasks();renderStudents();renderAchievementSummary();updateBankStats();
     notice('تم الربط: بنك الأسئلة + بيانات المعلم + التكليفات محدثة من الخادم.');
   }catch(e){notice('تم تحميل البنك، لكن تعذر تحديث بيانات الخادم: '+e.message,true)}
+}
+
+
+function achievementMetrics(){
+  const students=dashboardData.students||[];
+  const results=dashboardData.results||[];
+  const sessions=dashboardData.sessions||[];
+  const entered=new Set(sessions.map(x=>String(x.studentCode||'')).filter(Boolean));
+  const trained=new Set(results.filter(x=>String(x.mode||'')==='training').map(x=>String(x.studentCode||'')).filter(Boolean));
+  const tested=new Set(results.filter(x=>String(x.mode||'')==='test').map(x=>String(x.studentCode||'')).filter(Boolean));
+  const pcts=results.map(x=>Number(x.percent)).filter(Number.isFinite);
+  const avg=pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0;
+  const completed=results.length;
+  const taskCount=(tasks||[]).length;
+  const activeTasks=(tasks||[]).filter(t=>['OPEN','SCHEDULED'].includes(taskStatus(t))).length;
+  return {
+    registered:students.length,
+    entered:entered.size,
+    notEntered:Math.max(0,students.length-entered.size),
+    trained:trained.size,
+    tested:tested.size,
+    avg,
+    attempts:completed,
+    taskCount,
+    activeTasks
+  };
+}
+function renderAchievementSummary(){
+  const box=document.getElementById('achievementSummary');if(!box)return;
+  const m=achievementMetrics();
+  const vals=[m.registered,m.entered,m.trained,m.taskCount,m.attempts,m.avg+'%'];
+  box.querySelectorAll('.stat strong').forEach((el,i)=>{if(i<vals.length)el.textContent=vals[i]});
+}
+function achievementReportHtml(){
+  const x=getIdentity(),m=achievementMetrics();
+  const results=dashboardData.results||[];
+  const classes=CLASSES.map(c=>{
+    const students=(dashboardData.students||[]).filter(s=>s.className===c);
+    const codes=new Set(students.map(s=>String(s.code||'')));
+    const rr=results.filter(r=>codes.has(String(r.studentCode||'')));
+    const vals=rr.map(r=>Number(r.percent)).filter(Number.isFinite);
+    const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+    const participants=new Set(rr.map(r=>String(r.studentCode||'')).filter(Boolean)).size;
+    return {name:c,total:students.length,participants,attempts:rr.length,avg};
+  });
+  const taskRows=(tasks||[]).slice().sort((a,b)=>String(b.openAt||'').localeCompare(String(a.openAt||''))).map(t=>`
+    <tr>
+      <td>${esc(t.title||'تكليف')}</td>
+      <td>${esc(t.className||'')}</td>
+      <td>${esc(({training:'تدريب',test:'اختبار',remedial:'علاجي',enrichment:'إثرائي'})[t.type]||t.type||'تكليف')}</td>
+      <td>${Number((t.questionIds||[]).length)}</td>
+      <td>${esc(taskStatus(t))}</td>
+    </tr>`).join('') || '<tr><td colspan="5">لا توجد تكليفات محمّلة.</td></tr>';
+
+  return `
+  <div class="achievement-report" dir="rtl">
+    <div style="text-align:center;border-bottom:3px solid #176bd5;padding-bottom:14px;margin-bottom:18px">
+      <h1 style="margin:0;color:#0b2f69">تقرير إنجاز منصة تدريب نافس</h1>
+      <div style="margin-top:8px;font-weight:700">${esc(x.subject)} • ${esc(x.grade)} • ${esc(x.academicYear)}</div>
+      <div style="margin-top:5px">${esc(x.school)}</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">
+      <div class="rstat"><b>${m.registered}</b><span>الطلاب المسجلون</span></div>
+      <div class="rstat"><b>${m.entered}</b><span>دخلوا المنصة</span></div>
+      <div class="rstat"><b>${m.trained}</b><span>شاركوا في التدريب</span></div>
+      <div class="rstat"><b>${m.attempts}</b><span>المحاولات المسجلة</span></div>
+      <div class="rstat"><b>${m.taskCount}</b><span>التكليفات</span></div>
+      <div class="rstat"><b>${m.avg}%</b><span>متوسط الأداء</span></div>
+    </div>
+
+    <h2>ملخص الفصول</h2>
+    <table class="report-table">
+      <thead><tr><th>الفصل</th><th>عدد الطلاب</th><th>المشاركون</th><th>المحاولات</th><th>متوسط الأداء</th></tr></thead>
+      <tbody>${classes.map(c=>`<tr><td>${esc(c.name)}</td><td>${c.total}</td><td>${c.participants}</td><td>${c.attempts}</td><td>${c.avg}%</td></tr>`).join('')}</tbody>
+    </table>
+
+    <h2>التكليفات</h2>
+    <table class="report-table">
+      <thead><tr><th>التكليف</th><th>الفصل</th><th>النوع</th><th>عدد الأسئلة</th><th>الحالة</th></tr></thead>
+      <tbody>${taskRows}</tbody>
+    </table>
+
+    <div style="margin-top:24px;line-height:2">
+      <b>إعداد ومتابعة:</b> ${esc(x.teacher1)}${x.teacher2?' • '+esc(x.teacher2):''}<br>
+      <b>مدير المدرسة:</b> ${esc(x.principal)}<br>
+      <b>المدرسة:</b> ${esc(x.school)}
+    </div>
+  </div>`;
+}
+function openAchievementReport(){
+  if(!teacherKey() && !(dashboardData.students||[]).length){
+    return alert('أدخل مفتاح المعلم واضغط «تحديث البيانات» أولًا حتى يظهر التقرير الفعلي.');
+  }
+  renderAchievementSummary();
+  openModal('تقرير الإنجاز',`
+    <style>
+      .achievement-report{color:#17224d;background:#fff;padding:6px}
+      .achievement-report .rstat{border:1px solid #d7e5f3;border-radius:14px;padding:12px;text-align:center;background:#f7fbff}
+      .achievement-report .rstat b{display:block;font-size:26px;color:#0b65c9}
+      .achievement-report .rstat span{font-size:13px;color:#5f7085}
+      .achievement-report .report-table{width:100%;border-collapse:collapse;margin:10px 0 18px}
+      .achievement-report .report-table th,.achievement-report .report-table td{border:1px solid #dfe7ef;padding:9px;text-align:right;color:#17224d}
+      .achievement-report .report-table th{background:#eaf4ff}
+    </style>
+    ${achievementReportHtml()}
+    <div style="margin-top:16px;text-align:center"><button class="primary" onclick="printAchievementReport()">🖨 طباعة / حفظ PDF</button></div>
+  `);
+}
+function printAchievementReport(){
+  if(!teacherKey() && !(dashboardData.students||[]).length){
+    return alert('أدخل مفتاح المعلم واضغط «تحديث البيانات» أولًا حتى يتم إنشاء التقرير.');
+  }
+  const w=window.open('','_blank');
+  if(!w)return alert('المتصفح منع نافذة الطباعة. اسمح بالنوافذ المنبثقة ثم أعد المحاولة.');
+  const html=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>تقرير إنجاز نافس</title>
+  <style>
+    body{font-family:Tahoma,Arial,sans-serif;color:#17224d;margin:24px;background:#fff}
+    .achievement-report{max-width:950px;margin:auto}
+    .rstat{border:1px solid #d7e5f3;border-radius:14px;padding:12px;text-align:center;background:#f7fbff}
+    .rstat b{display:block;font-size:26px;color:#0b65c9}.rstat span{font-size:13px;color:#5f7085}
+    .report-table{width:100%;border-collapse:collapse;margin:10px 0 18px}
+    .report-table th,.report-table td{border:1px solid #dfe7ef;padding:9px;text-align:right}
+    .report-table th{background:#eaf4ff}
+    h2{color:#0b2f69;margin-top:20px}
+    @media print{body{margin:0}.achievement-report{max-width:none}}
+  </style></head><body>${achievementReportHtml()}<script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`;
+  w.document.open();w.document.write(html);w.document.close();
 }
 
 const IDENTITY_DEFAULTS={
