@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>لوحة المعلم – تدريب نافس علوم ثالث متوسط | إصلاح ملف الإنجاز</title>
+<title>لوحة المعلم – نافس | تقارير ورسوم بيانية</title>
 <style>
 :root{
   --navy:#0a2e67; --blue:#1168d7; --sky:#e9f6ff; --cyan:#22c8c3;
@@ -138,6 +138,18 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
 .qrbox{width:210px;height:210px;margin:12px auto;display:grid;place-items:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px}
 .qrbox img,.qrbox canvas{max-width:190px!important;max-height:190px!important}
 @media(max-width:760px){.student-controls{grid-template-columns:1fr}.task-date-field{grid-column:1/-1}}
+.report-controls{display:grid;grid-template-columns:180px 1fr auto;gap:10px;margin:12px 0}
+.report-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:12px 0}
+.report-kpi{background:#f7fbff;border:1px solid #d7e5f3;border-radius:16px;padding:12px;text-align:center}
+.report-kpi b{display:block;font-size:25px;color:#0b65c9}.report-kpi span{font-size:12px;color:#66788f;font-weight:700}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.chart-card{background:#fff;border:1px solid #d7e5f3;border-radius:18px;padding:14px;overflow:hidden}
+.chart-card h4{margin:0 0 10px;color:#0b2f69}
+.chart-card svg{display:block;width:100%;height:auto}
+.report-table{width:100%;border-collapse:collapse}.report-table th,.report-table td{border:1px solid #dfe7ef;padding:9px;text-align:right}.report-table th{background:#eaf4ff}
+@media(max-width:900px){.report-kpis{grid-template-columns:repeat(3,1fr)}.chart-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.report-controls{grid-template-columns:1fr}.report-kpis{grid-template-columns:repeat(2,1fr)}}
+
 
 .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.form-grid.two{grid-template-columns:repeat(2,1fr)}
 .full{grid-column:1/-1}.option-row{display:grid;grid-template-columns:42px 1fr;gap:8px;align-items:center;margin-top:8px}
@@ -404,14 +416,40 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
       <b id="uiReportSchool" style="color:#123f82">متوسطة أبي الدرداء</b>
     </div>
 
-    <div class="section-head"><div><h2>تقارير الطلاب</h2><small>الدخول • المحاولات • الزمن • النسبة • المستوى • أحدث محاولة</small></div></div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>اسم الطالب</th><th>الفصل</th><th>الجولة</th><th>الدرجة</th><th>المستوى</th><th>حالة الإتقان</th></tr></thead>
-      <tbody><tr><td colspan="6" style="text-align:center;color:#7c879c">تظهر بيانات الطلاب هنا بعد ربط الواجهة بقاعدة المنصة الحالية.<br><small>إعداد ومتابعة: الأستاذ علي طاهر البقاشي • الأستاذ صالح الكفيل</small></td></tr></tbody>
-    </table></div>
+    <div class="section-head">
+      <div><h2>تقارير الطلاب</h2><small>تقرير فردي شامل + تطور الأداء + إتقان نواتج التعلم</small></div>
+      <button class="primary" onclick="refreshData(true).then(renderStudentReports)">تحديث التقارير</button>
+    </div>
+
+    <div class="report-controls">
+      <select id="reportClass" onchange="syncReportStudents();renderStudentReports()">
+        <option value="">كل الفصول</option>
+        <option>1/3</option><option>2/3</option><option>3/3</option><option>4/3</option>
+      </select>
+      <select id="reportStudent">
+        <option value="">اختر الطالب لعرض تقريره</option>
+      </select>
+      <button class="primary" onclick="openSelectedStudentReport()">عرض تقرير الطالب</button>
+    </div>
+
+    <div id="reportSummary" class="report-kpis">
+      <div class="report-kpi"><b>0</b><span>الطلاب</span></div>
+      <div class="report-kpi"><b>0</b><span>دخلوا المنصة</span></div>
+      <div class="report-kpi"><b>0</b><span>المشاركون</span></div>
+      <div class="report-kpi"><b>0</b><span>المحاولات</span></div>
+      <div class="report-kpi"><b>0%</b><span>متوسط الأداء</span></div>
+      <div class="report-kpi"><b>0</b><span>الاختبارات</span></div>
+    </div>
+
+    <div class="bank-table-wrap">
+      <table>
+        <thead><tr><th>اسم الطالب</th><th>الفصل</th><th>مرات الدخول</th><th>المحاولات</th><th>آخر نسبة</th><th>متوسط الأداء</th><th>التقرير</th></tr></thead>
+        <tbody id="studentReportsRows"><tr><td colspan="7" style="text-align:center">أدخل مفتاح المعلم ثم اضغط «تحديث البيانات».</td></tr></tbody>
+      </table>
+    </div>
   </section>
 
-  <section id="support" class="section">
+  <section id="support" <section id="support" class="section">
     <div class="section-head"><div><h2>العلاجي والإثرائي</h2><small>يظهر فقط الطلاب الذين يحتاجون دعمًا أو إثراءً وفق نتائجهم</small></div></div>
     <div class="tools">
       <div class="tool"><b>🎯 الخطة العلاجية</b><span>تحديد الطلاب غير المتقنين وإسناد أسئلة مركزة لهم.</span></div>
@@ -540,6 +578,12 @@ function goTo(id){
     renderAchievementSummary();
     if(teacherKey() && !(dashboardData.students||[]).length){
       refreshData(true).then(renderAchievementSummary).catch(()=>{});
+    }
+  }
+  if(id==='reports'){
+    syncReportStudents();renderStudentReports();
+    if(teacherKey() && !(dashboardData.students||[]).length){
+      refreshData(true).then(()=>{syncReportStudents();renderStudentReports()}).catch(()=>{});
     }
   }
 }
@@ -1065,11 +1109,198 @@ async function refreshData(silent=false){
     dashboardData.students=r.students||[];dashboardData.results=r.results||[];dashboardData.sessions=r.sessions||[];
     bankOverrides=Array.isArray(r.questionOverrides)?r.questionOverrides:[];
     tasks=Array.isArray(r.tasks)?r.tasks:[];
-    updateDashboardStats();syncOutcomeOptions();renderBank();renderTasks();renderStudents();renderAchievementSummary();updateBankStats();
+    updateDashboardStats();syncOutcomeOptions();renderBank();renderTasks();renderStudents();syncReportStudents();renderStudentReports();renderAchievementSummary();updateBankStats();
     notice('تم الربط: بنك الأسئلة + بيانات المعلم + التكليفات محدثة من الخادم.');
   }catch(e){notice('تم تحميل البنك، لكن تعذر تحديث بيانات الخادم: '+e.message,true)}
 }
 
+
+
+function safeArray(v){
+  if(Array.isArray(v))return v;
+  if(v==null||v==='')return [];
+  if(typeof v==='string'){try{const x=JSON.parse(v);return Array.isArray(x)?x:[]}catch(e){return []}}
+  return [];
+}
+function safeObj(v){
+  if(v&&typeof v==='object'&&!Array.isArray(v))return v;
+  if(typeof v==='string'){try{const x=JSON.parse(v);return x&&typeof x==='object'&&!Array.isArray(x)?x:{}}catch(e){return {}}}
+  return {};
+}
+function fmtDate(v){
+  if(!v)return '—';
+  try{return new Intl.DateTimeFormat('ar-SA',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(v))}
+  catch(e){return String(v)}
+}
+function fmtDuration(sec){
+  sec=Number(sec||0); if(!Number.isFinite(sec)||sec<=0)return '—';
+  const m=Math.floor(sec/60),ss=Math.round(sec%60);
+  return m+'د '+ss+'ث';
+}
+function studentResults(code){
+  return (dashboardData.results||[]).filter(r=>String(r.studentCode||'')===String(code||''));
+}
+function studentSessions(code){
+  return (dashboardData.sessions||[]).filter(r=>String(r.studentCode||'')===String(code||''));
+}
+function studentByCode2(code){
+  return (dashboardData.students||[]).find(x=>String(x.code||'')===String(code||''))||null;
+}
+function latestByDate(rows){
+  return rows.slice().sort((a,b)=>String(b.submittedAt||b.loginAt||'').localeCompare(String(a.submittedAt||a.loginAt||'')))[0]||null;
+}
+function svgLineChart(values,labels){
+  const w=760,h=300,p=48;
+  if(!values.length)return '<div class="warning-box">لا توجد محاولات كافية لرسم التطور.</div>';
+  const max=100,min=0,span=Math.max(1,w-p*2),step=values.length>1?span/(values.length-1):0;
+  const pts=values.map((v,i)=>[p+i*step,h-p-((Math.max(min,Math.min(max,Number(v)||0))-min)/(max-min))*(h-p*2)]);
+  const poly=pts.map(a=>a.join(',')).join(' ');
+  const dots=pts.map((a,i)=>`<circle cx="${a[0]}" cy="${a[1]}" r="6" fill="#176bd5"/><text x="${a[0]}" y="${a[1]-12}" text-anchor="middle" font-size="12" fill="#17376c">${Math.round(values[i])}%</text>`).join('');
+  const xs=pts.map((a,i)=>`<text x="${a[0]}" y="${h-12}" text-anchor="middle" font-size="11" fill="#65768a">${esc(labels[i]||String(i+1))}</text>`).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" aria-label="تطور الأداء">
+    <rect width="${w}" height="${h}" rx="18" fill="#fbfdff"/>
+    ${[0,25,50,75,100].map(v=>{const y=h-p-(v/100)*(h-p*2);return `<line x1="${p}" y1="${y}" x2="${w-p}" y2="${y}" stroke="#e1e9f2"/><text x="${p-10}" y="${y+4}" text-anchor="end" font-size="11" fill="#75869a">${v}%</text>`}).join('')}
+    <polyline points="${poly}" fill="none" stroke="#176bd5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}${xs}
+  </svg>`;
+}
+function svgBarChart(items,maxValue=100,suffix='%'){
+  const w=760,rowH=46,p=180,h=Math.max(150,items.length*rowH+40);
+  if(!items.length)return '<div class="warning-box">لا توجد بيانات كافية لهذا الرسم.</div>';
+  return `<svg viewBox="0 0 ${w} ${h}" aria-label="رسم أعمدة">
+    <rect width="${w}" height="${h}" rx="18" fill="#fbfdff"/>
+    ${items.map((it,i)=>{
+      const y=24+i*rowH,bw=Math.max(0,Math.min(1,(Number(it.value)||0)/maxValue))*(w-p-80);
+      return `<text x="${p-12}" y="${y+23}" text-anchor="end" font-size="13" fill="#17376c">${esc(it.label)}</text>
+      <rect x="${p}" y="${y+7}" width="${w-p-60}" height="22" rx="11" fill="#eaf1f8"/>
+      <rect x="${p}" y="${y+7}" width="${bw}" height="22" rx="11" fill="#176bd5"/>
+      <text x="${Math.min(w-35,p+bw+8)}" y="${y+23}" font-size="12" fill="#17376c">${Math.round(Number(it.value)||0)}${suffix}</text>`;
+    }).join('')}
+  </svg>`;
+}
+function taskById(id){return (tasks||[]).find(t=>String(t.taskId||'')===String(id||''))||null}
+function questionMap(){return new Map(mergedBank().map(q=>[String(q.id||''),q]))}
+function resultQuestionEvidence(r){
+  const qmap=questionMap();
+  const out=[];
+  const answers=safeArray(r.answers);
+  if(answers.length){
+    answers.forEach(a=>{
+      const id=String(a.id||a.questionId||'');
+      const q=qmap.get(id);if(!q)return;
+      out.push({q,correct:Number(a.correct||0)===1});
+    });
+    return out;
+  }
+  const task=taskById(r.taskId);
+  const ids=safeArray(task?.questionIds);
+  const wrong=new Set(safeArray(r.wrongQuestionIds).map(String));
+  if(ids.length){
+    ids.forEach(id=>{
+      const q=qmap.get(String(id));if(!q)return;
+      out.push({q,correct:!wrong.has(String(id))});
+    });
+  }
+  return out;
+}
+function outcomeStatsForResults(rows){
+  const map=new Map();
+  rows.forEach(r=>resultQuestionEvidence(r).forEach(ev=>{
+    const code=ev.q.outcomeCode||'';
+    if(!code)return;
+    const key=code;
+    const x=map.get(key)||{code,title:ev.q.outcomeTitle||code,total:0,correct:0};
+    x.total++;if(ev.correct)x.correct++;map.set(key,x);
+  }));
+  return [...map.values()].map(x=>({...x,percent:x.total?Math.round(x.correct/x.total*100):0})).sort((a,b)=>b.total-a.total||a.code.localeCompare(b.code));
+}
+function syncReportStudents(){
+  const sel=document.getElementById('reportStudent');if(!sel)return;
+  const cls=document.getElementById('reportClass')?.value||'',current=sel.value;
+  const list=(dashboardData.students||[]).filter(st=>!cls||st.className===cls).slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ar'));
+  sel.innerHTML='<option value="">اختر الطالب لعرض تقريره</option>'+list.map(st=>`<option value="${esc(st.code||'')}">${esc(st.name||'')} — ${esc(st.className||'')}</option>`).join('');
+  if(list.some(st=>String(st.code||'')===current))sel.value=current;
+}
+function renderStudentReports(){
+  const body=document.getElementById('studentReportsRows');if(!body)return;
+  const cls=document.getElementById('reportClass')?.value||'';
+  const students=(dashboardData.students||[]).filter(st=>!cls||st.className===cls);
+  const sessions=dashboardData.sessions||[],results=dashboardData.results||[];
+  const codeSet=new Set(students.map(s=>String(s.code||'')));
+  const relevantResults=results.filter(r=>codeSet.has(String(r.studentCode||'')));
+  const relevantSessions=sessions.filter(r=>codeSet.has(String(r.studentCode||'')));
+  const pcts=relevantResults.map(r=>Number(r.percent)).filter(Number.isFinite);
+  const summary=[students.length,new Set(relevantSessions.map(x=>String(x.studentCode||''))).size,new Set(relevantResults.map(x=>String(x.studentCode||''))).size,relevantResults.length,pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length)+'%':'0%',relevantResults.filter(r=>r.mode==='test').length];
+  document.querySelectorAll('#reportSummary .report-kpi b').forEach((el,i)=>{if(i<summary.length)el.textContent=summary[i]});
+  body.innerHTML=students.map(st=>{
+    const rr=studentResults(st.code),ss=studentSessions(st.code),latest=latestByDate(rr),vals=rr.map(r=>Number(r.percent)).filter(Number.isFinite),avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+    return `<tr><td><b>${esc(st.name||'')}</b></td><td>${esc(st.className||'')}</td><td>${ss.length}</td><td>${rr.length}</td><td>${latest&&Number.isFinite(Number(latest.percent))?Math.round(Number(latest.percent))+'%':'—'}</td><td>${avg}%</td><td><button class="btn-mini btn-view" onclick="openStudentReport('${esc(st.code||'')}')">عرض التقرير</button></td></tr>`;
+  }).join('')||'<tr><td colspan="7" style="text-align:center">لا توجد بيانات طلاب في هذا الفصل.</td></tr>';
+}
+function openSelectedStudentReport(){
+  const code=document.getElementById('reportStudent')?.value||'';
+  if(!code)return alert('اختر الطالب أولًا.');
+  openStudentReport(code);
+}
+function studentReportHtml(code){
+  const st=studentByCode2(code);if(!st)return '<div>لم يتم العثور على الطالب.</div>';
+  const rr=studentResults(code).slice().sort((a,b)=>String(a.submittedAt||'').localeCompare(String(b.submittedAt||'')));
+  const ss=studentSessions(code).slice().sort((a,b)=>String(b.loginAt||'').localeCompare(String(a.loginAt||'')));
+  const vals=rr.map(r=>Number(r.percent)).filter(Number.isFinite);
+  const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+  const best=vals.length?Math.max(...vals):0;
+  const latest=rr.length?rr[rr.length-1]:null;
+  const outcomes=outcomeStatsForResults(rr);
+  const outcomeBars=outcomes.slice(0,12).map(o=>({label:o.code+' '+o.title,value:o.percent}));
+  const trendLabels=rr.map((r,i)=>String(i+1));
+  const trendValues=rr.map(r=>Number(r.percent)||0);
+  const resultRows=rr.slice().reverse().map(r=>`<tr><td>${r.mode==='test'?'اختبار':'تدريب'}</td><td>${esc(r.taskTitle||r.topic||'—')}</td><td>${esc(r.score??r.correct??'—')} / ${esc(r.total??'—')}</td><td>${Math.round(Number(r.percent)||0)}%</td><td>${esc(fmtDuration(r.durationSec))}</td><td>${esc(fmtDate(r.submittedAt))}</td></tr>`).join('');
+  const outcomeRows=outcomes.map(o=>`<tr><td>${esc(o.code)}</td><td>${esc(o.title)}</td><td>${o.correct}/${o.total}</td><td>${o.percent}%</td><td>${o.percent>=80?'متقن':o.percent>=60?'قيد الإتقان':'يحتاج دعمًا'}</td></tr>`).join('');
+  const x=getIdentity();
+  return `<div class="student-report-print" dir="rtl">
+    <div style="text-align:center;border-bottom:3px solid #176bd5;padding-bottom:12px;margin-bottom:14px">
+      <h2 style="margin:0;color:#0b2f69">تقرير أداء الطالب في منصة نافس</h2>
+      <div style="margin-top:6px">${esc(st.name)} • الفصل ${esc(st.className||'')} • ${esc(x.academicYear)}</div>
+    </div>
+    <div class="report-kpis">
+      <div class="report-kpi"><b>${rr.length}</b><span>المحاولات</span></div>
+      <div class="report-kpi"><b>${ss.length}</b><span>مرات الدخول</span></div>
+      <div class="report-kpi"><b>${avg}%</b><span>متوسط الأداء</span></div>
+      <div class="report-kpi"><b>${best}%</b><span>أفضل أداء</span></div>
+      <div class="report-kpi"><b>${latest?Math.round(Number(latest.percent)||0)+'%':'—'}</b><span>آخر نسبة</span></div>
+      <div class="report-kpi"><b>${rr.filter(r=>r.mode==='test').length}</b><span>الاختبارات</span></div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card"><h4>📈 تطور أداء الطالب من محاولة لأخرى</h4>${svgLineChart(trendValues,trendLabels)}</div>
+      <div class="chart-card"><h4>🎯 الإتقان حسب نواتج التعلم</h4>${svgBarChart(outcomeBars,100,'%')}</div>
+    </div>
+    <h3>تفصيل المحاولات</h3>
+    <table class="report-table"><thead><tr><th>النوع</th><th>التكليف/المسار</th><th>الدرجة</th><th>النسبة</th><th>المدة</th><th>التاريخ</th></tr></thead><tbody>${resultRows||'<tr><td colspan="6">لا توجد محاولات بعد.</td></tr>'}</tbody></table>
+    <h3>نواتج التعلم</h3>
+    <table class="report-table"><thead><tr><th>الرمز</th><th>الناتج</th><th>الصحيح/المقاس</th><th>الإتقان</th><th>الحالة</th></tr></thead><tbody>${outcomeRows||'<tr><td colspan="5">لا توجد تفاصيل كافية لحساب الإتقان حسب الناتج حتى الآن.</td></tr>'}</tbody></table>
+    <div style="margin-top:20px;line-height:1.9"><b>إعداد ومتابعة:</b> ${esc(x.teacher1)}${x.teacher2?' • '+esc(x.teacher2):''}<br><b>المدرسة:</b> ${esc(x.school)}</div>
+  </div>`;
+}
+function openStudentReport(code){
+  const st=studentByCode2(code);if(!st)return alert('لم يتم العثور على الطالب.');
+  openModal('تقرير الطالب — '+st.name,`<style>
+    .student-report-print{color:#17224d;background:#fff;padding:6px}.student-report-print .report-kpis{grid-template-columns:repeat(6,1fr)}
+    .student-report-print .chart-grid{grid-template-columns:1fr 1fr}
+    @media(max-width:850px){.student-report-print .report-kpis{grid-template-columns:repeat(3,1fr)}.student-report-print .chart-grid{grid-template-columns:1fr}}
+  </style>${studentReportHtml(code)}
+  <div style="text-align:center;margin-top:16px"><button class="primary" onclick="printStudentReport('${esc(code)}')">🖨 طباعة / حفظ PDF</button></div>`);
+}
+function printStudentReport(code){
+  const st=studentByCode2(code);if(!st)return;
+  const w=window.open('','_blank');if(!w)return alert('اسمح بالنوافذ المنبثقة ثم أعد المحاولة.');
+  const html=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>تقرير الطالب - ${esc(st.name)}</title><style>
+    body{font-family:Tahoma,Arial,sans-serif;color:#17224d;margin:20px}.student-report-print{max-width:1000px;margin:auto}
+    .report-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.report-kpi{border:1px solid #d7e5f3;border-radius:12px;padding:10px;text-align:center;background:#f7fbff}.report-kpi b{display:block;font-size:23px;color:#0b65c9}.report-kpi span{font-size:11px}
+    .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.chart-card{border:1px solid #d7e5f3;border-radius:14px;padding:10px}.chart-card svg{width:100%;height:auto}
+    .report-table{width:100%;border-collapse:collapse;margin:10px 0 16px}.report-table th,.report-table td{border:1px solid #dfe7ef;padding:8px;text-align:right}.report-table th{background:#eaf4ff}
+    @media print{body{margin:0}} </style></head><body>${studentReportHtml(code)}<script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`;
+  w.document.open();w.document.write(html);w.document.close();
+}
 
 function achievementMetrics(){
   const students=dashboardData.students||[];
@@ -1100,6 +1331,42 @@ function renderAchievementSummary(){
   const m=achievementMetrics();
   const vals=[m.registered,m.entered,m.trained,m.taskCount,m.attempts,m.avg+'%'];
   box.querySelectorAll('.stat strong').forEach((el,i)=>{if(i<vals.length)el.textContent=vals[i]});
+}
+
+function achievementChartsHtml(){
+  const results=dashboardData.results||[];
+  const students=dashboardData.students||[];
+  const classParticipation=CLASSES.map(c=>{
+    const sts=students.filter(s=>s.className===c),codes=new Set(sts.map(s=>String(s.code||'')));
+    const participants=new Set(results.filter(r=>codes.has(String(r.studentCode||''))).map(r=>String(r.studentCode||''))).size;
+    return {label:'الفصل '+c,value:sts.length?Math.round(participants/sts.length*100):0};
+  });
+  const classAvg=CLASSES.map(c=>{
+    const sts=students.filter(s=>s.className===c),codes=new Set(sts.map(s=>String(s.code||'')));
+    const vals=results.filter(r=>codes.has(String(r.studentCode||''))).map(r=>Number(r.percent)).filter(Number.isFinite);
+    return {label:'الفصل '+c,value:vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0};
+  });
+  const outcomeMap=new Map();
+  results.forEach(r=>resultQuestionEvidence(r).forEach(ev=>{
+    const code=ev.q.outcomeCode||'';if(!code)return;
+    const x=outcomeMap.get(code)||{label:code+' '+(ev.q.outcomeTitle||''),total:0,correct:0};
+    x.total++;if(ev.correct)x.correct++;outcomeMap.set(code,x);
+  }));
+  const outcomeItems=[...outcomeMap.values()].map(x=>({label:x.label,value:x.total?Math.round(x.correct/x.total*100):0})).sort((a,b)=>b.value-a.value).slice(0,10);
+  const taskGroups=new Map();
+  results.forEach(r=>{
+    const key=String(r.taskId||r.taskTitle||r.topic||'أخرى');
+    const label=String(r.taskTitle||r.topic||'تكليف');
+    const x=taskGroups.get(key)||{label,vals:[]};
+    const p=Number(r.percent);if(Number.isFinite(p))x.vals.push(p);taskGroups.set(key,x);
+  });
+  const taskItems=[...taskGroups.values()].slice(-10).map(x=>({label:x.label,value:x.vals.length?Math.round(x.vals.reduce((a,b)=>a+b,0)/x.vals.length):0}));
+  return `<div class="chart-grid">
+    <div class="chart-card"><h4>👥 نسبة المشاركة حسب الفصل</h4>${svgBarChart(classParticipation,100,'%')}</div>
+    <div class="chart-card"><h4>📊 متوسط الأداء حسب الفصل</h4>${svgBarChart(classAvg,100,'%')}</div>
+    <div class="chart-card"><h4>🎯 الإتقان حسب نواتج التعلم</h4>${svgBarChart(outcomeItems,100,'%')}</div>
+    <div class="chart-card"><h4>📈 متوسط الأداء في التكليفات</h4>${svgBarChart(taskItems,100,'%')}</div>
+  </div>`;
 }
 function achievementReportHtml(){
   const x=getIdentity(),m=achievementMetrics();
@@ -1139,6 +1406,8 @@ function achievementReportHtml(){
       <div class="rstat"><b>${m.avg}%</b><span>متوسط الأداء</span></div>
     </div>
 
+    ${achievementChartsHtml()}
+
     <h2>ملخص الفصول</h2>
     <table class="report-table">
       <thead><tr><th>الفصل</th><th>عدد الطلاب</th><th>المشاركون</th><th>المحاولات</th><th>متوسط الأداء</th></tr></thead>
@@ -1172,6 +1441,8 @@ function openAchievementReport(){
       .achievement-report .report-table{width:100%;border-collapse:collapse;margin:10px 0 18px}
       .achievement-report .report-table th,.achievement-report .report-table td{border:1px solid #dfe7ef;padding:9px;text-align:right;color:#17224d}
       .achievement-report .report-table th{background:#eaf4ff}
+      .achievement-report .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.achievement-report .chart-card{border:1px solid #d7e5f3;border-radius:14px;padding:10px}.achievement-report .chart-card svg{width:100%;height:auto}
+      @media(max-width:850px){.achievement-report .chart-grid{grid-template-columns:1fr}}
     </style>
     ${achievementReportHtml()}
     <div style="margin-top:16px;text-align:center"><button class="primary" onclick="printAchievementReport()">🖨 طباعة / حفظ PDF</button></div>
@@ -1193,6 +1464,7 @@ function printAchievementReport(){
     .report-table th,.report-table td{border:1px solid #dfe7ef;padding:9px;text-align:right}
     .report-table th{background:#eaf4ff}
     h2{color:#0b2f69;margin-top:20px}
+    .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.chart-card{border:1px solid #d7e5f3;border-radius:14px;padding:10px;break-inside:avoid}.chart-card svg{width:100%;height:auto}
     @media print{body{margin:0}.achievement-report{max-width:none}}
   </style></head><body>${achievementReportHtml()}<script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`;
   w.document.open();w.document.write(html);w.document.close();
