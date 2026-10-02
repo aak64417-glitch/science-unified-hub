@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>تدريب نافس | علوم الصف الثالث المتوسط</title>
+  <title>تدريب نافس – علوم ثالث متوسط | صفحة الطالب الجديدة</title>
   <style>
     :root{
       --navy:#18224b; --purple:#6554d9; --cyan:#23b6c8; --green:#23a86b;
@@ -107,219 +107,341 @@
       <div class="brand"><div class="nafs-mark"><img src="nafs-logo.jpg" alt="شعار نافس"></div><div class="brand-txt"><strong>تدريب نافس</strong><span>علوم الصف الثالث المتوسط · إعداد مدرسة أبي الدرداء المتوسطة</span></div></div>
       <div class="school-pill">إعداد مدرسة أبي الدرداء المتوسطة</div>
     </header>
-    <style>
-    /* الهوية البصرية الداكنة لمنصة نافس */
+    
+<style>
+/* ===== صفحة الطالب الجديدة – هوية نافس المضيئة ===== */
 :root{
-  --bg:#071b2d;
-  --card:#0b2236;
-  --line:rgba(126,230,222,.18);
-  --ink:#f5fbff;
-  --muted:#a9bdcc;
-  --cyan:#42d8cf;
-  --green:#42d8cf;
-  --navy:#071b2d;
+  --student-bg:#f3f9ff;
+  --student-card:#ffffff;
+  --student-ink:#0e2f62;
+  --student-muted:#60738e;
+  --student-blue:#1876d2;
+  --student-blue2:#47b8ee;
+  --student-green:#18b979;
+  --student-purple:#7458df;
+  --student-orange:#ff9b37;
+  --student-line:#d8e7f4;
 }
-
-body{
+html,body{
   background:
-    radial-gradient(circle at 15% 0%,rgba(54,127,184,.18),transparent 32%),
-    linear-gradient(180deg,#07192a 0%,#0a2237 55%,#071b2d 100%);
-  color:#f5fbff;
+    radial-gradient(circle at 10% 0%,rgba(66,184,238,.18),transparent 30%),
+    radial-gradient(circle at 92% 10%,rgba(116,88,223,.10),transparent 28%),
+    linear-gradient(180deg,#f7fcff 0%,#eef7ff 55%,#f8fbff 100%) !important;
+  color:var(--student-ink) !important;
 }
-
-.panel,.mode-card,.question-card,.modal-card{
-  background:linear-gradient(145deg,#0b2236,#071b2d);
-  border-color:rgba(126,230,222,.18);
-  color:#f5fbff;
+body{min-height:100vh}
+.shell{max-width:1220px !important}
+.topbar{
+  background:rgba(255,255,255,.92);
+  border:1px solid var(--student-line);
+  box-shadow:0 14px 40px rgba(18,75,120,.08);
+  border-radius:24px;
+  padding:13px 16px;
+  margin-bottom:16px;
+  position:sticky;top:8px;z-index:15;
+  backdrop-filter:blur(12px);
 }
-
+.nafs-mark{
+  background:#fff !important;border:1px solid var(--student-line) !important;
+  box-shadow:0 8px 22px rgba(18,75,120,.08)
+}
+.brand-txt strong{color:var(--student-ink)!important;font-size:18px}
+.brand-txt span{color:var(--student-muted)!important}
+.school-pill{
+  background:#eef7ff !important;color:#135ea8 !important;
+  border:1px solid #cfe5f7 !important;font-weight:900 !important
+}
 .hero{
   background:
-    radial-gradient(circle at 90% 20%,rgba(66,216,207,.18),transparent 32%),
-    linear-gradient(135deg,#0a2943,#071a2c);
+    radial-gradient(circle at 12% 18%,rgba(255,255,255,.85),transparent 24%),
+    radial-gradient(circle at 88% 20%,rgba(255,255,255,.32),transparent 26%),
+    linear-gradient(125deg,#dff4ff 0%,#8fd5f5 48%,#7f83e8 100%) !important;
+  color:#0a2c5e !important;
+  border:1px solid rgba(255,255,255,.75);
+  box-shadow:0 24px 65px rgba(31,96,146,.16) !important;
+  border-radius:34px !important;
+  padding:30px !important;
 }
-
-.panel-title,.mode-card h2,.topic b{
-  color:#f5fbff;
+.hero:before,.hero:after{border-color:rgba(255,255,255,.5)!important}
+.hero .eyebrow{
+  background:rgba(255,255,255,.78)!important;color:#145f9f!important;
+  border:1px solid rgba(255,255,255,.75)
 }
-
-.panel-sub,.mode-card p,.topic span,.brand-txt span{
-  color:#a9bdcc;
+.hero h1{color:#0b2f69!important;font-size:40px!important;margin-top:12px!important}
+.hero p{color:#244d77!important;font-size:15px!important}
+.hero-new-grid{
+  display:grid;grid-template-columns:1.3fr .7fr;gap:22px;align-items:center
 }
-
-.topic{
-  background:linear-gradient(145deg,#0d2b43,#0a2135);
-  border-color:rgba(126,230,222,.18);
-  color:#f5fbff;
+.hero-illustration{
+  min-height:245px;border-radius:28px;position:relative;overflow:hidden;
+  background:linear-gradient(145deg,rgba(255,255,255,.68),rgba(255,255,255,.22));
+  border:1px solid rgba(255,255,255,.75);
+  display:grid;place-items:center;
 }
-
-.topic:hover{
-  border-color:#42d8cf;
+.hero-illustration .globe{font-size:112px;filter:drop-shadow(0 14px 20px rgba(14,58,105,.18))}
+.hero-illustration .atom{position:absolute;right:34px;top:30px;font-size:48px}
+.hero-illustration .dna{position:absolute;left:36px;bottom:26px;font-size:45px}
+.hero-illustration .volcano{position:absolute;right:30px;bottom:22px;font-size:48px}
+.challenge-strip{
+  margin-top:17px;display:flex;align-items:center;justify-content:space-between;
+  gap:14px;flex-wrap:wrap;padding:14px 16px;border-radius:18px;
+  background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.8)
 }
-
-.btn-primary,.btn-green{
-  background:linear-gradient(135deg,#68e6dd,#42d8cf);
-  color:#062033;
+.challenge-strip strong{font-size:18px;color:#0b2f69}
+.challenge-strip span{font-size:12px;color:#526f8d}
+.hero-stats{
+  display:grid!important;grid-template-columns:repeat(3,1fr)!important;
+  gap:10px!important;margin-top:17px
 }
-
-.btn-ghost{
-  background:#0b263d;
-  color:#f5fbff;
-  border-color:rgba(126,230,222,.18);
-}
-
-.input,input,select{
-  background:#081d30;
-  color:#f5fbff;
-  border-color:rgba(126,230,222,.18);
-}
-
-.option{
-  background:#0a253b;
-  color:#f5fbff;
-  border-color:rgba(126,230,222,.18);
-}
-
-.nafs-inline-brand,
-.student-id-card{
-  background:#0a253b;
-  border-color:rgba(126,230,222,.18);
-}
-
-.nafs-inline-brand b,
-.student-id-card strong{
-  color:#f5fbff;
-}
-
 .mini-stat{
-  background:rgba(255,255,255,.08);
+  background:rgba(255,255,255,.74)!important;
+  border:1px solid rgba(255,255,255,.85)!important;
+  color:#0b2f69!important;padding:13px 12px!important;text-align:center
 }
-
-.mini-stat b{
-  color:#68e6dd;
+.mini-stat b{color:#116ab8!important;font-size:24px!important}
+.mini-stat span{color:#526f8d!important;font-size:11px!important}
+.domain-showcase{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px
 }
-     /* وضوح الإجابات بعد الاختيار */
+.domain-showcase .domain-card{
+  min-height:150px;border-radius:24px;padding:18px;border:1px solid var(--student-line);
+  background:#fff;box-shadow:0 12px 30px rgba(27,79,121,.08);position:relative;overflow:hidden
+}
+.domain-card .domain-icon{font-size:38px;display:block;margin-bottom:12px}
+.domain-card b{font-size:18px;display:block;color:#0b2f69}
+.domain-card p{font-size:12px!important;line-height:1.7!important;margin:7px 0 0!important;color:#647891!important}
+.domain-card.life{background:linear-gradient(145deg,#f8f1ff,#effdf6)}
+.domain-card.physics{background:linear-gradient(145deg,#fff8e9,#fff3df)}
+.domain-card.earth{background:linear-gradient(145deg,#ebf8ff,#eef0ff)}
+.panel,.mode-card,.question-card,.modal-card{
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid var(--student-line)!important;
+  color:var(--student-ink)!important;
+  box-shadow:0 14px 40px rgba(25,77,119,.08)!important
+}
+.panel{border-radius:26px!important}
+.panel-title,.mode-card h2,.topic b{color:var(--student-ink)!important}
+.panel-sub,.mode-card p,.topic span,.brand-txt span{color:var(--student-muted)!important}
+.student-id-card{
+  background:linear-gradient(145deg,#eff8ff,#f8fbff)!important;
+  border:1px solid #cfe4f5!important;
+  color:var(--student-ink)!important
+}
+.student-id-card strong{color:var(--student-ink)!important}
+.student-class-badge{background:#176fc1!important;color:#fff!important}
+.barcode-required{
+  background:linear-gradient(145deg,#fff9eb,#fffdf7)!important;
+  border:1px dashed #e7bd6e!important;color:#78561c!important;
+  border-radius:18px!important;padding:18px!important
+}
+.barcode-required b{color:#6f4c13!important;font-size:17px}
+.nafs-inline-brand{
+  background:#eff7ff!important;border:1px solid #d6e8f6!important;color:var(--student-ink)!important
+}
+.nafs-inline-brand b{color:var(--student-ink)!important}
+.nafs-inline-brand span{color:var(--student-muted)!important}
+.topic-grid{grid-template-columns:repeat(2,1fr)!important}
+.topic{
+  background:#fff!important;border:1px solid var(--student-line)!important;
+  color:var(--student-ink)!important;box-shadow:0 8px 20px rgba(25,77,119,.06)
+}
+.topic:hover{border-color:#7fb9e9!important;transform:translateY(-2px)}
+.topic.life-topic{background:linear-gradient(145deg,#fbf5ff,#f4fff8)!important}
+.topic.physics-topic{background:linear-gradient(145deg,#fffaf0,#fff5e4)!important}
+.topic.earth-topic{background:linear-gradient(145deg,#eff9ff,#f1f2ff)!important}
+.btn-primary{
+  background:linear-gradient(135deg,#176fc1,#2f91df)!important;color:#fff!important
+}
+.btn-green{
+  background:linear-gradient(135deg,#12a96e,#2bc78b)!important;color:#fff!important
+}
+.btn-ghost{
+  background:#f4f8fc!important;color:#173f6b!important;border:1px solid var(--student-line)!important
+}
+.input,input,select{
+  background:#fff!important;color:#163a66!important;border-color:var(--student-line)!important
+}
+.question-card{background:#fff!important}
+.q-tag{background:#edf6ff!important;color:#2d608d!important}
 .option{
-  font-weight:800 !important;
-  font-size:18px !important;
-  line-height:1.7 !important;
+  background:#fbfdff!important;color:#173b64!important;
+  border:1px solid #d8e6f3!important;font-weight:800!important;font-size:18px!important;line-height:1.7!important
 }
-
-.option.correct{
-  background:#eaf8ef !important;
-  border-color:#55bd87 !important;
-  color:#154b32 !important;
+.option:hover{background:#f5faff!important;border-color:#8fbee6!important}
+.option.correct{background:#eaf8ef!important;border-color:#55bd87!important;color:#154b32!important}
+.option.correct .letter{background:#23a86b!important;color:#fff!important}
+.option.wrong{background:#fff0f2!important;border-color:#eb8790!important;color:#7d2632!important}
+.option.wrong .letter{background:#e75a69!important;color:#fff!important}
+.option.selected{color:#18223a!important}
+.option:disabled{opacity:1!important}
+.option .letter{font-weight:900!important;font-size:18px!important}
+.explain{font-weight:800!important;font-size:16px!important;line-height:1.8!important}
+.timer:after,.score-ring:after{background:#fff!important}
+.footer{color:#71849a!important}
+.loading{background:rgba(245,250,255,.8)!important}
+.current-task-banner{
+  background:linear-gradient(135deg,#eaf8ff,#eef0ff);
+  border:1px solid #cfe4f5;border-radius:20px;padding:15px;margin:12px 0 16px
 }
-
-.option.correct .letter{
-  background:#23a86b !important;
-  color:#fff !important;
+.current-task-banner b{display:block;color:#0b2f69;font-size:17px;margin-bottom:5px}
+.current-task-banner span{color:#61758c;font-size:12px}
+@media(max-width:820px){
+  .hero-new-grid{grid-template-columns:1fr}
+  .hero-illustration{min-height:180px}
+  .hero-illustration .globe{font-size:88px}
+  .domain-showcase{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:1fr 1fr 1fr!important}
 }
-
-.option.wrong{
-  background:#fff0f2 !important;
-  border-color:#eb8790 !important;
-  color:#7d2632 !important;
+@media(max-width:760px){
+  .shell{padding:10px!important}.topbar{position:relative;top:auto}
+  .hero{padding:22px 18px!important;border-radius:26px!important}
+  .hero h1{font-size:30px!important}
+  .hero-stats{grid-template-columns:1fr!important}
+  .topic-grid{grid-template-columns:1fr!important}
 }
-
-.option.wrong .letter{
-  background:#e75a69 !important;
-  color:#fff !important;
-}
-
-.option.selected{
-  color:#18223a !important;
-}
-
-.option span{
-  color:inherit !important;
-}
-
-.option:disabled{
-  opacity:1 !important;
-}
-
-.option .letter{
-  font-weight:900 !important;
-  font-size:18px !important;
-}
-
-.explain{
-  font-weight:800 !important;
-  font-size:16px !important;
-  line-height:1.8 !important;
-} 
 </style>
+
 </head>
 <body>
     <section id="landing">
       <div class="hero">
-        <div class="hero-grid">
-          <div><span class="eyebrow">✦ تدريب نافس</span><h1>علوم الصف الثالث المتوسط</h1><p><b>إعداد مدرسة أبي الدرداء المتوسطة</b><br>تدريب تفاعلي شامل موزع على خمسة مجالات: العلم، تغيرات الأرض، الأحياء، الكيمياء، والفيزياء.</p></div>
-          <div class="hero-stats"><div class="mini-stat"><b>5</b><span>مجالات علمية</span></div><div class="mini-stat"><b>∞</b><span>محاولات التدريب</span></div><div class="mini-stat"><b>1</b><span>محاولة للاختبار</span></div></div>
+        <div class="hero-new-grid">
+          <div>
+            <span class="eyebrow">🏆 نحو إنجاز أعلى في نافس</span>
+            <h1>جاهز لتحقيق إنجاز في نافس؟</h1>
+            <p>تدريب علوم الصف الثالث المتوسط في تجربة قصيرة، بصرية، ومتدرجة تساعدك على الإتقان خطوة بخطوة.</p>
+
+            <div class="challenge-strip">
+              <div>
+                <strong>🌍 التحدي الحالي: تغيّرات الأرض</strong>
+                <span>الصخور والمعادن • الزلازل والبراكين • حركة الصفائح الأرضية</span>
+              </div>
+              <span>ابدأ من التكليف الذي فعّله معلمك</span>
+            </div>
+
+            <div class="hero-stats">
+              <div class="mini-stat"><b>30</b><span>سؤالًا أسبوعيًا</span></div>
+              <div class="mini-stat"><b>3 × 10</b><span>ثلاث جولات قصيرة</span></div>
+              <div class="mini-stat"><b>10–15</b><span>دقيقة تقريبًا للجولة</span></div>
+            </div>
+          </div>
+
+          <div class="hero-illustration" aria-hidden="true">
+            <span class="globe">🌍</span>
+            <span class="atom">⚛️</span>
+            <span class="dna">🧬</span>
+            <span class="volcano">🌋</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="domain-showcase">
+        <div class="domain-card life">
+          <span class="domain-icon">🧬</span>
+          <b>علوم الحياة</b>
+          <p>الخلايا، أجهزة الجسم، الوراثة، التنوع الحيوي والأنظمة البيئية.</p>
+        </div>
+        <div class="domain-card physics">
+          <span class="domain-icon">⚛️</span>
+          <b>علوم الفيزياء</b>
+          <p>المادة والكيمياء، الحركة والقوى، الطاقة، الكهرباء والموجات.</p>
+        </div>
+        <div class="domain-card earth">
+          <span class="domain-icon">🌍</span>
+          <b>علوم الأرض والفضاء</b>
+          <p>الصخور والمعادن، الصفائح، الزلازل والبراكين، الموارد والفضاء.</p>
         </div>
       </div>
 
       <div class="panel">
-        <h3 class="panel-title">دخول الطالب</h3><p class="panel-sub">الدخول يتم تلقائيًا من الباركود الشخصي المخصص لكل طالب.</p>
+        <div class="nafs-inline-brand">
+          <img src="nafs-logo.jpg" alt="شعار نافس">
+          <div><b>دخول الطالب</b><span>الدخول آمن من الباركود الشخصي المخصص لك</span></div>
+        </div>
+
         <input id="studentName" type="hidden">
         <input id="className" type="hidden">
+
         <div id="studentIdentityCard" class="student-id-card hidden">
-          <div class="student-id-main"><div class="student-id-icon">👨‍🎓</div><div><strong id="studentDisplayName">—</strong><span>تم التعرف على الطالب من الباركود الشخصي</span></div></div>
+          <div class="student-id-main">
+            <div class="student-id-icon">👨‍🎓</div>
+            <div>
+              <strong id="studentDisplayName">—</strong>
+              <span>تم التعرف على الطالب من الباركود الشخصي</span>
+            </div>
+          </div>
           <span id="studentDisplayClass" class="student-class-badge">—</span>
         </div>
-        <div id="barcodeRequired" class="barcode-required hidden"><b>استخدم الباركود الشخصي للدخول</b>هذه الصفحة لا تقبل كتابة الاسم يدويًا. افتح الباركود المخصص لك من المعلم.</div>
+
+        <div id="barcodeRequired" class="barcode-required hidden">
+          <b>📱 افتح باركودك الشخصي للبدء</b>
+          لا تحتاج إلى كتابة الاسم. استخدم الباركود الذي يرسله لك المعلم للوصول إلى تكليفاتك مباشرة.
+        </div>
         <div id="identityMsg"></div>
       </div>
 
       <div id="modeGrid" class="hidden">
         <div class="panel">
-          <div class="nafs-inline-brand"><img src="nafs-logo.jpg" alt="شعار نافس"><div><b>تكليفات نافس</b><span>التكليفات التي فعّلها المعلم لهذا الطالب</span></div></div>
-          <div class="quiz-actions" style="margin-top:4px"><div><h3 class="panel-title">تكليفاتك الحالية</h3><p class="panel-sub">تظهر هنا فقط التكليفات المفتوحة لك من المعلم.</p></div><button class="btn btn-ghost" onclick="loadStudentTasks()">تحديث</button></div>
+          <div class="current-task-banner">
+            <b>📋 تكليفاتك الحالية</b>
+            <span>تظهر لك هنا فقط التدريبات والاختبارات المفتوحة لفصلك وفي وقتها المحدد.</span>
+          </div>
+          <div class="quiz-actions" style="margin-top:4px">
+            <div>
+              <h3 class="panel-title">ابدأ تدريبك</h3>
+              <p class="panel-sub">اختر التكليف المفتوح وابدأ الجولة.</p>
+            </div>
+            <button class="btn btn-ghost" onclick="loadStudentTasks()">تحديث التكليفات</button>
+          </div>
           <div id="taskList" class="topic-grid"></div>
-          <div id="taskEmpty" class="barcode-required hidden"><b>لا يوجد تكليف متاح الآن</b>سيظهر التكليف هنا تلقائيًا عند فتحه من لوحة المعلم.</div>
+          <div id="taskEmpty" class="barcode-required hidden">
+            <b>لا يوجد تكليف متاح الآن</b>
+            سيظهر التكليف هنا تلقائيًا عند فتحه من لوحة المعلم.
+          </div>
         </div>
       </div>
     </section>
 
     <section id="trainingMenu" class="hidden">
-      <div class="panel"><div class="nafs-inline-brand"><img src="nafs-logo.jpg" alt="شعار نافس"><div><b>تدريب نافس</b><span>علوم الصف الثالث المتوسط · إعداد مدرسة أبي الدرداء المتوسطة</span></div></div><div class="quiz-actions" style="margin-top:0"><div><h3 class="panel-title">اختر نوع التدريب</h3><p class="panel-sub">يمكنك إعادة التدريب متى شئت.</p></div><button class="btn btn-ghost" onclick="goHome()">العودة</button></div>
+      <div class="panel">
+        <div class="nafs-inline-brand">
+          <img src="nafs-logo.jpg" alt="شعار نافس">
+          <div><b>تدريب نافس</b><span>علوم الصف الثالث المتوسط</span></div>
+        </div>
+        <div class="quiz-actions" style="margin-top:0">
+          <div>
+            <h3 class="panel-title">اختر مجال التدريب</h3>
+            <p class="panel-sub">المجالات مرتبة وفق الهيكل العلمي المعتمد في المنصة.</p>
+          </div>
+          <button class="btn btn-ghost" onclick="goHome()">العودة</button>
+        </div>
+
         <div class="topic-grid">
-  <button class="topic" onclick="startTraining('شامل')">
-    <b>✨ تدريب شامل</b>
-    <span>أسئلة متنوعة من جميع مجالات العلوم الخمسة</span>
-  </button>
+          <button class="topic" onclick="startTraining('شامل')">
+            <b>✨ تدريب شامل</b>
+            <span>أسئلة متنوعة من المجالات العلمية الثلاثة.</span>
+          </button>
 
-  <button class="topic" onclick="startTraining('العلم')">
-    <b>🔬 العلم</b>
-    <span>طبيعة العلم، مهاراته، الاستقصاء والتجارب العلمية</span>
-  </button>
+          <button class="topic life-topic" onclick="startTraining('علوم الحياة')">
+            <b>🧬 علوم الحياة</b>
+            <span>الخلايا، أجهزة الجسم، الوراثة، التنوع والأنظمة البيئية.</span>
+          </button>
 
-  <button class="topic" onclick="startTraining('تغيرات الأرض')">
-    <b>🌍 تغيرات الأرض</b>
-    <span>الصفائح الأرضية والزلازل والبراكين والصخور والتغيرات الجيولوجية</span>
-  </button>
+          <button class="topic physics-topic" onclick="startTraining('علوم الفيزياء')">
+            <b>⚛️ علوم الفيزياء</b>
+            <span>المادة والكيمياء، الحركة والقوى، الطاقة، الكهرباء والموجات.</span>
+          </button>
 
-  <button class="topic" onclick="startTraining('أحياء')">
-    <b>🧬 الأحياء</b>
-    <span>الخلايا، أجهزة الجسم، الوراثة، التنوع والأنظمة البيئية</span>
-  </button>
+          <button class="topic earth-topic" onclick="startTraining('علوم الأرض والفضاء')">
+            <b>🌍 علوم الأرض والفضاء</b>
+            <span>الصخور والمعادن، الصفائح، الزلازل والبراكين، الموارد والفضاء.</span>
+          </button>
 
-  <button class="topic" onclick="startTraining('كيمياء')">
-    <b>⚗️ الكيمياء</b>
-    <span>المادة، الذرة، الجدول الدوري، الروابط والتفاعلات</span>
-  </button>
-
-  <button class="topic" onclick="startTraining('فيزياء')">
-    <b>⚡ الفيزياء</b>
-    <span>الحركة والقوى والكهرباء والمغناطيسية والموجات</span>
-  </button>
-
-  <button id="mistakesBtn" class="topic" onclick="trainMistakes()" disabled>
-    <b>🎯 تدرب على أخطائي</b>
-    <span>يصبح متاحًا بعد إكمال تدريب</span>
-  </button>
-</div>
+          <button id="mistakesBtn" class="topic" onclick="trainMistakes()" disabled>
+            <b>🎯 تدرب على أخطائي</b>
+            <span>يصبح متاحًا بعد إكمال تدريب.</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -427,10 +549,25 @@ body{
 
   let ACTIVE_QUESTIONS=LOCAL_QUESTIONS.map(q=>({...q,trainingEnabled:true,testEnabled:true,status:'ACTIVE'}));
   function localShuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-  function localTrainingQuestions(topic,count=12){const src=ACTIVE_QUESTIONS.filter(q=>q.status!=='DELETED'&&q.trainingEnabled!==false);const pool=topic&&topic!=='شامل'?src.filter(q=>q.lesson===topic):src.slice();return localShuffle(pool.slice()).slice(0,Math.min(count,pool.length));}
+  function localTrainingQuestions(topic,count=10){
+    const src=ACTIVE_QUESTIONS.filter(q=>q.status!=='DELETED'&&q.trainingEnabled!==false);
+    let pool=src.slice();
+    if(topic&&topic!=='شامل'){
+      if(topic==='علوم الحياة'){
+        pool=src.filter(q=>q.officialDomain==='علوم الحياة'||['الأحياء','أحياء'].includes(q.lesson));
+      }else if(topic==='علوم الفيزياء'){
+        pool=src.filter(q=>q.officialDomain==='العلوم الفيزيائية'||['الكيمياء','كيمياء','الفيزياء','فيزياء'].includes(q.lesson));
+      }else if(topic==='علوم الأرض والفضاء'){
+        pool=src.filter(q=>q.officialDomain==='علوم الأرض والفضاء'||q.lesson==='تغيرات الأرض');
+      }else{
+        pool=src.filter(q=>q.lesson===topic);
+      }
+    }
+    return localShuffle(pool.slice()).slice(0,Math.min(count,pool.length));
+  }
   function balancedTestQuestions(){const names=['العلم','تغيرات الأرض','أحياء','كيمياء','فيزياء'];let out=[];names.forEach(n=>{out=out.concat(localShuffle(ACTIVE_QUESTIONS.filter(q=>q.status!=='DELETED'&&q.testEnabled!==false&&q.lesson===n).slice()).slice(0,6));});return localShuffle(out);}
   function localServer(fn,args){
-    if(fn==='getPublicConfig')return {ok:true,trainingEnabled:true,testEnabled:false,testOpen:false,showResultToStudent:true,trainingCount:12,testCountPerLesson:6,questionCount:ACTIVE_QUESTIONS.length};
+    if(fn==='getPublicConfig')return {ok:true,trainingEnabled:true,testEnabled:false,testOpen:false,showResultToStudent:true,trainingCount:10,testCountPerLesson:6,questionCount:ACTIVE_QUESTIONS.length};
     if(fn==='getTrainingQuestions')return localTrainingQuestions(args[0],12);
     if(fn==='saveTrainingResult')return {ok:true,preview:true};
     if(fn==='getStudentStatus')return {canTest:false,status:'PREVIEW',message:'التدريب يعمل الآن. الاختبار الرسمي والتقارير سيتاحان بعد ربط ملف config.js برابط Apps Script.'};
@@ -715,7 +852,7 @@ ensureQuestionBankReady().catch(e=>{
   function closeTestModal(){$('testModal').classList.add('hidden')}
   async function startOfficialTest(){closeTestModal();touchStudentSession('بدء اختبار نافس');setLoading(true);try{const res=await server('startTest',state.identity.studentName,state.identity.className);state.mode='test';state.topic='اختبار رسمي';state.questions=res.questions;state.attemptId=res.attemptId;state.index=0;state.answers={};state.startAt=Date.now();show('quiz');$('prevBtn').classList.add('hidden');$('timer').classList.remove('hidden');$('quizModeLabel').textContent='اختبار نافس · محاولة واحدة';renderQuestion();}catch(e){notice($('identityMsg'),e.message);show('landing')}finally{setLoading(false)}}
 
-  function renderQuestion(){const q=state.questions[state.index];if(!q)return finishCurrent();$('counter').textContent=`${state.index+1} / ${state.questions.length}`;$('progressFill').style.width=`${((state.index)/state.questions.length)*100}%`;$('lessonTag').textContent=q.lesson;$('skillTag').textContent=q.skill;$('difficultyTag').textContent=q.difficulty;$('questionText').textContent=q.text;
+  function renderQuestion(){const q=state.questions[state.index];if(!q)return finishCurrent();$('counter').textContent=`${state.index+1} / ${state.questions.length}`;$('progressFill').style.width=`${((state.index)/state.questions.length)*100}%`;$('lessonTag').textContent=q.officialDomain==='العلوم الفيزيائية'?'علوم الفيزياء':(q.officialDomain||q.lesson);$('skillTag').textContent=q.skill;$('difficultyTag').textContent=q.difficulty;$('questionText').textContent=q.text;
     const mb=$('mediaBox');
     const inlineVisual=q.mediaKey&&window.NAFS_VISUAL_MEDIA&&window.NAFS_VISUAL_MEDIA[q.mediaKey];
     if(q.mediaEnabled&&inlineVisual){
@@ -763,8 +900,19 @@ ensureQuestionBankReady().catch(e=>{
   function renderResult(r,isTraining){show('result');const pct=Number(r.percent||0);$('scoreRing').style.setProperty('--scoredeg',(pct*3.6)+'deg');$('scorePercent').textContent=(isTraining||r.showResult)?pct+'%':'✓';$('resultTitle').textContent=isTraining?(pct>=80?'ممتاز، أداء متقن!':pct>=60?'أداء جيد، واصل التدريب':'المحاولة تصنع الإتقان'):'تم إرسال الاختبار بنجاح';$('resultText').textContent=isTraining?`أجبت عن ${r.score} من ${r.total} إجابة صحيحة. يمكنك إعادة التدريب أو مراجعة أخطائك.`:(r.showResult?`تم حفظ النتيجة: ${r.score} من ${r.total} (${pct}%).`:'تم حفظ إجاباتك وإرسالها إلى منصة المعلم.');
     $('retryBtn').classList.add('hidden');$('mistakeResultBtn').classList.add('hidden');
     if(!isTraining&&r.showResult&&r.specialtyResults){
-      $('lessonResults').innerHTML=['العلم','تغيرات الأرض','أحياء','كيمياء','فيزياء'].map(name=>{
-        const v=r.specialtyResults[name]||{};
+      $('lessonResults').innerHTML=['علوم الحياة','علوم الفيزياء','علوم الأرض والفضاء'].map(name=>{
+        let v={score:0,total:0};
+        if(name==='علوم الحياة'){
+          const a=r.specialtyResults['الأحياء']||r.specialtyResults['أحياء']||{};
+          v={score:Number(a.score||0),total:Number(a.total||0)};
+        }else if(name==='علوم الفيزياء'){
+          const a=r.specialtyResults['الكيمياء']||r.specialtyResults['كيمياء']||{};
+          const b=r.specialtyResults['الفيزياء']||r.specialtyResults['فيزياء']||{};
+          v={score:Number(a.score||0)+Number(b.score||0),total:Number(a.total||0)+Number(b.total||0)};
+        }else{
+          const a=r.specialtyResults['تغيرات الأرض']||r.specialtyResults['علوم الأرض والفضاء']||{};
+          v={score:Number(a.score||0),total:Number(a.total||0)};
+        }
         return `<div class="lesson-result"><b>${Number(v.score||0)} / ${Number(v.total||0)}</b><span>${name}</span></div>`;
       }).join('');
     }else $('lessonResults').innerHTML='';
