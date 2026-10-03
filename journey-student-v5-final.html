@@ -32,6 +32,17 @@ if(!res.ok){
 
 let html = await res.text();
 
+/*
+  إصلاح 2026-10-03:
+  دروس الصف الثالث لا تحتوي دائمًا على مصفوفة concepts.
+  النسخة السابقة كانت تتوقف داخل conceptName قبل عرض نص السؤال والخيارات،
+  فيظهر نوع السؤال فقط بينما يبقى السؤال فارغًا.
+*/
+html = html.replace(
+  "function conceptName(lessonId,conceptId){const l=lessonBy(lessonId);return l?.concepts.find(c=>c.id===conceptId)?.name||conceptId}",
+  "function conceptName(lessonId,conceptId){const l=lessonBy(lessonId);return l?.concepts?.find(c=>c.id===conceptId)?.name||conceptId||''}"
+);
+
 const startText = 'async function finishQuiz(){';
 const endText = '\nfunction resultNext()';
 
