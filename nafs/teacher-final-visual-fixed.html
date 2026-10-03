@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7fbff">
+<title>لوحة المعلم – نافس | النسخة المحدثة</title>
+<style>
+html,body{margin:0;min-height:100%;font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:#f4f9ff;color:#17355f}
+.loader{min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}
+.card{width:min(560px,92vw);background:#fff;border:1px solid #dceaf7;border-radius:24px;padding:28px;box-shadow:0 18px 50px #176bd51c}
+.spinner{width:48px;height:48px;border:5px solid #dbeaf7;border-top-color:#1979d5;border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+h2{margin:0 0 8px}p{margin:0;color:#63758a;line-height:1.8}
+.err{color:#9d2637;background:#fff1f3;border:1px solid #ffd1d8;border-radius:14px;padding:14px;margin-top:14px;display:none}
+</style>
+</head>
+<body>
+<div class="loader" id="boot">
+  <div class="card">
+    <div class="spinner"></div>
+    <h2>جاري فتح لوحة نافس</h2>
+    <p>تحميل النسخة الأساسية مع تحسينات إدارة التكليفات والتحديث.</p>
+    <div id="bootErr" class="err"></div>
+  </div>
+</div>
+
+<script>
+(async function(){
+  const BASE_FILE='teacher-final-visual.html?v=20261003-task-actions-v1';
+  const errBox=document.getElementById('bootErr');
+
+  try{
+    const response=await fetch(BASE_FILE,{cache:'no-store'});
+    if(!response.ok) throw new Error('تعذر تحميل الملف الأساسي: HTTP '+response.status);
+    let source=await response.text();
+
+    const patch = String.raw`
+<script>
+(function(){
+  'use strict';
+
+  /* =========================================================
+     NAFS Teacher Patch – 2026-10-03
+     يحافظ على جميع خصائص teacher-final-visual.html الحالية
+     ويضيف:
+     - حذف التكليف
+     - إيقاف/تفعيل التكليف
+     - أرشفة التكليف
+     - عرض المشاركين
+     - تحديث فوري لبطاقة التكليف بعد الإجراء
+     - تسمية موحدة: علوم الفيزياء والكيمياء
+     ========================================================= */
+
+  function patchDomainLabels(){
+    document.querySelectorAll('select option[value="العلوم الفيزيائية"]').forEach(function(op){
+      op.textContent='علوم الفيزياء والكيمياء';
+    });
+    document.querySelectorAll('.domain.physics h3').forEach(function(h){
+      h.textContent='⚡ علوم الفيزياء والكيمياء';
+    });
+  }
+
+  function resultMatchesTask(r,t){
+    const rid=String((r&&r.taskId)||'').trim();
+    const tid=String((t&&t.taskId)||'').trim();
+    if(rid && tid) return rid===tid;
+
+    const rt=String((r&&r.taskTitle)||'').trim();
+    const tt=String((t&&t.title)||'').trim();
+    return !rid && rt && tt && rt===tt;
+  }
+
+  function taskParticipantsList(task){
+    const rows=((dashboardData&&dashboardData.results)||[]).filter(function(r){
+      return resultMatchesTask(r,task);
+    });
+
+    const map=new Map();
+    rows.forEach(function(r){
+      const code=String(r.studentCode||'').trim();
+      const name=String(r.studentName||'').trim();
+      const key=code||name;
+      if(!key) return;
+
+      let x=map.get(key);
+      if(!x){
+        x={
+          code:code,
+          name:name||code||'طالب',
+          className:String(r.className||'').trim(),
+          attempts:0,
+          lastPercent:null,
+          lastAt:''
+        };
+      }
+
+      x.attempts++;
+
+      const at=String(r.submittedAt||r.loginAt||'');
+      if(!x.lastAt || at>x.lastAt){
+        x.lastAt=at;
+        const p=Number(r.percent);
+        x.lastPercent=Number.isFinite(p)?Math.round(p):null;
+      }
+      map.set(key,x);
+    });
+
+    return Array.from(map.values()).sort(function(a,b){
+      return String(a.name).localeCompare(String(b.name),'ar');
+    });
+  }
+
+  function persistVisibleState(){
+    try{
+      if(typeof saveServerCache==='function'){
+        saveServerCache({
+          students:(dashboardData&&dashboardData.students)||[],
+          results:(dashboardData&&dashboardData.results)||[],
+          sessions:(dashboardData&&dashboardData.sessions)||[],
+          questionOverrides:(typeof bankOverrides!=='undefined'&&Array.isArray(bankOverrides))?bankOverrides:[],
+          tasks:(typeof tasks!=='undefined'&&Array.isArray(tasks))?tasks:[]
+        });
+      }
+    }catch(_e){}
+  }
+
+  window.viewTaskParticipants=function(id){
+    const t=(tasks||[]).find(function(x){return String(x.taskId)===String(id)});
+    if(!t) return alert('التكليف غير موجود.');
+
+    const list=taskParticipantsList(t);
+    const rows=list.map(function(p,i){
+      return '<tr>'+
+        '<td>'+(i+1)+'</td>'+
+        '<td>'+esc(p.name)+'</td>'+
+        '<td>'+esc(p.className||'—')+'</td>'+
+        '<td>'+p.attempts+'</td>'+
+        '<td>'+(p.lastPercent==null?'—':p.lastPercent+'%')+'</td>'+
+        '<td>'+esc(p.lastAt?fmtDate(p.lastAt):'—')+'</td>'+
+      '</tr>';
+    }).join('');
+
+    openModal(
+      'المشاركون — '+String(t.title||'تكليف'),
+      '<div class="helper"><b>عدد المشاركين:</b> '+list.length+
+      ' طالبًا &nbsp; • &nbsp; <b>الفصل:</b> '+esc(t.className||'—')+'</div>'+
+      '<div class="bank-table-wrap" style="margin-top:12px">'+
+        '<table>'+
+          '<thead><tr><th>#</th><th>الطالب</th><th>الفصل</th><th>المحاولات</th><th>آخر نسبة</th><th>آخر مشاركة</th></tr></thead>'+
+          '<tbody>'+(rows||'<tr><td colspan="6" style="text-align:center">لا توجد مشاركات مسجلة لهذا التكليف حتى الآن.</td></tr>')+'</tbody>'+
+        '</table>'+
+      '</div>'
+    );
+  };
+
+  window.toggleTaskActive=async function(id){
+    if(!teacherKey()) return alert('أدخل مفتاح المعلم أولًا.');
+
+    const t=(tasks||[]).find(function(x){return String(x.taskId)===String(id)});
+    if(!t) return alert('التكليف غير موجود.');
+
+    const current=taskStatus(t);
+    const next=(current==='OPEN'||current==='SCHEDULED')?'CLOSED':'ACTIVE';
+
+    try{
+      await jsonp({
+        action:'setTaskStatus',
+        key:teacherKey(),
+        taskId:id,
+        status:next
+      },60000);
+
+      t.status=next;
+      renderTasks();
+      persistVisibleState();
+
+      notice(next==='CLOSED'
+        ?'تم إيقاف التكليف بنجاح.'
+        :'تم تفعيل التكليف بنجاح.'
+      );
+
+      /* تحديث صامت في الخلفية – لا يؤخر استجابة الزر */
+      if(typeof refreshData==='function') refreshData(true).catch(function(){});
+    }catch(e){
+      alert('تعذر تغيير حالة التكليف: '+e.message);
+    }
+  };
+
+  window.archiveTaskFromTeacher=async function(id){
+    if(!teacherKey()) return alert('أدخل مفتاح المعلم أولًا.');
+
+    const t=(tasks||[]).find(function(x){return String(x.taskId)===String(id)});
+    if(!t) return alert('التكليف غير موجود.');
+
+    if(!confirm('أرشفة التكليف «'+String(t.title||'تكليف')+'»؟')) return;
+
+    try{
+      await jsonp({
+        action:'setTaskStatus',
+        key:teacherKey(),
+        taskId:id,
+        status:'ARCHIVED'
+      },60000);
+
+      t.status='ARCHIVED';
+      renderTasks();
+      persistVisibleState();
+      notice('تمت أرشفة التكليف.');
+
+      if(typeof refreshData==='function') refreshData(true).catch(function(){});
+    }catch(e){
+      alert('تعذر أرشفة التكليف: '+e.message);
+    }
+  };
+
+  window.deleteTaskFromTeacher=async function(id){
+    if(!teacherKey()) return alert('أدخل مفتاح المعلم أولًا.');
+
+    const t=(tasks||[]).find(function(x){return String(x.taskId)===String(id)});
+    if(!t) return alert('التكليف غير موجود.');
+
+    if(!confirm('حذف التكليف «'+String(t.title||'تكليف')+'» نهائيًا؟')) return;
+
+    try{
+      await jsonp({
+        action:'deleteTask',
+        key:teacherKey(),
+        taskId:id
+      },60000);
+
+      /* حذف فوري من القائمة بعد نجاح الخادم */
+      tasks=tasks.filter(function(x){return String(x.taskId)!==String(id)});
+      renderTasks();
+      persistVisibleState();
+      notice('تم حذف التكليف بنجاح.');
+
+      /* التحقق من الخادم في الخلفية دون انتظار المستخدم */
+      if(typeof refreshData==='function') refreshData(true).catch(function(){});
+    }catch(e){
+      alert('تعذر حذف التكليف: '+e.message);
+    }
+  };
+
+  /* استبدال رسم بطاقات التكليفات مع الإبقاء على محرر التكليف القديم كما هو */
+  renderTasks=function(){
+    const box=document.getElementById('tasksList');
+    if(!box) return;
+
+    if(!tasks.length){
+      box.innerHTML='<div class="warning-box">لا توجد تكليفات محمّلة. أدخل مفتاح المعلم واضغط «تحديث البيانات».</div>';
+      return;
+    }
+
+    box.innerHTML=tasks.map(function(t){
+      const id=String(t.taskId||'');
+      const status=taskStatus(t);
+      const participants=taskParticipantsList(t).length;
+      const active=(status==='OPEN'||status==='SCHEDULED');
+
+      return '<div class="task-card">'+
+        '<h4>'+esc(t.title||'تكليف')+'</h4>'+
+        '<div class="task-meta">'+
+          '<span>الفصل '+esc(t.className||'')+'</span>'+
+          '<span>• '+((t.questionIds||[]).length)+' سؤالًا</span>'+
+          '<span>• '+esc(status)+'</span>'+
+          '<span>• '+esc(t.type||'training')+'</span>'+
+          '<span>• '+participants+' مشارك</span>'+
+        '</div>'+
+        '<div style="margin-top:10px;display:flex;gap:7px;flex-wrap:wrap">'+
+          '<button class="btn-mini btn-edit" onclick="editTaskById('+JSON.stringify(id).replace(/"/g,'&quot;')+')">✏️ تعديل</button>'+
+          '<button class="btn-mini '+(active?'btn-hide':'btn-view')+'" onclick="toggleTaskActive('+JSON.stringify(id).replace(/"/g,'&quot;')+')">'+(active?'⏸ إيقاف':'▶️ تفعيل')+'</button>'+
+          '<button class="btn-mini btn-view" onclick="viewTaskParticipants('+JSON.stringify(id).replace(/"/g,'&quot;')+')">👥 المشاركون ('+participants+')</button>'+
+          '<button class="btn-mini btn-view" onclick="archiveTaskFromTeacher('+JSON.stringify(id).replace(/"/g,'&quot;')+')">📦 أرشفة</button>'+
+          '<button class="btn-mini btn-hide" onclick="deleteTaskFromTeacher('+JSON.stringify(id).replace(/"/g,'&quot;')+')">🗑 حذف</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  };
+
+  patchDomainLabels();
+
+  /* بعد أي فتح لمحرر التكليف نعيد تسمية المجال دون تغيير القيمة البرمجية */
+  const originalOpenTaskEditor=window.openTaskEditor;
+  if(typeof originalOpenTaskEditor==='function'){
+    window.openTaskEditor=function(){
+      const r=originalOpenTaskEditor.apply(this,arguments);
+      setTimeout(patchDomainLabels,0);
+      return r;
+    };
+  }
+
+  /* إعادة رسم القائمة الحالية مباشرة */
+  try{ renderTasks(); }catch(_e){}
+
+  /* ضمان إعادة تسمية المجال بعد أي تحديث واجهة */
+  setTimeout(patchDomainLabels,250);
+  setTimeout(patchDomainLabels,1200);
+
+})();
+<\/script>`;
+
+    if(source.includes('</body>')){
+      source=source.replace('</body>',patch+'\n</body>');
+    }else{
+      source+=patch;
+    }
+
+    document.open();
+    document.write(source);
+    document.close();
+
+  }catch(e){
+    errBox.style.display='block';
+    errBox.textContent='تعذر فتح لوحة المعلم: '+e.message+
+      ' — تأكد من رفع هذا الملف بجانب teacher-final-visual.html داخل مجلد nafs.';
+  }
+})();
+</script>
+</body>
+</html>
