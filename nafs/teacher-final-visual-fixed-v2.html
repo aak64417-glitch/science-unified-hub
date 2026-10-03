@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7fbff">
+<title>لوحة المعلم – نافس | النسخة المحدثة V2</title>
+<style>
+html,body{margin:0;min-height:100%;font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:#f4f9ff;color:#17355f}
+.loader{min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}
+.card{width:min(560px,92vw);background:#fff;border:1px solid #dceaf7;border-radius:24px;padding:28px;box-shadow:0 18px 50px #176bd51c}
+.spinner{width:48px;height:48px;border:5px solid #dbeaf7;border-top-color:#1979d5;border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+h2{margin:0 0 8px}p{margin:0;color:#63758a;line-height:1.8}
+.err{color:#9d2637;background:#fff1f3;border:1px solid #ffd1d8;border-radius:14px;padding:14px;margin-top:14px;display:none}
+</style>
+</head>
+<body>
+<div class="loader">
+  <div class="card">
+    <div class="spinner"></div>
+    <h2>جاري فتح لوحة نافس</h2>
+    <p>تحميل لوحة المعلم الحالية مع تحسينات إدارة التكليفات.</p>
+    <div id="bootErr" class="err"></div>
+  </div>
+</div>
+
+<script>
+(async function(){
+  const BASE_FILE='teacher-final-visual.html?v=20261003-v2-base';
+  const errBox=document.getElementById('bootErr');
+
+  try{
+    const response=await fetch(BASE_FILE,{cache:'no-store'});
+    if(!response.ok) throw new Error('تعذر تحميل الملف الأساسي: HTTP '+response.status);
+    let source=await response.text();
+
+    const patchCode=`
+(function(){
+  'use strict';
+
+  function patchDomainLabels(){
+    document.querySelectorAll('select option[value="العلوم الفيزيائية"]').forEach(function(op){
+      op.textContent='علوم الفيزياء والكيمياء';
+    });
+    document.querySelectorAll('.domain.physics h3').forEach(function(h){
+      h.textContent='⚡ علوم الفيزياء والكيمياء';
+    });
+  }
+
+  function resultMatchesTask(r,t){
+    var rid=String((r&&r.taskId)||'').trim();
+    var tid=String((t&&t.taskId)||'').trim();
+    if(rid && tid) return rid===tid;
+    var rt=String((r&&r.taskTitle)||'').trim();
+    var tt=String((t&&t.title)||'').trim();
+    return !rid && rt && tt && rt===tt;
+  }
+
+  function taskParticipantsList(task){
+    var rows=((window.dashboardData&&window.dashboardData.results)||[]).filter(function(r){
+      return resultMatchesTask(r,task);
+    });
+    var map=new Map();
+    rows.forEach(function(r){
+      var code=String(r.studentCode||'').trim();
+      var name=String(r.studentName||'').trim();
+      var key=code||name;
+      if(!key) return;
+
+      var x=map.get(key);
+      if(!x){
+        x={
+          code:code,
+          name:name||code||'طالب',
+          className:String(r.className||'').trim(),
+          attempts:0,
+          lastPercent:null,
+          lastAt:''
+        };
+      }
+      x.attempts++;
+      var at=String(r.submittedAt||r.loginAt||'');
+      if(!x.lastAt || at>x.lastAt){
+        x.lastAt=at;
+        var p=Number(r.percent);
+        x.lastPercent=Number.isFinite(p)?Math.round(p):null;
+      }
+      map.set(key,x);
+    });
+    return Array.from(map.values()).sort(function(a,b){
+      return String(a.name).localeCompare(String(b.name),'ar');
+    });
+  }
+
+  function persistVisibleState(){
+    try{
+      if(typeof window.saveServerCache==='function'){
+        window.saveServerCache({
+          students:(window.dashboardData&&window.dashboardData.students)||[],
+          results:(window.dashboardData&&window.dashboardData.results)||[],
+          sessions:(window.dashboardData&&window.dashboardData.sessions)||[],
+          questionOverrides:Array.isArray(window.bankOverrides)?window.bankOverrides:[],
+          tasks:Array.isArray(window.tasks)?window.tasks:[]
+        });
+      }
+    }catch(_e){}
+  }
+
+  window.viewTaskParticipants=function(id){
+    var t=(window.tasks||[]).find(function(x){return String(x.taskId)===String(id)});
+    if(!t) return alert('التكليف غير موجود.');
+
+    var list=taskParticipantsList(t);
+    var rows=list.map(function(p,i){
+      return '<tr>'+
+        '<td>'+(i+1)+'</td>'+
+        '<td>'+esc(p.name)+'</td>'+
+        '<td>'+esc(p.className||'—')+'</td>'+
+        '<td>'+p.attempts+'</td>'+
+        '<td>'+(p.lastPercent==null?'—':p.lastPercent+'%')+'</td>'+
+        '<td>'+esc(p.lastAt?fmtDate(p.lastAt):'—')+'</td>'+
+      '</tr>';
+    }).join('');
+
+    openModal(
+      'المشاركون — '+String(t.title||'تكليف'),
+      '<div class="helper"><b>عدد المشاركين:</b> '+list.length+
+      ' طالبًا &nbsp; • &nbsp; <b>الفصل:</b> '+esc(t.className||'—')+'</div>'+
+      '<div class="bank-table-wrap" style="margin-top:12px">'+
+        '<table>'+
+          '<thead><tr><th>#</th><th>الطالب</th><th>الفصل</th><th>المحاولات</th><th>آخر نسبة</th><th>آخر مشاركة</th></tr></thead>'+
+          '<tbody>'+(rows||'<tr><td colspan="6" style="text-align:center">لا توجد مشاركات مسجلة لهذا التكليف حتى الآن.</td></tr>')+'</tbody>'+
+        '</table>'+
+      '</div>'
+    );
+  };
+
+  window.toggleTaskActive=async function(id){
+    if(!teacherKey()) return alert('أدخل مفتاح المعلم أولًا.');
+    var t=(window.tasks||[]).find(function(x){return String(x.taskId)===String(id)});
+    if(!t) return alert('التكليف غير موجود.');
+
+    var current=taskStatus(t);
+    var next=(current==='OPEN'||current==='SCHEDULED')?'CLOSED':'ACTIVE';
+
+    try{
+      await jsonp({action:'setTaskStatus',key:teacherKey(),taskId:id,status:next},60000);
+      t.status=next;
+      window.renderTasks();
+      persistVisibleState();
+      notice(next==='CLOSED'?'تم إيقاف التكليف بنجاح.':'تم تفعيل التكليف بنجاح.');
+      if(typeof window.refreshData==='function') window.refreshData(true).catch(function(){});
+    }catch(e){
+      alert('تعذر تغيير حالة التكليف: '+e.message);
+    }
+  };
+
+  window.archiveTaskFromTeacher=async function(id){
+    if(!teacherKey()) return alert('أدخل مفتاح المعلم أولًا.');
+    var t=(window.tasks||[]).find(function(x){return String(x.taskId)===String(id)});
+    if(!t) return alert('التكليف غير موجود.');
+    if(!confirm('أرشفة التكليف «'+String(t.title||'تكليف')+'»؟')) return;
+
+    try{
+      await jsonp({action:'setTaskStatus',key:teacherKey(),taskId:id,status:'ARCHIVED'},60000);
+      t.status='ARCHIVED';
+      window.renderTasks();
+      persistVisibleState();
+      notice('تمت أرشفة التكليف.');
+      if(typeof window.refreshData==='function') window.refreshData(true).catch(function(){});
+    }catch(e){
+      alert('تعذر أرشفة التكليف: '+e.message);
+    }
+  };
+
+  window.deleteTaskFromTeacher=async function(id){
+    if(!teacherKey()) return alert('أدخل مفتاح المعلم أولًا.');
+    var t=(window.tasks||[]).find(function(x){return String(x.taskId)===String(id)});
+    if(!t) return alert('التكليف غير موجود.');
+    if(!confirm('حذف التكليف «'+String(t.title||'تكليف')+'» نهائيًا؟')) return;
+
+    try{
+      await jsonp({action:'deleteTask',key:teacherKey(),taskId:id},60000);
+
+      window.tasks=(window.tasks||[]).filter(function(x){
+        return String(x.taskId)!==String(id);
+      });
+
+      window.renderTasks();
+      persistVisibleState();
+      notice('تم حذف التكليف بنجاح.');
+
+      if(typeof window.refreshData==='function') window.refreshData(true).catch(function(){});
+    }catch(e){
+      alert('تعذر حذف التكليف: '+e.message);
+    }
+  };
+
+  window.renderTasks=function(){
+    var box=document.getElementById('tasksList');
+    if(!box) return;
+
+    var all=window.tasks||[];
+    if(!all.length){
+      box.innerHTML='<div class="warning-box">لا توجد تكليفات محمّلة. أدخل مفتاح المعلم واضغط «تحديث البيانات».</div>';
+      return;
+    }
+
+    box.innerHTML=all.map(function(t){
+      var id=String(t.taskId||'');
+      var status=taskStatus(t);
+      var participants=taskParticipantsList(t).length;
+      var active=(status==='OPEN'||status==='SCHEDULED');
+      var qid=JSON.stringify(id);
+
+      return '<div class="task-card">'+
+        '<h4>'+esc(t.title||'تكليف')+'</h4>'+
+        '<div class="task-meta">'+
+          '<span>الفصل '+esc(t.className||'')+'</span>'+
+          '<span>• '+((t.questionIds||[]).length)+' سؤالًا</span>'+
+          '<span>• '+esc(status)+'</span>'+
+          '<span>• '+esc(t.type||'training')+'</span>'+
+          '<span>• '+participants+' مشارك</span>'+
+        '</div>'+
+        '<div style="margin-top:10px;display:flex;gap:7px;flex-wrap:wrap">'+
+          '<button class="btn-mini btn-edit" onclick=\\'editTaskById('+qid+')\\'>✏️ تعديل</button>'+
+          '<button class="btn-mini '+(active?'btn-hide':'btn-view')+'" onclick=\\'toggleTaskActive('+qid+')\\'>'+
+            (active?'⏸ إيقاف':'▶️ تفعيل')+
+          '</button>'+
+          '<button class="btn-mini btn-view" onclick=\\'viewTaskParticipants('+qid+')\\'>👥 المشاركون ('+participants+')</button>'+
+          '<button class="btn-mini btn-view" onclick=\\'archiveTaskFromTeacher('+qid+')\\'>📦 أرشفة</button>'+
+          '<button class="btn-mini btn-hide" onclick=\\'deleteTaskFromTeacher('+qid+')\\'>🗑 حذف</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  };
+
+  patchDomainLabels();
+
+  var oldOpenTaskEditor=window.openTaskEditor;
+  if(typeof oldOpenTaskEditor==='function'){
+    window.openTaskEditor=function(){
+      var r=oldOpenTaskEditor.apply(this,arguments);
+      setTimeout(patchDomainLabels,0);
+      setTimeout(patchDomainLabels,150);
+      return r;
+    };
+  }
+
+  var oldApplyServerData=window.applyServerData;
+  if(typeof oldApplyServerData==='function'){
+    window.applyServerData=function(r){
+      var ret=oldApplyServerData.apply(this,arguments);
+      setTimeout(function(){
+        patchDomainLabels();
+        try{window.renderTasks();}catch(_e){}
+      },0);
+      return ret;
+    };
+  }
+
+  try{ window.renderTasks(); }catch(_e){}
+  setTimeout(patchDomainLabels,100);
+  setTimeout(patchDomainLabels,800);
+})();
+`;
+    const scriptOpen='<scr'+'ipt>';
+    const scriptClose='</scr'+'ipt>';
+    const patchTag=scriptOpen+patchCode+scriptClose;
+
+    if(source.includes('</body>')){
+      source=source.replace('</body>',patchTag+'\n</body>');
+    }else{
+      source+=patchTag;
+    }
+
+    document.open();
+    document.write(source);
+    document.close();
+  }catch(e){
+    errBox.style.display='block';
+    errBox.textContent='تعذر فتح لوحة المعلم: '+e.message+
+      ' — تأكد من وجود teacher-final-visual.html في نفس مجلد nafs.';
+  }
+})();
+</script>
+</body>
+</html>
