@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>استخراج طلاب نافس — قراءة فقط</title>
+  <script src="./config.js"></script>
+  <style>
+    :root{font-family:Tahoma,Arial,sans-serif;color:#16324f;background:#f4f8fc}
+    *{box-sizing:border-box}
+    body{margin:0;padding:18px;background:linear-gradient(180deg,#eef7ff,#f9fbfd)}
+    .wrap{max-width:1050px;margin:auto}
+    .card{background:#fff;border:1px solid #d9e5ef;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(26,74,110,.08);margin-bottom:14px}
+    h1{font-size:24px;margin:0 0 8px}
+    .safe{display:inline-block;background:#e9f8ef;color:#17663a;border:1px solid #bfe8ce;border-radius:999px;padding:6px 10px;font-weight:700;font-size:13px}
+    .note{margin-top:10px;color:#4f6477;line-height:1.8}
+    .tools{display:grid;grid-template-columns:1.1fr 1fr auto auto auto;gap:8px;align-items:end}
+    label{font-weight:700;font-size:13px;color:#35516a}
+    input,select,button{width:100%;padding:11px 12px;border-radius:11px;border:1px solid #c9d8e5;font:inherit}
+    button{cursor:pointer;border:0;background:#176bd5;color:#fff;font-weight:700}
+    button.secondary{background:#eef4f9;color:#214663;border:1px solid #cad9e5}
+    button.green{background:#147147}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .status{margin-top:12px;padding:11px 13px;border-radius:12px;background:#eef7ff;color:#215c8c;display:none}
+    .status.error{background:#fff0f2;color:#93283a}
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+    .stat{background:#f7fafc;border:1px solid #dde8f1;border-radius:13px;padding:11px;text-align:center}
+    .stat b{display:block;font-size:21px;color:#176bd5}
+    .stat span{font-size:12px;color:#607385}
+    .table-wrap{overflow:auto;border:1px solid #dce7ef;border-radius:14px}
+    table{width:100%;border-collapse:collapse;background:#fff;min-width:620px}
+    th,td{padding:10px;border-bottom:1px solid #edf2f6;text-align:right}
+    th{background:#f1f6fa;position:sticky;top:0}
+    td.code{font-family:ui-monospace,monospace;direction:ltr;text-align:left;font-weight:700;color:#17376c}
+    .muted{color:#6a7c8c;font-size:12px}
+    @media(max-width:760px){
+      body{padding:10px}.tools{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}.stats{grid-template-columns:repeat(2,1fr)}
+    }
+    @media print{
+      .no-print,.safe,.note{display:none!important}
+      body{background:#fff;padding:0}.card{box-shadow:none;border:0;padding:0}
+      .table-wrap{overflow:visible;border:0}table{min-width:0}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <span class="safe">قراءة فقط — لا تعديل على المنصة</span>
+    <h1>استخراج أسماء وأكواد طلاب نافس</h1>
+    <div class="note">يعرض البيانات الحية من خادم نافس. لا يحتوي هذا الملف على أي أمر إضافة أو حذف أو نقل أو تعديل طالب.</div>
+  </div>
+
+  <div class="card no-print">
+    <div class="tools">
+      <label class="wide">مفتاح المعلم
+        <input id="key" type="password" autocomplete="off" placeholder="سيُستخدم المفتاح المحفوظ تلقائيًا إن وُجد">
+      </label>
+      <label>الفصل
+        <select id="cls" onchange="render()">
+          <option value="1/3">ثالث أول 1/3</option>
+          <option value="2/3">ثالث ثاني 2/3</option>
+          <option value="3/3">ثالث ثالث 3/3</option>
+          <option value="4/3">ثالث رابع 4/3</option>
+          <option value="">كل الفصول</option>
+        </select>
+      </label>
+      <button id="loadBtn" onclick="loadStudents()">تحديث من نافس</button>
+      <button class="secondary" onclick="copyCurrent()">نسخ القائمة</button>
+      <button class="green" onclick="downloadCsv()">تنزيل CSV</button>
+    </div>
+    <div id="status" class="status"></div>
+  </div>
+
+  <div class="card">
+    <div class="stats" id="stats">
+      <div class="stat"><b id="c13">0</b><span>ثالث أول</span></div>
+      <div class="stat"><b id="c23">0</b><span>ثالث ثاني</span></div>
+      <div class="stat"><b id="c33">0</b><span>ثالث ثالث</span></div>
+      <div class="stat"><b id="c43">0</b><span>ثالث رابع</span></div>
+      <div class="stat"><b id="ct">0</b><span>الإجمالي</span></div>
+    </div>
+    <div class="muted" id="stamp">لم يتم جلب البيانات بعد.</div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px">
+      <b id="heading">ثالث أول 1/3</b>
+      <button class="secondary no-print" style="width:auto" onclick="window.print()">طباعة القائمة</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>اسم الطالب</th><th>الفصل</th><th>الكود الحالي</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="4">اضغط «تحديث من نافس».</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const FALLBACK_API='https://script.google.com/macros/s/AKfycbyCZB1jIsV2tH3g3eXPbzcw_8YOE6hDTroK2_tD9tfp3l9N3qTHI1jd5iKYVQLgprKIfQ/exec';
+const CLASSES=['1/3','2/3','3/3','4/3'];
+let students=[];
+
+function api(){return String(window.NAFS_API_URL||FALLBACK_API).trim()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function status(msg,error=false){
+  const el=document.getElementById('status');
+  el.style.display='block';el.className='status'+(error?' error':'');el.textContent=msg;
+}
+function getKey(){
+  const input=document.getElementById('key');
+  const typed=(input.value||'').trim();
+  if(typed){localStorage.setItem('nafsTeacherKey',typed);return typed}
+  return localStorage.getItem('nafsTeacherKey')||'';
+}
+function jsonp(params,timeout=60000){
+  return new Promise((resolve,reject)=>{
+    const cb='nafsReadOnly_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+    const s=document.createElement('script'); let done=false;
+    const timer=setTimeout(()=>{clean();reject(new Error('انتهت مهلة الاتصال بالخادم'))},timeout);
+    function clean(){if(done)return;done=true;clearTimeout(timer);try{delete window[cb]}catch(e){};try{s.remove()}catch(e){}}
+    window[cb]=d=>{clean();if(d&&d.ok===false)reject(new Error(d.message||'رفض الخادم الطلب'));else resolve(d||{})};
+    const q=new URLSearchParams();
+    Object.entries(params||{}).forEach(([k,v])=>q.set(k,v==null?'':String(v)));
+    q.set('callback',cb);q.set('_',Date.now());
+    s.src=api()+(api().includes('?')?'&':'?')+q.toString();
+    s.onerror=()=>{clean();reject(new Error('تعذر الاتصال بالخادم'))};
+    document.head.appendChild(s);
+  });
+}
+async function fetchDashboard(key){
+  try{return await jsonp({action:'dashboardLite',key},50000)}
+  catch(e){
+    if(/مهلة/.test(e.message||''))throw e;
+    return await jsonp({action:'dashboard',key},50000);
+  }
+}
+async function loadStudents(){
+  const key=getKey();
+  if(!key){status('أدخل مفتاح المعلم أولًا. الملف لا يحفظه إلا في متصفح جهازك.',true);return}
+  const btn=document.getElementById('loadBtn');btn.disabled=true;
+  status('جاري جلب الأسماء والأكواد الحالية من نافس...');
+  try{
+    const r=await fetchDashboard(key);
+    students=Array.isArray(r.students)?r.students:[];
+    students=students.map(x=>({
+      name:String(x.name||x.studentName||'').trim(),
+      className:String(x.className||'').trim(),
+      code:String(x.code||x.studentCode||'').trim()
+    })).filter(x=>x.name&&x.code&&CLASSES.includes(x.className));
+    document.getElementById('stamp').textContent='آخر تحديث: '+new Date().toLocaleString('ar-SA');
+    status('تم الجلب بنجاح: '+students.length+' طالبًا نشطًا.');
+    render();
+  }catch(e){status('تعذر الجلب: '+(e.message||e),true)}
+  finally{btn.disabled=false}
+}
+function selected(){
+  const cls=document.getElementById('cls').value;
+  return students.filter(x=>!cls||x.className===cls)
+    .sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+}
+function render(){
+  for(const cls of CLASSES){
+    const id={'1/3':'c13','2/3':'c23','3/3':'c33','4/3':'c43'}[cls];
+    document.getElementById(id).textContent=students.filter(x=>x.className===cls).length;
+  }
+  document.getElementById('ct').textContent=students.length;
+  const cls=document.getElementById('cls').value;
+  document.getElementById('heading').textContent=cls?('الفصل '+cls+' — '+selected().length+' طالبًا'):('كل الفصول — '+selected().length+' طالبًا');
+  const arr=selected();
+  document.getElementById('rows').innerHTML=arr.length?arr.map((s,i)=>`<tr>
+    <td>${i+1}</td><td><b>${esc(s.name)}</b></td><td>${esc(s.className)}</td><td class="code">${esc(s.code)}</td>
+  </tr>`).join(''):'<tr><td colspan="4">لا توجد بيانات في هذا العرض.</td></tr>';
+}
+async function copyCurrent(){
+  const arr=selected(); if(!arr.length)return status('لا توجد بيانات لنسخها.',true);
+  const t=arr.map((s,i)=>`${i+1}\t${s.name}\t${s.className}\t${s.code}`).join('\n');
+  try{await navigator.clipboard.writeText(t);status('تم نسخ '+arr.length+' طالبًا مع الأكواد.')}
+  catch(e){status('تعذر النسخ التلقائي. استخدم تنزيل CSV بدلًا منه.',true)}
+}
+function downloadCsv(){
+  const arr=selected(); if(!arr.length)return status('لا توجد بيانات للتنزيل.',true);
+  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const csv='\ufeffم,اسم الطالب,الفصل,الكود\n'+arr.map((s,i)=>[i+1,s.name,s.className,s.code].map(q).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  const cls=document.getElementById('cls').value.replace('/','-')||'all';
+  a.download='NAFS-students-'+cls+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  status('تم تجهيز ملف CSV للقائمة الحالية.');
+}
+window.addEventListener('load',()=>{
+  const saved=localStorage.getItem('nafsTeacherKey')||'';
+  if(saved){document.getElementById('key').value=saved;loadStudents()}
+  else status('ارفع هذا الملف داخل مجلد nafs وافتحه من نفس جهاز لوحة المعلم؛ سيقرأ مفتاح المعلم المحفوظ تلقائيًا إن وُجد.');
+});
+</script>
+</body>
+</html>
