@@ -485,3 +485,25 @@ window.NAFS_API_URL = 'https://script.google.com/macros/s/AKfycbyCZB1jIsV2tH3g3e
   },{once:true});
 
 })();
+// ===== إصلاح فصل الطالب المخزن كتاريخ 2026-10-07 =====
+(function(){
+  function norm(v){
+    var raw=String(v==null?'':v).trim(),t=raw.replace(/\s*[\\\/\-_ ]\s*/g,'/'),a,b,m=t.match(/^(\d{1,2})\/(\d{1,2})$/);
+    if(m){a=+m[1];b=+m[2];}else{var d=new Date(raw);if(isNaN(d))return raw;d=new Date(d.getTime()+432e5);a=d.getUTCMonth()+1;b=d.getUTCDate();}
+    var s=(a===3&&b>=1&&b<=4)?b:((b===3&&a>=1&&a<=4)?a:0);
+    return s?s+'/3':raw;
+  }
+  var orig=Node.prototype.appendChild;
+  Node.prototype.appendChild=function(n){
+    try{
+      if(n&&n.tagName==='SCRIPT'&&/[?&]action=studentInfo(&|$)/.test(n.src||'')){
+        var cb=new URL(n.src).searchParams.get('callback'),f=cb&&window[cb];
+        if(typeof f==='function')window[cb]=function(d){
+          try{if(d&&d.student)d.student.className=norm(d.student.className);}catch(e){}
+          return f.apply(this,arguments);
+        };
+      }
+    }catch(e){}
+    return orig.apply(this,arguments);
+  };
+})();
