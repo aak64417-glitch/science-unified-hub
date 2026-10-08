@@ -557,3 +557,17 @@ window.addEventListener('load',function(){
     return origNext.apply(this,arguments);
   };
 });
+// ===== إصلاح حفظ نتيجة التدريب 2026-10-08 =====
+(function(){
+  function addMissing(){
+    ['mistakesBtn','testEntryBtn'].forEach(function(id){
+      if(!document.getElementById(id)){
+        var b=document.createElement('button');
+        b.id=id;b.type='button';b.style.display='none';
+        document.body.appendChild(b);
+      }
+    });
+  }
+  if(document.body)addMissing();
+  document.addEventListener('DOMContentLoaded',addMissing);
+})();
