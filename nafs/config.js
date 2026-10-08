@@ -507,3 +507,40 @@ window.NAFS_API_URL = 'https://script.google.com/macros/s/AKfycbyCZB1jIsV2tH3g3e
     return orig.apply(this,arguments);
   };
 })();
+// ===== تسريع ظهور التكليف 2026-10-07 =====
+(function(){
+  var code=(new URLSearchParams(location.search).get('code')||'').trim();
+  if(!code||!window.NAFS_API_URL)return;
+  var orig=Node.prototype.appendChild,pre={},t0=Date.now();
+  function fetchNow(action,extra){
+    var p=new Promise(function(ok,bad){
+      var cb='nafsPre_'+action+'_'+t0,s=document.createElement('script'),q=new URLSearchParams(extra||{});
+      q.set('action',action);q.set('callback',cb);q.set('_',String(t0));
+      var tm=setTimeout(function(){bad()},40000);
+      window[cb]=function(d){clearTimeout(tm);try{delete window[cb]}catch(e){}s.remove();(d&&d.ok!==false)?ok(d):bad()};
+      s.onerror=function(){clearTimeout(tm);bad()};
+      s.src=window.NAFS_API_URL+'?'+q.toString();
+      orig.call(document.head,s);
+    });
+    p.catch(function(){});
+    pre[action]=p;
+  }
+  fetchNow('studentTasks',{studentCode:code});
+  fetchNow('questionOverrides');
+  Node.prototype.appendChild=function(n){
+    try{
+      if(n&&n.tagName==='SCRIPT'&&n.src&&n.src.indexOf(window.NAFS_API_URL)===0){
+        var u=new URL(n.src),a=u.searchParams.get('action'),cb=u.searchParams.get('callback'),p=pre[a];
+        var same=a==='questionOverrides'||(a==='studentTasks'&&u.searchParams.get('studentCode')===code);
+        if(p&&same&&Date.now()-t0<90000){
+          delete pre[a];
+          var self=this;
+          p.then(function(d){if(typeof window[cb]==='function')window[cb](d)},
+                 function(){orig.call(self,n)});
+          return n;
+        }
+      }
+    }catch(e){}
+    return orig.apply(this,arguments);
+  };
+})();
