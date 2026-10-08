@@ -618,3 +618,32 @@ window.addEventListener('load',function(){
     };
   });
 })();
+// ===== حالة إرسال النتيجة للمعلم 2026-10-08 =====
+(function(){
+  var seen=false,since=0;
+  function pending(){try{return JSON.parse(localStorage.getItem('nafsPendingTraining')||'[]').length}catch(e){return 0}}
+  function box(){
+    var b=document.getElementById('sendStatus');
+    if(!b){
+      var rt=document.getElementById('resultText');if(!rt)return null;
+      b=document.createElement('div');b.id='sendStatus';
+      b.style.cssText='margin:12px auto 0;padding:10px 16px;border-radius:12px;font-weight:700;max-width:520px;text-align:center';
+      rt.insertAdjacentElement('afterend',b);
+    }
+    return b;
+  }
+  function paint(b,txt,bg,fg){b.textContent=txt;b.style.background=bg;b.style.color=fg;b.style.display='block'}
+  setInterval(function(){
+    var r=document.getElementById('result');
+    if(!r||r.classList.contains('hidden')){seen=false;var o=document.getElementById('sendStatus');if(o)o.style.display='none';return}
+    if(typeof state!=='undefined'&&state.mode!=='training')return;
+    var b=box();if(!b)return;
+    if(pending()>0){
+      if(!seen){seen=true;since=Date.now()}
+      if(Date.now()-since>120000)paint(b,'لم يكتمل الإرسال بعد بسبب الاتصال. ستُرسل النتيجة تلقائيًا عند فتح رابطك مرة أخرى.','#fff4e5','#8a4b00');
+      else paint(b,'⏳ جارٍ إرسال النتيجة إلى المعلم... لا تغلق الصفحة','#eef4ff','#1d3f8f');
+    }else if(seen){
+      paint(b,'✓ تم إرسال النتيجة إلى المعلم بنجاح','#e8f7ee','#1b6b3a');
+    }
+  },300);
+})();
