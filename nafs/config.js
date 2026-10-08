@@ -571,3 +571,50 @@ window.addEventListener('load',function(){
   if(document.body)addMissing();
   document.addEventListener('DOMContentLoaded',addMissing);
 })();
+// ===== إظهار نتيجة التدريب فورًا والحفظ في الخلفية 2026-10-08 =====
+(function(){
+  var QKEY='nafsPendingTraining';
+  function readQ(){try{return JSON.parse(localStorage.getItem(QKEY)||'[]')}catch(e){return[]}}
+  function writeQ(q){try{localStorage.setItem(QKEY,JSON.stringify(q))}catch(e){}}
+  var flushing=false;
+  async function flush(){
+    if(flushing||typeof jsonp!=='function')return;
+    flushing=true;
+    try{
+      var q=readQ();
+      for(var i=0;i<q.length;i++){
+        try{
+          await jsonp({action:'saveTraining',data:JSON.stringify(q[i].data)},120000);
+          var now=readQ().filter(function(x){return x.id!==q[i].id});
+          writeQ(now);
+        }catch(e){ break; }
+      }
+    }finally{ flushing=false; }
+    if(readQ().length)setTimeout(flush,20000);
+  }
+  window.addEventListener('load',function(){
+    setTimeout(flush,3000);
+    if(typeof finishCurrent!=='function'||typeof state==='undefined')return;
+    var origFinish=finishCurrent;
+    window.finishCurrent=async function(){
+      if(state.mode!=='training')return origFinish.apply(this,arguments);
+      try{stopTimer()}catch(e){}
+      var correct=0,wrong=[];
+      state.questions.forEach(function(q,i){if(state.answers[i]===q.correctIndex)correct++;else wrong.push(q)});
+      state.correct=correct;state.lastWrongQuestions=wrong;
+      var mb=document.getElementById('mistakesBtn');if(mb)mb.disabled=!wrong.length;
+      var total=state.questions.length,pct=Math.round(correct/total*100);
+      var data={studentName:state.identity.studentName,className:state.identity.className,studentCode:state.identity.studentCode||'',
+        topic:state.topic,loginAt:window.__nafsLoginAt,startedAt:new Date(state.startAt).toISOString(),submittedAt:new Date().toISOString(),
+        correct:correct,total:total,percent:pct,durationSec:Math.round((Date.now()-state.startAt)/1000),
+        wrongQuestionIds:wrong.map(function(q){return q.id}),sessionId:state.sessionId||'',
+        taskId:(state.currentTask&&state.currentTask.taskId)||'',taskTitle:(state.currentTask&&state.currentTask.title)||state.topic,
+        taskType:(state.currentTask&&state.currentTask.type)||'training'};
+      var q=readQ();q.push({id:'P'+Date.now()+Math.random().toString(36).slice(2,6),data:data});writeQ(q);
+      try{renderResult({score:correct,total:total,percent:pct,showResult:true},true)}catch(e){}
+      try{document.getElementById('loading').classList.add('hidden')}catch(e){}
+      try{touchStudentSession('إنهاء تدريب: '+state.topic,true)}catch(e){}
+      flush();
+    };
+  });
+})();
