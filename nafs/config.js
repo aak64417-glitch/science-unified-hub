@@ -544,3 +544,16 @@ window.NAFS_API_URL = 'https://script.google.com/macros/s/AKfycbyCZB1jIsV2tH3g3e
     return orig.apply(this,arguments);
   };
 })();
+// ===== إصلاح زر إنهاء التدريب 2026-10-08 =====
+window.addEventListener('load',function(){
+  if(typeof nextAction!=='function'||typeof finishCurrent!=='function')return;
+  var origNext=nextAction;
+  window.nextAction=async function(){
+    try{
+      if(typeof state!=='undefined'&&state.questions.length&&state.index>=state.questions.length&&!state.submitting){
+        return await finishCurrent();
+      }
+    }catch(e){}
+    return origNext.apply(this,arguments);
+  };
+});
