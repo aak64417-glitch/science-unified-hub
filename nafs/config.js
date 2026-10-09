@@ -695,3 +695,20 @@ window.addEventListener('load',function(){
     }catch(e){console.warn('share report',e)}
   };
 });
+// ===== المشاركة عبر تطبيقات الجهاز بدل مواقع الويب 2026-10-09 =====
+(function(){
+  var origOpen=window.open;
+  window.open=function(u){
+    try{
+      var s=String(u||''),m=null,app='';
+      if(s.indexOf('https://wa.me/?text=')===0){m=s.split('text=')[1];app='whatsapp://send?text=';}
+      else if(s.indexOf('https://t.me/share/url')===0){m=s.split('&text=')[1];app='tg://msg?text=';}
+      if(m!==null){
+        var text=decodeURIComponent(m);
+        if(navigator.share){navigator.share({text:text}).catch(function(){});return null;}
+        location.href=app+encodeURIComponent(text);return null;
+      }
+    }catch(e){}
+    return origOpen.apply(window,arguments);
+  };
+})();
