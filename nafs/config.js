@@ -647,3 +647,51 @@ window.addEventListener('load',function(){
     }
   },300);
 })();
+// ===== مشاركة تقرير المشاركين عبر واتساب وتلجرام 2026-10-09 =====
+window.addEventListener('load',function(){
+  if(typeof window.viewTaskParticipants!=='function')return;
+  var orig=window.viewTaskParticipants;
+  function cls(v){
+    v=String(v||'').trim();
+    if(/^\d{4}-\d{2}-\d{2}T/.test(v)){var d=new Date(new Date(v).getTime()+12*3600e3);v=(d.getUTCMonth()+1)+'/'+d.getUTCDate();}
+    return v;
+  }
+  function wa(t){return 'https://wa.me/?text='+encodeURIComponent(t)}
+  function tg(t){return 'https://t.me/share/url?url='+encodeURIComponent(' ')+'&text='+encodeURIComponent(t)}
+  function btn(label,bg,fn){var b=document.createElement('button');b.type='button';b.textContent=label;
+    b.style.cssText='border:0;border-radius:10px;padding:7px 12px;margin:3px;font-weight:700;cursor:pointer;color:#fff;background:'+bg;
+    b.onclick=fn;return b}
+  function open(u){window.open(u,'_blank')}
+  window.viewTaskParticipants=function(id){
+    orig.apply(this,arguments);
+    try{
+      var body=document.getElementById('appModalBody');if(!body)return;
+      var title=(document.getElementById('appModalTitle').textContent||'').replace(/^المشاركون\s*—\s*/,'');
+      var rows=[].slice.call(body.querySelectorAll('tbody tr')).filter(function(r){return r.children.length>=6});
+      if(!rows.length)return;
+      var head=body.querySelector('thead tr');if(head){var th=document.createElement('th');th.textContent='إرسال';head.appendChild(th);}
+      var list=rows.map(function(r){
+        var c=r.children;c[2].textContent=cls(c[2].textContent);
+        return{name:c[1].textContent.trim(),cls:c[2].textContent.trim(),att:c[3].textContent.trim(),pct:c[4].textContent.trim(),at:c[5].textContent.trim(),row:r};
+      });
+      var klass=list[0].cls;
+      var sum='📊 تقرير تكليف: '+title+'\nالفصل: '+klass+'\nعدد المشاركين: '+list.length+' طالبًا\n\n'+
+        list.map(function(p,i){return (i+1)+'. '+p.name+' — '+p.pct}).join('\n')+
+        '\n\nمنصة تدريب نافس • متوسطة أبي الدرداء';
+      var bar=document.createElement('div');bar.style.cssText='margin-top:12px;text-align:center';
+      bar.appendChild(btn('واتساب: ملخص الفصل','#1fa855',function(){open(wa(sum))}));
+      bar.appendChild(btn('تلجرام: ملخص الفصل','#229ed9',function(){open(tg(sum))}));
+      bar.appendChild(btn('نسخ الملخص','#5b6b85',function(){
+        (navigator.clipboard?navigator.clipboard.writeText(sum):Promise.reject()).then(function(){alert('تم نسخ الملخص.')},function(){prompt('انسخ الملخص:',sum)});
+      }));
+      body.appendChild(bar);
+      list.forEach(function(p){
+        var msg='📘 تقرير الطالب: '+p.name+'\nالفصل: '+p.cls+'\nالتكليف: '+title+'\nنتيجة آخر محاولة: '+p.pct+'\nعدد المحاولات: '+p.att+'\nآخر مشاركة: '+p.at+'\n\nمنصة تدريب نافس • متوسطة أبي الدرداء';
+        var td=document.createElement('td');td.style.whiteSpace='nowrap';
+        td.appendChild(btn('واتساب','#1fa855',function(){open(wa(msg))}));
+        td.appendChild(btn('تلجرام','#229ed9',function(){open(tg(msg))}));
+        p.row.appendChild(td);
+      });
+    }catch(e){console.warn('share report',e)}
+  };
+});
