@@ -65,7 +65,7 @@
         const url=typeof input==='string'?input:(input&&typeof input.url==='string'?input.url:'');
         if(!response.ok || !url.includes(BANK_NAME)) return response;
         const raw=await response.clone().json();
-        if(!Array.isArray(raw) || raw.length!==720) return response;
+        if(!Array.isArray(raw) || raw.length!==705) return response;
         raw.forEach((q,index)=>{
           const n=Number(q&&q['رقم السؤال'])||(index+1);
           if(NO_MEDIA.has(n)){
@@ -85,5 +85,5 @@
     };
     window.__NAFS_MEDIA_720_NOS_PATCHED=true;
   }
-  window.NAFS_VISUAL_MEDIA_INFO={version:'20261005-nafs-nos-safe-final',questions:720,natureOfScienceQuestions:45,workbookQuestions:48,mediaQuestions:627,topics:48,images:48};
+  window.NAFS_VISUAL_MEDIA_INFO={version:'20261010-nafs-nos-30',questions:705,natureOfScienceQuestions:30,workbookQuestions:48,mediaQuestions:627,topics:48,images:48};
 })();
