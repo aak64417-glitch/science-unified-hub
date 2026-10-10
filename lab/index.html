@@ -53,7 +53,12 @@ body{margin:0;min-height:100%;padding-bottom:env(safe-area-inset-bottom,0px);-we
 .sheets h2{font-size:1.2rem;margin-bottom:4px}
 .sheets p{color:var(--ink-2);margin:0 0 12px;font-size:.9rem}
 .sheet-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
-.sheet-list a{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink);text-decoration:none;font-weight:600;font-size:.92rem}
+.sh{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.sh-t{flex:1;min-width:0;font-weight:600;font-size:.92rem}
+.sh a{border-radius:9px;padding:6px 12px;text-decoration:none;font-weight:600;font-size:.85rem;white-space:nowrap}
+.sh-p{background:var(--brand);color:var(--brand-ink)}
+.sh-d{background:var(--chem-soft);color:var(--brand);font-family:var(--f-mono)}
+.sheet-list a.old{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink);text-decoration:none;font-weight:600;font-size:.92rem}
 .sheet-list a:hover{border-color:var(--brand)}
 .sheet-list a span{width:36px;height:36px;border-radius:9px;background:var(--chem-soft);color:var(--brand);display:grid;place-items:center;flex:none;font-family:var(--f-mono);font-size:.7rem}
 .offline{font-size:.78rem;color:var(--ink-2)}
@@ -181,6 +186,9 @@ td.obs{font-size:.84rem;color:var(--ink-2);max-width:340px}
 .ctrl input[type=range]{width:160px;accent-color:var(--accent)}
 .btn.lamp small{font-weight:500;opacity:.75;font-size:.78rem}
 .btn.lamp.on{background:#fff1c9;border-color:#e9b949;color:#5a3d00}
+.tbox .trow{display:flex;gap:14px;margin-top:6px;direction:rtl}
+.tbox .trow span{display:grid;text-align:center}
+.tbox .trow b{font-size:1.35rem;direction:ltr}
 .ctrl output{font-family:var(--f-mono);min-width:56px;text-align:center}
 .overlay{position:absolute;inset:0;background:rgb(6 14 13 / .82);display:grid;place-items:center;padding:12px;z-index:3}
 .scope{background:var(--surface);border-radius:16px;padding:14px;display:grid;gap:10px;justify-items:center;max-width:100%;max-height:100%;overflow:auto}
@@ -272,12 +280,14 @@ footer{color:var(--ink-2);font-size:.82rem;padding-block:20px 30px;text-align:ce
   <div class="grid" id="grid"></div>
   <div class="sheets">
     <h2>أوراق تقرير الطالب للطباعة</h2>
-    <p>كل ورقة A4 بالعرض فيها نسختان، تُقص من المنتصف فيصبح كل تقرير نصف ورقة.</p>
+    <p>كل ورقة A4 فيها نسختان، تُطبع بالوضع العمودي العادي ثم تُقص من المنتصف فيصبح كل تقرير نصف ورقة.</p>
     <div class="sheet-list">
-      <a href="ph.pdf" target="_blank" rel="noopener"><span>PDF</span>الأحماض والقواعد وقياس pH</a>
-      <a href="changes.pdf" target="_blank" rel="noopener"><span>PDF</span>التغيرات الفيزيائية والكيميائية</a>
-      <a href="osmosis.pdf" target="_blank" rel="noopener"><span>PDF</span>الانتشار والخاصية الأسموزية</a>
-      <a href="photosynthesis.pdf" target="_blank" rel="noopener"><span>PDF</span>البناء الضوئي في نبات الإيلوديا</a>
+      <div class="sh"><span class="sh-t">الأحماض والقواعد وقياس pH</span><a class="sh-p" href="sheet-ph.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="ph.pdf" target="_blank" rel="noopener">PDF</a></div>
+      <div class="sh"><span class="sh-t">التغيرات الفيزيائية والكيميائية</span><a class="sh-p" href="sheet-changes.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="changes.pdf" target="_blank" rel="noopener">PDF</a></div>
+      <div class="sh"><span class="sh-t">الانتشار والخاصية الأسموزية</span><a class="sh-p" href="sheet-osmosis.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="osmosis.pdf" target="_blank" rel="noopener">PDF</a></div>
+      <div class="sh"><span class="sh-t">البناء الضوئي في نبات الإيلوديا</span><a class="sh-p" href="sheet-photosynthesis.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="photosynthesis.pdf" target="_blank" rel="noopener">PDF</a></div>
+      <div class="sh"><span class="sh-t">التنفس الخلوي والتخمر في الخميرة</span><a class="sh-p" href="sheet-yeast.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="yeast.pdf" target="_blank" rel="noopener">PDF</a></div>
+      <div class="sh"><span class="sh-t">النقل عبر الغشاء البلازمي</span><a class="sh-p" href="sheet-transport.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="transport.pdf" target="_blank" rel="noopener">PDF</a></div>
     </div>
   </div>
 </section>
@@ -377,6 +387,8 @@ const EXPS=[
   {id:'chg',t:'التغيرات الفيزيائية والكيميائية',st:'mid',s:'chem',i:'spark',ready:true,gr:'ثاني متوسط',ls:'التغيرات الفيزيائية والكيميائية'},
   {id:'osmo',t:'الانتشار والخاصية الأسموزية',st:'mid',s:'bio',i:'cell',ready:true,gr:'ثالث متوسط',ls:'أنشطة الخلية'},
   {id:'photo',t:'البناء الضوئي في نبات الإيلوديا',st:'mid',s:'bio',i:'leaf',ready:true,gr:'ثالث متوسط',ls:'أنشطة الخلية'},
+  {id:'yeast',t:'التنفس الخلوي والتخمر في الخميرة',st:'mid',s:'bio',i:'temp',ready:true,gr:'ثالث متوسط',ls:'أنشطة الخلية'},
+  {id:'trans',t:'النقل عبر الغشاء البلازمي',st:'mid',s:'bio',i:'cell',ready:true,gr:'ثالث متوسط',ls:'أنشطة الخلية'},
   {id:'filt',t:'فصل المخاليط بالترشيح',st:'mid',s:'chem',i:'filter'},
   {id:'circ',t:'الدوائر الكهربائية البسيطة',st:'mid',s:'phys',i:'bolt'},
   {id:'mach',t:'الآلات البسيطة',st:'mid',s:'phys',i:'gear'},
@@ -884,7 +896,7 @@ class Lab{
   zoom(f){const v=this.camera.position.clone().sub(this.controls.target).multiplyScalar(f);if(v.length()<this.controls.minDistance||v.length()>this.controls.maxDistance)return;this.camera.position.copy(this.controls.target).add(v);}
   toast(m){const t=this.stage.querySelector('.toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),4200);}
   frame(){const now=performance.now();
-    const fin=[];this.anims=this.anims.filter(a=>{const t=Math.min(1,(now-a.t0)/a.dur);a.fn(t);if(t>=1){fin.push(a);return false;}return true;});fin.forEach(a=>a.done&&a.done());
+    const cur=this.anims,fin=[];this.anims=[];cur.forEach(a=>{const t=Math.min(1,(now-a.t0)/a.dur);a.fn(t);if(t>=1)fin.push(a);else this.anims.push(a);});fin.forEach(a=>a.done&&a.done());
     this.hooks.forEach(h=>h(now));this.controls.update();this.renderer.render(this.scene,this.camera);
     const w=this.stage.clientWidth,h=this.stage.clientHeight;
     this.labels.forEach(l=>{_p.copy(l.pos).project(this.camera);l.el.style.left=((_p.x+1)/2*w)+'px';l.el.style.top=((-_p.y+1)/2*h)+'px';l.el.style.display=(_p.z<1&&_p.x>-1.1&&_p.x<1.1)?'':'none';});}
@@ -1471,6 +1483,401 @@ function rep(){renderReport(sec,{title:'البناء الضوئي في نبات 
   note:'مثّل هذه النتائج بيانياً في ورقة التقرير: المسافة على المحور الأفقي، وعدد الفقاعات على المحور الرأسي.'});}
 })();
 
+/* ================= EXP: التنفس الخلوي والتخمر (الخميرة) ================= */
+const YEAST={};
+(function(){
+const F=[
+  {id:'cold',name:'ماء بارد 5°س + سكر',short:'بارد 5°س',T:5,sugar:true,rate:0.9,ans:'low',bath:0xcfe6f4},
+  {id:'warm',name:'ماء دافئ 35°س + سكر',short:'دافئ 35°س',T:35,sugar:true,rate:3.2,ans:'high',bath:0xe2eef0},
+  {id:'hot',name:'ماء ساخن 70°س + سكر',short:'ساخن 70°س',T:70,sugar:true,rate:0,ans:'none',bath:0xf0e6dc},
+  {id:'ctrl',name:'ماء دافئ 35°س بدون سكر (ضابط)',short:'ضابط بدون سكر',T:35,sugar:false,rate:0.04,ans:'none',bath:0xe2eef0}
+];
+const ACT={high:'نشاط مرتفع',low:'نشاط منخفض',none:'لا يوجد نشاط'};
+const XS=[4.35,1.45,-1.45,-4.35],TIMES=[10,20,30,40];
+let L,sec,busy=false,t=0,lime=false,checked=null;
+const st={};F.forEach(f=>st[f.id]={C:{},lime:null,act:''});
+const vol=(f,tm)=>f.rate*tm*(1-tm/400);                // mL of gas
+const circ=v=>{const r=Math.cbrt(3*Math.max(v,0)/(4*Math.PI));return Math.max(9.0,2*Math.PI*r);}; // cm (deflated ≈ 9 cm)
+
+function flaskProfile(){return[[0,0],[0.42,0],[0.46,0.04],[0.46,0.12],[0.16,0.8],[0.13,0.96],[0.16,1.0],[0.12,1.02]].map(p=>new THREE.Vector2(p[0],p[1]));}
+function build(f,i){
+  const g=new THREE.Group();g.position.set(XS[i],0,0.15);
+  // water bath (wide beaker)
+  const bath=makeBeaker(0.82,1.05,0.7,f.bath,f.T>50?0.42:0.3);g.add(bath.g);f.bathB=bath;
+  // flask
+  const fl=new THREE.Group();fl.position.y=0.05;
+  const glass=new THREE.Mesh(new THREE.LatheGeometry(flaskProfile(),56),M.glass);glass.renderOrder=3;
+  const rad=h=>h<0.12?0.44:0.44-(h-0.12)*(0.29/0.68);
+  const lq=[[0,0.02],[0.43,0.02],[0.44,0.06],[0.44,0.12],[rad(0.42),0.42],[0,0.42]].map(p=>new THREE.Vector2(p[0],p[1]));
+  const lmat=new THREE.MeshPhysicalMaterial({color:f.sugar?0xd8bf8c:0xcdb68a,transparent:true,opacity:.86,roughness:.35,depthWrite:false});
+  const liq=new THREE.Mesh(new THREE.LatheGeometry(lq,40),lmat);liq.renderOrder=1;
+  fl.add(glass,liq);
+  // foam/bubbles inside liquid
+  const NB=40,bub=new THREE.InstancedMesh(new THREE.SphereGeometry(0.022,8,6),new THREE.MeshPhysicalMaterial({color:0xfff8e8,transparent:true,opacity:.85,roughness:.1}),NB);bub.renderOrder=2;
+  const bp=Array.from({length:NB},()=>({a:Math.random()*6.28,r:Math.random()*0.35,y:0.03+Math.random()*0.38,v:0.08+Math.random()*0.12}));
+  fl.add(bub);
+  const foam=new THREE.Mesh(new THREE.CylinderGeometry(rad(0.42)*0.98,rad(0.42)*0.98,0.04,40),new THREE.MeshStandardMaterial({color:0xf3e6c4,roughness:.9}));foam.position.y=0.44;foam.scale.y=0.01;foam.visible=false;fl.add(foam);
+  // balloon
+  const bal=new THREE.Group();bal.position.y=1.02;
+  const col=[0xd8402f,0x2f73c9,0xe0a21f,0x7b4cc0][i];
+  const rubber=new THREE.MeshPhysicalMaterial({color:col,roughness:.42,clearcoat:.5});
+  const bg=new THREE.SphereGeometry(0.3,32,24);bg.translate(0,0.3,0);
+  const ball=new THREE.Mesh(bg,rubber);const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.15,0.17,0.1,24),rubber);neck.position.y=0.02;
+  bal.add(ball,neck);
+  fl.add(bal);
+  g.add(fl);
+  // thermometer
+  const th=new THREE.Group();const tube=new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.035,1.5,12),M.glassTint);tube.position.y=0.75;
+  const bulbT=new THREE.Mesh(new THREE.SphereGeometry(0.055,12,10),new THREE.MeshStandardMaterial({color:0xc0392b}));bulbT.position.y=0.06;
+  const colm=new THREE.Mesh(new THREE.CylinderGeometry(0.014,0.014,1,8),new THREE.MeshStandardMaterial({color:0xc0392b}));const hT=0.15+f.T/100*1.1;colm.scale.y=hT;colm.position.y=0.06+hT/2;
+  th.add(tube,bulbT,colm);th.position.set(0.6,0.1,-0.25);th.rotation.z=-0.12;g.add(th);
+  // ice cubes / steam
+  if(f.T<10){for(let k=0;k<4;k++){const ic=new THREE.Mesh(RBox(0.16,0.12,0.16,0.03),new THREE.MeshPhysicalMaterial({color:0xeaf6ff,transparent:true,opacity:.75,roughness:.05,clearcoat:1}));const a=k*1.6+0.4;ic.position.set(Math.cos(a)*0.64,bath.top-0.02,Math.sin(a)*0.5);ic.rotation.y=a;g.add(ic);}}
+  if(f.T>50){f.steam=[];const sm=canvasTex(64,64,(c,w,h)=>{const gr=c.createRadialGradient(w/2,h/2,0,w/2,h/2,w/2);gr.addColorStop(0,'rgba(255,255,255,.55)');gr.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=gr;c.fillRect(0,0,w,h);});
+    for(let k=0;k<8;k++){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:sm,transparent:true,depthWrite:false,opacity:.5}));s.userData.ph=Math.random();s.userData.a=Math.random()*6.28;g.add(s);f.steam.push(s);}}
+  castAll(g);L.add(g);
+  const hit=new THREE.Mesh(new THREE.CylinderGeometry(0.9,0.9,2.4,12),new THREE.MeshBasicMaterial({visible:false}));hit.position.y=1.1;g.add(hit);
+  Object.assign(f,{g,fl,bal,ball,bub,bp,foam,lmat,hit});
+  setBalloon(f,0);
+}
+function setBalloon(f,tm){
+  const v=vol(f,tm),r=Math.cbrt(3*v/(4*Math.PI))/100; // metres-ish → scene scale
+  const k=Math.min(1.25,v/110);                        // 0..1.25 visual inflation
+  f.ball.scale.set(0.42+k*0.85,0.5+k*0.75,0.42+k*0.85);
+  f.bal.rotation.z=k<0.15?1.9*(1-k/0.15):0;           // deflated balloon droops to the side
+  f.bal.rotation.x=k<0.15?0.25*(1-k/0.15):0;
+}
+const m4=new THREE.Matrix4(),q0=new THREE.Quaternion();
+function frame(now){
+  const dt=0.016;
+  F.forEach(f=>{
+    const act=f.rate*(lime?0.6:1);
+    const n=Math.min(40,Math.round(act*9));f.bub.count=n;
+    for(let k=0;k<n;k++){const p=f.bp[k];p.y+=p.v*dt*(0.5+act*0.3);if(p.y>0.42){p.y=0.03;p.a=Math.random()*6.28;p.r=Math.random()*0.33;}
+      const rr=p.r*(1-p.y*0.9);m4.compose(V(Math.cos(p.a)*rr,p.y,Math.sin(p.a)*rr),q0,V(1,1,1));f.bub.setMatrixAt(k,m4);}
+    f.bub.instanceMatrix.needsUpdate=true;
+    if(f.steam)f.steam.forEach(s=>{s.userData.ph=(s.userData.ph+dt*0.25)%1;const p=s.userData.ph;s.position.set(Math.cos(s.userData.a)*0.4*(0.4+p),f.bathB.top+0.1+p*1.2,Math.sin(s.userData.a)*0.3);s.scale.setScalar(0.25+p*0.6);s.material.opacity=0.45*(1-p);});
+    rippleStep(f.bathB,now);
+  });
+}
+async function advance(){
+  if(busy)return;if(t>=40){L.toast('انتهى زمن التجربة (40 دقيقة). يمكنك اختبار الغاز بماء الجير.');return;}
+  busy=true;lockUI(true);const t0=t,t1=t+10;
+  await L.tw(2600,k=>{const tm=t0+(t1-t0)*k;t=tm;sec.$('.clk').textContent=Math.round(tm)+' دقيقة';
+    F.forEach(f=>{setBalloon(f,tm);const fo=Math.min(1,vol(f,tm)/40);f.foam.visible=fo>0.05;f.foam.scale.y=Math.max(0.01,fo*2);});});
+  t=t1;
+  // measure circumference with a tape: brief tape ring on each balloon
+  const tapes=F.map(f=>{const m=new THREE.Mesh(new THREE.TorusGeometry(1,0.012,6,48),new THREE.MeshStandardMaterial({color:0xf2d24b}));m.rotation.x=Math.PI/2;f.ball.updateMatrixWorld();
+    const c=f.ball.geometry.boundingSphere||(f.ball.geometry.computeBoundingSphere(),f.ball.geometry.boundingSphere);const wp=f.ball.localToWorld(V(0,0.3,0));m.position.copy(wp);const s=0.3*f.ball.scale.x;m.scale.setScalar(s+0.01);L.add(m);return m;});
+  await L.tw(900,k=>tapes.forEach(m=>m.material.opacity=1));
+  F.forEach(f=>{st[f.id].C[t1]=Math.round((circ(vol(f,t1))+(Math.random()-.5)*0.3)*10)/10;});
+  await wait(500);tapes.forEach(m=>L.remove(m));
+  L.toast(`مرّت ${t1} دقيقة، وقيس محيط كل بالون بشريط القياس وسُجّل في دفتر المختبر.`);
+  sec.hintTxt(t1<40?'مرّر الزمن مرة أخرى، ولاحظ أيّ البالونات ينتفخ أكثر.':'اختبر الغاز في البالونات بماء الجير.');
+  busy=false;lockUI(false);renderNB();
+}
+async function limeTest(){
+  if(busy)return;if(t<20){L.toast('انتظر حتى يمر 20 دقيقة على الأقل ليتجمّع الغاز في البالونات.');return;}
+  if(lime){L.toast('أُجري اختبار ماء الجير. اضغط "إعادة التجربة" لتكراره.');return;}
+  busy=true;lockUI(true);
+  const tubes=F.map((f,i)=>{const g=new THREE.Group();
+    const tt=new THREE.Mesh(new THREE.CylinderGeometry(0.13,0.13,0.75,20,1,true),M.glassTint);tt.position.y=0.375;
+    const bot=new THREE.Mesh(new THREE.SphereGeometry(0.13,16,10,0,6.3,Math.PI/2,Math.PI/2),M.glassTint);bot.position.y=0.0;
+    const lm=new THREE.MeshPhysicalMaterial({color:0xf2f6f6,transparent:true,opacity:.35,roughness:.1,depthWrite:false});
+    const lq=new THREE.Mesh(new THREE.CylinderGeometry(0.115,0.115,0.42,20),lm);lq.position.y=0.21;
+    const rack=new THREE.Mesh(RBox(0.4,0.05,0.4,0.02),M.plastic);rack.position.y=-0.12;
+    g.add(tt,bot,lq,rack);g.position.set(XS[i]+0.55,0.15,1.3);L.add(g);
+    const pipe=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([V(XS[i],1.2,0.15),V(XS[i]+0.2,1.7,0.6),V(XS[i]+0.55,1.3,1.3),V(XS[i]+0.55,0.35,1.3)]),40,0.025,8),new THREE.MeshPhysicalMaterial({color:0xeaf2ee,transparent:true,opacity:.55,roughness:.2}));
+    L.add(pipe);return {g,lm,pipe,f,i};});
+  sec.hintTxt('يُمرَّر الغاز من كل بالون في أنبوب فيه ماء الجير الصافي…');
+  const bubbles=[];
+  await L.tw(3600,k=>{tubes.forEach(T=>{const v=vol(T.f,t);const milky=v>15;
+      if(Math.random()<Math.min(0.5,v/120)){const b=new THREE.Mesh(new THREE.SphereGeometry(0.02,8,6),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.8}));b.position.set(XS[T.i]+0.55+(Math.random()-.5)*0.08,0.2,1.3);L.add(b);bubbles.push(b);}
+      if(milky){T.lm.color.copy(lc(0xf2f6f6).lerp(lc(0xf7f7f2),k));T.lm.opacity=0.35+0.55*k;}
+      T.f.ball.scale.multiplyScalar(1-0.0035*Math.min(1,v/30));});
+    bubbles.forEach(b=>{b.position.y+=0.012;if(b.position.y>0.42){b.visible=false;}});});
+  bubbles.forEach(b=>L.remove(b));
+  tubes.forEach(T=>{st[T.f.id].lime=vol(T.f,t)>15;});
+  lime=true;busy=false;lockUI(false);renderNB();
+  L.toast('اكتمل الاختبار: لاحظ أيّ الأنابيب تعكّر فيها ماء الجير.');
+  sec.hintTxt('سجّل نشاط الخميرة في كل قارورة، ثم تحقّق من إجاباتك.');
+  YEAST.tubes=tubes;
+}
+function lockUI(on){sec.$$('.y-lock').forEach(b=>b.disabled=on);}
+function renderNB(){
+  sec.$('.nb').innerHTML=F.map(f=>{const s=st[f.id];return `<tr><td>${f.name}</td>${TIMES.map(tm=>`<td class="num">${s.C[tm]!=null?s.C[tm].toFixed(1):'—'}</td>`).join('')}
+    <td>${s.lime==null?'<span class="dash">—</span>':(s.lime?'تعكّر (أصبح حليبياً)':'بقي صافياً')}</td>
+    <td><select data-id="${f.id}" id="y-act-${f.id}" aria-label="نشاط الخميرة"><option value="">اختر</option>${Object.entries(ACT).map(([k,v])=>`<option value="${k}" ${s.act===k?'selected':''}>${v}</option>`).join('')}</select></td>
+    <td class="fb" id="y-fb-${f.id}"></td></tr>`;}).join('');
+}
+function check(){let ok=0,n=0;F.forEach(f=>{const s=st[f.id],e=sec.$('#y-fb-'+f.id);if(!s.act){e.textContent='';return;}n++;const g=s.act===f.ans;if(g)ok++;e.textContent=g?'✓ صحيح':'✗ قارن محيط البالون';e.className='fb '+(g?'ok':'bad');});
+  checked={ok,n};const m=sec.$('.msg');m.textContent=n?`أجبت عن ${n} من 4، الصحيح منها ${ok}.`:'اختر نشاط الخميرة لقارورة واحدة على الأقل.';m.className='fb msg '+(ok===4?'ok':'');}
+function reset(){if(busy)return;t=0;lime=false;sec.$('.clk').textContent='0 دقيقة';
+  (YEAST.tubes||[]).forEach(T=>{L.remove(T.g);L.remove(T.pipe);});YEAST.tubes=null;
+  F.forEach(f=>{Object.assign(st[f.id],{C:{},lime:null});setBalloon(f,0);f.foam.visible=false;});renderNB();
+  sec.hintTxt('مرّر الزمن 10 دقائق في كل مرة، ولاحظ انتفاخ البالونات.');L.toast('أُعيدت التجربة إلى بدايتها.');}
+
+YEAST.init=function(){
+  sec=expSection('yeast',{
+    title:'التنفس الخلوي والتخمر في الخميرة',grade:'ثالث متوسط',lesson:'أنشطة الخلية',
+    hint:'مرّر الزمن 10 دقائق في كل مرة، ولاحظ انتفاخ البالونات.',
+    tray:`<button class="btn primary y-lock adv">⏱ مرّر 10 دقائق</button><button class="btn y-lock limeb">🧪 اختبر الغاز بماء الجير</button><div class="spacer"></div><button class="btn y-lock rs">↻ إعادة التجربة</button>`,
+    hud:`<div class="hud"><div class="meterbox"><small>الزمن</small><div class="v clk" style="font-size:1.15rem">0 دقيقة</div></div></div>`,
+    notebookIntro:'<p class="muted">في كل قارورة: 2 جرام خميرة جافة في 100 مل ماء، ومعها ملعقة سكر (عدا الضابط). المحيط بالسنتيمتر، والقيم ناتجة عن نموذج محاكاة تقريبي.</p>',
+    cols:['القارورة','المحيط عند 10 د','20 د','30 د','40 د','ماء الجير','نشاط الخميرة',''],check:true,
+    learn:`<div class="panel"><h3>الفكرة العلمية</h3>
+      <p><b>التنفس الخلوي:</b> عملية تحدث في الميتوكندريا، تُحلّل فيها الخلية الجلوكوز بوجود الأكسجين لتحرير الطاقة.</p>
+      <p style="direction:rtl"><b>المعادلة:</b> جلوكوز + أكسجين ← ثاني أكسيد الكربون + ماء + طاقة</p>
+      <p><b>التخمر:</b> تحرير الطاقة من الجلوكوز بدون أكسجين، وينتج طاقة أقل. في الخميرة يحدث <b>التخمر الكحولي</b> وينتج كحولاً وثاني أكسيد الكربون، وفي العضلات المجهدة يحدث <b>التخمر اللبني</b> وينتج حمض اللبن.</p>
+      <p>الغاز الذي ينفخ البالون هو <b>ثاني أكسيد الكربون</b>، ودليل وجوده أنه يعكّر <b>ماء الجير</b> الصافي.</p></div>
+      <div class="panel"><h3>المتغيرات في التجربة</h3>
+      <p><b>المتغير المستقل:</b> درجة حرارة الماء.</p><p><b>المتغير التابع:</b> محيط البالون (كمية الغاز الناتج).</p>
+      <p><b>الثوابت:</b> كمية الخميرة، كمية السكر، كمية الماء، حجم البالون، زمن القياس.</p>
+      <p><b>الضابط:</b> القارورة التي فيها خميرة بدون سكر.</p>
+      <p class="muted">الخميرة كائن حي؛ الحرارة المرتفعة جداً (70°س) تقتلها فيتوقف نشاطها.</p></div>`,
+    quiz:[
+      {q:'الغاز الذي نفخ البالون في تجربة الخميرة هو:',o:['الأكسجين','ثاني أكسيد الكربون','النيتروجين'],a:1},
+      {q:'تعكّر ماء الجير دليل على وجود:',o:['ثاني أكسيد الكربون','الأكسجين','بخار الماء'],a:0},
+      {q:'أكبر انتفاخ للبالون كان في الماء:',o:['البارد 5°س','الدافئ 35°س','الساخن 70°س'],a:1},
+      {q:'لم ينتفخ البالون في الماء الساخن 70°س لأن:',o:['السكر لم يذب','الحرارة العالية قتلت الخميرة','الماء الساخن يمنع الغاز'],a:1},
+      {q:'التخمر يحرّر الطاقة من الجلوكوز:',o:['بوجود الأكسجين','بدون أكسجين','بوجود الضوء فقط'],a:1},
+      {q:'يحدث التنفس الخلوي في:',o:['البلاستيدات الخضراء','الميتوكندريا','الجدار الخلوي'],a:1},
+      {q:'ما فائدة القارورة التي فيها خميرة بدون سكر؟',o:['تجربة ضابطة للمقارنة','لزيادة الغاز','لقياس الحرارة'],a:0}],
+    renderReport:()=>rep()
+  });
+  L=new Lab(sec,{target:V(0,0.85,0.55),dist:a=>a<0.9?22:a<1.4?14.5:a<1.9?11:8.8});buildRoom(L);
+  F.forEach((f,i)=>{build(f,i);L.label(f.short,V(XS[i],0,1.95));L.onTap(()=>f.hit,()=>L.toast(`${f.name}: ${t?`المحيط الآن ≈ ${circ(vol(f,t)).toFixed(1)} سم`:'لم يبدأ التفاعل بعد، مرّر الزمن.'}`));});
+  L.hooks.push(frame);
+  sec.$('.adv').onclick=advance;sec.$('.limeb').onclick=limeTest;sec.$('.rs').onclick=reset;
+  sec.$('.nb').addEventListener('change',e=>{const s=e.target;if(s.dataset.id)st[s.dataset.id].act=s.value;});
+  sec.$('.chk').onclick=check;wireReport(sec,rep);renderNB();
+};
+function rep(){renderReport(sec,{title:'التنفس الخلوي والتخمر في الخميرة',grade:'ثالث متوسط',lesson:'أنشطة الخلية',
+  cols:['القارورة','المحيط 10 د (سم)','20 د','30 د','40 د','ماء الجير'],
+  rows:F.map(f=>{const s=st[f.id];return [f.name,...TIMES.map(tm=>s.C[tm]!=null?s.C[tm].toFixed(1):''),s.lime==null?'':(s.lime?'تعكّر':'بقي صافياً')];}),
+  note:'مثّل محيط البالون مع الزمن بيانياً في ورقة التقرير، وحدّد نشاط الخميرة في كل قارورة.'});}
+})();
+
+/* ================= EXP: النقل عبر الغشاء البلازمي ================= */
+const TRANS={};
+(function(){
+const MODES=[
+  {id:'diff',name:'الانتشار',sub:'جزيئات الأكسجين',dir:'with',type:'passive'},
+  {id:'fac',name:'النقل المُدعَّم',sub:'جزيئات الجلوكوز عبر البروتينات الناقلة',dir:'with',type:'passive'},
+  {id:'act',name:'النقل النشط',sub:'أيونات تُضخّ بمضخة بروتينية',dir:'against',type:'active'},
+  {id:'endo',name:'الإدخال الخلوي (البلعمة)',sub:'جسيم كبير يدخل الخلية',dir:'vesicle',type:'active'},
+  {id:'exo',name:'الإخراج الخلوي',sub:'حويصلة تُخرج موادها خارج الخلية',dir:'vesicle',type:'active'}
+];
+const DIR={with:'من التركيز المرتفع إلى المنخفض',against:'من التركيز المنخفض إلى المرتفع',vesicle:'داخل حويصلة (مواد كبيرة)'};
+const TYPE={passive:'نقل سلبي',active:'نقل نشط'};
+const XMIN=-6.6,XMAX=6.6,ZMIN=-1.5,ZMAX=1.5,YM=0.42,YT=2.4,YB=-2.4;
+const CH_X=[-5.0,-2.8],CH_Z=[-0.9,0,0.9],PUMP=V(4.2,0,0);
+let lastS=0;function simStep(){const now=performance.now();const dt=lastS?Math.min(0.06,(now-lastS)/1000):0.016;lastS=now;stepParts(dt);}
+let L,sec,busy=false,mode=null,parts=[],inst=null,atp=0,heads,tails,headPos=[],hidden=new Set(),vesicle=null,big=null,checked=null,running=false;
+const res={};MODES.forEach(m=>res[m.id]={done:false,ob:null,ib:null,oa:null,ia:null,atp:0,dir:'',type:''});
+
+/* ---------- membrane ---------- */
+function buildMembrane(){
+  const step=0.24,xs=[],zs=[];for(let x=XMIN-0.4;x<=XMAX+0.4;x+=step)xs.push(x);for(let z=ZMIN-0.1;z<=ZMAX+0.1;z+=step)zs.push(z);
+  const nearProt=(x,z)=>CH_X.some(cx=>CH_Z.some(cz=>Math.hypot(x-cx,z-cz)<0.36))||Math.hypot(x-PUMP.x,z-PUMP.z)<0.62;
+  xs.forEach(x=>zs.forEach(z=>{if(nearProt(x,z))return;[1,-1].forEach(s=>headPos.push(V(x+(s<0?step/2:0),s*0.3,z+(s<0?step/2:0))));}));
+  heads=new THREE.InstancedMesh(new THREE.SphereGeometry(0.1,10,8),new THREE.MeshStandardMaterial({color:0xe39a3b,roughness:.45}),headPos.length);
+  const tg=new THREE.CylinderGeometry(0.022,0.022,0.24,5);
+  tails=new THREE.InstancedMesh(tg,new THREE.MeshStandardMaterial({color:0xf2dfa8,roughness:.7}),headPos.length*2);
+  refreshMembrane();L.add(heads,tails);
+}
+const _m=new THREE.Matrix4(),_q=new THREE.Quaternion(),_s=V(1,1,1),_z=V(0,0,0);
+function refreshMembrane(){
+  headPos.forEach((p,i)=>{const hid=hidden.has(i);_m.compose(p,_q,hid?_z:_s);heads.setMatrixAt(i,_m);
+    [-0.04,0.04].forEach((o,k)=>{_m.compose(V(p.x+o,p.y*0.42,p.z+o*0.5),_q,hid?_z:_s);tails.setMatrixAt(i*2+k,_m);});});
+  heads.instanceMatrix.needsUpdate=true;tails.instanceMatrix.needsUpdate=true;
+}
+function hideRegion(x,r){hidden=new Set();headPos.forEach((p,i)=>{if(Math.abs(p.x-x)<r&&Math.abs(p.z)<r)hidden.add(i);});refreshMembrane();}
+function buildProteins(){
+  const pm=new THREE.MeshPhysicalMaterial({color:0x4f6fd1,roughness:.35,clearcoat:.4});
+  CH_X.forEach(cx=>CH_Z.forEach(cz=>{const g=new THREE.Group();
+    for(let k=0;k<6;k++){const a=k/6*Math.PI*2;const s=new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.95,10),pm);s.position.set(Math.cos(a)*0.22,0,Math.sin(a)*0.22);g.add(s);}
+    g.position.set(cx,0,cz);L.add(g);}));
+  const pump=new THREE.Group();const pmat=new THREE.MeshPhysicalMaterial({color:0x2f9d6a,roughness:.35,clearcoat:.4});
+  const a=new THREE.Mesh(new THREE.SphereGeometry(0.42,24,18),pmat);a.scale.set(1,1.35,1);
+  const b2=new THREE.Mesh(new THREE.SphereGeometry(0.3,20,14),pmat);b2.position.set(0.32,-0.25,0);
+  pump.add(a,b2);pump.position.copy(PUMP);L.add(pump);TRANS.pump=pump;
+}
+/* ---------- particles ---------- */
+const SPEC={
+  diff:{r:0.075,col:0xe2453c,out:40,in:4,speed:3.4},
+  fac:{r:0.12,col:0xf0c419,out:36,in:4,speed:3.0},
+  act:{r:0.095,col:0x8e5bd6,out:26,in:14,speed:1.4},
+  exo:{r:0.08,col:0x2bb0c9,out:0,in:0,speed:1.2}
+};
+function clearParts(){if(inst){L.remove(inst);inst=null;}parts=[];if(vesicle){L.remove(vesicle);vesicle=null;}if(big){L.remove(big);big=null;}hidden=new Set();refreshMembrane();}
+function spawn(id){
+  const s=SPEC[id];const n=s.out+s.in;
+  inst=new THREE.InstancedMesh(new THREE.SphereGeometry(s.r,14,10),new THREE.MeshPhysicalMaterial({color:s.col,roughness:.25,clearcoat:.6}),Math.max(n,20));
+  linearizeObj(inst);L.scene.add(inst);
+  for(let i=0;i<n;i++){const outside=i<s.out;parts.push({p:V(XMIN+Math.random()*(XMAX-XMIN),outside?YM+0.1+Math.random()*(YT-YM-0.2):YB+0.1+Math.random()*(-YM-YB-0.2),ZMIN+Math.random()*(ZMAX-ZMIN)),v:V(Math.random()-.5,Math.random()-.5,Math.random()-.5).normalize().multiplyScalar(s.speed),side:outside?1:-1,lock:false});}
+  drawParts();
+}
+function drawParts(){if(!inst)return;inst.count=parts.length;parts.forEach((o,i)=>{_m.compose(o.p,_q,_s);inst.setMatrixAt(i,_m);});inst.instanceMatrix.needsUpdate=true;}
+const counts=()=>({o:parts.filter(o=>o.p.y>0).length,i:parts.filter(o=>o.p.y<=0).length});
+function allowCross(o){
+  if(mode==='diff')return Math.random()<0.5;
+  if(mode==='fac')return CH_X.some(cx=>Math.abs(o.p.x-cx)<0.6);
+  return false;
+}
+function stepParts(dt){
+  const s=SPEC[mode];if(!s)return;
+  parts.forEach(o=>{if(o.lock)return;
+    o.v.x+=(Math.random()-.5)*4*dt;o.v.y+=(Math.random()-.5)*4*dt;o.v.z+=(Math.random()-.5)*4*dt;o.v.setLength(s.speed);
+    const prevY=o.p.y;o.p.addScaledVector(o.v,dt);
+    if(o.p.x<XMIN||o.p.x>XMAX){o.v.x*=-1;o.p.x=THREE.MathUtils.clamp(o.p.x,XMIN,XMAX);}
+    if(o.p.z<ZMIN||o.p.z>ZMAX){o.v.z*=-1;o.p.z=THREE.MathUtils.clamp(o.p.z,ZMIN,ZMAX);}
+    if(o.p.y>YT){o.v.y=-Math.abs(o.v.y);}if(o.p.y<YB){o.v.y=Math.abs(o.v.y);}
+    // membrane band
+    const inBand=Math.abs(o.p.y)<YM;
+    if(inBand&&!o.cross){
+      if(allowCross(o)){o.cross=true;o.v.y=Math.sign(-prevY||1)*Math.max(Math.abs(o.v.y),s.speed*0.7);}
+      else{o.v.y=Math.sign(prevY||1)*Math.abs(o.v.y);o.p.y=Math.sign(prevY||1)*YM;}
+    }
+    if(!inBand)o.cross=false;
+  });
+  drawParts();
+}
+/* ---------- HUD ---------- */
+function hud(){const c=counts();sec.$('.cO').textContent=c.o;sec.$('.cI').textContent=c.i;sec.$('.cA').textContent=atp;}
+function hudVes(o,i){sec.$('.cO').textContent=o;sec.$('.cI').textContent=i;sec.$('.cA').textContent=atp;}
+function atpFlash(at){
+  const t=canvasTex(128,64,(c,w,h)=>{c.fillStyle='#f6c945';c.beginPath();c.roundRect?c.roundRect(4,8,w-8,h-16,18):c.rect(4,8,w-8,h-16);c.fill();c.fillStyle='#3a2a00';c.font='bold 34px "IBM Plex Mono",monospace';c.textAlign='center';c.textBaseline='middle';c.fillText('ATP',w/2,h/2+2);});
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthWrite:false}));s.scale.set(0.8,0.4,1);s.position.copy(at);L.scene.add(s);
+  L.tween(900,k=>{s.position.y=at.y-0.2-k*0.6;s.material.opacity=1-k;},()=>L.scene.remove(s));
+}
+/* ---------- runs ---------- */
+async function run(id){
+  if(busy){L.toast('انتظر حتى تنتهي الخطوة الحالية.');return;}
+  busy=true;lock(true);mode=id;atp=0;clearParts();
+  sec.$$('.m-btn').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===id));
+  const M_=MODES.find(m=>m.id===id);sec.$('.mname').textContent=M_.name;sec.hintTxt(`${M_.name}: ${M_.sub}. لاحظ عدد الجسيمات في كل جهة، وهل تُستهلك طاقة.`);
+  const R=res[id];
+  try{
+  if(id==='diff'||id==='fac'||id==='act'){
+    spawn(id);const c0=counts();R.ob=c0.o;R.ib=c0.i;hud();
+    await wait(600);
+    if(id==='act'){
+      const dur=14000,t0=performance.now();let nextPump=t0+400;
+      lastS=0;await L.tw(dur,()=>{const now=performance.now();simStep();
+        if(now>nextPump){const ins=parts.filter(o=>!o.lock&&o.p.y<0);if(ins.length>2){
+          const o=ins.reduce((a,b)=>a.p.distanceTo(PUMP)<b.p.distanceTo(PUMP)?a:b);o.lock=true;nextPump=now+650;
+          const from=o.p.clone(),mid=V(PUMP.x,-0.15,PUMP.z),to=V(PUMP.x+(Math.random()-.5)*0.6,0.9,PUMP.z+(Math.random()-.5)*0.4);
+          L.tween(260,k=>o.p.copy(from.clone().lerp(V(PUMP.x,-0.75,PUMP.z),k)),()=>{atp++;atpFlash(V(PUMP.x+0.5,-0.6,PUMP.z+0.3));
+            TRANS.pump.scale.set(1.12,0.9,1.12);
+            L.tween(320,k=>{o.p.copy(V(PUMP.x,-0.75+1.2*k,PUMP.z));TRANS.pump.scale.set(1.12-0.12*k,0.9+0.1*k,1.12-0.12*k);},()=>{o.p.copy(to);o.lock=false;o.v.y=Math.abs(o.v.y);});});
+        }}
+        hud();});
+    }else{
+      lastS=0;await L.tw(id==='diff'?12000:15000,()=>{simStep();hud();});
+    }
+    await wait(300);const c1=counts();R.oa=c1.o;R.ia=c1.i;R.atp=atp;
+  }else if(id==='endo'){
+    R.ob=1;R.ib=0;hudVes(1,0);
+    big=new THREE.Group();const bm=new THREE.MeshPhysicalMaterial({color:0x7fbf3f,roughness:.5});
+    const core=new THREE.Mesh(new THREE.SphereGeometry(0.38,24,18),bm);core.scale.set(1.25,0.85,0.95);big.add(core);
+    for(let k=0;k<10;k++){const f=new THREE.Mesh(new THREE.CylinderGeometry(0.015,0.015,0.35,5),bm);const a=k/10*Math.PI*2;f.position.set(Math.cos(a)*0.45,Math.sin(a)*0.3,0);f.rotation.z=a+Math.PI/2;big.add(f);}
+    big.position.set(-0.6,2.1,0);L.add(big);
+    await L.move(big,V(-0.6,0.85,0),1800);
+    // membrane wraps around the particle
+    hideRegion(-0.6,0.75);atp++;atpFlash(V(0.2,-0.4,0.6));hud();hudVes(1,0);
+    vesicle=shell(0.68);vesicle.position.set(-0.6,0.45,0);L.add(vesicle);
+    const cup=vesicle.userData.parts;
+    await L.tw(1600,k=>{big.position.y=0.85-0.4*ease(k);cup.forEach(p=>{const show=p.y0<(-0.68+1.36*k);p.m.visible=show;});});
+    await L.tw(500,()=>{});
+    hidden=new Set();refreshMembrane();
+    await L.tw(2400,k=>{const y=0.45-1.9*ease(k);vesicle.position.y=y;big.position.y=y;});
+    R.oa=0;R.ia=1;R.atp=atp;hudVes(0,1);
+  }else if(id==='exo'){
+    R.ob=0;R.ib=8;hudVes(0,8);
+    vesicle=shell(0.6);vesicle.position.set(1.7,-1.9,0);L.add(vesicle);
+    const s=SPEC.exo;inst=new THREE.InstancedMesh(new THREE.SphereGeometry(s.r,12,8),new THREE.MeshPhysicalMaterial({color:s.col,roughness:.25,clearcoat:.6}),8);linearizeObj(inst);L.scene.add(inst);
+    for(let k=0;k<8;k++)parts.push({p:V(1.7+(Math.random()-.5)*0.5,-1.9+(Math.random()-.5)*0.5,(Math.random()-.5)*0.5),v:V(0,0,0),off:V((Math.random()-.5)*0.5,(Math.random()-.5)*0.5,(Math.random()-.5)*0.5)});
+    drawParts();
+    await L.tw(2400,k=>{const y=-1.9+1.55*ease(k);vesicle.position.y=y;parts.forEach(o=>o.p.copy(V(1.7,y,0).add(o.off)));drawParts();});
+    hideRegion(1.7,0.7);atp++;atpFlash(V(2.5,-0.6,0.6));
+    const vp=vesicle.userData.parts;
+    await L.tw(1400,k=>{vp.forEach(p=>{p.m.visible=p.y0<(0.6-1.2*k);});});
+    L.remove(vesicle);vesicle=null;
+    const targets=parts.map(()=>V(1.7+(Math.random()-.5)*4,1.0+Math.random()*1.2,(Math.random()-.5)*2.4));
+    const starts=parts.map(o=>o.p.clone());
+    await L.tw(2400,k=>{parts.forEach((o,i)=>o.p.copy(starts[i].clone().lerp(targets[i],ease(k))));drawParts();if(k>0.4&&hidden.size){hidden=new Set();refreshMembrane();}});
+    hidden=new Set();refreshMembrane();
+    R.oa=8;R.ia=0;R.atp=atp;hudVes(8,0);
+  }
+  R.done=true;
+  L.toast(`انتهت المحاكاة: خارج الخلية ${R.ob} ← ${R.oa}، داخل الخلية ${R.ib} ← ${R.ia}، جزيئات ATP المستهلكة: ${R.atp}.`);
+  sec.hintTxt('سجّل اتجاه الحركة ونوع النقل في دفتر المختبر، ثم جرّب نوعاً آخر.');
+  }finally{busy=false;lock(false);renderNB();}
+}
+function shell(r){const g=new THREE.Group(),arr=[];const hm=new THREE.MeshStandardMaterial({color:0xe39a3b,roughness:.45});const hg=new THREE.SphereGeometry(0.09,8,6);
+  const n=90;for(let k=0;k<n;k++){const y=1-2*(k+0.5)/n,rr=Math.sqrt(1-y*y),a=k*2.399963;const m=new THREE.Mesh(hg,hm);m.position.set(Math.cos(a)*rr*r,y*r,Math.sin(a)*rr*r);g.add(m);arr.push({m,y0:y*r});}
+  g.userData.parts=arr;linearizeObj(g);return g;}
+function lock(on){sec.$$('.t-lock').forEach(b=>b.disabled=on);}
+function renderNB(){
+  sec.$('.nb').innerHTML=MODES.map(m=>{const r=res[m.id];const ar=(a,b)=>r.done?`${a} ← ${b}`:'<span class="dash">—</span>';
+    return `<tr><td>${m.name}</td><td class="num">${ar(r.ob,r.oa)}</td><td class="num">${ar(r.ib,r.ia)}</td><td class="num">${r.done?r.atp:'—'}</td>
+    <td><select data-id="${m.id}" data-k="dir" id="t-dir-${m.id}" aria-label="اتجاه الحركة"><option value="">اختر</option>${Object.entries(DIR).map(([k,v])=>`<option value="${k}" ${r.dir===k?'selected':''}>${v}</option>`).join('')}</select></td>
+    <td><select data-id="${m.id}" data-k="type" id="t-ty-${m.id}" aria-label="نوع النقل"><option value="">اختر</option>${Object.entries(TYPE).map(([k,v])=>`<option value="${k}" ${r.type===k?'selected':''}>${v}</option>`).join('')}</select></td>
+    <td class="fb" id="t-fb-${m.id}"></td></tr>`;}).join('');
+}
+function check(){let ok=0,n=0;MODES.forEach(m=>{const r=res[m.id],e=sec.$('#t-fb-'+m.id);if(!r.dir&&!r.type){e.textContent='';return;}n++;const g=r.dir===m.dir&&r.type===m.type;if(g)ok++;
+  e.textContent=g?'✓ صحيح':(r.type!==m.type?'✗ هل استُهلكت طاقة؟':'✗ راجع اتجاه الحركة');e.className='fb '+(g?'ok':'bad');});
+  checked={ok,n};const m=sec.$('.msg');m.textContent=n?`أجبت عن ${n} من 5، الصحيح منها ${ok}.`:'اختر الإجابات لنوع واحد على الأقل.';m.className='fb msg '+(ok===5?'ok':'');}
+
+TRANS.init=function(){
+  sec=expSection('trans',{
+    title:'النقل عبر الغشاء البلازمي',grade:'ثالث متوسط',lesson:'أنشطة الخلية',
+    hint:'اختر نوع النقل من الشريط لتشغيل المحاكاة، ولاحظ عدد الجسيمات في كل جهة.',
+    tray:MODES.map(m=>`<button class="tool m-btn t-lock" data-m="${m.id}" aria-pressed="false"><span class="dotn"></span>${m.name}</button>`).join(''),
+    hud:`<div class="hud"><div class="meterbox tbox"><small>النوع المعروض</small><div class="v mname" style="font-size:1rem;font-family:var(--f-display)">—</div>
+      <div class="trow"><span><small>خارج الخلية</small><b class="cO">0</b></span><span><small>داخل الخلية</small><b class="cI">0</b></span><span><small>ATP</small><b class="cA" style="color:#f6c945">0</b></span></div></div></div>`,
+    notebookIntro:'<p class="muted">نموذج تعليمي مبسّط ومكبّر للغشاء البلازمي؛ الأعداد تمثل عدد الجسيمات في المحاكاة.</p>',
+    cols:['نوع النقل','خارج الخلية (قبل ← بعد)','داخل الخلية (قبل ← بعد)','ATP المستهلك','اتجاه الحركة','نوع النقل',''],check:true,
+    learn:`<div class="panel"><h3>الغشاء البلازمي</h3>
+      <p>غشاء <b>اختياري النفاذية</b> يتكوّن من طبقتين من الدهون المفسفرة تتخللهما بروتينات، يسمح لبعض المواد بالمرور ويمنع أخرى.</p>
+      <p><b>النقل السلبي:</b> حركة المواد عبر الغشاء دون أن تستهلك الخلية طاقة، من التركيز المرتفع إلى المنخفض. ومنه <b>الانتشار</b> و<b>الخاصية الأسموزية</b> و<b>النقل المُدعَّم</b> الذي تساعد فيه البروتينات الناقلة.</p></div>
+      <div class="panel"><h3>النقل النشط</h3>
+      <p>حركة المواد عبر الغشاء <b>باستهلاك طاقة</b> (ATP)، وقد تكون من التركيز المنخفض إلى المرتفع بمساعدة بروتينات ناقلة.</p>
+      <p><b>الإدخال الخلوي:</b> تحيط الخلية بالمادة الكبيرة بجزء من غشائها فتتكوّن حويصلة تدخل الخلية، مثل البلعمة.</p>
+      <p><b>الإخراج الخلوي:</b> تندمج حويصلة بالغشاء البلازمي فتُخرج محتوياتها خارج الخلية.</p></div>`,
+    quiz:[
+      {q:'يحتاج النقل النشط إلى:',o:['طاقة من الخلية','ضوء','ماء فقط'],a:0},
+      {q:'في الانتشار تتحرك الجزيئات من:',o:['التركيز المنخفض إلى المرتفع','التركيز المرتفع إلى المنخفض','لا تتحرك'],a:1},
+      {q:'البروتينات الناقلة التي تساعد الجلوكوز على العبور دون طاقة تمثل:',o:['النقل المُدعَّم','الإخراج الخلوي','النقل النشط'],a:0},
+      {q:'بلعمة خلية الدم البيضاء للبكتيريا مثال على:',o:['الإخراج الخلوي','الإدخال الخلوي','الانتشار'],a:1},
+      {q:'الغشاء البلازمي اختياري النفاذية، أي أنه:',o:['يسمح لكل المواد بالمرور','يمنع كل المواد','يسمح لبعض المواد ويمنع أخرى'],a:2},
+      {q:'أيّ أنواع النقل الآتية يُعدّ نقلاً سلبياً؟',o:['الإدخال الخلوي','الخاصية الأسموزية','الإخراج الخلوي'],a:1}],
+    renderReport:()=>rep()
+  });
+  L=new Lab(sec,{target:V(0,-0.1,0),dist:a=>a<0.9?20:a<1.4?13.5:a<1.9?11:9.5,exposure:0.95});
+  L.scene.background=new THREE.Color(0x0f1d22);L.scene.environment=null;
+  L.controls.minPolarAngle=0.6;L.controls.maxPolarAngle=1.75;
+  // compartments
+  const outM=new THREE.MeshBasicMaterial({color:0x6fb6d6,transparent:true,opacity:.07,depthWrite:false,side:THREE.DoubleSide});
+  const inM=new THREE.MeshBasicMaterial({color:0xd9b35b,transparent:true,opacity:.08,depthWrite:false,side:THREE.DoubleSide});
+  const ob=new THREE.Mesh(new THREE.BoxGeometry(XMAX-XMIN+0.8,YT-YM,ZMAX-ZMIN+0.4),outM);ob.position.set(0,(YT+YM)/2,0);
+  const ib=new THREE.Mesh(new THREE.BoxGeometry(XMAX-XMIN+0.8,-YM-YB,ZMAX-ZMIN+0.4),inM);ib.position.set(0,(YB-YM)/2,0);
+  L.scene.add(ob,ib);
+  buildMembrane();buildProteins();
+  L.label('خارج الخلية',V(-5.6,2.2,1.6));L.label('داخل الخلية (السيتوبلازم)',V(-3.6,-2.1,1.6));
+  L.label('بروتينات ناقلة',V(CH_X[0],-0.8,1.4),'small');L.label('بروتينات ناقلة',V(CH_X[1],-0.8,1.4),'small');L.label('مضخة بروتينية',V(PUMP.x,-1.0,0.9),'small');
+  L.label('الغشاء البلازمي',V(2.7,0.75,1.6),'small');
+  sec.$('.tray').addEventListener('click',e=>{const b=e.target.closest('.m-btn');if(b)run(b.dataset.m);});
+  sec.$('.nb').addEventListener('change',e=>{const s=e.target;if(s.dataset.id)res[s.dataset.id][s.dataset.k]=s.value;});
+  sec.$('.chk').onclick=check;wireReport(sec,rep);renderNB();
+};
+function rep(){renderReport(sec,{title:'النقل عبر الغشاء البلازمي',grade:'ثالث متوسط',lesson:'أنشطة الخلية',
+  cols:['نوع النقل','خارج الخلية (قبل ← بعد)','داخل الخلية (قبل ← بعد)','جزيئات ATP المستهلكة'],
+  rows:MODES.map(m=>{const r=res[m.id];return [m.name,r.done?`${r.ob} ← ${r.oa}`:'',r.done?`${r.ib} ← ${r.ia}`:'',r.done?String(r.atp):''];}),
+  note:'حدّد في ورقة التقرير اتجاه حركة المواد ونوع النقل (سلبي أو نشط) لكل حالة.'});}
+})();
+
 /* ================= pH lab: class results tab ================= */
 (function(){
   const lab=document.getElementById('lab');const tabs=lab.querySelector('.tabs');
@@ -1488,6 +1895,8 @@ function rep(){renderReport(sec,{title:'البناء الضوئي في نبات 
 EXP_MODS.chg=CHG;
 EXP_MODS.osmo=OSMO;
 EXP_MODS.photo=PHOTO;
+EXP_MODS.yeast=YEAST;
+EXP_MODS.trans=TRANS;
 
 if(location.hash.length>1)openExp(location.hash.slice(1));
 </script>
@@ -1502,7 +1911,7 @@ if(location.hash.length>1)openExp(location.hash.slice(1));
   if('serviceWorker' in navigator&&location.protocol!=='file:'){
     navigator.serviceWorker.register('sw.js').then(function(r){
       var st=document.getElementById('offState');
-      navigator.serviceWorker.ready.then(function(){st.textContent='✓ جاهز للعمل دون إنترنت';});
+      navigator.serviceWorker.ready.then(function(reg){try{reg.active&&reg.active.postMessage('ensure');}catch(e){}st.textContent='✓ جاهز للعمل دون إنترنت';});
     }).catch(function(){});
   }
 })();
