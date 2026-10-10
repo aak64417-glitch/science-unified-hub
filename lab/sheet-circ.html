@@ -1,0 +1,67 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ورقة تقرير: الدوائر الكهربائية البسيطة</title><style>
+@font-face{font-family:Plex;font-weight:400;src:url(ibm-plex-sans-arabic-arabic-400-normal.woff2)}
+@font-face{font-family:Plex;font-weight:400;src:url(ibm-plex-sans-arabic-latin-400-normal.woff2);unicode-range:U+0000-00FF}
+@font-face{font-family:Plex;font-weight:600;src:url(ibm-plex-sans-arabic-arabic-600-normal.woff2)}
+@font-face{font-family:Plex;font-weight:600;src:url(ibm-plex-sans-arabic-latin-600-normal.woff2);unicode-range:U+0000-00FF}
+@font-face{font-family:Readex;font-weight:600;src:url(readex-pro-arabic-600-normal.woff2)}
+@font-face{font-family:Readex;font-weight:600;src:url(readex-pro-latin-600-normal.woff2);unicode-range:U+0000-00FF}
+@page{size:210mm 297mm;margin:0}
+@media print{html,body{width:210mm;height:297mm;margin:0;overflow:hidden;position:relative}.sheet{position:absolute!important;top:0;left:0;transform-origin:0 0;transform:translateX(210mm) rotate(90deg)}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Plex,sans-serif;color:#10302c;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sheet{width:297mm;height:210mm;display:flex;position:relative}
+.cut{position:absolute;top:4mm;bottom:4mm;left:148.5mm;border-left:1px dashed #8aa;}
+.cut span{position:absolute;top:-1mm;left:-9px;font-size:11px;color:#8aa;background:#fff}
+.half{width:148.5mm;height:210mm;padding:7mm 8mm 6mm;display:flex;flex-direction:column;gap:3mm;font-size:8.6pt;line-height:1.45}
+.hd{display:flex;align-items:center;gap:3mm;border-bottom:1.6pt solid #0d5f56;padding-bottom:2mm}
+.logo{width:10mm;height:10mm;border-radius:2.5mm;background:#0d5f56;display:grid;place-items:center;flex:none}
+.hd h1{font-family:Readex,Plex,sans-serif;font-size:12pt;margin:0;line-height:1.25}
+.hd small{display:block;font-size:7.4pt;color:#4b625e}
+.hd .tag{margin-inline-start:auto;font-size:7pt;font-weight:600;background:#dcefeb;color:#0d5f56;padding:1mm 2.5mm;border-radius:99px;white-space:nowrap}
+.fields{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:3mm}
+.f{display:flex;gap:1.5mm;align-items:flex-end;font-weight:600;white-space:nowrap}
+.f i{flex:1;border-bottom:.8pt dotted #4b625e;height:4.5mm}
+h2{font-family:Readex,Plex,sans-serif;font-size:9pt;margin:0 0 1mm;color:#0d5f56;display:flex;align-items:center;gap:1.5mm}
+h2 b{width:4.4mm;height:4.4mm;border-radius:50%;background:#0d5f56;color:#fff;font-size:7pt;display:grid;place-items:center}
+p{margin:0}
+.line{border-bottom:.8pt dotted #4b625e;height:5.6mm}
+table{width:100%;border-collapse:collapse;font-size:7.8pt}
+th{background:#0d5f56;color:#fff;font-weight:600;padding:1.3mm 1mm;font-size:7.4pt;line-height:1.25}
+td{border:.6pt solid #b7c8c4;height:10.4mm;padding:0 1.2mm;vertical-align:middle}
+td:first-child{font-weight:600;background:#f1f6f5;width:25mm;line-height:1.2}
+.chk{display:flex;gap:1.6mm;justify-content:center;font-size:6.6pt;color:#4b625e}
+.chk span{display:flex;flex-direction:column;align-items:center;gap:.4mm}
+.chk span::before{content:"";width:3mm;height:3mm;border:.7pt solid #4b625e;border-radius:50%}
+.scale{display:flex;height:5mm;border-radius:1.2mm;overflow:hidden}
+.scale span{flex:1;color:#fff;font-size:6.6pt;font-weight:600;display:grid;place-items:center;text-shadow:0 0 2px rgba(0,0,0,.5)}
+.scap{display:flex;justify-content:space-between;font-size:6.6pt;color:#4b625e;margin-top:.5mm}
+.key{display:flex;gap:4mm;font-size:7pt;color:#4b625e}
+.fill{display:inline-block;min-width:16mm;border-bottom:.8pt dotted #4b625e}
+.ft{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;border-top:.6pt solid #b7c8c4;padding-top:1.6mm;font-size:7.4pt}
+.score{display:flex;align-items:center;gap:1.5mm;font-weight:600}
+.score i{width:11mm;height:7mm;border:.8pt solid #0d5f56;border-radius:1.5mm}
+.muted{color:#4b625e;font-size:6.8pt}
+
+.opt{display:flex;gap:2mm;justify-content:center;font-size:6.6pt;color:#4b625e;flex-wrap:wrap}
+.opt span{display:flex;align-items:center;gap:.8mm}
+.opt span::before{content:"";width:2.8mm;height:2.8mm;border:.7pt solid #4b625e;border-radius:.6mm}
+.chips{display:flex;flex-wrap:wrap;gap:1.5mm}.chips span{background:#dcefeb;color:#0d5f56;border-radius:99px;padding:.5mm 2.4mm;font-size:7pt;font-weight:600}
+.draw{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm}.draw div{border:.7pt solid #b7c8c4;border-radius:50%;aspect-ratio:1;max-height:30mm;margin:auto;width:100%;display:flex;align-items:flex-end;justify-content:center;font-size:6.8pt;color:#4b625e;padding-bottom:1mm}
+.graph{height:30mm;border-inline-start:1pt solid #4b625e;border-bottom:1pt solid #4b625e;background-image:linear-gradient(#dfe8e6 .5pt,transparent .5pt),linear-gradient(90deg,#dfe8e6 .5pt,transparent .5pt);background-size:5mm 5mm;position:relative;margin:0 2mm 5mm 8mm;direction:ltr}
+.graph .xl{position:absolute;bottom:-4.6mm;left:0;right:0;text-align:center;font-size:6.8pt;color:#4b625e;direction:rtl}
+.graph .yl{position:absolute;left:-6mm;top:50%;transform:rotate(-90deg) translateX(50%);transform-origin:left;font-size:6.8pt;color:#4b625e;white-space:nowrap}
+.vars{display:grid;gap:1.4mm}
+</style></head><body><style>@media screen{body{background:#e9eeec}.sheet{background:#fff;margin:0 auto 24px;box-shadow:0 4px 18px rgba(0,0,0,.12)}
+.pbar{position:sticky;top:0;z-index:9;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;padding:10px 12px;background:#0d5f56;color:#fff;font-family:Plex,sans-serif;direction:rtl}
+.pbar button,.pbar a{font:inherit;font-weight:600;border:0;border-radius:10px;padding:8px 16px;background:#fff;color:#0d5f56;cursor:pointer;text-decoration:none}
+.pbar small{opacity:.85}}@media print{.pbar{display:none!important}body{zoom:1!important}}</style>
+<div class="pbar"><button onclick="window.print()">🖨 اطبع الورقة</button><small>ورق A4 · الاتجاه العمودي (العادي) · بدون تصغير</small><a href="./">↩ المختبر</a></div>
+<script>(function(){function fit(){var w=Math.min(1,(innerWidth-8)/1123);document.body.style.zoom=w;}fit();addEventListener('resize',fit);
+addEventListener('beforeprint',function(){document.body.style.zoom=1});addEventListener('afterprint',fit);
+if(/print/.test(location.search)){document.fonts.ready.then(function(){setTimeout(function(){window.print()},400)})}})();</script><div class="sheet"><section class="half"><div class="hd"><div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6L4.5 19a1.5 1.5 0 0 0 1.3 2h12.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/><path d="M7 15h10"/></svg></div><div><h1>تقرير تجربة: الدوائر الكهربائية البسيطة</h1><small>المختبر الافتراضي الذكي · المرحلة المتوسطة · مدرسة أبي الدرداء المتوسطة</small></div><span class="tag">فيزياء</span></div>
+  <div class="fields"><div class="f">اسم الطالب: <i></i></div><div class="f">الصف/الفصل: <i></i></div><div class="f">التاريخ: <i></i></div></div>
+  <div><h2><b>1</b>الهدف</h2><p>أن أقارن بين توصيل المصابيح على التوالي وعلى التوازي.</p></div><div><h2><b>2</b>توقّعي قبل التجربة</h2><p>أتوقع أن تنطفئ المصابيح عند فكّ مصباح في دائرة <span class="fill" style="min-width:28mm"></span> لأن <span class="fill" style="min-width:30mm"></span></p></div><div><h2><b>3</b>جدول النتائج</h2><table><thead><tr><th>نوع التوصيل</th><th>عدد المصابيح</th><th>مصباح مفكوك؟</th><th>التيار (A)</th><th>سطوع المصابيح</th></tr></thead><tbody><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr></tbody></table></div><div><h2><b>4</b>ارسم مخطط الدائرتين بالرموز</h2><div class="draw" style="grid-template-columns:1fr 1fr"><div style="border-radius:3mm;aspect-ratio:auto;height:30mm;max-height:none">توالي</div><div style="border-radius:3mm;aspect-ratio:auto;height:30mm;max-height:none">توازي</div></div></div><div><h2><b>5</b>الاستنتاج</h2><p>في التوصيل على التوالي إذا انقطع المسار <span class="fill" style="min-width:30mm"></span>، وفي التوصيل على التوازي <span class="fill" style="min-width:40mm"></span></p><div class="line"></div></div><div><h2><b>6</b>سؤال للتفكير</h2><p>لماذا تُوصَّل الأجهزة في المنازل على التوازي؟</p><div class="line"></div></div>
+  <div class="ft"><div><div>توقيع المعلم: <span class="fill" style="min-width:28mm"></span></div><div class="muted">إعداد أ. علي البقاشي</div></div><div class="score">الدرجة <i></i> / 10</div></div></section><section class="half"><div class="hd"><div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6L4.5 19a1.5 1.5 0 0 0 1.3 2h12.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/><path d="M7 15h10"/></svg></div><div><h1>تقرير تجربة: الدوائر الكهربائية البسيطة</h1><small>المختبر الافتراضي الذكي · المرحلة المتوسطة · مدرسة أبي الدرداء المتوسطة</small></div><span class="tag">فيزياء</span></div>
+  <div class="fields"><div class="f">اسم الطالب: <i></i></div><div class="f">الصف/الفصل: <i></i></div><div class="f">التاريخ: <i></i></div></div>
+  <div><h2><b>1</b>الهدف</h2><p>أن أقارن بين توصيل المصابيح على التوالي وعلى التوازي.</p></div><div><h2><b>2</b>توقّعي قبل التجربة</h2><p>أتوقع أن تنطفئ المصابيح عند فكّ مصباح في دائرة <span class="fill" style="min-width:28mm"></span> لأن <span class="fill" style="min-width:30mm"></span></p></div><div><h2><b>3</b>جدول النتائج</h2><table><thead><tr><th>نوع التوصيل</th><th>عدد المصابيح</th><th>مصباح مفكوك؟</th><th>التيار (A)</th><th>سطوع المصابيح</th></tr></thead><tbody><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr><tr><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td><td style="height:7.5mm"></td></tr></tbody></table></div><div><h2><b>4</b>ارسم مخطط الدائرتين بالرموز</h2><div class="draw" style="grid-template-columns:1fr 1fr"><div style="border-radius:3mm;aspect-ratio:auto;height:30mm;max-height:none">توالي</div><div style="border-radius:3mm;aspect-ratio:auto;height:30mm;max-height:none">توازي</div></div></div><div><h2><b>5</b>الاستنتاج</h2><p>في التوصيل على التوالي إذا انقطع المسار <span class="fill" style="min-width:30mm"></span>، وفي التوصيل على التوازي <span class="fill" style="min-width:40mm"></span></p><div class="line"></div></div><div><h2><b>6</b>سؤال للتفكير</h2><p>لماذا تُوصَّل الأجهزة في المنازل على التوازي؟</p><div class="line"></div></div>
+  <div class="ft"><div><div>توقيع المعلم: <span class="fill" style="min-width:28mm"></span></div><div class="muted">إعداد أ. علي البقاشي</div></div><div class="score">الدرجة <i></i> / 10</div></div></section><div class="cut"><span>✂</span></div></div></body></html>
