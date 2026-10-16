@@ -712,133 +712,163 @@ window.addEventListener('load',function(){
     return origOpen.apply(window,arguments);
   };
 })();
-// ===== تقرير مفصل لكل تكليف بالرسوم البيانية 2026-10-16 =====
+// ===== تقرير التكليف في صفحة واحدة مع المشاركة والتنزيل والطباعة 2026-10-16 =====
 window.addEventListener('load',function(){
   if(typeof window.renderTasks!=='function')return;
   function cls(v){v=String(v==null?'':v).trim();
     if(/^\d{4}-\d{2}-\d{2}T/.test(v)){var d=new Date(new Date(v).getTime()+12*3600e3);v=(d.getUTCMonth()+1)+'/'+d.getUTCDate();}return v}
   function E(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-  function fd(v){if(!v)return '—';try{return new Intl.DateTimeFormat('ar-SA',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(v))}catch(e){return String(v)}}
-  function dur(s){s=Number(s||0);if(!(s>0))return '—';var m=Math.floor(s/60),x=Math.round(s%60);return m+'د '+x+'ث'}
+  function fd(v,short){if(!v)return '—';try{return new Intl.DateTimeFormat('ar-SA',short?{month:'numeric',day:'numeric'}:{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(v))}catch(e){return String(v)}}
   function pj(v){if(v&&typeof v==='object')return v;try{return JSON.parse(String(v||''))}catch(e){return null}}
   function avg(a){return a.length?a.reduce(function(x,y){return x+y},0)/a.length:0}
   function r0(x){return Math.round(x)}
-  var BANDS=[{n:'ممتاز',min:90,c:'#104281'},{n:'جيد جدًا',min:80,c:'#1c5cab'},{n:'جيد',min:70,c:'#2a78d6'},{n:'مقبول',min:60,c:'#5598e7'},{n:'يحتاج دعمًا',min:0,c:'#86b6ef'}];
+  var BANDS=[{n:'ممتاز',min:90,c:'#104281',t:'#fff'},{n:'جيد جدًا',min:80,c:'#1c5cab',t:'#fff'},{n:'جيد',min:70,c:'#2a78d6',t:'#fff'},{n:'مقبول',min:60,c:'#6da7ec',t:'#0b0b0b'},{n:'يحتاج دعمًا',min:0,c:'#b7d3f6',t:'#0b0b0b'}];
   function band(p){for(var i=0;i<BANDS.length;i++)if(p>=BANDS[i].min)return i;return BANDS.length-1}
 
-  function vbars(items,opt){ // أعمدة رأسية من اليمين لليسار
-    var W=640,H=260,pr=40,pb=56,pt=24,max=opt.max||Math.max.apply(null,items.map(function(i){return i.value}).concat([1]));
-    var bw=(W-pr-10)/items.length,g='';
-    for(var k=0;k<=4;k++){var y=pt+(H-pt-pb)*(1-k/4);g+='<line x1="10" x2="'+(W-pr)+'" y1="'+y+'" y2="'+y+'" stroke="#e7e6e2"/><text x="'+(W-pr+6)+'" y="'+(y+4)+'" direction="ltr" text-anchor="start" font-size="11" fill="#76746f">'+r0(max*k/4)+(opt.pct?'%':'')+'</text>'}
-    items.forEach(function(it,i){var h=(H-pt-pb)*(it.value/max),x=W-pr-(i+1)*bw+bw*0.18,w=bw*0.64,y=H-pb-h,cx=x+w/2;
-      g+='<g><title>'+E(it.tip||(it.label+': '+it.display))+'</title><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+Math.max(h,0)+'" rx="4" fill="'+(it.color||'#2a78d6')+'"/>'+
-      '<text x="'+cx+'" y="'+(y-6)+'" direction="ltr" text-anchor="middle" font-size="12" font-weight="700" fill="#0b0b0b">'+E(it.display)+'</text>'+
-      '<text x="'+cx+'" y="'+(H-pb+18)+'" text-anchor="middle" font-size="12" fill="#52514e">'+E(it.label)+'</text>'+(it.sub?'<text x="'+cx+'" y="'+(H-pb+34)+'" direction="ltr" text-anchor="middle" font-size="11" fill="#76746f">'+E(it.sub)+'</text>':'')+'</g>'});
-    return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+E(opt.aria||'')+'">'+g+'<line x1="10" x2="'+(W-pr)+'" y1="'+(H-pb)+'" y2="'+(H-pb)+'" stroke="#b9b7b0"/></svg>';
+  function distChart(bc,np){ // أعمدة رأسية من اليمين لليسار
+    var W=360,H=170,pb=40,pt=20,max=Math.max.apply(null,bc.concat([1])),bw=(W-10)/5,g='';
+    bc.forEach(function(v,i){var h=(H-pt-pb)*(v/max),x=W-(i+1)*bw+bw*0.16,w=bw*0.68,y=H-pb-h,cx=x+w/2,b=BANDS[i];
+      g+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+Math.max(h,1)+'" rx="4" fill="'+b.c+'"/>'+
+      '<text x="'+cx+'" y="'+(y-5)+'" direction="ltr" text-anchor="middle" font-size="11" font-weight="700" fill="#0b0b0b">'+v+' ('+(np?r0(v/np*100):0)+'%)</text>'+
+      '<text x="'+cx+'" y="'+(H-pb+15)+'" text-anchor="middle" font-size="11" fill="#33322f">'+b.n+'</text>'+
+      '<text x="'+cx+'" y="'+(H-pb+29)+'" direction="ltr" text-anchor="middle" font-size="9.5" fill="#76746f">'+(b.min?(i?b.min+'–'+(BANDS[i-1].min-1)+'%':b.min+'%+'):'< 60%')+'</text>'});
+    return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="توزيع المستويات">'+g+'<line x1="4" x2="'+W+'" y1="'+(H-pb)+'" y2="'+(H-pb)+'" stroke="#b9b7b0"/></svg>';
   }
-  function hbars(items,opt){ // أشرطة أفقية تبدأ من اليمين
-    var W=640,row=28,lab=230,x0=W-lab,span=x0-50,H=items.length*row+24,g='';
-    [0,25,50,75,100].forEach(function(t){var x=x0-span*t/100;g+='<line x1="'+x+'" x2="'+x+'" y1="4" y2="'+(H-18)+'" stroke="#e7e6e2"/><text x="'+x+'" y="'+(H-4)+'" direction="ltr" text-anchor="middle" font-size="11" fill="#76746f">'+t+'%</text>'});
-    items.forEach(function(it,i){var y=8+i*row,w=span*Math.max(0,Math.min(100,it.value))/100;
-      g+='<g><title>'+E(it.tip||(it.label+': '+it.display))+'</title><text x="'+(W-4)+'" y="'+(y+15)+'" direction="rtl" text-anchor="start" font-size="12" fill="#0b0b0b">'+E(it.label.length>34?it.label.slice(0,33)+'…':it.label)+'</text>'+
-      '<rect x="'+(x0-Math.max(w,2))+'" y="'+(y+3)+'" width="'+Math.max(w,2)+'" height="16" rx="4" fill="'+(it.color||'#2a78d6')+'"/><text x="'+(x0-w-6)+'" y="'+(y+15)+'" direction="ltr" text-anchor="end" font-size="12" font-weight="700" fill="#0b0b0b">'+E(it.display)+'</text></g>'});
-    return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+E(opt.aria||'')+'">'+g+'</svg>';
+  function barList(items){ // أشرطة أفقية صغيرة
+    return items.map(function(it){return '<div class="bl"><span class="bll">'+E(it.label)+'</span><span class="blt"><i style="width:'+Math.max(2,it.value)+'%"></i></span><b>'+it.value+'%</b></div>'}).join('');
   }
 
-  async function build(id,w){
+  async function collect(id){
     var t=(tasks||[]).find(function(x){return String(x.taskId)===String(id)});if(!t)throw new Error('التكليف غير موجود');
     var all=(dashboardData.results||[]);
     try{var full=await jsonp({action:'results',key:teacherKey()},90000);if(full&&Array.isArray(full.results))all=full.results}catch(e){}
-    var tc=cls(t.className);
-    var res=all.filter(function(r){return String(r.taskId||'')===String(id)});
+    var tc=cls(t.className),res=all.filter(function(r){return String(r.taskId||'')===String(id)});
     var roster=(dashboardData.students||[]).filter(function(s){return cls(s.className)===tc&&String(s.status||'ACTIVE').toUpperCase()==='ACTIVE'});
-    var by={};
-    res.forEach(function(r){var k=String(r.studentCode||r.studentName||'').trim();if(!k)return;
-      (by[k]=by[k]||{code:r.studentCode,name:r.studentName||k,list:[]}).list.push(r)});
+    var by={};res.forEach(function(r){var k=String(r.studentCode||r.studentName||'').trim();if(!k)return;(by[k]=by[k]||{code:r.studentCode,name:r.studentName||k,list:[]}).list.push(r)});
     var studs=Object.keys(by).map(function(k){var s=by[k];s.list.sort(function(a,b){return String(a.submittedAt)<String(b.submittedAt)?-1:1});
-      var ps=s.list.map(function(r){return Number(r.percent)||0});
-      s.attempts=ps.length;s.first=r0(ps[0]);s.last=r0(ps[ps.length-1]);s.best=r0(Math.max.apply(null,ps));
-      s.avgDur=avg(s.list.map(function(r){return Number(r.durationSec)||0}));s.lastAt=s.list[s.list.length-1].submittedAt;return s});
-    studs.sort(function(a,b){return b.last-a.last});
-    var partCodes={};studs.forEach(function(s){partCodes[String(s.code)]=1;partCodes[String(s.name).trim()]=1});
-    var non=roster.filter(function(s){return!partCodes[String(s.code)]&&!partCodes[String(s.name).trim()]});
-    var lasts=studs.map(function(s){return s.last});
-    var classSize=roster.length,np=studs.length;
-    var partPct=classSize?r0(np/classSize*100):0;
-    var mastery=np?r0(studs.filter(function(s){return s.last>=80}).length/np*100):0;
+      var ps=s.list.map(function(r){return Number(r.percent)||0});s.attempts=ps.length;s.first=r0(ps[0]);s.last=r0(ps[ps.length-1]);s.best=r0(Math.max.apply(null,ps));return s});
+    studs.sort(function(a,b){return b.last-a.last||String(a.name).localeCompare(String(b.name),'ar')});
+    var seen={};studs.forEach(function(s){seen[String(s.code)]=1;seen[String(s.name).trim()]=1});
+    var non=roster.filter(function(s){return!seen[String(s.code)]&&!seen[String(s.name).trim()]});
+    var lasts=studs.map(function(s){return s.last}),np=studs.length,size=roster.length;
     var sorted=lasts.slice().sort(function(a,b){return a-b});
-    var median=np?(np%2?sorted[(np-1)/2]:r0((sorted[np/2-1]+sorted[np/2])/2)):0;
-    // توزيع المستويات
     var bc=BANDS.map(function(){return 0});lasts.forEach(function(p){bc[band(p)]++});
-    // تحليل الأسئلة
-    var qids=(t.questionIds||[]).map(String);var bank={};
+    var qids=(t.questionIds||[]).map(String),bank={};
     try{(typeof mergedBank==='function'?mergedBank():[]).forEach(function(q){bank[String(q.id)]=q})}catch(e){}
-    var qs={};qids.forEach(function(q){qs[q]={id:q,seen:0,wrong:0}});
-    var analysed=0;
+    var qs={};qids.forEach(function(q){qs[q]={id:q,seen:0,wrong:0}});var analysed=0;
     res.forEach(function(r){var a=pj(r.answers);if(!a)return;analysed++;
       if(Array.isArray(a)){a.forEach(function(x){var q=String(x.id||x.questionId||'');if(!q)return;qs[q]=qs[q]||{id:q,seen:0,wrong:0};qs[q].seen++;if(!Number(x.correct))qs[q].wrong++})}
-      else{var wr=(a.wrongQuestionIds||[]).map(String);qids.forEach(function(q){qs[q].seen++});wr.forEach(function(q){qs[q]=qs[q]||{id:q,seen:1,wrong:0};qs[q].wrong++})}});
-    var qlist=Object.keys(qs).map(function(k){var q=qs[k],b=bank[k]||{};q.rate=q.seen?r0((q.seen-q.wrong)/q.seen*100):null;q.text=b.text||'';q.outcome=b.outcomeTitle||b.lesson||'';q.code=b.outcomeCode||'';q.level=b.cognitiveLevel||'';q.domain=b.officialDomain||b.domain||'';return q}).filter(function(q){return q.rate!==null});
-    qlist.forEach(function(q,i){q.n=qids.indexOf(q.id)+1||i+1});
-    var hard=qlist.slice().sort(function(a,b){return a.rate-b.rate}).slice(0,5);
-    function groupBy(f){var m={};qlist.forEach(function(q){var k=q[f]||'غير محدد';m[k]=m[k]||{s:0,n:0};m[k].s+=q.seen-q.wrong;m[k].n+=q.seen});return Object.keys(m).map(function(k){return{label:k,value:m[k].n?r0(m[k].s/m[k].n*100):0}})}
-    var levels=groupBy('level'),outs=groupBy('outcome').sort(function(a,b){return a.value-b.value});
-    // ملاحظات مستخرجة من البيانات فقط
-    var notes=[];
-    if(classSize)notes.push('شارك '+np+' من '+classSize+' طالبًا في الفصل ('+partPct+'%).');
-    if(np)notes.push('متوسط نتيجة آخر محاولة '+r0(avg(lasts))+'%، وبلغت نسبة الإتقان (80% فأكثر) '+mastery+'%.');
-    if(np&&bc[4])notes.push(bc[4]+' طالبًا نتيجتهم أقل من 60% ويحتاجون دعمًا.');
-    if(hard.length)notes.push('أصعب سؤال: السؤال رقم '+hard[0].n+' بنسبة إجابة صحيحة '+hard[0].rate+'%.');
-    if(outs.length>1)notes.push('أضعف ناتج تعلم في هذا التكليف: «'+outs[0].label+'» ('+outs[0].value+'%).');
-    var improved=studs.filter(function(s){return s.attempts>1&&s.last>s.first}).length;
-    if(improved)notes.push(improved+' طالبًا تحسنت نتيجتهم بين أول محاولة وآخر محاولة.');
-
-    var kpi=function(l,v,s){return '<div class="kpi"><div class="kv">'+v+'</div><div class="kl">'+l+'</div>'+(s?'<div class="ks">'+s+'</div>':'')+'</div>'};
-    var typeName={training:'تدريب',test:'اختبار',remedial:'علاجي',enrichment:'إثرائي'}[t.type]||t.type||'—';
-    var html='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تقرير '+E(t.title)+'</title>'+
-    '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">'+
-    '<style>:root{--bg:#f4f6fa;--card:#fff;--ink:#0b0b0b;--ink2:#52514e;--muted:#76746f;--line:#e7e6e2;--accent:#1c5cab}'+
-    '*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tajawal,Tahoma,Arial,sans-serif;line-height:1.7}'+
-    '.wrap{max-width:900px;margin:0 auto;padding:20px 16px 40px}header{background:linear-gradient(135deg,#0d366b,#1c5cab);color:#fff;border-radius:20px;padding:22px 24px}'+
-    'header h1{margin:0 0 4px;font-size:24px}header p{margin:0;opacity:.9;font-size:14px}.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.meta span{background:rgba(255,255,255,.15);border-radius:999px;padding:3px 12px;font-size:13px}'+
-    '.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 18px;margin-top:16px;break-inside:avoid}h2{margin:0 0 4px;font-size:18px;color:var(--accent)}.sub{margin:0 0 12px;color:var(--muted);font-size:13px}'+
-    '.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:16px}.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center}.kv{font-size:26px;font-weight:800;color:#0d366b}.kl{font-size:13px;color:var(--ink2)}.ks{font-size:11px;color:var(--muted)}'+
-    'svg{width:100%;height:auto;display:block}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}th{background:#f1f4f9;color:var(--ink2);font-weight:700}td.n{text-align:center}'+
-    '.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;color:#fff}.notes li{margin-bottom:4px}.tools{display:flex;gap:8px;justify-content:center;margin-top:16px}.tools button{border:0;border-radius:12px;padding:10px 18px;font:inherit;font-weight:700;cursor:pointer;background:#1c5cab;color:#fff}'+
-    '.non{columns:2;font-size:13px}.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--ink2);margin-top:6px}.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-left:4px;vertical-align:-2px}'+
-    'footer{text-align:center;color:var(--muted);font-size:12px;margin-top:20px}@media print{body{background:#fff}.tools{display:none}.card,.kpi{border-color:#ccc}header{-webkit-print-color-adjust:exact;print-color-adjust:exact}svg rect,.pill{-webkit-print-color-adjust:exact;print-color-adjust:exact}}'+
-    '@media(max-width:560px){.non{columns:1}header h1{font-size:20px}}</style></head><body><div class="wrap">'+
-    '<header><h1>تقرير أداء الطلاب — '+E(t.title)+'</h1><p>منصة تدريب نافس • علوم الصف الثالث المتوسط • متوسطة أبي الدرداء</p>'+
-    '<div class="meta"><span>الفصل '+E(tc)+'</span><span>'+E(typeName)+'</span><span>'+(qids.length)+' سؤالًا</span>'+(t.openAt?'<span>من '+E(fd(t.openAt))+'</span>':'')+(t.closeAt?'<span>إلى '+E(fd(t.closeAt))+'</span>':'')+'</div></header>'+
-    '<div class="kpis">'+kpi('طلاب الفصل',classSize||'—')+kpi('المشاركون',np,partPct+'% من الفصل')+kpi('متوسط النتيجة',np?r0(avg(lasts))+'%':'—','آخر محاولة')+kpi('الوسيط',np?median+'%':'—')+kpi('أعلى نتيجة',np?Math.max.apply(null,lasts)+'%':'—')+kpi('أدنى نتيجة',np?Math.min.apply(null,lasts)+'%':'—')+kpi('نسبة الإتقان',np?mastery+'%':'—','80% فأكثر')+kpi('إجمالي المحاولات',res.length)+'</div>';
-    if(!np){html+='<div class="card"><h2>لا توجد مشاركات بعد</h2><p class="sub">لم يُسجَّل أي طالب نتيجة في هذا التكليف حتى الآن.</p></div>'}
-    else{
-      html+='<div class="card"><h2>ملاحظات من البيانات</h2><ul class="notes">'+notes.map(function(n){return '<li>'+E(n)+'</li>'}).join('')+'</ul></div>';
-      html+='<div class="card"><h2>توزيع الطلاب حسب المستوى</h2><p class="sub">حسب نتيجة آخر محاولة لكل طالب • العدد ونسبته من المشاركين</p>'+
-        vbars(BANDS.map(function(b,i){return{label:b.n,value:bc[i],display:bc[i]+' ('+(np?r0(bc[i]/np*100):0)+'%)',color:b.c,sub:b.min?(b.min+'%'+(i?'–'+(BANDS[i-1].min-1)+'%':'+')):'أقل من 60%'}}),{aria:'توزيع المستويات'})+'</div>';
-      html+='<div class="card"><h2>نتيجة كل طالب</h2><p class="sub">آخر محاولة، مرتبة من الأعلى</p>'+
-        hbars(studs.map(function(s){return{label:s.name,value:s.last,display:s.last+'%',color:BANDS[band(s.last)].c,tip:s.name+' — آخر محاولة '+s.last+'%، أفضل '+s.best+'%، '+s.attempts+' محاولات'}}),{aria:'نتيجة كل طالب'})+
-        '<div class="legend">'+BANDS.map(function(b){return '<span><i style="background:'+b.c+'"></i>'+b.n+'</span>'}).join('')+'</div></div>';
-      if(qlist.length){
-        html+='<div class="card"><h2>نسبة الإجابة الصحيحة لكل سؤال</h2><p class="sub">من '+analysed+' محاولة • مرتبة من الأصعب</p>'+
-          hbars(qlist.slice().sort(function(a,b){return a.rate-b.rate}).map(function(q){return{label:'س'+q.n+(q.outcome?' — '+q.outcome:''),value:q.rate,display:q.rate+'%',tip:'السؤال '+q.n+': '+q.text}}),{aria:'نسبة صحة كل سؤال'})+'</div>';
-        if(levels.length>1||levels[0].label!=='غير محدد')html+='<div class="card"><h2>الأداء حسب المستوى المعرفي</h2><p class="sub">نسبة الإجابات الصحيحة</p>'+vbars(levels.map(function(l){return{label:l.label,value:l.value,display:l.value+'%'}}),{max:100,pct:true,aria:'المستوى المعرفي'})+'</div>';
-        if(outs.length>1)html+='<div class="card"><h2>الأداء حسب ناتج التعلم</h2><p class="sub">نسبة الإجابات الصحيحة، من الأضعف</p>'+hbars(outs.map(function(o){return{label:o.label,value:o.value,display:o.value+'%'}}),{aria:'نواتج التعلم'})+'</div>';
-        html+='<div class="card"><h2>الأسئلة الأكثر صعوبة</h2><table><thead><tr><th>#</th><th>السؤال</th><th>ناتج التعلم</th><th>المستوى</th><th>الإجابة الصحيحة</th></tr></thead><tbody>'+
-          hard.map(function(q){return '<tr><td class="n">'+q.n+'</td><td>'+E(q.text||q.id)+'</td><td>'+E(q.outcome)+(q.code?'<br><small>'+E(q.code)+'</small>':'')+'</td><td>'+E(q.level)+'</td><td class="n"><b>'+q.rate+'%</b></td></tr>'}).join('')+'</tbody></table></div>';
-      }else{html+='<div class="card"><h2>تحليل الأسئلة</h2><p class="sub">لا تتوفر تفاصيل الإجابات لهذا التكليف.</p></div>'}
-      html+='<div class="card"><h2>تفاصيل الطلاب</h2><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>الطالب</th><th>المحاولات</th><th>أول</th><th>آخر</th><th>أفضل</th><th>المستوى</th><th>متوسط الزمن</th><th>آخر مشاركة</th></tr></thead><tbody>'+
-        studs.map(function(s,i){var b=BANDS[band(s.last)];return '<tr><td class="n">'+(i+1)+'</td><td>'+E(s.name)+'</td><td class="n">'+s.attempts+'</td><td class="n">'+s.first+'%</td><td class="n"><b>'+s.last+'%</b></td><td class="n">'+s.best+'%</td><td><span class="pill" style="background:'+b.c+'">'+b.n+'</span></td><td class="n">'+dur(s.avgDur)+'</td><td>'+E(fd(s.lastAt))+'</td></tr>'}).join('')+'</tbody></table></div></div>';
-      if(non.length)html+='<div class="card"><h2>لم يشاركوا بعد ('+non.length+')</h2><ol class="non">'+non.map(function(s){return '<li>'+E(s.name)+'</li>'}).join('')+'</ol></div>';
-    }
-    html+='<div class="tools"><button onclick="window.print()">🖨️ طباعة / حفظ PDF</button></div><footer>أُنشئ التقرير في '+E(fd(new Date().toISOString()))+'</footer></div></body></html>';
-    w.document.open();w.document.write(html);w.document.close();
+      else{qids.forEach(function(q){qs[q].seen++});(a.wrongQuestionIds||[]).map(String).forEach(function(q){qs[q]=qs[q]||{id:q,seen:1,wrong:0};qs[q].wrong++})}});
+    var qlist=Object.keys(qs).map(function(k){var q=qs[k],b=bank[k]||{};q.rate=q.seen?r0((q.seen-q.wrong)/q.seen*100):null;q.n=qids.indexOf(k)+1;q.text=b.text||'';q.outcome=b.outcomeTitle||b.lesson||'';q.level=b.cognitiveLevel||'';return q}).filter(function(q){return q.rate!==null});
+    qlist.sort(function(a,b){return a.n-b.n});
+    function groupBy(f){var m={};qlist.forEach(function(q){var k=q[f];if(!k)return;m[k]=m[k]||{s:0,n:0};m[k].s+=q.seen-q.wrong;m[k].n+=q.seen});return Object.keys(m).map(function(k){return{label:k,value:m[k].n?r0(m[k].s/m[k].n*100):0}})}
+    var hard=qlist.slice().sort(function(a,b){return a.rate-b.rate}).slice(0,3);
+    var outs=groupBy('outcome').sort(function(a,b){return a.value-b.value}),levels=groupBy('level');
+    var o={t:t,tc:tc,res:res,studs:studs,non:non,np:np,size:size,lasts:lasts,bc:bc,qids:qids,qlist:qlist,hard:hard,outs:outs,levels:levels,analysed:analysed};
+    o.avg=np?r0(avg(lasts)):0;o.median=np?(np%2?sorted[(np-1)/2]:r0((sorted[np/2-1]+sorted[np/2])/2)):0;
+    o.max=np?Math.max.apply(null,lasts):0;o.min=np?Math.min.apply(null,lasts):0;o.part=size?r0(np/size*100):0;
+    o.mastery=np?r0(studs.filter(function(s){return s.last>=80}).length/np*100):0;
+    o.improved=studs.filter(function(s){return s.attempts>1&&s.last>s.first}).length;
+    return o;
   }
+
+  function page(o){
+    var t=o.t,typeName={training:'تدريب',test:'اختبار',remedial:'علاجي',enrichment:'إثرائي'}[t.type]||t.type||'—';
+    var kpi=function(l,v,s){return '<div class="kpi"><b>'+v+'</b><span>'+l+'</span>'+(s?'<small>'+s+'</small>':'')+'</div>'};
+    var notes=[];
+    if(o.size)notes.push('شارك '+o.np+' من '+o.size+' طالبًا ('+o.part+'%).');
+    if(o.np)notes.push('المتوسط '+o.avg+'%، ونسبة الإتقان (80% فأكثر) '+o.mastery+'%.');
+    if(o.bc[4])notes.push(o.bc[4]+' طالبًا أقل من 60% ويحتاجون دعمًا.');
+    if(o.outs.length>1)notes.push('أضعف ناتج تعلم: «'+o.outs[0].label+'» ('+o.outs[0].value+'%).');
+    if(o.improved)notes.push(o.improved+' طالبًا تحسنت نتيجتهم بين أول وآخر محاولة.');
+    var h='<header><div><h1>تقرير أداء الطلاب — '+E(t.title)+'</h1><p>منصة تدريب نافس • علوم الصف الثالث المتوسط • متوسطة أبي الدرداء</p></div>'+
+      '<div class="meta"><span>الفصل '+E(o.tc)+'</span><span>'+E(typeName)+'</span><span>'+o.qids.length+' سؤالًا</span>'+(t.closeAt?'<span>حتى '+E(fd(t.closeAt))+'</span>':'')+'</div></header>';
+    h+='<div class="kpis">'+kpi('المشاركون',o.np+' / '+(o.size||'—'),o.part+'% من الفصل')+kpi('متوسط النتيجة',o.np?o.avg+'%':'—','آخر محاولة')+kpi('الوسيط',o.np?o.median+'%':'—')+kpi('أعلى',o.np?o.max+'%':'—')+kpi('أدنى',o.np?o.min+'%':'—')+kpi('الإتقان',o.np?o.mastery+'%':'—','80% فأكثر')+kpi('المحاولات',o.res.length)+'</div>';
+    if(!o.np)return h+'<section class="box"><h2>لا توجد مشاركات بعد</h2><p class="mut">لم يُسجَّل أي طالب نتيجة في هذا التكليف حتى الآن.</p></section>';
+    h+='<div class="row"><section class="box"><h2>توزيع الطلاب حسب المستوى</h2>'+distChart(o.bc,o.np)+'</section>'+
+      '<section class="box"><h2>ملاحظات من البيانات</h2>'+notes.map(function(n){return '<div class="nt">• '+E(n)+'</div>'}).join('')+
+      (o.levels.length?'<h3>حسب المستوى المعرفي</h3>'+barList(o.levels):'')+'</section></div>';
+    if(o.qlist.length){
+      h+='<section class="box"><h2>نسبة الإجابة الصحيحة لكل سؤال <small>(من '+o.analysed+' محاولة)</small></h2><div class="qgrid">'+
+        o.qlist.map(function(q){var b=BANDS[band(q.rate)];return '<div class="q" style="background:'+b.c+';color:'+b.t+'" title="'+E(q.text)+'"><span>س'+q.n+'</span><b>'+q.rate+'%</b></div>'}).join('')+'</div>'+
+        '<div class="hard"><b>الأصعب:</b> '+o.hard.map(function(q){return '<span>س'+q.n+' ('+q.rate+'%)'+(q.outcome?' — '+E(q.outcome):'')+'</span>'}).join(' • ')+'</div></section>';
+    }
+    h+='<section class="box"><h2>نتائج الطلاب <small>(آخر محاولة • أفضل محاولة • عدد المحاولات)</small></h2><div class="sgrid'+(o.np>24?' c3':'')+'">'+
+      o.studs.map(function(s,i){var b=BANDS[band(s.last)];return '<div class="s"><span class="sn">'+(i+1)+'. '+E(s.name)+'</span><span class="sp" style="background:'+b.c+';color:'+b.t+'">'+s.last+'%</span><span class="sx">'+s.best+'% • '+s.attempts+'</span></div>'}).join('')+'</div>'+
+      '<div class="legend">'+BANDS.map(function(b){return '<span><i style="background:'+b.c+'"></i>'+b.n+'</span>'}).join('')+'</div></section>';
+    if(o.non.length)h+='<section class="box"><h2>لم يشاركوا بعد ('+o.non.length+')</h2><p class="non">'+o.non.map(function(s){return E(s.name)}).join('، ')+'</p></section>';
+    return h;
+  }
+
+  var libsP=null;
+  function ensureLibs(){
+    if(window.html2canvas&&window.jspdf)return Promise.resolve();
+    if(libsP)return libsP;
+    function load(u){return new Promise(function(ok,bad){var sc=document.createElement('script');sc.src=u;sc.onload=ok;sc.onerror=function(){libsP=null;bad(new Error('load'))};document.head.appendChild(sc)})}
+    libsP=Promise.all([load('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),load('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')]);
+    return libsP;
+  }
+  function summaryText(o){
+    var s='📊 تقرير تكليف: '+o.t.title+'\nالفصل: '+o.tc+'\nالمشاركون: '+o.np+' من '+o.size+' ('+o.part+'%)';
+    if(o.np)s+='\nالمتوسط: '+o.avg+'% • الإتقان: '+o.mastery+'%\nأعلى: '+o.max+'% • أدنى: '+o.min+'%';
+    return s+'\n\nمنصة تدريب نافس • متوسطة أبي الدرداء';
+  }
+
+  function render(o){
+    var name='تقرير-'+String(o.t.title||'تكليف').replace(/[\\\/:*?"<>|]+/g,'-').trim();
+    var P='#nafsReport ';
+    var css=P+'{position:fixed;inset:0;z-index:2147483000;overflow:auto;background:#e9edf3;direction:rtl;font-family:Tajawal,Tahoma,Arial,sans-serif;color:#0b0b0b;text-align:right}'+P+'*{box-sizing:border-box}'+
+    P+'.nr-bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;padding:10px;background:#0d366b}'+
+    P+'.nr-bar button{border:0;border-radius:10px;padding:9px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;background:#fff;color:#0d366b;margin:0}'+P+'.nr-bar .nr-x{background:#c0392b;color:#fff}'+P+'.nr-msg{color:#fff;font-size:13px}'+
+    P+'.nr-stage{padding:14px 0}'+P+'.page{position:relative;width:794px;height:1123px;margin:0 auto;background:#fff;padding:26px 28px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,.15);line-height:1.5;font-size:var(--fs,12.5px)}'+
+    P+'header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;background:linear-gradient(135deg,#0d366b,#1c5cab);color:#fff;border-radius:14px;padding:14px 18px;margin:0;position:static;box-shadow:none}'+
+    P+'h1{margin:0;font-size:1.55em;color:#fff;line-height:1.35}'+P+'header p{margin:2px 0 0;opacity:.9;font-size:.9em;color:#fff}'+P+'.meta{display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end;max-width:45%}'+P+'.meta span{background:rgba(255,255,255,.16);border-radius:99px;padding:1px 9px;font-size:.85em;white-space:nowrap}'+
+    P+'.kpis{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin:10px 0}'+P+'.kpi{border:1px solid #e1e5ec;border-radius:12px;padding:7px 4px;text-align:center;display:flex;flex-direction:column;background:#fff}'+P+'.kpi b{font-size:1.6em;color:#0d366b;line-height:1.2}'+P+'.kpi span{font-size:.88em;color:#52514e}'+P+'.kpi small{font-size:.75em;color:#8a8882}'+
+    P+'.row{display:grid;grid-template-columns:1.15fr 1fr;gap:10px}'+P+'.box{border:1px solid #e1e5ec;border-radius:12px;padding:9px 12px;margin:0 0 10px;background:#fff;box-shadow:none}'+
+    P+'h2{margin:0 0 6px;font-size:1.08em;color:#1c5cab}'+P+'h2 small{color:#8a8882;font-weight:400;font-size:.8em}'+P+'h3{margin:8px 0 4px;font-size:.95em;color:#33322f}'+P+'ul{margin:0;padding:0 18px 0 0}'+P+'.nt{margin-bottom:3px}'+P+'.mut{color:#76746f}'+P+'svg{width:100%;height:auto;display:block}'+
+    P+'.bl{display:flex;align-items:center;gap:6px;margin:3px 0;font-size:.9em}'+P+'.bll{width:62px}'+P+'.blt{flex:1;height:10px;background:#eef1f6;border-radius:5px;overflow:hidden;display:flex}'+P+'.blt i{display:block;height:100%;background:#2a78d6;border-radius:5px}'+P+'.bl b{width:36px;text-align:left;direction:ltr}'+
+    P+'.qgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}'+P+'.q{border-radius:7px;padding:3px 0;text-align:center;line-height:1.25}'+P+'.q span{display:block;font-size:.78em;opacity:.9}'+P+'.q b{font-size:.95em;direction:ltr;display:block}'+P+'.hard{margin-top:6px;font-size:.9em;color:#33322f}'+
+    P+'.sgrid{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}'+P+'.sgrid.c3{grid-template-columns:1fr 1fr 1fr;column-gap:10px}'+P+'.s{display:flex;align-items:center;gap:5px;padding:2px 0;border-bottom:1px solid #f0f2f6;font-size:.88em}'+
+    P+'.sn{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+P+'.sp{border-radius:99px;padding:0 7px;font-weight:700;direction:ltr;min-width:40px;text-align:center}'+P+'.sx{color:#76746f;font-size:.85em;direction:ltr;white-space:nowrap}'+
+    P+'.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:5px;font-size:.8em;color:#52514e}'+P+'.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:4px;vertical-align:-1px}'+P+'.non{margin:0;font-size:.85em;color:#33322f}'+
+    P+'footer{position:absolute;bottom:12px;left:28px;right:28px;text-align:center;font-size:.75em;color:#8a8882;background:none;padding:0;margin:0}'+
+    '@media print{body.nr-print>*:not(#nafsReport){display:none!important}body.nr-print #nafsReport{position:static;overflow:visible;background:#fff}body.nr-print #nafsReport .nr-bar{display:none}body.nr-print #nafsReport .nr-stage{padding:0}body.nr-print #nafsReport .page{box-shadow:none;margin:0;zoom:1!important;width:210mm;height:296mm;page-break-after:avoid;break-after:avoid}body.nr-print{margin:0!important;padding:0!important}body.nr-print #nafsReport *{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
+    var st=document.getElementById('nafsReportCss');if(!st){st=document.createElement('style');st.id='nafsReportCss';document.head.appendChild(st)}st.textContent=css;
+    if(!document.getElementById('nafsReportFont')){var lk=document.createElement('link');lk.id='nafsReportFont';lk.rel='stylesheet';lk.href='https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap';document.head.appendChild(lk)}
+    var old=document.getElementById('nafsReport');if(old)old.remove();
+    var ov=document.createElement('div');ov.id='nafsReport';
+    ov.innerHTML='<div class="nr-bar"><button class="nr-x" data-a="x">✕ إغلاق</button><button data-a="share">📤 مشاركة</button><button data-a="pdf">⬇️ تنزيل PDF</button><button data-a="img">🖼️ حفظ صورة</button><button data-a="print">🖨️ طباعة</button><span class="nr-msg"></span></div>'+
+      '<div class="nr-stage"><div class="page">'+page(o)+'<footer>أُنشئ في '+E(fd(new Date().toISOString()))+'</footer></div></div>';
+    document.body.appendChild(ov);
+    var pg=ov.querySelector('.page'),msg=ov.querySelector('.nr-msg'),prevOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
+    function fit(){var fs=12.5;pg.style.setProperty('--fs',fs+'px');var g=0;while(pg.scrollHeight>pg.clientHeight+1&&fs>8&&g++<40){fs-=0.25;pg.style.setProperty('--fs',fs+'px')}}
+    function zoom(){var z=Math.min(1,(window.innerWidth-16)/794);pg.style.zoom=z<1?z:''}
+    function say(t){msg.textContent=t||''}
+    async function canvas(){say('جارٍ التجهيز...');var z=pg.style.zoom;pg.style.zoom='';try{await ensureLibs();return await window.html2canvas(pg,{scale:2,backgroundColor:'#ffffff',useCORS:true,scrollX:0,scrollY:0,windowWidth:1000})}finally{pg.style.zoom=z;say('')}}
+    async function pdfBlob(){var c=await canvas();var D=new window.jspdf.jsPDF({orientation:'p',unit:'mm',format:'a4'});D.addImage(c.toDataURL('image/jpeg',0.92),'JPEG',0,0,210,297);return D.output('blob')}
+    function dl(blob,fn){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},4000)}
+    function close(){ov.remove();document.body.style.overflow=prevOverflow;window.removeEventListener('resize',zoom)}
+    var act={
+      x:close,
+      print:function(){var ps=document.createElement('style');ps.textContent='@page{size:A4;margin:0}';document.head.appendChild(ps);document.body.classList.add('nr-print');
+        var done=function(){document.body.classList.remove('nr-print');ps.remove();window.removeEventListener('afterprint',done)};window.addEventListener('afterprint',done);window.print();setTimeout(done,1500)},
+      pdf:async function(){try{dl(await pdfBlob(),name+'.pdf')}catch(e){say('');alert('تعذر إنشاء PDF. استخدم «طباعة» ثم اختر «حفظ كـ PDF».')}},
+      img:async function(){try{var c=await canvas();c.toBlob(function(b){dl(b,name+'.png')},'image/png')}catch(e){say('');alert('تعذر حفظ الصورة، تأكد من الاتصال بالإنترنت.')}},
+      share:async function(){var text=summaryText(o);
+        try{if(navigator.canShare){var f=new File([await pdfBlob()],name+'.pdf',{type:'application/pdf'});if(navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name,text:text});return}}}catch(e){if(e&&e.name==='AbortError')return}
+        try{if(navigator.share){await navigator.share({title:name,text:text});return}}catch(e){if(e&&e.name==='AbortError')return}
+        try{await navigator.clipboard.writeText(text);alert('تم نسخ ملخص التقرير. يمكنك لصقه في واتساب أو تلجرام.')}catch(e){prompt('انسخ الملخص:',text)}}
+    };
+    ov.querySelector('.nr-bar').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&act[b.dataset.a])act[b.dataset.a]()});
+    var go=function(){fit();zoom()};go();
+    if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go);setTimeout(go,900);window.addEventListener('resize',zoom);
+    ensureLibs().catch(function(){});
+  }
+
   window.openTaskReport=function(id){
-    var w=window.open('','_blank');
-    if(!w){alert('اسمح بفتح النوافذ المنبثقة لعرض التقرير.');return}
-    w.document.write('<html dir="rtl"><body style="font-family:Tahoma;text-align:center;padding:60px;color:#1c5cab">⏳ جارٍ إعداد التقرير وجلب أحدث النتائج...</body></html>');
-    build(id,w).catch(function(e){w.document.body.innerHTML='تعذر إعداد التقرير: '+E(e.message||e)});
+    var tmp=document.createElement('div');tmp.id='nafsReportLoading';tmp.style.cssText='position:fixed;inset:0;z-index:2147483001;background:rgba(13,54,107,.55);display:flex;align-items:center;justify-content:center;font:700 16px Tahoma;color:#fff';
+    tmp.textContent='⏳ جارٍ إعداد التقرير وجلب أحدث النتائج...';document.body.appendChild(tmp);
+    collect(id).then(render).catch(function(e){alert('تعذر إعداد التقرير: '+(e.message||e))}).then(function(){tmp.remove()});
   };
   var orig=window.renderTasks;
   window.renderTasks=function(){
