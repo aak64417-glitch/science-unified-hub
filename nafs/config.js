@@ -677,7 +677,7 @@ window.addEventListener('load',function(){
       var klass=list[0].cls;
       var sum='📊 تقرير تكليف: '+title+'\nالفصل: '+klass+'\nعدد المشاركين: '+list.length+' طالبًا\n\n'+
         list.map(function(p,i){return (i+1)+'. '+p.name+' — '+p.pct}).join('\n')+
-        '\n\nمنصة تدريب نافس • متوسطة أبي الدرداء';
+        '\n\nمعلما المادة: الأستاذ علي طاهر البقاشي • الأستاذ صالح الكفيل\nمنصة تدريب نافس • متوسطة أبي الدرداء';
       var bar=document.createElement('div');bar.style.cssText='margin-top:12px;text-align:center';
       bar.appendChild(btn('واتساب: ملخص الفصل','#1fa855',function(){open(wa(sum))}));
       bar.appendChild(btn('تلجرام: ملخص الفصل','#229ed9',function(){open(tg(sum))}));
@@ -686,7 +686,7 @@ window.addEventListener('load',function(){
       }));
       body.appendChild(bar);
       list.forEach(function(p){
-        var msg='📘 تقرير الطالب: '+p.name+'\nالفصل: '+p.cls+'\nالتكليف: '+title+'\nنتيجة آخر محاولة: '+p.pct+'\nعدد المحاولات: '+p.att+'\nآخر مشاركة: '+p.at+'\n\nمنصة تدريب نافس • متوسطة أبي الدرداء';
+        var msg='📘 تقرير الطالب: '+p.name+'\nالفصل: '+p.cls+'\nالتكليف: '+title+'\nنتيجة آخر محاولة: '+p.pct+'\nعدد المحاولات: '+p.att+'\nآخر مشاركة: '+p.at+'\n\nمعلما المادة: الأستاذ علي طاهر البقاشي • الأستاذ صالح الكفيل\nمنصة تدريب نافس • متوسطة أبي الدرداء';
         var td=document.createElement('td');td.style.whiteSpace='nowrap';
         td.appendChild(btn('واتساب','#1fa855',function(){open(wa(msg))}));
         td.appendChild(btn('تلجرام','#229ed9',function(){open(tg(msg))}));
@@ -782,7 +782,7 @@ window.addEventListener('load',function(){
     if(o.bc[4])notes.push(o.bc[4]+' طالبًا أقل من 60% ويحتاجون دعمًا.');
     if(o.outs.length>1)notes.push('أضعف ناتج تعلم: «'+o.outs[0].label+'» ('+o.outs[0].value+'%).');
     if(o.improved)notes.push(o.improved+' طالبًا تحسنت نتيجتهم بين أول وآخر محاولة.');
-    var h='<header><div><h1>تقرير أداء الطلاب — '+E(t.title)+'</h1><p>منصة تدريب نافس • علوم الصف الثالث المتوسط • متوسطة أبي الدرداء</p></div>'+
+    var h='<header><div><h1>تقرير أداء الطلاب — '+E(t.title)+'</h1><p>منصة تدريب نافس • علوم الصف الثالث المتوسط • متوسطة أبي الدرداء</p><p class="tch">معلما المادة: الأستاذ علي طاهر البقاشي • الأستاذ صالح الكفيل</p></div>'+
       '<div class="meta"><span>الفصل '+E(o.tc)+'</span><span>'+E(typeName)+'</span><span>'+o.qids.length+' سؤالًا</span>'+(t.closeAt?'<span>حتى '+E(fd(t.closeAt))+'</span>':'')+'</div></header>';
     h+='<div class="kpis">'+kpi('المشاركون',o.np+' / '+(o.size||'—'),o.part+'% من الفصل')+kpi('متوسط النتيجة',o.np?o.avg+'%':'—','آخر محاولة')+kpi('الوسيط',o.np?o.median+'%':'—')+kpi('أعلى',o.np?o.max+'%':'—')+kpi('أدنى',o.np?o.min+'%':'—')+kpi('الإتقان',o.np?o.mastery+'%':'—','80% فأكثر')+kpi('المحاولات',o.res.length)+'</div>';
     if(!o.np)return h+'<section class="box"><h2>لا توجد مشاركات بعد</h2><p class="mut">لم يُسجَّل أي طالب نتيجة في هذا التكليف حتى الآن.</p></section>';
@@ -812,7 +812,7 @@ window.addEventListener('load',function(){
   function summaryText(o){
     var s='📊 تقرير تكليف: '+o.t.title+'\nالفصل: '+o.tc+'\nالمشاركون: '+o.np+' من '+o.size+' ('+o.part+'%)';
     if(o.np)s+='\nالمتوسط: '+o.avg+'% • الإتقان: '+o.mastery+'%\nأعلى: '+o.max+'% • أدنى: '+o.min+'%';
-    return s+'\n\nمنصة تدريب نافس • متوسطة أبي الدرداء';
+    return s+'\n\nمعلما المادة: الأستاذ علي طاهر البقاشي • الأستاذ صالح الكفيل\nمنصة تدريب نافس • متوسطة أبي الدرداء';
   }
 
   function render(o){
@@ -823,7 +823,7 @@ window.addEventListener('load',function(){
     P+'.nr-bar button{border:0;border-radius:10px;padding:9px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;background:#fff;color:#0d366b;margin:0}'+P+'.nr-bar .nr-x{background:#c0392b;color:#fff}'+P+'.nr-msg{color:#fff;font-size:13px}'+
     P+'.nr-stage{padding:14px 0}'+P+'.page{position:relative;width:794px;height:1123px;margin:0 auto;background:#fff;padding:26px 28px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,.15);line-height:1.5;font-size:var(--fs,12.5px);font-weight:700}'+
     P+'header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;background:linear-gradient(135deg,#0d366b,#1c5cab);color:#fff;border-radius:14px;padding:14px 18px;margin:0;position:static;box-shadow:none}'+
-    P+'h1{margin:0;font-size:1.55em;color:#fff;line-height:1.35}'+P+'header p{margin:2px 0 0;opacity:.9;font-size:.9em;color:#fff}'+P+'.meta{display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end;max-width:45%}'+P+'.meta span{background:rgba(255,255,255,.16);border-radius:99px;padding:1px 9px;font-size:.85em;white-space:nowrap}'+
+    P+'h1{margin:0;font-size:1.55em;color:#fff;line-height:1.35}'+P+'header p{margin:2px 0 0;opacity:.9;font-size:.9em;color:#fff}'+P+'header p.tch{opacity:1;font-weight:800;font-size:.95em}'+P+'.meta{display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end;max-width:45%}'+P+'.meta span{background:rgba(255,255,255,.16);border-radius:99px;padding:1px 9px;font-size:.85em;white-space:nowrap}'+
     P+'.kpis{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin:10px 0}'+P+'.kpi{border:1px solid #e1e5ec;border-top:5px solid var(--k,#1c5cab);border-radius:12px;padding:6px 4px;text-align:center;display:flex;flex-direction:column;background:#fff}'+P+'.kpi b{font-size:1.65em;color:var(--k,#0d366b);line-height:1.2;font-weight:800}'+P+'.kpi span{font-size:.9em;color:#33322f;font-weight:800}'+P+'.kpi small{font-size:.76em;color:#6b6a65;font-weight:700}'+
     P+'.row{display:grid;grid-template-columns:1.15fr 1fr;gap:10px}'+P+'.box{border:1px solid #e1e5ec;border-right:5px solid var(--k,#1c5cab);border-radius:12px;padding:9px 12px;margin:0 0 10px;background:#fff;box-shadow:none}'+
     P+'h2{margin:0 0 6px;font-size:1.12em;color:var(--k,#1c5cab);font-weight:800}'+P+'h2 small{color:#6b6a65;font-weight:700;font-size:.8em}'+P+'h3{margin:8px 0 4px;font-size:.95em;color:#33322f}'+P+'ul{margin:0;padding:0 18px 0 0}'+P+'.nt{margin-bottom:3px}'+P+'.mut{color:#76746f}'+P+'svg{width:100%;height:auto;display:block}'+
@@ -839,7 +839,7 @@ window.addEventListener('load',function(){
     var old=document.getElementById('nafsReport');if(old)old.remove();
     var ov=document.createElement('div');ov.id='nafsReport';
     ov.innerHTML='<div class="nr-bar"><button class="nr-x" data-a="x">✕ إغلاق</button><button data-a="share">📤 مشاركة</button><button data-a="pdf">⬇️ تنزيل PDF</button><button data-a="img">🖼️ حفظ صورة</button><button data-a="print">🖨️ طباعة</button><span class="nr-msg"></span></div>'+
-      '<div class="nr-stage"><div class="page">'+page(o)+'<footer>أُنشئ في '+E(fd(new Date().toISOString()))+'</footer></div></div>';
+      '<div class="nr-stage"><div class="page">'+page(o)+'<footer>إعداد: الأستاذ علي طاهر البقاشي • الأستاذ صالح الكفيل • أُنشئ في '+E(fd(new Date().toISOString()))+'</footer></div></div>';
     document.body.appendChild(ov);
     ov.querySelectorAll('.kpi').forEach(function(k,i){k.style.setProperty('--k',PAL[i%PAL.length])});ov.querySelectorAll('.box').forEach(function(k,i){k.style.setProperty('--k',PAL[i%PAL.length])});
     var pg=ov.querySelector('.page'),msg=ov.querySelector('.nr-msg'),prevOverflow=document.body.style.overflow;document.body.style.overflow='hidden';
