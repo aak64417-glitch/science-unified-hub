@@ -1735,7 +1735,7 @@ const TRANS={};
 (function(){
 const MODES=[
   {id:'diff',name:'الانتشار',sub:'جزيئات الأكسجين',dir:'with',type:'passive'},
-  {id:'fac',name:'النقل المُدعَّم',sub:'جزيئات الجلوكوز عبر البروتينات الناقلة',dir:'with',type:'passive'},
+  {id:'fac',name:'النقل المُدعَّم',sub:'جزيئات الجلوكوز لا تعبر طبقة الدهون، بل تمر فقط من داخل البروتينات الناقلة (المضيئة، وفوقها أسهم)',dir:'with',type:'passive'},
   {id:'act',name:'النقل النشط',sub:'أيونات تُضخّ بمضخة بروتينية',dir:'against',type:'active'},
   {id:'endo',name:'الإدخال الخلوي (البلعمة)',sub:'جسيم كبير يدخل الخلية',dir:'vesicle',type:'active'},
   {id:'exo',name:'الإخراج الخلوي',sub:'حويصلة تُخرج موادها خارج الخلية',dir:'vesicle',type:'active'}
@@ -1751,7 +1751,7 @@ const res={};MODES.forEach(m=>res[m.id]={done:false,ob:null,ib:null,oa:null,ia:n
 /* ---------- membrane ---------- */
 function buildMembrane(){
   const step=0.24,xs=[],zs=[];for(let x=XMIN-0.4;x<=XMAX+0.4;x+=step)xs.push(x);for(let z=ZMIN-0.1;z<=ZMAX+0.1;z+=step)zs.push(z);
-  const nearProt=(x,z)=>CH_X.some(cx=>CH_Z.some(cz=>Math.hypot(x-cx,z-cz)<0.36))||Math.hypot(x-PUMP.x,z-PUMP.z)<0.62;
+  const nearProt=(x,z)=>CH_X.some(cx=>CH_Z.some(cz=>Math.hypot(x-cx,z-cz)<0.5))||Math.hypot(x-PUMP.x,z-PUMP.z)<0.62;
   xs.forEach(x=>zs.forEach(z=>{if(nearProt(x,z))return;[1,-1].forEach(s=>headPos.push(V(x+(s<0?step/2:0),s*0.3,z+(s<0?step/2:0))));}));
   heads=new THREE.InstancedMesh(new THREE.SphereGeometry(0.1,10,8),new THREE.MeshStandardMaterial({color:0xe39a3b,roughness:.45}),headPos.length);
   const tg=new THREE.CylinderGeometry(0.022,0.022,0.24,5);
@@ -1767,9 +1767,12 @@ function refreshMembrane(){
 function hideRegion(x,r){hidden=new Set();headPos.forEach((p,i)=>{if(Math.abs(p.x-x)<r&&Math.abs(p.z)<r)hidden.add(i);});refreshMembrane();}
 function buildProteins(){
   const pm=new THREE.MeshPhysicalMaterial({color:0x4f6fd1,roughness:.35,clearcoat:.4});
-  CH_X.forEach(cx=>CH_Z.forEach(cz=>{const g=new THREE.Group();
-    for(let k=0;k<6;k++){const a=k/6*Math.PI*2;const s=new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.95,10),pm);s.position.set(Math.cos(a)*0.22,0,Math.sin(a)*0.22);g.add(s);}
-    g.position.set(cx,0,cz);L.add(g);}));
+  TRANS.ch=[];
+  CH_X.forEach(cx=>CH_Z.forEach(cz=>{const g=new THREE.Group();const mat=pm.clone();mat.emissive=new THREE.Color(0xffd23f);mat.emissiveIntensity=0;
+    for(let k=0;k<7;k++){const a=k/7*Math.PI*2;const s=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.1,0.95,10),mat);s.position.set(Math.cos(a)*0.31,0,Math.sin(a)*0.31);g.add(s);}
+    const core=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.2,0.96,18,1,true),new THREE.MeshBasicMaterial({color:0xffe27a,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false}));g.add(core);
+    const arr=new THREE.Mesh(new THREE.ConeGeometry(0.16,0.3,14),new THREE.MeshBasicMaterial({color:0xffc400,transparent:true,opacity:0.9}));arr.rotation.x=Math.PI;arr.position.y=0.95;arr.visible=false;g.add(arr);
+    g.position.set(cx,0,cz);L.add(g);TRANS.ch.push({g,mat,core,arr,x:cx,z:cz,busy:false,glow:0});}));
   const pump=new THREE.Group();const pmat=new THREE.MeshPhysicalMaterial({color:0x2f9d6a,roughness:.35,clearcoat:.4});
   const a=new THREE.Mesh(new THREE.SphereGeometry(0.42,24,18),pmat);a.scale.set(1,1.35,1);
   const b2=new THREE.Mesh(new THREE.SphereGeometry(0.3,20,14),pmat);b2.position.set(0.32,-0.25,0);
@@ -1794,13 +1797,24 @@ function drawParts(){if(!inst)return;inst.count=parts.length;parts.forEach((o,i)
 const counts=()=>({o:parts.filter(o=>o.p.y>0).length,i:parts.filter(o=>o.p.y<=0).length});
 function allowCross(o){
   if(mode==='diff')return Math.random()<0.5;
-  if(mode==='fac')return CH_X.some(cx=>Math.abs(o.p.x-cx)<0.6);
   return false;
 }
+function facCapture(o,prevY){
+  const c=TRANS.ch.find(c=>!c.busy&&Math.hypot(o.p.x-c.x,o.p.z-c.z)<0.75);if(!c)return false;
+  c.busy=true;o.lock=true;const sgn=Math.sign(prevY||1),from=o.p.clone();
+  const top=V(c.x,sgn*(YM+0.12),c.z),bot=V(c.x,-sgn*(YM+0.12),c.z);
+  L.tween(220,k=>o.p.copy(from.clone().lerp(top,k)),()=>{c.glow=1;
+    L.tween(480,k=>o.p.copy(top.clone().lerp(bot,k)),()=>{o.p.copy(bot);o.v.set((Math.random()-.5)*0.6,-sgn,(Math.random()-.5)*0.6).setLength(SPEC.fac.speed);o.cross=true;o.lock=false;c.busy=false;});});
+  return true;
+}
+function facFX(dt){if(!TRANS.ch)return;const on=mode==='fac',t=performance.now()/1000;
+  TRANS.ch.forEach(c=>{c.glow=Math.max(0,c.glow-dt*1.6);c.mat.emissiveIntensity=on?0.15+c.glow*0.9:0;c.core.material.opacity=on?0.18+c.glow*0.45:0;
+    c.arr.visible=on;c.arr.position.y=0.95+Math.sin(t*4+c.x+c.z)*0.08;});}
 function stepParts(dt){
   const s=SPEC[mode];if(!s)return;
   parts.forEach(o=>{if(o.lock)return;
     o.v.x+=(Math.random()-.5)*4*dt;o.v.y+=(Math.random()-.5)*4*dt;o.v.z+=(Math.random()-.5)*4*dt;o.v.setLength(s.speed);
+    if(mode==='fac'&&Math.abs(o.p.y)<1.3&&TRANS.ch){const c=TRANS.ch.reduce((m,c)=>Math.hypot(o.p.x-c.x,o.p.z-c.z)<Math.hypot(o.p.x-m.x,o.p.z-m.z)?c:m);const dx=c.x-o.p.x,dz=c.z-o.p.z,d=Math.hypot(dx,dz);if(d<1.6&&d>0.05){o.p.x+=dx/d*0.9*dt;o.p.z+=dz/d*0.9*dt;}}
     const prevY=o.p.y;o.p.addScaledVector(o.v,dt);
     if(o.p.x<XMIN||o.p.x>XMAX){o.v.x*=-1;o.p.x=THREE.MathUtils.clamp(o.p.x,XMIN,XMAX);}
     if(o.p.z<ZMIN||o.p.z>ZMAX){o.v.z*=-1;o.p.z=THREE.MathUtils.clamp(o.p.z,ZMIN,ZMAX);}
@@ -1808,12 +1822,13 @@ function stepParts(dt){
     // membrane band
     const inBand=Math.abs(o.p.y)<YM;
     if(inBand&&!o.cross){
-      if(allowCross(o)){o.cross=true;o.v.y=Math.sign(-prevY||1)*Math.max(Math.abs(o.v.y),s.speed*0.7);}
+      if(mode==='fac'&&facCapture(o,prevY)){}
+      else if(allowCross(o)){o.cross=true;o.v.y=Math.sign(-prevY||1)*Math.max(Math.abs(o.v.y),s.speed*0.7);}
       else{o.v.y=Math.sign(prevY||1)*Math.abs(o.v.y);o.p.y=Math.sign(prevY||1)*YM;}
     }
     if(!inBand)o.cross=false;
   });
-  drawParts();
+  facFX(dt);drawParts();
 }
 /* ---------- HUD ---------- */
 function hud(){const c=counts();sec.$('.cO').textContent=c.o;sec.$('.cI').textContent=c.i;sec.$('.cA').textContent=atp;}
@@ -1826,7 +1841,7 @@ function atpFlash(at){
 /* ---------- runs ---------- */
 async function run(id){
   if(busy){L.toast('انتظر حتى تنتهي الخطوة الحالية.');return;}
-  busy=true;lock(true);mode=id;atp=0;clearParts();
+  busy=true;lock(true);mode=id;atp=0;clearParts();if(TRANS.ch)TRANS.ch.forEach(c=>{c.busy=false;c.glow=0;});facFX(0);
   sec.$$('.m-btn').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===id));
   const M_=MODES.find(m=>m.id===id);sec.$('.mname').textContent=M_.name;sec.hintTxt(`${M_.name}: ${M_.sub}. لاحظ عدد الجسيمات في كل جهة، وهل تُستهلك طاقة.`);
   const R=res[id];
