@@ -1026,20 +1026,21 @@
     "id": "g3-eq-01",
     "lesson": "g3-earthquakes",
     "grade": "3",
-    "concept": "مكونات الزلزال",
+    "concept": "الزلازل",
     "type": "choice",
-    "q": "النقطة داخل الأرض التي تبدأ عندها حركة الزلزال تسمى:",
+    "q": "يوضح الشكل مقطعًا في باطن الأرض. ماذا تُسمى النقطة الحمراء التي تبدأ عندها الموجات الزلزالية؟",
     "options": [
       "المركز السطحي",
       "بؤرة الزلزال",
-      "الفالق السطحي",
-      "محطة الرصد"
+      "فوهة البركان",
+      "حافة الصفيحة"
     ],
     "answer": 1,
-    "explain": "بؤرة الزلزال",
-    "difficulty": "remember",
+    "explain": "بؤرة الزلزال هي نقطة بدء الاهتزاز داخل الأرض.",
+    "difficulty": "apply",
     "track": "core",
-    "source": "كتاب الطالب"
+    "source": "سؤال تطبيقي من إعداد المعلم",
+    "image": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22780%22%20height%3D%22360%22%20viewBox%3D%220%200%20780%20360%22%3E%3Crect%20width%3D%22780%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22%23f1f8fc%22%2F%3E%3Ctext%20x%3D%22390%22%20y%3D%2243%22%20font-family%3D%22Tahoma%22%20font-size%3D%2224%22%20font-weight%3D%22bold%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E%D9%85%D9%82%D8%B7%D8%B9%20%D9%85%D8%A8%D8%B3%D8%B7%20%D9%8A%D9%88%D8%B6%D8%AD%20%D8%A8%D8%A4%D8%B1%D8%A9%20%D8%A7%D9%84%D8%B2%D9%84%D8%B2%D8%A7%D9%84%3C%2Ftext%3E%3Cpath%20d%3D%22M50%20155%20Q165%20135%20255%20158%20Q355%20182%20460%20155%20Q580%20123%20730%20150%20L730%20310%20L50%20310Z%22%20fill%3D%22%23d6af7a%22%20stroke%3D%22%23836245%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M360%20155%20L430%20302%22%20fill%3D%22none%22%20stroke%3D%22%23944a32%22%20stroke-width%3D%229%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22236%22%20r%3D%2215%22%20fill%3D%22%23e84246%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22236%22%20r%3D%2234%22%20fill%3D%22none%22%20stroke%3D%22%23e84246%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22236%22%20r%3D%2258%22%20fill%3D%22none%22%20stroke%3D%22%23e84246%22%20stroke-width%3D%222%22%20stroke-dasharray%3D%227%206%22%2F%3E%3Cline%20x1%3D%22399%22%20y1%3D%22236%22%20x2%3D%22399%22%20y2%3D%22158%22%20stroke%3D%22%238b4a3d%22%20stroke-width%3D%223%22%20stroke-dasharray%3D%225%205%22%2F%3E%3Ctext%20x%3D%22520%22%20y%3D%22253%22%20font-family%3D%22Tahoma%22%20font-size%3D%2222%22%20fill%3D%22%23163950%22%3E%D8%A8%D8%A4%D8%B1%D8%A9%20%D8%A7%D9%84%D8%B2%D9%84%D8%B2%D8%A7%D9%84%3C%2Ftext%3E%3Cpath%20d%3D%22M509%20245%20L415%20237%22%20stroke%3D%22%23163950%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E"
   },
   {
     "id": "g3-eq-02",
@@ -1883,7 +1884,7 @@
     "grade": "3",
     "concept": "الانتشار",
     "type": "choice",
-    "q": "انتقال الجزيئات من منطقة تركيز عالٍ إلى منطقة تركيز منخفض يسمى:",
+    "q": "يوضح الشكل انتقال جزيئات عبر غشاء من منطقة مرتفعة التركيز إلى منطقة منخفضة التركيز. ما العملية؟",
     "options": [
       "النقل النشط",
       "البلعمة",
@@ -1891,10 +1892,11 @@
       "الإخراج الخلوي"
     ],
     "answer": 2,
-    "explain": "الانتشار",
-    "difficulty": "remember",
+    "explain": "الانتشار هو انتقال الجزيئات من تركيز أعلى إلى تركيز أقل.",
+    "difficulty": "apply",
     "track": "core",
-    "source": "كتاب الطالب"
+    "source": "سؤال تطبيقي من إعداد المعلم",
+    "image": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22780%22%20height%3D%22360%22%20viewBox%3D%220%200%20780%20360%22%3E%3Crect%20width%3D%22780%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22%23f1f8fc%22%2F%3E%3Ctext%20x%3D%22390%22%20y%3D%2244%22%20font-family%3D%22Tahoma%22%20font-size%3D%2223%22%20font-weight%3D%22bold%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E%D8%AD%D8%B1%D9%83%D8%A9%20%D8%A7%D9%84%D8%AC%D8%B2%D9%8A%D8%A6%D8%A7%D8%AA%20%D8%B9%D8%A8%D8%B1%20%D8%A7%D9%84%D8%BA%D8%B4%D8%A7%D8%A1%3C%2Ftext%3E%3Crect%20x%3D%22380%22%20y%3D%2265%22%20width%3D%2218%22%20height%3D%22235%22%20rx%3D%229%22%20fill%3D%22%233b8bb9%22%2F%3E%3Ctext%20x%3D%22200%22%20y%3D%2291%22%20font-family%3D%22Tahoma%22%20font-size%3D%2219%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153951%22%3E%D8%AA%D8%B1%D9%83%D9%8A%D8%B2%20%D9%85%D9%86%D8%AE%D9%81%D8%B6%3C%2Ftext%3E%3Ctext%20x%3D%22580%22%20y%3D%2291%22%20font-family%3D%22Tahoma%22%20font-size%3D%2219%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153951%22%3E%D8%AA%D8%B1%D9%83%D9%8A%D8%B2%20%D9%85%D8%B1%D8%AA%D9%81%D8%B9%3C%2Ftext%3E%3Ccircle%20cx%3D%22480%22%20cy%3D%22130%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22540%22%20cy%3D%22158%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22610%22%20cy%3D%22137%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22680%22%20cy%3D%22173%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22480%22%20cy%3D%22218%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22570%22%20cy%3D%22250%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22650%22%20cy%3D%22245%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22199%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22525%22%20cy%3D%22195%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22680%22%20cy%3D%22115%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22620%22%20cy%3D%22284%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22450%22%20cy%3D%22273%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22570%22%20cy%3D%22120%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22690%22%20cy%3D%22289%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22150%22%20cy%3D%22158%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22250%22%20cy%3D%22220%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22185%22%20cy%3D%22275%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22130%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M490%20184%20L300%20184%20M316%20171%20L300%20184%20L316%20197%22%20stroke%3D%22%230b7e7a%22%20fill%3D%22none%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E"
   },
   {
     "id": "g3-cell-02",
