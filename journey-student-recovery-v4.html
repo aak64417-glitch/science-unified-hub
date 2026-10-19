@@ -80,6 +80,21 @@ body{background:radial-gradient(circle at 95% 0%,rgba(26,185,188,.22),transparen
 .answer:focus-visible,.btn:focus-visible{outline:3px solid #ffd166;outline-offset:3px}
 .science-question-media{display:block;max-width:100%;width:min(720px,100%);max-height:370px;object-fit:contain;background:#f1f8fc;padding:9px;border-radius:18px;margin:0 auto 22px;border:2px solid rgba(66,222,212,.4)}
 @media(max-width:560px){.science-question-media{max-height:270px;padding:5px}.question{padding:15px}.answer{font-size:1rem;min-height:56px}}
+
+/* Journey Science 2026 professional visual system — CSS only */
+:root{--teal:#35e6d3;--indigo:#8b9dff;--gold:#ffd77b;--text:#f5faff;--muted:#b5cada;--line:rgba(148,207,230,.20);--r:26px}
+body{font-family:"Noto Sans Arabic",Tahoma,Arial,sans-serif;background:radial-gradient(ellipse at 85% 0,rgba(36,160,172,.22),transparent 39%),radial-gradient(ellipse at 0 85%,rgba(77,85,181,.19),transparent 45%),#071727}
+.wrap{max-width:1240px}.glass,.panel{backdrop-filter:blur(12px);border:1px solid var(--line);box-shadow:0 22px 65px rgba(0,0,0,.27)}
+.hero-main{background:linear-gradient(125deg,rgba(10,52,75,.94),rgba(13,26,53,.97));border-color:rgba(69,224,220,.28)}
+.hero h2{font-weight:900;line-height:1.28}.lesson-card{border-radius:24px;transition:transform .18s,border-color .18s}.lesson-card:hover{transform:translateY(-4px)}
+.btn{min-height:46px;border-radius:14px;font-weight:900}.btn:focus-visible,.answer:focus-visible,select:focus-visible{outline:3px solid #ffd77b;outline-offset:3px}
+.quiz-top{padding:10px 0}.question{background:linear-gradient(145deg,#112d49,#0b1e32);border:1px solid rgba(69,224,220,.35);border-radius:24px;padding:clamp(18px,3.3vw,34px)}
+.question h3{font-size:clamp(1.32rem,2.8vw,1.9rem);font-weight:900;line-height:1.95}
+.answers{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.answer{min-height:80px;display:flex;align-items:center;text-align:right;border-radius:18px;padding:18px 20px;font-size:clamp(1.02rem,1.8vw,1.18rem);background:linear-gradient(120deg,#163450,#10243f);border:1px solid rgba(169,207,230,.25);line-height:1.75}
+.answer:hover{border-color:#35e6d3;background:#1b4460}.answer.selected{box-shadow:inset 0 0 0 2px #35e6d3}.question .q-tag{font-weight:900;font-size:.9rem;padding:8px 13px}
+.science-question-media{width:min(760px,100%);max-height:420px;box-shadow:0 12px 30px rgba(0,0,0,.23)}
+.result .ring{width:180px;height:180px}.result .ring strong{font-size:2.25rem}.breakdown{gap:13px}
+@media(max-width:650px){.answers{grid-template-columns:1fr}.answer{min-height:64px}.question{padding:16px}.question h3{font-size:1.3rem}.hero-main{padding:23px}.science-question-media{max-height:280px}}
 </style>
 </head>
 <body>
