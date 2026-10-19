@@ -212,6 +212,13 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 
 /* Journey review: accessible polish only — task creation, rosters, and results unchanged */
 :root{--r:25px}.glass{border-color:rgba(169,211,235,.19);box-shadow:0 20px 60px rgba(0,0,0,.29)}.btn{border-radius:14px}.btn:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #ffd166;outline-offset:2px}.task-lesson-option{border-radius:18px}.question-pick-status{line-height:1.7}
+
+/* Visual refresh: teacher portal; all task, result and student behavior remains unchanged */
+:root{--teal:#35e6d3;--indigo:#8b9dff;--gold:#ffd77b;--text:#f5faff;--muted:#b5cada;--line:rgba(148,207,230,.20);--r:26px}
+body{font-family:"Noto Sans Arabic",Tahoma,Arial,sans-serif;background:radial-gradient(ellipse at 85% 0,rgba(36,160,172,.19),transparent 39%),radial-gradient(ellipse at 0 85%,rgba(77,85,181,.16),transparent 45%),#071727}
+.glass,.panel{backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:0 18px 55px rgba(0,0,0,.26);border-radius:24px}
+.btn{border-radius:14px;min-height:44px;font-weight:900}.btn:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #ffd77b;outline-offset:3px}
+.task-lesson-option{padding:15px;border-radius:17px}.task-lesson-meta b{font-size:1.05rem}.question-pick-status{font-weight:700}.smallbtn{border-radius:12px}
 </style></head>
 <body><div class="wrap">
 <header class="topbar glass"><div class="brand"><div class="logo">📊</div><div><h1>لوحة المعلم <small style="font-size:.7em;color:#9fb2c8">نسخة الاستعادة V4.5</small></h1><p id="teacherSub"></p></div></div><div class="actions"><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="journey-student-recovery-v4.html">معاينة منصة الطالب</a></div></header>
