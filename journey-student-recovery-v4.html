@@ -68,6 +68,18 @@ html.task-loading body::after{
 
 .identity-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 @media(max-width:900px){.identity-grid{grid-template-columns:1fr}}
+
+/* Professional Journey review: presentation only; student data and APIs remain unchanged */
+:root{--r:26px;--shadow:0 24px 75px rgba(0,0,0,.30)}
+body{background:radial-gradient(circle at 95% 0%,rgba(26,185,188,.22),transparent 30%),radial-gradient(circle at 3% 66%,rgba(104,127,250,.19),transparent 40%),linear-gradient(145deg,#06121f,#0b1f37 54%,#071321);letter-spacing:.05px}
+.glass{border:1px solid rgba(166,211,228,.17);box-shadow:0 18px 55px rgba(0,0,0,.25)}
+.question{background:linear-gradient(165deg,rgba(22,51,76,.9),rgba(9,26,46,.98));border:1px solid rgba(96,216,210,.25);padding:clamp(19px,3vw,32px);border-radius:24px}
+.question h3{font-size:clamp(1.3rem,2.8vw,1.75rem);line-height:1.9;font-weight:900}
+.answer{background:linear-gradient(100deg,rgba(20,45,74,.97),rgba(21,56,80,.94));font-size:clamp(1rem,2vw,1.17rem);padding:17px 20px;min-height:63px;border-radius:17px;border-color:rgba(132,177,207,.26)}
+.answer:hover{background:#204666;border-color:#42ded4}
+.answer:focus-visible,.btn:focus-visible{outline:3px solid #ffd166;outline-offset:3px}
+.science-question-media{display:block;max-width:100%;width:min(720px,100%);max-height:370px;object-fit:contain;background:#f1f8fc;padding:9px;border-radius:18px;margin:0 auto 22px;border:2px solid rgba(66,222,212,.4)}
+@media(max-width:560px){.science-question-media{max-height:270px;padding:5px}.question{padding:15px}.answer{font-size:1rem;min-height:56px}}
 </style>
 </head>
 <body>
@@ -1675,185 +1687,220 @@ window.SCIENCE_DATA = {
     {
       "id": "q1",
       "lesson": "science-processes",
-      "concept": "science",
+      "concept": "observe-infer",
       "type": "choice",
-      "q": "أي عبارة تصف العلم بصورة أفضل؟",
+      "q": "أي العبارات التالية تُعد ملاحظة وليست استنتاجًا؟",
       "options": [
-        "طريقة منظمة لدراسة العالم الطبيعي",
-        "مجموعة آراء لا تتغير",
-        "حفظ أسماء العلماء فقط",
-        "تفسير لا يحتاج إلى دليل"
+        "ذبل النبات لأنه لم يُسقَ.",
+        "لون أوراق النبات أصفر.",
+        "التربة فقيرة بالغذاء.",
+        "سيموت النبات بعد أسبوع."
       ],
-      "answer": 0,
-      "explain": "العلم يعتمد على الملاحظة والاستقصاء والأدلة لفهم العالم الطبيعي."
+      "answer": 1,
+      "explain": "لون الأوراق يُلاحظ مباشرة، أما تفسير سبب الذبول فهو استنتاج.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q2",
       "lesson": "science-processes",
       "concept": "observe-infer",
       "type": "choice",
-      "q": "أي العبارات الآتية تُعد ملاحظة؟",
+      "q": "رأى أحمد أرض الملعب مبللة صباحًا فقال: «لقد أمطرت في الليل». ما قاله أحمد يُعد:",
       "options": [
-        "لون الورقة أخضر",
-        "النبات ذابل بسبب قلة الماء",
-        "سيزداد نمو النبات غدًا",
-        "التربة جيدة لأنها غنية"
+        "ملاحظة.",
+        "قانونًا علميًا.",
+        "استنتاجًا.",
+        "تجربة علمية."
       ],
-      "answer": 0,
-      "explain": "الملاحظة تصف ما يُشاهد أو يُقاس مباشرة، أما تفسير السبب فهو استنتاج."
+      "answer": 2,
+      "explain": "هطول المطر تفسير محتمل للملاحظة وليس شيئًا شاهده أحمد مباشرة.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q3",
       "lesson": "science-processes",
-      "concept": "observe-infer",
+      "concept": "branches",
       "type": "choice",
-      "q": "شاهد طالب أوراق نبات ذابلة وقال: ربما لم يحصل النبات على ماء كافٍ. هذا يمثل:",
+      "q": "يدرس العالم الصخور والبراكين والزلازل. إلى أي فروع العلم ينتمي عمله؟",
       "options": [
-        "ملاحظة",
-        "استنتاجًا",
-        "قانونًا علميًا",
-        "قياسًا"
+        "علوم الأرض.",
+        "علم الحياة.",
+        "الكيمياء.",
+        "الفيزياء."
       ],
-      "answer": 1,
-      "explain": "العبارة تفسير محتمل لملاحظة سابقة، لذلك هي استنتاج."
+      "answer": 0,
+      "explain": "تختص علوم الأرض بالصخور والبراكين والزلازل.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q4",
       "lesson": "science-processes",
       "concept": "hypothesis",
       "type": "choice",
-      "q": "أي عبارة تمثل فرضية قابلة للاختبار؟",
+      "q": "أي مما يلي يُعد فرضية قابلة للاختبار؟",
       "options": [
-        "إذا زادت كمية الضوء فقد يزداد نمو النبات",
-        "النبات جميل",
-        "يجب أن تنجح التجربة",
-        "الضوء أفضل دائمًا"
+        "الورد الأحمر أجمل من الورد الأبيض.",
+        "القطط أذكى الحيوانات الأليفة.",
+        "مادة العلوم أمتع المواد.",
+        "إذا زادت كمية الملح في الماء فإن البيضة تطفو."
       ],
-      "answer": 0,
-      "explain": "الفرضية تفسير أو توقع منطقي يمكن اختباره."
+      "answer": 3,
+      "explain": "يمكن اختبار العلاقة بين كمية الملح والطفو عمليًا.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q5",
       "lesson": "science-processes",
-      "concept": "method",
+      "concept": "variables",
       "type": "choice",
-      "q": "ما الخطوة التي تأتي بعد تكوين الفرضية في الطريقة العلمية؟",
+      "q": "أرادت سلمى معرفة أثر درجة حرارة الماء في سرعة ذوبان السكر. ما المتغير المستقل في تجربتها؟",
       "options": [
-        "اختبار الفرضية",
-        "الاستنتاج مباشرة",
-        "إلغاء المشكلة",
-        "تغيير جميع المتغيرات"
+        "درجة حرارة الماء.",
+        "زمن ذوبان السكر.",
+        "كمية السكر.",
+        "نوع الكأس."
       ],
       "answer": 0,
-      "explain": "بعد تكوين الفرضية يتم اختبارها، ثم تحليل البيانات والاستنتاج."
+      "explain": "درجة الحرارة هي العامل الذي تغيّره سلمى.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q6",
       "lesson": "science-processes",
-      "concept": "method",
-      "type": "order",
-      "q": "رتّب خطوات الطريقة العلمية.",
+      "concept": "variables",
+      "type": "choice",
+      "q": "في تجربة سلمى السابقة، ما المتغير التابع؟",
       "options": [
-        "تحديد المشكلة",
-        "جمع المعلومات",
-        "تكوين الفرضية",
-        "اختبار الفرضية",
-        "تحليل البيانات",
-        "الاستنتاج"
+        "درجة حرارة الماء.",
+        "زمن ذوبان السكر.",
+        "حجم الماء.",
+        "نوع السكر."
       ],
-      "answer": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5
-      ],
-      "explain": "هذا هو التسلسل الوارد في الدرس."
+      "answer": 1,
+      "explain": "يُقاس زمن الذوبان لبيان أثر تغيير درجة الحرارة.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q7",
       "lesson": "science-processes",
-      "concept": "theory-law",
+      "concept": "variables",
       "type": "choice",
-      "q": "أي عبارة تصف القانون العلمي؟",
+      "q": "في تجربة لمعرفة أثر السماد في نمو نبات الفول، تُرك أصيص دون سماد. يمثل هذا الأصيص:",
       "options": [
-        "يصف نمطًا يحدث في الطبيعة",
-        "يفسر لماذا يحدث كل شيء",
-        "تخمين غير قابل للاختبار",
-        "رأي شخصي"
+        "المتغير التابع.",
+        "المتغير المستقل.",
+        "المجموعة الضابطة.",
+        "الفرضية."
       ],
-      "answer": 0,
-      "explain": "القانون العلمي يصف ما يحدث أو نمطًا متكررًا في الطبيعة."
+      "answer": 2,
+      "explain": "الأصيص غير المعرّض للسماد يمثل المجموعة الضابطة للمقارنة.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q8",
       "lesson": "science-processes",
-      "concept": "theory-law",
+      "concept": "method",
       "type": "choice",
-      "q": "أي عبارة تصف النظرية العلمية؟",
+      "q": "لماذا يكرر العلماء التجربة عدة مرات؟",
       "options": [
-        "تفسير مدعوم بالأدلة",
-        "قائمة أسماء",
-        "رأي لا يتغير",
-        "قياس واحد فقط"
+        "لتغيير الفرضية في كل مرة.",
+        "للتأكد من أن النتائج موثوقة وليست بالصدفة.",
+        "لزيادة عدد المتغيرات المستقلة.",
+        "لأن النتيجة الأولى تكون خطأ دائمًا."
       ],
-      "answer": 0,
-      "explain": "النظرية العلمية تفسير مدعوم بالملاحظات والاستقصاءات."
+      "answer": 1,
+      "explain": "التكرار يساعد على التحقق من موثوقية النتائج.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q9",
       "lesson": "science-processes",
-      "concept": "science",
+      "concept": "observe-infer",
       "type": "choice",
-      "q": "أي مهارتين تساعدان العلماء على جمع معلومات مباشرة؟",
+      "q": "يوضح الجدول طول نبات بعد أسبوعين عند تعريضه لساعات إضاءة مختلفة. ما الاستنتاج الذي تدعمه البيانات؟",
       "options": [
-        "الملاحظة والقياس",
-        "التخمين والتجاهل",
-        "الحفظ والنسخ",
-        "الرأي والتفضيل"
+        "كلما زادت ساعات الإضاءة زاد طول النبات.",
+        "الإضاءة لا تؤثر في طول النبات.",
+        "ينمو النبات أفضل في الظلام.",
+        "أفضل نمو للنبات عند 4 ساعات إضاءة."
       ],
       "answer": 0,
-      "explain": "الملاحظة والقياس من المهارات الأساسية لجمع البيانات."
+      "explain": "تزداد أطوال النباتات مع زيادة ساعات الإضاءة في بيانات الجدول.",
+      "image": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22780%22%20height%3D%22360%22%20viewBox%3D%220%200%20780%20360%22%3E%3Crect%20width%3D%22780%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22%23f1f8fc%22%2F%3E%3Ctext%20x%3D%22390%22%20y%3D%2242%22%20text-anchor%3D%22middle%22%20font-size%3D%2225%22%20font-weight%3D%22bold%22%20font-family%3D%22Tahoma%22%20fill%3D%22%23123754%22%3E%D8%A7%D9%84%D8%B9%D9%84%D8%A7%D9%82%D8%A9%20%D8%A8%D9%8A%D9%86%20%D8%B3%D8%A7%D8%B9%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A5%D8%B6%D8%A7%D8%A1%D8%A9%20%D9%88%D8%B7%D9%88%D9%84%20%D8%A7%D9%84%D9%86%D8%A8%D8%A7%D8%AA%3C%2Ftext%3E%3Crect%20x%3D%22125%22%20y%3D%2276%22%20width%3D%22530%22%20height%3D%22238%22%20rx%3D%2216%22%20fill%3D%22white%22%20stroke%3D%22%23aacdd8%22%20stroke-width%3D%222%22%2F%3E%3Crect%20x%3D%22125%22%20y%3D%2276%22%20width%3D%22530%22%20height%3D%2248%22%20rx%3D%2212%22%20fill%3D%22%23177d89%22%2F%3E%3Ctext%20x%3D%22525%22%20y%3D%22109%22%20font-size%3D%2222%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Tahoma%22%3E%D8%B3%D8%A7%D8%B9%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A5%D8%B6%D8%A7%D8%A1%D8%A9%20%D9%8A%D9%88%D9%85%D9%8A%D9%8B%D8%A7%3C%2Ftext%3E%3Ctext%20x%3D%22260%22%20y%3D%22109%22%20font-size%3D%2222%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%20font-family%3D%22Tahoma%22%3E%D8%B7%D9%88%D9%84%20%D8%A7%D9%84%D9%86%D8%A8%D8%A7%D8%AA%20(%D8%B3%D9%85)%3C%2Ftext%3E%3Cline%20x1%3D%22395%22%20y1%3D%2276%22%20x2%3D%22395%22%20y2%3D%22314%22%20stroke%3D%22%23b6d3dc%22%20stroke-width%3D%222%22%2F%3E%3Crect%20x%3D%22130%22%20y%3D%22124%22%20width%3D%22520%22%20height%3D%2247%22%20fill%3D%22%23ffffff%22%2F%3E%3Ctext%20x%3D%22525%22%20y%3D%22155%22%20font-size%3D%2222%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153f5b%22%3E0%3C%2Ftext%3E%3Ctext%20x%3D%22260%22%20y%3D%22155%22%20font-size%3D%2222%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153f5b%22%3E2%3C%2Ftext%3E%3Crect%20x%3D%22130%22%20y%3D%22171%22%20width%3D%22520%22%20height%3D%2247%22%20fill%3D%22%23eef6f9%22%2F%3E%3Ctext%20x%3D%22525%22%20y%3D%22202%22%20font-size%3D%2222%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153f5b%22%3E4%3C%2Ftext%3E%3Ctext%20x%3D%22260%22%20y%3D%22202%22%20font-size%3D%2222%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153f5b%22%3E6%3C%2Ftext%3E%3Crect%20x%3D%22130%22%20y%3D%22218%22%20width%3D%22520%22%20height%3D%2247%22%20fill%3D%22%23ffffff%22%2F%3E%3Ctext%20x%3D%22525%22%20y%3D%22249%22%20font-size%3D%2222%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153f5b%22%3E8%3C%2Ftext%3E%3Ctext%20x%3D%22260%22%20y%3D%22249%22%20font-size%3D%2222%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153f5b%22%3E11%3C%2Ftext%3E%3Crect%20x%3D%22130%22%20y%3D%22265%22%20width%3D%22520%22%20height%3D%2247%22%20fill%3D%22%23eef6f9%22%2F%3E%3Ctext%20x%3D%22525%22%20y%3D%22296%22%20font-size%3D%2222%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153f5b%22%3E12%3C%2Ftext%3E%3Ctext%20x%3D%22260%22%20y%3D%22296%22%20font-size%3D%2222%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153f5b%22%3E15%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q10",
       "lesson": "science-processes",
-      "concept": "hypothesis",
-      "type": "tf",
-      "q": "إذا لم تدعم النتائج الفرضية فمن المقبول علميًا تعديل الفرضية أو إعادة اختبارها.",
-      "answer": true,
-      "explain": "الفرضيات قابلة للاختبار والتعديل وفق الأدلة."
+      "concept": "skills",
+      "type": "choice",
+      "q": "يمثل الرسم درجة حرارة ماء يُسخن مع الزمن. ما درجة الحرارة تقريبًا بعد 5 دقائق؟",
+      "answer": 0,
+      "explain": "عند الدقيقة الخامسة تقع القراءة تقريبًا في منتصف 60 و80 درجة، أي 70°س.",
+      "options": [
+        "70°س",
+        "50°س",
+        "90°س",
+        "100°س"
+      ],
+      "image": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22780%22%20height%3D%22360%22%20viewBox%3D%220%200%20780%20360%22%3E%3Crect%20width%3D%22780%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22%23f1f8fc%22%2F%3E%3Ctext%20x%3D%22390%22%20y%3D%2239%22%20font-family%3D%22Tahoma%22%20font-size%3D%2225%22%20font-weight%3D%22bold%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E%D8%AA%D8%BA%D9%8A%D8%B1%20%D8%AF%D8%B1%D8%AC%D8%A9%20%D8%AD%D8%B1%D8%A7%D8%B1%D8%A9%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D9%85%D8%B9%20%D8%A7%D9%84%D8%B2%D9%85%D9%86%3C%2Ftext%3E%3Cline%20x1%3D%22100%22%20y1%3D%22292%22%20x2%3D%22695%22%20y2%3D%22292%22%20stroke%3D%22%231e4560%22%20stroke-width%3D%224%22%2F%3E%3Cline%20x1%3D%22100%22%20y1%3D%22292%22%20x2%3D%22100%22%20y2%3D%2270%22%20stroke%3D%22%231e4560%22%20stroke-width%3D%224%22%2F%3E%3Cline%20x1%3D%22100%22%20y1%3D%22292%22%20x2%3D%22675%22%20y2%3D%22292%22%20stroke%3D%22%23c8dfe8%22%2F%3E%3Ctext%20x%3D%2281%22%20y%3D%22299%22%20font-size%3D%2217%22%20text-anchor%3D%22end%22%20fill%3D%22%23163950%22%3E20%3C%2Ftext%3E%3Cline%20x1%3D%22100%22%20y1%3D%22255%22%20x2%3D%22675%22%20y2%3D%22255%22%20stroke%3D%22%23c8dfe8%22%2F%3E%3Ctext%20x%3D%2281%22%20y%3D%22262%22%20font-size%3D%2217%22%20text-anchor%3D%22end%22%20fill%3D%22%23163950%22%3E40%3C%2Ftext%3E%3Cline%20x1%3D%22100%22%20y1%3D%22218%22%20x2%3D%22675%22%20y2%3D%22218%22%20stroke%3D%22%23c8dfe8%22%2F%3E%3Ctext%20x%3D%2281%22%20y%3D%22225%22%20font-size%3D%2217%22%20text-anchor%3D%22end%22%20fill%3D%22%23163950%22%3E60%3C%2Ftext%3E%3Cline%20x1%3D%22100%22%20y1%3D%22181%22%20x2%3D%22675%22%20y2%3D%22181%22%20stroke%3D%22%23c8dfe8%22%2F%3E%3Ctext%20x%3D%2281%22%20y%3D%22188%22%20font-size%3D%2217%22%20text-anchor%3D%22end%22%20fill%3D%22%23163950%22%3E80%3C%2Ftext%3E%3Cline%20x1%3D%22100%22%20y1%3D%22144%22%20x2%3D%22675%22%20y2%3D%22144%22%20stroke%3D%22%23c8dfe8%22%2F%3E%3Ctext%20x%3D%2281%22%20y%3D%22151%22%20font-size%3D%2217%22%20text-anchor%3D%22end%22%20fill%3D%22%23163950%22%3E100%3C%2Ftext%3E%3Cline%20x1%3D%22100%22%20y1%3D%22107%22%20x2%3D%22675%22%20y2%3D%22107%22%20stroke%3D%22%23c8dfe8%22%2F%3E%3Ctext%20x%3D%2281%22%20y%3D%22114%22%20font-size%3D%2217%22%20text-anchor%3D%22end%22%20fill%3D%22%23163950%22%3E120%3C%2Ftext%3E%3Ctext%20x%3D%22100%22%20y%3D%22317%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E0%3C%2Ftext%3E%3Ctext%20x%3D%22215%22%20y%3D%22317%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E2%3C%2Ftext%3E%3Ctext%20x%3D%22330%22%20y%3D%22317%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E4%3C%2Ftext%3E%3Ctext%20x%3D%22445%22%20y%3D%22317%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E6%3C%2Ftext%3E%3Ctext%20x%3D%22560%22%20y%3D%22317%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E8%3C%2Ftext%3E%3Ctext%20x%3D%22675%22%20y%3D%22317%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E10%3C%2Ftext%3E%3Cpolyline%20points%3D%22100%2C292%20215%2C255%20330%2C218%20445%2C181%20560%2C144%20675%2C144%22%20fill%3D%22none%22%20stroke%3D%22%23e35d66%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22292%22%20r%3D%226%22%20fill%3D%22white%22%20stroke%3D%22%23e35d66%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%22215%22%20cy%3D%22255%22%20r%3D%226%22%20fill%3D%22white%22%20stroke%3D%22%23e35d66%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%22330%22%20cy%3D%22218%22%20r%3D%226%22%20fill%3D%22white%22%20stroke%3D%22%23e35d66%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%22445%22%20cy%3D%22181%22%20r%3D%226%22%20fill%3D%22white%22%20stroke%3D%22%23e35d66%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%22560%22%20cy%3D%22144%22%20r%3D%226%22%20fill%3D%22white%22%20stroke%3D%22%23e35d66%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%22675%22%20cy%3D%22144%22%20r%3D%226%22%20fill%3D%22white%22%20stroke%3D%22%23e35d66%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22390%22%20y%3D%22346%22%20text-anchor%3D%22middle%22%20font-family%3D%22Tahoma%22%20font-size%3D%2218%22%20fill%3D%22%23163950%22%3E%D8%A7%D9%84%D8%B2%D9%85%D9%86%20(%D8%AF%D9%82%D9%8A%D9%82%D8%A9)%3C%2Ftext%3E%3Ctext%20x%3D%2235%22%20y%3D%22198%22%20text-anchor%3D%22middle%22%20font-family%3D%22Tahoma%22%20font-size%3D%2217%22%20fill%3D%22%23163950%22%20transform%3D%22rotate(-90%2035%20198)%22%3E%D8%AF%D8%B1%D8%AC%D8%A9%20%D8%A7%D9%84%D8%AD%D8%B1%D8%A7%D8%B1%D8%A9%20(%C2%B0%D8%B3)%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q11",
       "lesson": "scientific-models",
-      "concept": "types",
+      "concept": "theory-law",
       "type": "choice",
-      "q": "مجسم الكرة الأرضية مثال على:",
+      "q": "ما الفرق الصحيح بين القانون العلمي والنظرية العلمية؟",
       "options": [
-        "نموذج مادي",
-        "نموذج حاسوبي",
-        "نموذج فكري",
-        "قانون علمي"
+        "النظرية تتحول إلى قانون عندما تُثبت.",
+        "القانون يصف ما يحدث، والنظرية تفسر لماذا يحدث.",
+        "القانون تخمين، والنظرية حقيقة مؤكدة.",
+        "لا فرق بينهما."
       ],
-      "answer": 0,
-      "explain": "المجسم شيء ملموس يمثل شيئًا آخر، لذا فهو نموذج مادي."
+      "answer": 1,
+      "explain": "القوانين تصف أنماط الطبيعة والنظريات تفسرها.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q12",
       "lesson": "scientific-models",
-      "concept": "types",
+      "concept": "science",
       "type": "choice",
-      "q": "محاكاة حركة إعصار على الحاسوب مثال على:",
+      "q": "أي مما يلي يُعد مثالًا على التقنية؟",
       "options": [
-        "نموذج حاسوبي",
-        "نموذج مادي",
-        "نموذج فكري فقط",
-        "فرضية"
+        "قانون الجاذبية.",
+        "ملاحظة لون السماء.",
+        "فرضية عن المد والجزر.",
+        "جهاز تحلية مياه البحر."
       ],
-      "answer": 0,
-      "explain": "المحاكاة الرقمية من النماذج الحاسوبية."
+      "answer": 3,
+      "explain": "تحلية المياه تطبيق عملي للمعرفة العلمية.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q13",
@@ -1873,32 +1920,39 @@ window.SCIENCE_DATA = {
     {
       "id": "q14",
       "lesson": "scientific-models",
-      "concept": "communication",
+      "concept": "science",
       "type": "choice",
-      "q": "من فوائد النماذج في التواصل العلمي أنها:",
+      "q": "أي الأسئلة التالية لا يستطيع العلم الإجابة عنه إجابة موضوعية؟",
       "options": [
-        "تساعد على توضيح الأفكار المعقدة",
-        "تلغي الحاجة إلى الأدلة",
-        "تجعل كل النتائج صحيحة",
-        "تمنع تغير المعرفة"
+        "كم دقيقة يحتاج الماء ليغلي؟",
+        "لماذا يصدأ الحديد؟",
+        "ما سرعة الصوت في الهواء؟",
+        "أي الألوان أجمل؟"
       ],
-      "answer": 0,
-      "explain": "النماذج تسهّل عرض الأفكار والظواهر التي يصعب دراستها مباشرة."
+      "answer": 3,
+      "explain": "الحكم على جمال الألوان رأي شخصي.",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q15",
       "lesson": "scientific-models",
-      "concept": "testing",
+      "concept": "method",
       "type": "choice",
-      "q": "لماذا يستخدم العلماء النماذج لاختبار التوقعات؟",
+      "q": "يوضح الشكل خطوات إحدى الطرائق العلمية. ما الخطوة المناسبة مكان علامة الاستفهام؟",
       "options": [
-        "لاختبار أفكار بصورة عملية وآمنة",
-        "لأن النموذج لا يحتاج بيانات",
-        "لأن النموذج حقيقة ثابتة",
-        "لإلغاء التجارب دائمًا"
+        "التواصل بالنتائج.",
+        "كتابة التقرير.",
+        "اختبار الفرضية.",
+        "طرح سؤال جديد."
       ],
-      "answer": 0,
-      "explain": "النموذج يسمح باختبار توقعات أو فرضيات بطريقة مناسبة قبل التطبيق المباشر أحيانًا."
+      "answer": 2,
+      "explain": "بعد صياغة الفرضية تُختبر قبل تحليل البيانات.",
+      "image": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22780%22%20height%3D%22360%22%20viewBox%3D%220%200%20780%20360%22%3E%3Crect%20width%3D%22780%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22%23f1f8fc%22%2F%3E%3Ctext%20x%3D%22390%22%20y%3D%2256%22%20font-family%3D%22Tahoma%22%20font-size%3D%2225%22%20text-anchor%3D%22middle%22%20font-weight%3D%22bold%22%20fill%3D%22%23163950%22%3E%D9%85%D8%B1%D8%A7%D8%AD%D9%84%20%D8%A7%D8%AE%D8%AA%D8%A8%D8%A7%D8%B1%20%D8%A7%D9%84%D9%81%D8%B1%D8%B6%D9%8A%D8%A9%3C%2Ftext%3E%3Crect%20x%3D%22628%22%20y%3D%22130%22%20width%3D%22133%22%20height%3D%2282%22%20rx%3D%2215%22%20fill%3D%22%23e2f5f2%22%20stroke%3D%22%230b8885%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22694%22%20y%3D%22176%22%20font-family%3D%22Tahoma%22%20font-size%3D%2218%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153951%22%3E%D8%AA%D8%AD%D8%AF%D9%8A%D8%AF%20%D8%A7%D9%84%D9%85%D8%B4%D9%83%D9%84%D8%A9%3C%2Ftext%3E%3Cpath%20d%3D%22M%20625%20170%20l%20-8%200%22%20stroke%3D%22%2313597b%22%20stroke-width%3D%224%22%2F%3E%3Crect%20x%3D%22484%22%20y%3D%22130%22%20width%3D%22133%22%20height%3D%2282%22%20rx%3D%2215%22%20fill%3D%22%23e2f5f2%22%20stroke%3D%22%230b8885%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22550%22%20y%3D%22176%22%20font-family%3D%22Tahoma%22%20font-size%3D%2218%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153951%22%3E%D8%AA%D9%83%D9%88%D9%8A%D9%86%20%D9%81%D8%B1%D8%B6%D9%8A%D8%A9%3C%2Ftext%3E%3Cpath%20d%3D%22M%20481%20170%20l%20-8%200%22%20stroke%3D%22%2313597b%22%20stroke-width%3D%224%22%2F%3E%3Crect%20x%3D%22340%22%20y%3D%22130%22%20width%3D%22133%22%20height%3D%2282%22%20rx%3D%2215%22%20fill%3D%22%23fff3cf%22%20stroke%3D%22%23dc9f25%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22406%22%20y%3D%22176%22%20font-family%3D%22Tahoma%22%20font-size%3D%2218%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153951%22%3E%D8%9F%3C%2Ftext%3E%3Cpath%20d%3D%22M%20337%20170%20l%20-8%200%22%20stroke%3D%22%2313597b%22%20stroke-width%3D%224%22%2F%3E%3Crect%20x%3D%22196%22%20y%3D%22130%22%20width%3D%22133%22%20height%3D%2282%22%20rx%3D%2215%22%20fill%3D%22%23e2f5f2%22%20stroke%3D%22%230b8885%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22262%22%20y%3D%22176%22%20font-family%3D%22Tahoma%22%20font-size%3D%2214%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153951%22%3E%D8%AA%D8%AD%D9%84%D9%8A%D9%84%20%D8%A7%D9%84%D8%A8%D9%8A%D8%A7%D9%86%D8%A7%D8%AA%3C%2Ftext%3E%3Cpath%20d%3D%22M%20193%20170%20l%20-8%200%22%20stroke%3D%22%2313597b%22%20stroke-width%3D%224%22%2F%3E%3Crect%20x%3D%2252%22%20y%3D%22130%22%20width%3D%22133%22%20height%3D%2282%22%20rx%3D%2215%22%20fill%3D%22%23e2f5f2%22%20stroke%3D%22%230b8885%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22118%22%20y%3D%22176%22%20font-family%3D%22Tahoma%22%20font-size%3D%2214%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153951%22%3E%D8%A7%D8%B3%D8%AA%D8%AE%D9%84%D8%A7%D8%B5%20%D8%A7%D9%84%D9%86%D8%AA%D8%A7%D8%A6%D8%AC%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "difficulty": "apply",
+      "track": "core",
+      "source": "اختبارات علوم أول متوسط 1448هـ"
     },
     {
       "id": "q16",
@@ -8192,20 +8246,21 @@ window.SCIENCE_DATA = {
     "id": "g3-eq-01",
     "lesson": "g3-earthquakes",
     "grade": "3",
-    "concept": "مكونات الزلزال",
+    "concept": "الزلازل",
     "type": "choice",
-    "q": "النقطة داخل الأرض التي تبدأ عندها حركة الزلزال تسمى:",
+    "q": "يوضح الشكل مقطعًا في باطن الأرض. ماذا تُسمى النقطة الحمراء التي تبدأ عندها الموجات الزلزالية؟",
     "options": [
       "المركز السطحي",
       "بؤرة الزلزال",
-      "الفالق السطحي",
-      "محطة الرصد"
+      "فوهة البركان",
+      "حافة الصفيحة"
     ],
     "answer": 1,
-    "explain": "بؤرة الزلزال",
-    "difficulty": "remember",
+    "explain": "بؤرة الزلزال هي نقطة بدء الاهتزاز داخل الأرض.",
+    "difficulty": "apply",
     "track": "core",
-    "source": "كتاب الطالب"
+    "source": "سؤال تطبيقي من إعداد المعلم",
+    "image": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22780%22%20height%3D%22360%22%20viewBox%3D%220%200%20780%20360%22%3E%3Crect%20width%3D%22780%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22%23f1f8fc%22%2F%3E%3Ctext%20x%3D%22390%22%20y%3D%2243%22%20font-family%3D%22Tahoma%22%20font-size%3D%2224%22%20font-weight%3D%22bold%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E%D9%85%D9%82%D8%B7%D8%B9%20%D9%85%D8%A8%D8%B3%D8%B7%20%D9%8A%D9%88%D8%B6%D8%AD%20%D8%A8%D8%A4%D8%B1%D8%A9%20%D8%A7%D9%84%D8%B2%D9%84%D8%B2%D8%A7%D9%84%3C%2Ftext%3E%3Cpath%20d%3D%22M50%20155%20Q165%20135%20255%20158%20Q355%20182%20460%20155%20Q580%20123%20730%20150%20L730%20310%20L50%20310Z%22%20fill%3D%22%23d6af7a%22%20stroke%3D%22%23836245%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M360%20155%20L430%20302%22%20fill%3D%22none%22%20stroke%3D%22%23944a32%22%20stroke-width%3D%229%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22236%22%20r%3D%2215%22%20fill%3D%22%23e84246%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22236%22%20r%3D%2234%22%20fill%3D%22none%22%20stroke%3D%22%23e84246%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22236%22%20r%3D%2258%22%20fill%3D%22none%22%20stroke%3D%22%23e84246%22%20stroke-width%3D%222%22%20stroke-dasharray%3D%227%206%22%2F%3E%3Cline%20x1%3D%22399%22%20y1%3D%22236%22%20x2%3D%22399%22%20y2%3D%22158%22%20stroke%3D%22%238b4a3d%22%20stroke-width%3D%223%22%20stroke-dasharray%3D%225%205%22%2F%3E%3Ctext%20x%3D%22520%22%20y%3D%22253%22%20font-family%3D%22Tahoma%22%20font-size%3D%2222%22%20fill%3D%22%23163950%22%3E%D8%A8%D8%A4%D8%B1%D8%A9%20%D8%A7%D9%84%D8%B2%D9%84%D8%B2%D8%A7%D9%84%3C%2Ftext%3E%3Cpath%20d%3D%22M509%20245%20L415%20237%22%20stroke%3D%22%23163950%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E"
   },
   {
     "id": "g3-eq-02",
@@ -9049,7 +9104,7 @@ window.SCIENCE_DATA = {
     "grade": "3",
     "concept": "الانتشار",
     "type": "choice",
-    "q": "انتقال الجزيئات من منطقة تركيز عالٍ إلى منطقة تركيز منخفض يسمى:",
+    "q": "يوضح الشكل انتقال جزيئات عبر غشاء من منطقة مرتفعة التركيز إلى منطقة منخفضة التركيز. ما العملية؟",
     "options": [
       "النقل النشط",
       "البلعمة",
@@ -9057,10 +9112,11 @@ window.SCIENCE_DATA = {
       "الإخراج الخلوي"
     ],
     "answer": 2,
-    "explain": "الانتشار",
-    "difficulty": "remember",
+    "explain": "الانتشار هو انتقال الجزيئات من تركيز أعلى إلى تركيز أقل.",
+    "difficulty": "apply",
     "track": "core",
-    "source": "كتاب الطالب"
+    "source": "سؤال تطبيقي من إعداد المعلم",
+    "image": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22780%22%20height%3D%22360%22%20viewBox%3D%220%200%20780%20360%22%3E%3Crect%20width%3D%22780%22%20height%3D%22360%22%20rx%3D%2224%22%20fill%3D%22%23f1f8fc%22%2F%3E%3Ctext%20x%3D%22390%22%20y%3D%2244%22%20font-family%3D%22Tahoma%22%20font-size%3D%2223%22%20font-weight%3D%22bold%22%20text-anchor%3D%22middle%22%20fill%3D%22%23163950%22%3E%D8%AD%D8%B1%D9%83%D8%A9%20%D8%A7%D9%84%D8%AC%D8%B2%D9%8A%D8%A6%D8%A7%D8%AA%20%D8%B9%D8%A8%D8%B1%20%D8%A7%D9%84%D8%BA%D8%B4%D8%A7%D8%A1%3C%2Ftext%3E%3Crect%20x%3D%22380%22%20y%3D%2265%22%20width%3D%2218%22%20height%3D%22235%22%20rx%3D%229%22%20fill%3D%22%233b8bb9%22%2F%3E%3Ctext%20x%3D%22200%22%20y%3D%2291%22%20font-family%3D%22Tahoma%22%20font-size%3D%2219%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153951%22%3E%D8%AA%D8%B1%D9%83%D9%8A%D8%B2%20%D9%85%D9%86%D8%AE%D9%81%D8%B6%3C%2Ftext%3E%3Ctext%20x%3D%22580%22%20y%3D%2291%22%20font-family%3D%22Tahoma%22%20font-size%3D%2219%22%20text-anchor%3D%22middle%22%20fill%3D%22%23153951%22%3E%D8%AA%D8%B1%D9%83%D9%8A%D8%B2%20%D9%85%D8%B1%D8%AA%D9%81%D8%B9%3C%2Ftext%3E%3Ccircle%20cx%3D%22480%22%20cy%3D%22130%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22540%22%20cy%3D%22158%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22610%22%20cy%3D%22137%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22680%22%20cy%3D%22173%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22480%22%20cy%3D%22218%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22570%22%20cy%3D%22250%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22650%22%20cy%3D%22245%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22199%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22525%22%20cy%3D%22195%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22680%22%20cy%3D%22115%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22620%22%20cy%3D%22284%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22450%22%20cy%3D%22273%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22570%22%20cy%3D%22120%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22690%22%20cy%3D%22289%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22150%22%20cy%3D%22158%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22250%22%20cy%3D%22220%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22185%22%20cy%3D%22275%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22130%22%20r%3D%2213%22%20fill%3D%22%23e8a345%22%20stroke%3D%22%23c4782e%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M490%20184%20L300%20184%20M316%20171%20L300%20184%20L316%20197%22%20stroke%3D%22%230b7e7a%22%20fill%3D%22none%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E"
   },
   {
     "id": "g3-cell-02",
@@ -11841,7 +11897,7 @@ function buildQuiz(){
  if(!state.quiz.length){alert('لا توجد أسئلة متاحة للدروس المحددة. راجع بنك الأسئلة أو الأسئلة المستبعدة.');return}$('timerBox').classList.toggle('hidden',!(state.mode==='exam'||state.task?.mode==='exam'));$('checkBtn').classList.toggle('hidden',(state.mode==='exam'||state.task?.mode==='exam'));updateLive();
 }
 function qType(type){return type==='tf'?'صح أو خطأ':type==='multi'?'اختيار متعدد':type==='order'?'ترتيب':'اختيار من متعدد'}
-function renderQuestion(){clearInterval(state.timer);state.answered=false;const q=state.quiz[state.i];$('progressBar').style.width=`${state.i/state.quiz.length*100}%`;$('quizMode').textContent=state.task?.title||({training:'تدريب',exam:'اختبار',remedial:'علاجي',enrich:'إثرائي'}[state.mode]||'نشاط');$('quizCount').textContent=`السؤال ${state.i+1} من ${state.quiz.length}`;$('quizLesson').textContent=lessonBy(q.lesson)?.title||'';$('qType').textContent=qType(q.type);$('qConcept').textContent=conceptName(q.lesson,q.concept);$('questionText').textContent=q.q;$('feedback').classList.add('hidden');$('nextBtn').classList.add('hidden');$('checkBtn').disabled=false;renderAnswers(q);if(state.mode==='exam'||state.task?.mode==='exam')startTimer(state.task?.timePerQuestion||30);updateLive()}
+function renderQuestion(){clearInterval(state.timer);state.answered=false;const q=state.quiz[state.i];$('progressBar').style.width=`${state.i/state.quiz.length*100}%`;$('quizMode').textContent=state.task?.title||({training:'تدريب',exam:'اختبار',remedial:'علاجي',enrich:'إثرائي'}[state.mode]||'نشاط');$('quizCount').textContent=`السؤال ${state.i+1} من ${state.quiz.length}`;$('quizLesson').textContent=lessonBy(q.lesson)?.title||'';$('qType').textContent=qType(q.type);$('qConcept').textContent=conceptName(q.lesson,q.concept);$('questionText').textContent=q.q;let visual=$('scienceQuestionVisual');if(!visual){visual=document.createElement('img');visual.id='scienceQuestionVisual';visual.className='science-question-media';visual.alt='رسم توضيحي للسؤال';visual.loading='eager';$('questionText').insertAdjacentElement('afterend',visual)}if(q.image&&/^data:image\/svg\+xml;charset=utf-8,/.test(String(q.image))){visual.src=q.image;visual.style.display='block'}else{visual.removeAttribute('src');visual.style.display='none'}$('feedback').classList.add('hidden');$('nextBtn').classList.add('hidden');$('checkBtn').disabled=false;renderAnswers(q);if(state.mode==='exam'||state.task?.mode==='exam')startTimer(state.task?.timePerQuestion||30);updateLive()}
 function renderAnswers(q){const box=$('answers');box.innerHTML='';if(q.type==='order'){let arr=shuffle(q.options.map((t,i)=>({t,orig:i})));const draw=()=>{box.innerHTML=`<div class="order">${arr.map((x,i)=>`<div class="order-row"><span>${i+1}</span><b>${esc(x.t)}</b><button data-up="${i}">↑</button><button data-down="${i}">↓</button></div>`).join('')}</div>`;box.dataset.order=JSON.stringify(arr.map(x=>x.orig));box.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.up;if(i>0){[arr[i-1],arr[i]]=[arr[i],arr[i-1]];draw()}});box.querySelectorAll('[data-down]').forEach(b=>b.onclick=()=>{const i=+b.dataset.down;if(i<arr.length-1){[arr[i+1],arr[i]]=[arr[i],arr[i+1]];draw()}})};draw();return}
  const opts=q.type==='tf'?['صح','خطأ']:q.options;opts.forEach((t,i)=>{const b=document.createElement('button');b.className='answer';b.type='button';b.dataset.index=i;b.textContent=t;b.onclick=()=>{if(state.answered)return;if(q.type==='multi'){b.classList.toggle('selected')}else{box.querySelectorAll('.answer').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');if(state.mode==='exam'||state.task?.mode==='exam')submitExam(i,false)}};box.appendChild(b)})}
 function response(q){if(q.type==='order')return JSON.parse($('answers').dataset.order||'[]');if(q.type==='multi')return [...$('answers').querySelectorAll('.answer.selected')].map(x=>+x.dataset.index).sort((a,b)=>a-b);const s=$('answers').querySelector('.answer.selected');if(!s)return null;if(q.type==='tf')return +s.dataset.index===0;return +s.dataset.index}
