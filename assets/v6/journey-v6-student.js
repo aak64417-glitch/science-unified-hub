@@ -210,6 +210,36 @@
     return baseEq(a, b);
   };
 
+  /* ---------- إرسال ملخص المهارات مع النتيجة (لتقرير الفصل الشامل) ---------- */
+  function skillSummary() {
+    const logs = Array.isArray(state.logs) ? state.logs : [], by = {}, les = {};
+    logs.forEach(l => {
+      const k = `${l.lesson}|${l.concept}`; by[k] = by[k] || [0, 0]; by[k][1]++; if (l.correct) by[k][0]++;
+      les[l.lesson] = les[l.lesson] || [0, 0]; les[l.lesson][1]++; if (l.correct) les[l.lesson][0]++;
+    });
+    const weak = Object.entries(by).filter(([, v]) => v[1] && v[0] / v[1] < 0.8).map(([k]) => {
+      const [lid, cid] = k.split('|'); return g.conceptName(lid, cid);
+    });
+    return {
+      skills: Object.entries(by).map(([k, v]) => `${k}|${v[0]}|${v[1]}`).join(';'),
+      lessons: Object.entries(les).map(([k, v]) => `${k}|${v[0]}|${v[1]}`).join(';'),
+      weakConcepts: [...new Set(weak)].join('، ')
+    };
+  }
+  if (typeof g.jsonp === 'function') {
+    const baseJsonp = g.jsonp;
+    g.jsonp = function (params, timeoutMs) {
+      try {
+        if (params && params.action === 'submitResult' && !params.skills && Array.isArray(state.logs) && state.logs.length &&
+            Number(params.total) === state.quiz.length) {
+          const s = skillSummary();
+          params = { ...params, skills: s.skills, lessonBreakdown: s.lessons, weakConcepts: params.weakConcepts || s.weakConcepts };
+        }
+      } catch (e) { console.warn('V6 skills', e); }
+      return baseJsonp.call(this, params, timeoutMs);
+    };
+  }
+
   const baseMark = g.mark;
   g.mark = function (q, r) {
     const box = byId('answers');

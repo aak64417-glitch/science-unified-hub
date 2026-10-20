@@ -209,7 +209,7 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 
 
 .question-picker-list{display:grid;gap:8px;max-height:56vh;overflow:auto;padding:4px}.question-picker-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:11px 12px;border:1px solid var(--line);border-radius:13px;background:#0b1c30}.question-picker-row input{margin-top:5px;transform:scale(1.2)}.question-picker-row b{display:block;line-height:1.65}.question-picker-row small{display:block;color:var(--muted);margin-top:4px}.question-pick-status{display:block;color:#aefef8;margin-top:6px;font-size:.78rem}.question-picker-tools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.task-question-picker{white-space:nowrap}.question-edit-btn{white-space:nowrap;background:var(--gold);color:#07111f}.question-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.question-edit-grid .wide{grid-column:1/-1}.question-edit-grid textarea{width:100%;min-height:92px;resize:vertical;padding:12px 13px;border-radius:14px;background:#09182a;border:1px solid var(--line);color:white;outline:none;line-height:1.7}.question-edit-help{font-size:.8rem;color:var(--muted);line-height:1.7;margin-top:5px}.task-lesson-option{display:grid;grid-template-columns:auto 1fr 90px auto;gap:10px;align-items:center}@media(max-width:760px){.task-lesson-option{grid-template-columns:auto 1fr 72px}.task-question-picker{grid-column:2/4;width:100%}.question-picker-row{grid-template-columns:auto 1fr}.question-edit-btn{grid-column:2;width:100%}.question-edit-grid{grid-template-columns:1fr}.question-edit-grid .wide{grid-column:auto}}
-</style><link rel="stylesheet" href="assets/v6/journey-v6.css?v=20261020-v6"></head>
+</style><link rel="stylesheet" href="assets/v6/journey-v6.css?v=20261020-v6b"></head>
 <body><div class="wrap">
 <header class="topbar glass"><div class="brand"><div class="logo">📊</div><div><h1>لوحة المعلم <small style="font-size:.7em;color:#9fb2c8">V6</small></h1><p id="teacherSub"></p></div></div><div class="actions"><a class="btn secondary" href="index.html">المنصة الموحدة</a><a class="btn secondary" href="journey-student-recovery-v4.html">معاينة منصة الطالب</a></div></header>
 <main class="screen">
@@ -1479,5 +1479,5 @@ function generatePortfolioReport(kind){
 async function copyReportText(){const text=$('reportPaper').innerText;if(copyWithoutClipboardPermission(text)){alert('تم نسخ نص التقرير.')}else{prompt('انسخ نص التقرير:',text)}}
 
 document.addEventListener('DOMContentLoaded',init);
-</script><script src="assets/v6/journey-v6-teacher.js?v=20261020-v6"></script>
+</script><script src="assets/v6/journey-v6-teacher.js?v=20261020-v6b"></script><script src="assets/v6/journey-v6-class-report.js?v=20261020-v6b"></script>
 </body></html>
