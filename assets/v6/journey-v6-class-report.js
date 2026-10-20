@@ -337,5 +337,66 @@
     if (close && !close.dataset.v6cr) { close.dataset.v6cr = '1'; close.addEventListener('click', () => { b.classList.add('hidden'); $('reportPaper').classList.remove('v6cr-paper'); }); }
   }
 
+  /* ---------------- فتح التقرير مباشرة (من جدول الروابط الذكية) ---------------- */
+  g.openClassReport = function (cls, taskId) {
+    const sel = document.getElementById('v6crClass'); if (!sel) return;
+    if (![...sel.options].some(o => o.value === cls)) { alert('الفصل غير موجود: ' + cls); return; }
+    if (!(results || []).length) { alert('لا توجد نتائج محمّلة بعد. حدّث اللوحة ثم أعد المحاولة.'); return; }
+    sel.value = cls;
+    ['v6crFrom', 'v6crTo', 'v6crType'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    renderTaskChoices();
+    const boxes = [...document.querySelectorAll('#v6crTasks input[type=checkbox]')];
+    if (taskId) {
+      const task = taskById(taskId);
+      boxes.forEach(b => { b.checked = b.value === 'id:' + taskId || (!!task && b.value === 't:' + task.title); });
+      if (!boxes.some(b => b.checked)) { alert(`لا توجد نتائج لهذا التكليف في الفصل ${cls} بعد.`); return; }
+    } else if (!boxes.length) { alert(`لا توجد نتائج للفصل ${cls} بعد.`); return; }
+    buildReport();
+  };
+
+  const classesForGrade = gr => (typeof GRADE_CLASSES !== 'undefined' && GRADE_CLASSES[gr]) ? GRADE_CLASSES[gr] : (typeof CLASSES !== 'undefined' ? CLASSES : []).filter(c => gradeOfClass(c) === gr);
+  const attemptsOf = (cls, taskId) => (results || []).filter(r => r.className === cls && (!taskId || String(r.taskId) === String(taskId))).length;
+
+  function reportStrip() {
+    const sec = document.getElementById('tasksTab'); if (!sec) return;
+    let strip = document.getElementById('v6crStrip');
+    if (!strip) {
+      strip = document.createElement('div'); strip.id = 'v6crStrip'; strip.className = 'v6cr-strip';
+      sec.querySelector('.table-wrap')?.insertAdjacentElement('beforebegin', strip);
+    }
+    const all = (typeof CLASSES !== 'undefined' ? CLASSES : []);
+    strip.innerHTML = '<b>تقارير الفصول الشاملة (كل الأنشطة):</b>' + all.map(c => {
+      const n = attemptsOf(c);
+      return `<button class="smallbtn v6cr-btn" data-crclass="${E(c)}" ${n ? '' : 'disabled'} title="${n} محاولة">${E(c)} <small>${n}</small></button>`;
+    }).join('');
+    strip.querySelectorAll('[data-crclass]').forEach(b => b.onclick = () => g.openClassReport(b.dataset.crclass));
+  }
+
+  const baseRenderTasks = g.renderTasks;
+  if (typeof baseRenderTasks === 'function') {
+    g.renderTasks = function () {
+      const out = baseRenderTasks.apply(this, arguments);
+      try {
+        const head = document.querySelector('#tasksTab thead tr');
+        if (head && !head.querySelector('.v6cr-th')) { const th = document.createElement('th'); th.className = 'v6cr-th'; th.textContent = 'تقرير الفصل'; head.insertBefore(th, head.lastElementChild); }
+        const rows = [...document.querySelectorAll('#tasksBody > tr')];
+        if (rows.length === tasks.length) rows.forEach((tr, i) => {
+          const t = tasks[i], td = document.createElement('td');
+          const cls = typeof normalizeClassName === 'function' ? normalizeClassName(t.className) : t.className;
+          const list = cls ? [cls] : classesForGrade(taskGrade(t));
+          td.innerHTML = '<div class="v6cr-cell">' + list.map(c => {
+            const n = attemptsOf(c, t.id);
+            return `<button class="smallbtn v6cr-btn" data-crtask="${E(t.id)}" data-crclass="${E(c)}" ${n ? '' : 'disabled'} title="${n} محاولة">${list.length > 1 ? E(c) : 'تقرير ' + E(c)} <small>${n}</small></button>`;
+          }).join('') + '</div>';
+          tr.insertBefore(td, tr.lastElementChild);
+          td.querySelectorAll('[data-crtask]').forEach(b => b.onclick = () => g.openClassReport(b.dataset.crclass, b.dataset.crtask));
+        });
+        else if (rows.length === 1) rows[0].firstElementChild?.setAttribute('colspan', '9');
+        reportStrip();
+      } catch (e) { console.error(e); }
+      return out;
+    };
+  }
+
   mountTab();
 })();

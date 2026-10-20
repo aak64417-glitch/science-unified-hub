@@ -31,7 +31,7 @@ button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:90
 (async function(){
   try{
     const source=new URL('journey-teacher-v6.html',location.href);
-    source.searchParams.set('_v','20261020-v6');
+    source.searchParams.set('_v','20261020-v6c');
 
     const response=await fetch(source.href,{cache:'no-store'});
     if(!response.ok) throw new Error('HTTP '+response.status);

@@ -279,3 +279,11 @@ html.task-loading body::after{border-color:#D3E2E8!important;border-top-color:va
  .v6cr-table tr{break-inside:avoid}
 }
 #taskModal .modal-card{width:min(980px,100%)!important;max-width:980px!important}
+
+/* أزرار تقارير الفصول في جدول الروابط الذكية */
+.v6cr-strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px;padding:10px 12px;border:1px solid #D3E2E8;border-radius:12px;background:#E3F4F3}
+.v6cr-strip b{color:#16324F;margin-inline-end:4px}
+.v6cr-cell{display:flex;flex-wrap:wrap;gap:6px;min-width:110px}
+.smallbtn.v6cr-btn{background:#16324F!important;color:#fff!important;border-color:#16324F!important;white-space:nowrap}
+.smallbtn.v6cr-btn small{display:inline-block;min-width:18px;padding:0 5px;margin-inline-start:3px;border-radius:9px;background:#F4B63F;color:#16324F;font-weight:800}
+.smallbtn.v6cr-btn:disabled{opacity:.45;cursor:not-allowed}
