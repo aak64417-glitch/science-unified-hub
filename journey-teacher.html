@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07111f">
+<meta name="theme-color" content="#0F8B8D">
 <meta name="robots" content="noindex">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>لوحة المعلم | رحلة عالم العلوم</title>
 <style>
-html,body{margin:0;min-height:100%;background:#07111f;color:#fff;font-family:Tahoma,Arial,sans-serif}
+html,body{margin:0;min-height:100%;background:#EDF4F6;color:#16324F;font-family:Tahoma,Arial,sans-serif}
 .loading{min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}
-.spinner{width:42px;height:42px;margin:16px auto;border:4px solid rgba(255,255,255,.18);border-top-color:#42ded4;border-radius:50%;animation:spin .75s linear infinite}
-.muted{color:#9fb2c8;line-height:1.8}
-button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:900;background:#42ded4;color:#07111f;cursor:pointer}
+.spinner{width:42px;height:42px;margin:16px auto;border:4px solid #D3E2E8;border-top-color:#0F8B8D;border-radius:50%;animation:spin .75s linear infinite}
+.muted{color:#5E7384;line-height:1.8}
+button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:900;background:#0F8B8D;color:#fff;cursor:pointer}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
@@ -30,8 +30,8 @@ button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:90
 <script>
 (async function(){
   try{
-    const source=new URL('journey-teacher-recovery-v4-5.html',location.href);
-    source.searchParams.set('_v','20260923-stable-teacher');
+    const source=new URL('journey-teacher-v6.html',location.href);
+    source.searchParams.set('_v','20261020-v6');
 
     const response=await fetch(source.href,{cache:'no-store'});
     if(!response.ok) throw new Error('HTTP '+response.status);

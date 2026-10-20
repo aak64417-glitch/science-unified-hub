@@ -1,0 +1,170 @@
+/* رحلة عالم العلوم — الواجهة V6
+   النمط البصري مأخوذ من ملف «اختبارات علوم – الصف الأول المتوسط»:
+   خلفية فاتحة، بطاقات بيضاء، أزرق داكن للنص، فيروزي للإجراءات، أصفر للترقيم. */
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:400;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-arabic-500-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:500;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:600 900;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-arabic-700-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:600 900;font-display:swap;src:url(fonts/ibm-plex-sans-arabic-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Noto Kufi Arabic';font-weight:700;font-display:swap;src:url(fonts/noto-kufi-arabic-arabic-700-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'Noto Kufi Arabic';font-weight:700;font-display:swap;src:url(fonts/noto-kufi-arabic-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+2212}
+@font-face{font-family:'Noto Kufi Arabic';font-weight:800 900;font-display:swap;src:url(fonts/noto-kufi-arabic-arabic-800-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'Noto Kufi Arabic';font-weight:800 900;font-display:swap;src:url(fonts/noto-kufi-arabic-latin-800-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+2212}
+
+:root{
+ --v6-ink:#16324F;--v6-teal:#0F8B8D;--v6-teal2:#0B6F71;--v6-sun:#F4B63F;--v6-soft:#E3F4F3;
+ --v6-line:#D3E2E8;--v6-bg:#EDF4F6;--v6-ok:#1E9E5A;--v6-no:#D1495B;--v6-muted:#5E7384;--v6-card:#fff;
+ --bg:#EDF4F6;--bg2:#E6EFF2;--card:#fff;--card2:#F7FBFC;--text:#16324F;--muted:#5E7384;
+ --teal:#0F8B8D;--indigo:#16324F;--gold:#F4B63F;--green:#1E9E5A;--red:#D1495B;--line:#D3E2E8;
+ --shadow:0 2px 14px rgba(22,50,79,.07);--r:16px;
+}
+html{color-scheme:light;background:#EDF4F6}
+body{background:var(--v6-bg)!important;color:var(--v6-ink)!important;font-family:'IBM Plex Sans Arabic','Noto Kufi Arabic',Tahoma,Arial,sans-serif!important;line-height:1.6}
+h1,h2,h3,h4,.lsn,.brand h1,.section-head h3{font-family:'Noto Kufi Arabic','IBM Plex Sans Arabic',Tahoma,sans-serif;color:var(--v6-ink)}
+.glass{background:var(--v6-card)!important;border:1.4px solid var(--v6-line)!important;box-shadow:var(--shadow)!important;border-radius:var(--r)!important;backdrop-filter:none!important}
+
+/* شريط العنوان: شريط فيروزي كما في رأس صفحات الدروس */
+.topbar{background:var(--v6-teal)!important;border:0!important;color:#fff;position:static!important}
+.topbar .brand h1{color:#fff!important;font-size:1.05rem}
+.topbar .brand h1 small{color:#D5F1F0!important}
+.topbar .brand p{color:#D5F1F0!important}
+.logo{background:var(--v6-teal2)!important;box-shadow:none!important;border-radius:14px!important}
+.topbar .btn.secondary{background:rgba(255,255,255,.14)!important;color:#fff!important;border:1px solid rgba(255,255,255,.35)!important}
+
+/* الأزرار */
+.btn{background:var(--v6-teal)!important;color:#fff!important;box-shadow:none!important;border-radius:12px!important;font-weight:700!important}
+.btn:hover{background:var(--v6-teal2)!important}
+.btn.secondary{background:#fff!important;color:var(--v6-ink)!important;border:1.4px solid var(--v6-line)!important}
+.btn.secondary:hover{border-color:var(--v6-teal)!important;background:#fff!important}
+.btn.gold{background:var(--v6-sun)!important;color:var(--v6-ink)!important}
+.btn.indigo{background:var(--v6-ink)!important;color:#fff!important}
+.btn.danger{background:var(--v6-no)!important;color:#fff!important}
+.btn:disabled{opacity:.55}
+
+/* الحقول */
+.field label{color:var(--v6-muted)!important}
+.field input,.field select,.field textarea,.question-edit-grid textarea,input,select,textarea{background:#fff!important;color:var(--v6-ink)!important;border:1.4px solid var(--v6-line)!important}
+.field input:focus,.field select:focus,textarea:focus{border-color:var(--v6-teal)!important;box-shadow:0 0 0 3px rgba(15,139,141,.15)!important}
+textarea{font-family:inherit!important}
+.field input:disabled,.field select:disabled{background:#F3F6F8!important;color:#8A9AA8!important}
+
+/* العناصر الصغيرة */
+.pill{background:#fff!important;border:1px solid var(--v6-line)!important;color:var(--v6-ink)!important}
+.pill.good{background:#E8F6EE!important;border-color:#A9DCBE!important;color:#11593A!important}
+.pill.off{background:#FDECEE!important;border-color:#F0B3BC!important;color:#8E2433!important}
+.note{background:#FFF8E6!important;border:1px solid #F3D594!important;color:#6B4E0E!important}
+.note.good{background:#EAF6F1!important;border-color:#B4DEC9!important;color:#11593A!important}
+.section-head p,.meta,.muted{color:var(--v6-muted)!important}
+.footer{color:var(--v6-muted)!important}
+
+/* شاشة السؤال */
+.quiz-top{gap:12px}
+.progress{background:#E1EBEF!important;border:0!important;height:10px!important}
+.progress i{background:var(--v6-teal)!important}
+.timer{background:#fff!important;border:1.4px solid var(--v6-line)!important;color:var(--v6-ink)!important}
+.timer.warn{color:#8A5A00!important;border-color:var(--v6-sun)!important;background:#FFF8E6!important}
+.timer.danger{color:#8E2433!important;border-color:var(--v6-no)!important;background:#FDECEE!important}
+.live div{background:var(--v6-soft)!important;border:0!important}
+.live span{color:var(--v6-teal2)!important}
+.live b{color:var(--v6-ink);font-family:'Noto Kufi Arabic',sans-serif}
+.question{background:#fff!important;border:1.4px solid var(--v6-line)!important;border-radius:16px!important;padding:18px!important}
+.q-tag{background:var(--v6-soft)!important;color:var(--v6-teal2)!important;border:0!important;font-weight:700!important}
+.question h3{color:var(--v6-ink)!important;font-size:1.18rem!important;line-height:1.8!important}
+.answer{background:#F7FBFC!important;color:var(--v6-ink)!important;border:1.4px solid #E1EBEF!important;font-weight:600!important;display:flex;align-items:center;gap:10px;border-radius:12px!important;padding:11px 12px!important;line-height:1.6}
+.answer:hover{border-color:var(--v6-teal)!important;transform:none!important}
+.answer .v6-lt{flex:none;width:30px;height:30px;border-radius:8px;background:var(--v6-ink);color:#fff;display:grid;place-items:center;font-weight:700;font-size:.95rem}
+.answer.selected{background:#E7F5F5!important;border-color:var(--v6-teal)!important}
+.answer.selected .v6-lt{background:var(--v6-teal)}
+.answer.correct{background:#E3F6EB!important;border-color:var(--v6-ok)!important}
+.answer.correct .v6-lt{background:var(--v6-ok)}
+.answer.wrong{background:#FDECEE!important;border-color:var(--v6-no)!important}
+.answer.wrong .v6-lt{background:var(--v6-no)}
+.answers.v6-grid2{grid-template-columns:1fr 1fr}
+@media(max-width:620px){.answers.v6-grid2{grid-template-columns:1fr}}
+.feedback.ok{background:#EAF6F1!important;border:1px solid #B4DEC9!important;border-inline-start:4px solid var(--v6-ok)!important;color:#11593A}
+.feedback.no{background:#FFF4F5!important;border:1px solid #F0C3CA!important;border-inline-start:4px solid var(--v6-no)!important;color:#6E1F2A}
+.order-row{background:#F7FBFC!important;border:1.4px solid #E1EBEF!important;color:var(--v6-ink)}
+.order-row span{background:var(--v6-sun)!important;color:var(--v6-ink);font-weight:800}
+.order-row button{background:var(--v6-ink)!important;color:#fff!important}
+
+/* النتيجة */
+.ring{background:conic-gradient(var(--v6-teal) var(--pct,0%),#E1EBEF 0)!important}
+.ring:after{background:#fff!important}
+.ring strong{color:var(--v6-ink);font-family:'Noto Kufi Arabic',sans-serif}
+.level{background:var(--v6-sun)!important;color:var(--v6-ink)!important}
+.break,.rec,.stat,.results-kpi,.mode-card,.route-card,.route-mini{background:#fff!important;border:1.4px solid var(--v6-line)!important;color:var(--v6-ink)}
+.break span,.rec p,.stat span,.results-kpi span{color:var(--v6-muted)!important}
+.stat strong,.results-kpi b{color:var(--v6-ink);font-family:'Noto Kufi Arabic',sans-serif}
+
+/* لوحة المعلم */
+.tab{background:#fff!important;color:var(--v6-ink)!important;border:1.4px solid var(--v6-line)!important}
+.tab.active{background:var(--v6-ink)!important;color:#fff!important;border-color:var(--v6-ink)!important}
+.table-wrap{border:1.4px solid var(--v6-line)!important;background:#fff}
+.table-wrap th{background:var(--v6-soft)!important;color:var(--v6-teal2)!important}
+.table-wrap th,.table-wrap td{border-bottom:1px solid #E6EEF2!important;color:var(--v6-ink)}
+.table-wrap tbody tr:hover td{background:#F7FBFC!important}
+.copy{background:var(--v6-teal)!important;color:#fff!important}
+.toggle{background:var(--v6-ink)!important;color:#fff!important}
+.remove{background:var(--v6-no)!important;color:#fff!important}
+.replace{background:var(--v6-sun)!important;color:var(--v6-ink)!important}
+.task-status.on{background:#E3F6EB!important;color:#11593A!important}
+.task-status.off{background:#FDECEE!important;color:#8E2433!important}
+.modal{background:rgba(22,50,79,.45)!important}
+.modal-card{background:#fff!important}
+.task-lessons-box{background:#F7FBFC!important;border:1.4px solid var(--v6-line)!important}
+.task-lesson-actions button{background:#fff!important;border:1.4px solid var(--v6-line)!important;color:var(--v6-ink)!important}
+.task-lesson-option{background:#fff!important;border:1.4px solid var(--v6-line)!important;color:var(--v6-ink)}
+.task-lesson-option:hover{border-color:var(--v6-teal)!important}
+.task-lesson-meta small{color:var(--v6-muted)!important}
+.task-count-total{background:var(--v6-soft)!important;border:1px solid #BFE3E1!important;color:var(--v6-teal2)}
+.question-picker-row{background:#fff!important;border:1.4px solid var(--v6-line)!important;color:var(--v6-ink)}
+.question-picker-row small{color:var(--v6-muted)!important}
+.question-pick-status{color:var(--v6-teal2)!important}
+.question-edit-btn{background:var(--v6-sun)!important;color:var(--v6-ink)!important}
+.student-class-card{background:#fff!important;color:var(--v6-ink)!important;border:1.4px solid var(--v6-line)!important}
+.student-class-card.active{background:var(--v6-soft)!important;outline:2px solid var(--v6-teal)!important}
+.student-class-card span{color:var(--v6-muted)!important}
+.student-count-badge{background:var(--v6-soft)!important;border-color:#BFE3E1!important;color:var(--v6-teal2)!important}
+.student-portfolio-builder{background:linear-gradient(135deg,#F2FAF9,#F7FBFC)!important;border:1.4px solid #BFE3E1!important}
+.student-portfolio-builder .sp-builder-icon,.feature .ficon{background:var(--v6-soft)!important;color:var(--v6-teal2)!important;box-shadow:none!important;border:0!important}
+.feature p,.student-portfolio-builder p{color:var(--v6-muted)!important}
+.smallbtn{border-radius:9px}
+
+/* بطاقة الرسم أو الجدول داخل السؤال */
+.v6-figure{margin:4px 0 14px;padding:12px;border-radius:14px;background:#fff;border:1.4px solid var(--v6-line);text-align:center}
+.v6-figure svg{max-width:100%;height:auto;max-height:280px}
+.v6-table{border-collapse:collapse;margin:4px auto 14px;min-width:min(60%,420px)!important;width:auto!important;font-size:.95rem}
+.v6-table th{background:var(--v6-soft)!important;color:var(--v6-teal2)!important;padding:7px 12px!important;border:1px solid var(--v6-line)!important;position:static!important;text-align:center!important}
+.v6-table td{padding:7px 12px!important;border:1px solid var(--v6-line)!important;text-align:center!important;background:#fff}
+.v6-level{display:inline-flex;gap:4px;align-items:center}
+.v6-level i{width:7px;height:7px;border-radius:50%;background:#C9D9E0;display:inline-block}
+.v6-level i.on{background:var(--v6-teal)}
+
+/* أنماط الأسئلة الجديدة */
+.v6-fill{display:grid;gap:10px}
+.v6-fill label{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--v6-ink)}
+.v6-fill label b{flex:none;width:30px;height:30px;border-radius:50%;background:var(--v6-sun);display:grid;place-items:center}
+.v6-fill input{flex:1;min-width:0;width:100%;padding:12px 14px;border-radius:12px;font:inherit;font-size:1.05rem}
+.v6-fill input.ok{border-color:var(--v6-ok)!important;background:#E3F6EB!important}
+.v6-fill input.no{border-color:var(--v6-no)!important;background:#FDECEE!important}
+.v6-fill .v6-right{color:var(--v6-ok);font-weight:800;font-size:.92rem}
+.v6-rows{display:grid;gap:8px}
+.v6-row{display:grid;grid-template-columns:1fr minmax(150px,46%);gap:10px;align-items:center;padding:9px 11px;border-radius:12px;background:#F7FBFC;border:1.4px solid #E1EBEF}
+.v6-row>span{font-weight:700;color:var(--v6-ink);line-height:1.6}
+.v6-row select{padding:10px 12px;border-radius:10px;font:inherit;width:100%}
+.v6-row.ok{border-color:var(--v6-ok);background:#E3F6EB}
+.v6-row.no{border-color:var(--v6-no);background:#FDECEE}
+.v6-row .v6-right{grid-column:1/-1;color:var(--v6-ok);font-weight:800;font-size:.9rem}
+.v6-cats{display:flex;gap:6px;flex-wrap:wrap}
+.v6-cats button{border:1.4px solid var(--v6-line);background:#fff;color:var(--v6-ink);border-radius:999px;padding:7px 12px;font:inherit;font-weight:700;cursor:pointer}
+.v6-cats button.on{background:var(--v6-teal);border-color:var(--v6-teal);color:#fff}
+.v6-hint{color:var(--v6-muted);font-size:.9rem;margin:0 0 8px}
+.v6-submit{margin-top:12px;width:100%}
+
+/* شاشة التحميل */
+html.task-loading body::before{background:var(--v6-bg)!important;color:var(--v6-ink)!important;font-family:'Noto Kufi Arabic',Tahoma,sans-serif!important}
+html.task-loading body::after{border-color:#D3E2E8!important;border-top-color:var(--v6-teal)!important}
+
+@media(max-width:900px){.live{grid-template-columns:repeat(4,1fr)!important;gap:6px!important}.live div{padding:8px 4px!important}.live span{font-size:.72rem!important}}
+@media(max-width:620px){.v6-row{grid-template-columns:1fr}.question{padding:14px!important}.question h3{font-size:1.08rem!important}}

@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07111f"><title>رحلة عالم العلوم</title>
+<meta name="theme-color" content="#0F8B8D"><title>رحلة عالم العلوم</title>
 <style>
 :root{
  --bg:#07111f;--bg2:#0a1728;--card:#102039;--card2:#132944;--text:#f7fbff;--muted:#9fb2c8;
@@ -27,7 +27,7 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 
 .identity-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 @media(max-width:900px){.identity-grid{grid-template-columns:1fr}}
-</style>
+</style><link rel="stylesheet" href="assets/v6/journey-v6.css?v=20261020-v6">
 </head>
 <body>
 <div class="wrap">
@@ -117,7 +117,7 @@ window.SCIENCE_CONFIG = {
   teacherKey: ""
 };
 
-</script><script src="question-bank.js?v=20260920-bank1"></script><script src="third-grade-bank.js?v=20260921-g3-1"></script><script>
+</script><script src="assets/v6/journey-bank-g7.js?v=20261020-v6"></script><script src="assets/v6/journey-bank-g9.js?v=20261020-v6"></script><script>
 const CFG=window.SCIENCE_CONFIG||{}, DATA=window.SCIENCE_DATA||{lessons:[],questions:[]};
 const $=id=>document.getElementById(id);
 let state={mode:'training',lesson:'all',task:null,student:{},quiz:[],i:0,score:0,correct:0,streak:0,bestStreak:0,logs:[],answered:false,startedAt:0,timer:null,timeLeft:0};
@@ -499,7 +499,7 @@ function quitQuiz(){if(confirm('هل تريد إنهاء النشاط والعو
 function breakdown(){const out={};DATA.lessons.forEach(l=>out[l.id]={correct:0,total:0});state.logs.forEach(x=>{out[x.lesson]??={correct:0,total:0};out[x.lesson].total++;if(x.correct)out[x.lesson].correct++});return out}
 function weakConcepts(){const m={};state.logs.forEach(x=>{m[x.concept]??={c:0,t:0};m[x.concept].t++;if(x.correct)m[x.concept].c++});return Object.entries(m).filter(([,v])=>v.t&&v.c/v.t<.8).map(([k])=>k)}
 async function finishQuiz(){clearInterval(state.timer);$('progressBar').style.width='100%';const total=state.quiz.length,pct=Math.round(state.score/total*100),lvl=level(pct),bd=breakdown(),duration=Math.round((Date.now()-state.startedAt)/1000),weak=weakConcepts();activeLessonIds().forEach(id=>{const w=weakConceptsForLesson(id);localStorage.setItem(weakStorageKey(id),JSON.stringify(w));localStorage.setItem('weak_concepts_'+id,JSON.stringify(w));});screen('resultScreen');$('scorePct').textContent=pct+'%';$('scoreRing').style.setProperty('--pct',pct+'%');$('resultTitle').textContent=state.mode==='exam'||state.task?.mode==='exam'?'نتيجة الاختبار':state.mode==='remedial'?'نتيجة المسار العلاجي':state.mode==='enrich'?'نتيجة المسار الإثرائي':'نتيجة التدريب';$('resultLevel').textContent=lvl;$('resultText').textContent=`${state.student.name} — حصلت على ${state.score} من ${total}. أعلى سلسلة صحيحة: ${state.bestStreak}. زمن النشاط: ${duration} ثانية.`;$('breakdown').innerHTML=DATA.lessons.map(l=>{const x=bd[l.id],p=x.total?Math.round(x.correct/x.total*100):0;return `<div class="break"><span>${esc(l.title)}</span><strong>${x.correct}/${x.total} (${p}%)</strong></div>`}).join('');let rec=[];if(weak.length)rec.push({h:'🩺 مفاهيم تحتاج تعزيزًا',p:weak.map(x=>conceptName(state.lesson==='all'?state.logs.find(z=>z.concept===x)?.lesson:state.lesson,x)).join('، ')});else rec.push({h:'🏅 مستوى إتقان مرتفع',p:'أظهرت النتائج إتقانًا جيدًا للمفاهيم التي ظهرت في هذه الجولة.'});rec.push({h:'الخطوة المقترحة',p:pct<80?'انتقل إلى المسار العلاجي ثم أعد التدريب.':'انتقل إلى المسار الإثرائي أو الاختبار الشامل لتثبيت الإتقان.'});$('recommendations').innerHTML=rec.map(x=>`<div class="rec"><h4>${esc(x.h)}</h4><p>${esc(x.p)}</p></div>`).join('');$('resultAction').textContent=pct<80?'ابدأ المسار العلاجي':'ابدأ المسار الإثرائي';$('resultAction').classList.toggle('hidden',!!state.task);$('sendStatus').textContent=api()?'جاري إرسال التقرير إلى منصة المعلم...':'تم حفظ النتيجة على هذا الجهاز. بعد ربط المنصة تصل التقارير إلى المعلم تلقائيًا.';
- const payload={type:(state.mode==='exam'||state.task?.mode==='exam')?'test':state.mode,taskId:state.task?.id||'',taskTitle:state.task?.title||'',timestamp:new Date().toISOString(),studentName:state.student.name,className:state.student.className,studentCode:state.student.code,lesson:state.lesson,lessonIds:activeLessonIds(),score,total,percent:pct,level:lvl,durationSec:duration,bestStreak:state.bestStreak,breakdown:bd,weakConcepts:weak,answers:state.logs};localStorage.setItem('last_science_result',JSON.stringify(payload));if(api()){try{await fetch(api(),{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});$('sendStatus').textContent='تم إرسال تقرير الأداء إلى منصة المعلم.'}catch(e){$('sendStatus').textContent='تم حفظ النتيجة، لكن تعذر تأكيد الإرسال. تحقق من الاتصال.'}}
+ const payload={type:(state.mode==='exam'||state.task?.mode==='exam')?'test':state.mode,taskId:state.task?.id||'',taskTitle:state.task?.title||'',timestamp:new Date().toISOString(),studentName:state.student.name,className:state.student.className,studentCode:state.student.code,lesson:state.lesson,lessonIds:activeLessonIds(),score:state.score,total,percent:pct,level:lvl,durationSec:duration,bestStreak:state.bestStreak,breakdown:bd,weakConcepts:weak,answers:state.logs};localStorage.setItem('last_science_result',JSON.stringify(payload));if(api()){try{await fetch(api(),{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});$('sendStatus').textContent='تم إرسال تقرير الأداء إلى منصة المعلم.'}catch(e){$('sendStatus').textContent='تم حفظ النتيجة، لكن تعذر تأكيد الإرسال. تحقق من الاتصال.'}}
  state.lastPct=pct;state.lastWeak=weak;
 }
 function resultNext(){if(state.task){openIdentity(state.task.mode||state.mode,state.task.lesson||state.lesson,state.task);return}const target=state.lesson==='all'?(state.logs[0]?.lesson||DATA.lessons[0].id):state.lesson;if(state.lastPct<80)openIdentity('remedial',target);else openIdentity('enrich',target)}
@@ -508,5 +508,5 @@ function jsonp(params){return new Promise((resolve,reject)=>{const cb='cb_'+Date
 
 document.addEventListener('DOMContentLoaded',init);
 
-</script>
+</script><script src="assets/v6/journey-v6-student.js?v=20261020-v6"></script>
 </body></html>
