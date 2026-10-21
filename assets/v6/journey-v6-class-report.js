@@ -38,13 +38,14 @@
         <label class="v6cr-chk"><input type="checkbox" id="v6crHideAbsent"> عدم ذكر أسماء غير المشاركين (يُذكر عددهم فقط)</label>
       </div>
       <div id="v6crTasks" class="v6cr-tasks"></div>
-      <div class="modal-actions" style="justify-content:flex-start"><button id="v6crBuild" class="btn">إنشاء التقرير الشامل</button></div>
+      <div class="modal-actions" style="justify-content:flex-start"><button id="v6crBuild" class="btn">إنشاء التقرير الشامل</button><button id="v6crBuildOne" class="btn secondary">تقرير صفحة واحدة بدون أسماء (ملف الإنجاز)</button></div>
       <div id="v6crStatus" class="note good" style="margin-top:10px">اختر الفصل لعرض الأنشطة المشمولة.</div>`;
     portfolio.insertAdjacentElement('afterend', sec);
     const sel = sec.querySelector('#v6crClass');
     sel.innerHTML = (typeof CLASSES !== 'undefined' ? CLASSES : []).map(c => `<option>${E(c)}</option>`).join('');
     ['v6crClass', 'v6crFrom', 'v6crTo', 'v6crType'].forEach(id => sec.querySelector('#' + id).addEventListener('change', renderTaskChoices));
-    sec.querySelector('#v6crBuild').onclick = buildReport;
+    sec.querySelector('#v6crBuild').onclick = () => buildReport('full');
+    sec.querySelector('#v6crBuildOne').onclick = () => buildReport('one');
   }
 
   const baseSwitch = g.switchTab;
@@ -152,27 +153,37 @@
   }
 
   /* ---------------- بناء التقرير ---------------- */
-  async function buildReport() {
+  let last = null;
+  async function buildReport(mode) {
+    mode = mode === 'one' ? 'one' : 'full';
     const f = filters();
     const chosen = new Set([...document.querySelectorAll('#v6crTasks input:checked')].map(x => x.value));
     const rows = classResults(f).filter(r => chosen.has(groupKey(r)));
     if (!rows.length) { alert('لا توجد نتائج مشمولة. اختر الفصل والأنشطة أولًا.'); return; }
-    const btn = document.getElementById('v6crBuild'); btn.disabled = true; btn.textContent = 'جارٍ إعداد التقرير...';
+    const btns = ['v6crBuild', 'v6crBuildOne'].map(id => document.getElementById(id)).filter(Boolean);
+    btns.forEach(b => { b.disabled = true; b.dataset.txt = b.dataset.txt || b.textContent; b.textContent = 'جارٍ إعداد التقرير...'; });
     try {
       const roster = await rosterFor(f.cls);
-      const html = reportHtml(f, rows, roster);
-      $('reportModalTitle').textContent = 'التقرير الشامل لأداء طلاب الفصل ' + f.cls;
-      const paper = $('reportPaper');
-      paper.classList.remove('student-portfolio-paper'); paper.classList.add('v6cr-paper');
-      paper.innerHTML = html;
-      $('shareReport')?.classList.add('hidden');
-      addArchiveButton(f);
-      $('reportModal').classList.remove('hidden');
+      last = { f, rows, roster };
+      showReport(mode);
     } catch (e) { console.error(e); alert('تعذر إنشاء التقرير: ' + (e.message || e)); }
-    finally { btn.disabled = false; btn.textContent = 'إنشاء التقرير الشامل'; }
+    finally { btns.forEach(b => { b.disabled = false; b.textContent = b.dataset.txt; }); }
+  }
+  function showReport(mode) {
+    if (!last) return;
+    const { f, rows, roster } = last;
+    $('reportModalTitle').textContent = (mode === 'one' ? 'تقرير ملف الإنجاز (صفحة واحدة) — الفصل ' : 'التقرير الشامل لأداء طلاب الفصل ') + f.cls;
+    const paper = $('reportPaper');
+    paper.classList.remove('student-portfolio-paper'); paper.classList.add('v6cr-paper');
+    paper.classList.toggle('v6cr-paper-one', mode === 'one');
+    paper.innerHTML = reportHtml(f, rows, roster, mode);
+    $('shareReport')?.classList.add('hidden');
+    addArchiveButton(f, mode);
+    $('reportModal').classList.remove('hidden');
+    if (mode === 'one') { fitOnePage(); document.fonts?.ready?.then(fitOnePage); }
   }
 
-  function reportHtml(f, rows, roster) {
+  function reportHtml(f, rows, roster, mode) {
     const grade = gradeOfClass(f.cls);
     // الطلاب: من قائمة الفصل، مع إضافة من ظهر في النتائج ولم يكن في القائمة.
     const students = new Map();
@@ -256,6 +267,7 @@
     if (!recs.length) recs.push('الاستمرار في التكليفات الدورية مع متابعة الطلاب الأقل أداءً.');
 
     const kpi = (v, l, c = '') => `<div class="v6cr-kpi ${c}"><b>${v}</b><span>${l}</span></div>`;
+    if (mode === 'one') return onePageHtml({ f, grade, rows, groups, gstats, N, P, classAvg, mastery, impr, lv, trend, skills, weakFreq, honor, remedial, improvers, absent, range, notes, standard, evidence, insights, recs, kpi });
     const studentRows = all.slice().filter(s => !hide || s.attempts)
       .sort((a, b) => (b.avg ?? -1) - (a.avg ?? -1) || String(a.name).localeCompare(String(b.name), 'ar')).map((s, i) => {
       if (!s.attempts) return `<tr class="v6cr-absent"><td>${i + 1}</td><td>${E(s.name)}</td><td colspan="7">لم يشارك</td></tr>`;
@@ -318,27 +330,93 @@
     </div>`;
   }
 
+  /* ---------------- تقرير صفحة واحدة لملف الإنجاز (بلا أسماء طلاب) ---------------- */
+  const mbars = items => '<div class="v6cr-mbars">' + items.map(it => `<div class="v6cr-mbar"><span title="${E(it.label)}">${E(it.label)}</span><i><em style="width:${Math.max(2, Math.min(100, it.v))}%;background:${it.color || '#0F8B8D'}"></em></i><b>${it.text ?? pct(it.v) + '%'}</b></div>`).join('') + '</div>';
+  function mdonut(parts) {
+    const total = parts.reduce((s, p) => s + p.v, 0) || 1, R = 40, r = 24, cx = 45, cy = 45; let a0 = -Math.PI / 2, paths = '';
+    parts.forEach(p => {
+      if (!p.v) return;
+      const a1 = a0 + 2 * Math.PI * p.v / total, large = a1 - a0 > Math.PI ? 1 : 0, P = (rad, a) => `${cx + rad * Math.cos(a)},${cy + rad * Math.sin(a)}`;
+      paths += p.v === total ? `<circle cx="${cx}" cy="${cy}" r="${(R + r) / 2}" fill="none" stroke="${p.color}" stroke-width="${R - r}"/>` : `<path d="M${P(R, a0)} A${R},${R} 0 ${large} 1 ${P(R, a1)} L${P(r, a1)} A${r},${r} 0 ${large} 0 ${P(r, a0)} Z" fill="${p.color}"/>`;
+      a0 = a1;
+    });
+    return `<div class="v6cr-mdonut"><svg viewBox="0 0 90 90">${paths}<text x="45" y="50" text-anchor="middle" font-size="15" font-weight="800" fill="#16324F">${parts.reduce((s, p) => s + p.v, 0)}</text></svg><ul>${parts.map(p => `<li><i style="background:${p.color}"></i>${E(p.label)}: <b>${p.v}</b></li>`).join('')}</ul></div>`;
+  }
+  // يصغّر التقرير عند الحاجة حتى يبقى في صفحة A4 واحدة (ارتفاع المحتوى المتاح ≈ 281 مم)
+  function fitOnePage() {
+    const el = document.querySelector('#reportPaper .v6cr-one'); if (!el) return;
+    el.style.zoom = '';
+    const h = el.getBoundingClientRect().height, max = 279 * 96 / 25.4;
+    if (h > max) el.style.zoom = String(Math.floor(max / h * 1000) / 1000);
+  }
+  g.addEventListener('beforeprint', fitOnePage);
+  function onePageHtml(d) {
+    const { f, grade, rows, groups, gstats, N, P, classAvg, mastery, impr, lv, trend, skills, weakFreq, honor, remedial, improvers, absent, range, notes, standard, evidence, insights, recs, kpi } = d;
+    const mi = impr.length ? pct(mean(impr)) : null;
+    const third = skills.length
+      ? `<div class="v6cr-card"><h3>المهارات الأضعف</h3>${mbars(skills.slice(0, 6).map(s => ({ label: s.name, v: s.p, color: levelOf(s.p)[2] })))}</div>`
+      : trend.length >= 2 ? `<div class="v6cr-card"><h3>تطور متوسط الأداء أسبوعيًا</h3>${mbars(trend.slice(-6).map(t => ({ label: t.label, v: t.v, color: levelOf(t.v)[2] })))}</div>`
+      : weakFreq.size ? `<div class="v6cr-card"><h3>مفاهيم تحتاج تعزيزًا</h3><ul class="v6cr-chips">${[...weakFreq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([w, n]) => `<li>${E(w)} <b>${n}</b></li>`).join('')}</ul></div>`
+      : `<div class="v6cr-card"><h3>نسبة المشاركة في كل نشاط</h3>${mbars(gstats.slice(-6).map(x => ({ label: x.title, v: x.rate, color: '#3A7BD5', text: `${x.participants}/${N}` })))}</div>`;
+    return `<div class="v6cr v6cr-one" dir="rtl">
+      <header class="v6cr-head">
+        <div><div class="v6cr-eyebrow">ملف الإنجاز • شاهد على متابعة أداء الطلاب وتحليل النتائج</div>
+        <h1>تقرير أداء طلاب الفصل ${E(f.cls)} في منصة رحلة عالم العلوم</h1>
+        <p>${E(T.school)} • مادة العلوم • ${gradeName(grade)} • ${T.year}${f.type ? ' • ' + E(TYPE[f.type]) : ''}</p>
+        <p>الفترة: ${E(range)} • تاريخ الإصدار: ${E(fmtDate(Date.now()))}</p></div>
+        <div class="v6cr-badge"><b>${pct(classAvg)}%</b><span>متوسط الفصل</span></div>
+      </header>
+      <section class="v6cr-kpis">
+        ${kpi(N, 'طلاب الفصل')}${kpi(P + ' <small>(' + pct(N ? P / N * 100 : 0) + '%)</small>', 'شاركوا')}${kpi(groups.length, 'الأنشطة')}${kpi(rows.length, 'المحاولات')}
+        ${kpi(pct(mastery) + '%', 'نسبة الإتقان (80%+)', 'main')}${kpi(honor.length, 'متميزون (80%+)')}${kpi(remedial.length, 'مستهدفون بخطة علاجية')}${kpi(mi === null ? '—' : '<bdi dir="ltr">' + (mi > 0 ? '+' : '') + mi + '</bdi>', 'متوسط التحسن بعد إعادة المحاولة')}
+      </section>
+      <section class="v6cr-grid three">
+        <div class="v6cr-card"><h3>توزيع الطلاب على مستويات الأداء</h3>${mdonut(lv)}</div>
+        <div class="v6cr-card"><h3>متوسط الأداء في كل نشاط${gstats.length > 6 ? ' (آخر 6)' : ''}</h3>${mbars(gstats.slice(-6).map(x => ({ label: x.title, v: x.avg, color: levelOf(x.avg)[2] })))}</div>
+        ${third}
+      </section>
+      <section class="v6cr-sec"><h2>نتائج الأنشطة</h2>
+        <table class="v6cr-table"><thead><tr><th>#</th><th>النشاط</th><th>النوع</th><th>المشاركون</th><th>المتوسط</th><th>الأعلى</th><th>الأدنى</th><th>الإتقان</th></tr></thead>
+        <tbody>${gstats.map((x, i) => `<tr><td>${i + 1}</td><td><b>${E(x.title)}</b></td><td>${E(TYPE[x.type] || x.type)}</td><td>${x.participants}/${N}</td><td><b>${pct(x.avg)}%</b></td><td>${pct(x.max)}%</td><td>${pct(x.min)}%</td><td>${pct(x.mastery)}%</td></tr>`).join('')}</tbody></table>
+      </section>
+      <section class="v6cr-grid two">
+        <div class="v6cr-card"><h3>قراءة في النتائج</h3><ul class="v6cr-ins">${insights.slice(0, 5).map(x => `<li>${E(x)}</li>`).join('')}</ul></div>
+        <div class="v6cr-card"><h3>الإجراءات والتوصيات</h3><ol class="v6cr-ins">${recs.map(x => `<li>${E(x)}</li>`).join('')}</ol>
+          ${notes ? `<div class="v6cr-notes"><b>ملاحظات المعلم:</b> ${E(notes)}</div>` : ''}</div>
+      </section>
+      <footer class="v6cr-foot">
+        <div class="v6cr-evid"><span>المعيار: <b>${standard ? E(standard) : '..............................'}</b></span><span>رقم الشاهد: <b>${evidence ? E(evidence) : '..........'}</b></span><span>التقرير لا يتضمن أسماء الطلاب.</span></div>
+        <div class="v6cr-sign"><div><span>معلم المادة</span><b>${E(T.teacher)}</b><i>التوقيع: ..................</i></div><div><span>مدير المدرسة</span><b>${E(T.principal)}</b><i>التوقيع: ..................</i></div></div>
+      </footer>
+    </div>`;
+  }
+
   /* ---------------- حفظ نسخة للأرشيف ---------------- */
-  function addArchiveButton(f) {
+  function addArchiveButton(f, mode) {
     const bar = document.querySelector('#reportModal .modal-actions'); if (!bar) return;
+    let sw = document.getElementById('v6crSwitch');
+    if (!sw) { sw = document.createElement('button'); sw.id = 'v6crSwitch'; sw.className = 'btn secondary'; bar.appendChild(sw); }
+    sw.classList.remove('hidden');
+    sw.textContent = mode === 'one' ? 'عرض التقرير الشامل المفصّل' : 'تقرير صفحة واحدة بدون أسماء (ملف الإنجاز)';
+    sw.onclick = () => showReport(mode === 'one' ? 'full' : 'one');
     let b = document.getElementById('v6crArchive');
     if (!b) { b = document.createElement('button'); b.id = 'v6crArchive'; b.className = 'btn secondary'; b.textContent = 'تنزيل نسخة للأرشيف'; bar.appendChild(b); }
     b.classList.remove('hidden');
     b.onclick = () => {
       const css = [...document.styleSheets].map(ss => { try { return [...ss.cssRules].map(r => r.cssText).filter(t => /v6cr|v6-level|@font-face/.test(t)).join('\n'); } catch (e) { return ''; } }).join('\n');
-      const html = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>التقرير الشامل للفصل ${E(f.cls)}</title><style>body{margin:0;background:#EDF4F6;font-family:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;color:#16324F}.report-paper{max-width:1000px;margin:20px auto;background:#fff;padding:24px;border-radius:16px}${css}</style></head><body><div class="report-paper v6cr-paper">${$('reportPaper').innerHTML}</div></body></html>`;
+      const html = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${mode === 'one' ? 'تقرير ملف الإنجاز' : 'التقرير الشامل'} للفصل ${E(f.cls)}</title><style>body{margin:0;background:#EDF4F6;font-family:'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;color:#16324F}.report-paper{max-width:1000px;margin:20px auto;background:#fff;padding:24px;border-radius:16px}${css}</style></head><body><div class="report-paper v6cr-paper${mode === 'one' ? ' v6cr-paper-one' : ''}">${$('reportPaper').innerHTML}</div></body></html>`;
       const a = document.createElement('a');
       a.href = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
-      a.download = `تقرير-الفصل-${String(f.cls).replace('/', '-')}-${new Date().toISOString().slice(0, 10)}.html`;
+      a.download = `${mode === 'one' ? 'ملف-الإنجاز-' : ''}تقرير-الفصل-${String(f.cls).replace('/', '-')}-${new Date().toISOString().slice(0, 10)}.html`;
       document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
     };
     // إخفاء الزر عند فتح تقارير أخرى
     const close = document.getElementById('closeReport');
-    if (close && !close.dataset.v6cr) { close.dataset.v6cr = '1'; close.addEventListener('click', () => { b.classList.add('hidden'); $('reportPaper').classList.remove('v6cr-paper'); }); }
+    if (close && !close.dataset.v6cr) { close.dataset.v6cr = '1'; close.addEventListener('click', () => { b.classList.add('hidden'); document.getElementById('v6crSwitch')?.classList.add('hidden'); $('reportPaper').classList.remove('v6cr-paper', 'v6cr-paper-one'); }); }
   }
 
   /* ---------------- فتح التقرير مباشرة (من جدول الروابط الذكية) ---------------- */
-  g.openClassReport = function (cls, taskId) {
+  g.openClassReport = function (cls, taskId, mode) {
     const sel = document.getElementById('v6crClass'); if (!sel) return;
     if (![...sel.options].some(o => o.value === cls)) { alert('الفصل غير موجود: ' + cls); return; }
     if (!(results || []).length) { alert('لا توجد نتائج محمّلة بعد. حدّث اللوحة ثم أعد المحاولة.'); return; }
@@ -351,12 +429,14 @@
       boxes.forEach(b => { b.checked = b.value === 'id:' + taskId || (!!task && b.value === 't:' + task.title); });
       if (!boxes.some(b => b.checked)) { alert(`لا توجد نتائج لهذا التكليف في الفصل ${cls} بعد.`); return; }
     } else if (!boxes.length) { alert(`لا توجد نتائج للفصل ${cls} بعد.`); return; }
-    buildReport();
+    buildReport(mode);
   };
 
   const classesForGrade = gr => (typeof GRADE_CLASSES !== 'undefined' && GRADE_CLASSES[gr]) ? GRADE_CLASSES[gr] : (typeof CLASSES !== 'undefined' ? CLASSES : []).filter(c => gradeOfClass(c) === gr);
   const attemptsOf = (cls, taskId) => (results || []).filter(r => r.className === cls && (!taskId || String(r.taskId) === String(taskId))).length;
 
+  const stripOne = () => { try { return localStorage.getItem('sj_v6_cr_one') === '1'; } catch (e) { return false; } };
+  const stripMode = () => (document.getElementById('v6crStripOne')?.checked ? 'one' : 'full');
   function reportStrip() {
     const sec = document.getElementById('tasksTab'); if (!sec) return;
     let strip = document.getElementById('v6crStrip');
@@ -368,8 +448,9 @@
     strip.innerHTML = '<b>تقارير الفصول الشاملة (كل الأنشطة):</b>' + all.map(c => {
       const n = attemptsOf(c);
       return `<button class="smallbtn v6cr-btn" data-crclass="${E(c)}" ${n ? '' : 'disabled'} title="${n} محاولة">${E(c)} <small>${n}</small></button>`;
-    }).join('');
-    strip.querySelectorAll('[data-crclass]').forEach(b => b.onclick = () => g.openClassReport(b.dataset.crclass));
+    }).join('') + `<label class="v6cr-one-toggle"><input type="checkbox" id="v6crStripOne" ${stripOne() ? 'checked' : ''}> صفحة واحدة بدون أسماء (ملف الإنجاز)</label>`;
+    strip.querySelector('#v6crStripOne').onchange = e => { try { localStorage.setItem('sj_v6_cr_one', e.target.checked ? '1' : ''); } catch (x) {} };
+    strip.querySelectorAll('[data-crclass]').forEach(b => b.onclick = () => g.openClassReport(b.dataset.crclass, '', stripMode()));
   }
 
   const baseRenderTasks = g.renderTasks;
@@ -389,7 +470,7 @@
             return `<button class="smallbtn v6cr-btn" data-crtask="${E(t.id)}" data-crclass="${E(c)}" ${n ? '' : 'disabled'} title="${n} محاولة">${list.length > 1 ? E(c) : 'تقرير ' + E(c)} <small>${n}</small></button>`;
           }).join('') + '</div>';
           tr.insertBefore(td, tr.lastElementChild);
-          td.querySelectorAll('[data-crtask]').forEach(b => b.onclick = () => g.openClassReport(b.dataset.crclass, b.dataset.crtask));
+          td.querySelectorAll('[data-crtask]').forEach(b => b.onclick = () => g.openClassReport(b.dataset.crclass, b.dataset.crtask, stripMode()));
         });
         else if (rows.length === 1) rows[0].firstElementChild?.setAttribute('colspan', '9');
         reportStrip();
