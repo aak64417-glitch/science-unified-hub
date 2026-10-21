@@ -79,6 +79,23 @@ function tableOfContents(mode){let kind=mode==='reports'?'التقارير وا�
 function renderList(){let m=page==='reports'?'reports':'evidence';let ls=listing(m);let stdsel=$('#standardPick')?.value||'all';let q=$('#globalSearch')?.value.trim()||'';ls=ls.filter(i=>(stdsel==='all'||i.std===+stdsel)&&(!q||(i.title+' '+i.folder+' '+DATA.standards[i.std-1].name).includes(q)));let html=`<div class="count">${ls.length} ملفًا ضمن العرض الحالي</div>`;
  if(!ls.length){$('#filterArea').innerHTML='<div class="blank">لا توجد نتائج تطابق البحث.</div>';return}
  let ns=[...new Set(ls.map(x=>x.std))];html+=`<div class="folders" style="margin-top:15px">`+ns.map(n=>{let s=DATA.standards[n-1],sub=ls.filter(i=>i.std===n);return `<section class="folder"><div class="folder-head"><h4>${s.icon} المعيار ${n}: ${esc(s.name)}</h4><button class="btn subtle" data-standard="${n}">فتح البند ←</button></div><div class="folder-body">${groupedStd(n,sub)}</div></section>`}).join('')+'</div>';$('#filterArea').innerHTML=html;
+ showPrivateReports();
+}
+async function showPrivateReports(){
+ if(page!=='reports')return;
+ const root=document.querySelector('#filterArea');if(!root)return;
+ const old=document.getElementById('privateSavedReports');if(old)old.remove();
+ const box=document.createElement('section');box.id='privateSavedReports';box.className='folder';box.style.marginTop='20px';
+ const title=document.createElement('h3');title.textContent='🔒 التقارير التي أضفتها على هذا الجهاز';box.appendChild(title);
+ const desc=document.createElement('p');desc.textContent='هذه التقارير محفوظة محليًا في متصفحك فقط ولا تظهر على الأجهزة الأخرى.';box.appendChild(desc);
+ const list=document.createElement('div');box.appendChild(list);root.prepend(box);
+ try{
+ const db=await new Promise((resolve,reject)=>{const q=indexedDB.open('teacher-portfolio-private-reports-1448-v1',1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains('reports'))q.result.createObjectStore('reports',{keyPath:'id'})};q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)});
+ const records=await new Promise((resolve,reject)=>{const tx=db.transaction('reports','readonly');const q=tx.objectStore('reports').getAll();q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)});db.close();
+ if(!records.length){list.textContent='لا توجد تقارير محفوظة في هذا المتصفح. افتح صفحة إضافة تقرير جاهز للتحقق من الحفظ.';return}
+ for(const rec of records.sort((a,b)=>b.date-a.date)){const c=document.createElement('div');c.className='card';c.style.margin='10px 0';const h=document.createElement('h4');h.textContent=rec.title;c.appendChild(h);const meta=document.createElement('p');meta.textContent='المعيار '+rec.criterion+' — '+rec.filename;c.appendChild(meta);
+ const b=document.createElement('button');b.className='btn primary';b.textContent='فتح التقرير المحفوظ';b.onclick=()=>{const u=URL.createObjectURL(rec.file);const a=document.createElement('a');a.href=u;a.download=rec.filename;a.click();setTimeout(()=>URL.revokeObjectURL(u),60000)};c.appendChild(b);list.appendChild(c)}
+ }catch(e){list.textContent='تعذر قراءة التقارير المحلية: '+e.message}
 }
 function render(){let home=$('#home'),stage=$('#stage'),ct=$('#content');if(page==='home'){home.hidden=false;stage.classList.add('hide');return}home.hidden=true;stage.classList.remove('hide');
  if(page==='studio')ct.innerHTML=head('منشئ التقارير','منشئ التقارير الاحترافي','متوفر كاملًا في النسخة الأصلية الخاصة بالمعلم. هذه واجهة عرض عامة فقط ولا تصل إلى بيانات الطلاب.','✍️')+`<div class="blank"><h3>🔐 منشئ التقارير في النسخة الخاصة</h3><p>لإعداد التقارير وإضافة صور الشواهد، افتح ملف الإنجاز الكامل على جهاز المعلم أو عبر استضافة خاصة محمية. لم يُنشر الاستوديو هنا للحفاظ على خصوصية المعلومات.</p><button class="btn primary" data-nav="home">العودة إلى الواجهة</button></div>`;
