@@ -340,3 +340,25 @@ html.task-loading body::after{border-color:#D3E2E8!important;border-top-color:va
  .v6cr-one{margin:0}
  .v6cr-one .v6cr-sec,.v6cr-one .v6cr-card{break-inside:auto}
 }
+
+/* V6e: صفّا تقارير الفصول، والحذف من التقارير، وبطاقة ملف الإنجاز */
+.v6cr-strip{flex-direction:column;align-items:stretch}
+.v6cr-strip-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.v6cr-strip-row>b{min-width:240px}
+.v6cr-strip-row.warn{padding-top:8px;border-top:1px dashed #F0C3CA}
+.v6cr-strip-row.warn>b{color:#B23A4C;min-width:0;font-weight:700}
+.smallbtn.v6cr-btn.one{background:#F4B63F!important;border-color:#F4B63F!important;color:#16324F!important}
+.v6cr-pair{display:inline-flex;gap:3px}
+.v6cr-task-list label{position:relative}
+.v6cr-x{margin-inline-start:6px;width:24px;height:24px;flex:none;border-radius:50%;border:1px solid #F0C3CA;background:#FFF5F6;color:#D1495B;font-weight:800;cursor:pointer;line-height:1;padding:0}
+.v6cr-excl{margin-top:8px;color:#5E7384;font-size:.9rem}
+.v6cr-link{background:none;border:0;color:#0F8B8D;font-weight:800;text-decoration:underline;cursor:pointer;font:inherit}
+.v6cr-pcard{margin:0 0 18px;padding:16px;border-radius:18px;border:1.5px solid #F3D594;background:#FFFBF0}
+.v6cr-pcard-head{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.v6cr-pcard-head>span{font-size:30px}
+.v6cr-pcard-head h4{margin:0 0 3px;color:#16324F}
+.v6cr-pcard-head p{margin:0;color:#5E7384}
+.v6cr-pcard-row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.v6cr-pcard-row .field{min-width:180px}
+@media(max-width:760px){.v6cr-strip-row>b{min-width:100%}}
+#exportBtn{display:none!important}

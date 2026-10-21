@@ -29,8 +29,8 @@
       <p>تقرير لكل فصل من نتائج الطلاب الفعلية: المشاركة، ومستويات الأداء، ونتائج كل تكليف، وتطور الأداء، والمتميزون، والمحتاجون إلى خطة علاجية. اطبعه أو احفظه PDF لإضافته إلى ملف الإنجاز.</p></div></div>
       <div class="v6cr-controls">
         <div class="field"><label>الفصل</label><select id="v6crClass"></select></div>
-        <div class="field"><label>من تاريخ</label><input id="v6crFrom" type="date"></div>
-        <div class="field"><label>إلى تاريخ</label><input id="v6crTo" type="date"></div>
+        <div class="field"><label>من تاريخ</label><select id="v6crFrom"><option value="">من البداية</option></select></div>
+        <div class="field"><label>إلى تاريخ</label><select id="v6crTo"><option value="">حتى اليوم</option></select></div>
         <div class="field"><label>نوع النشاط</label><select id="v6crType"><option value="">الكل</option><option value="training">تدريب</option><option value="test">اختبار</option><option value="remedial">علاجي</option><option value="enrich">إثراء</option></select></div>
         <div class="field"><label>المعيار في ملف الإنجاز (اختياري)</label><input id="v6crStandard" placeholder="يُطبع كما تكتبه"></div>
         <div class="field"><label>رقم الشاهد (اختياري)</label><input id="v6crEvidence" placeholder="يُطبع كما تكتبه"></div>
@@ -62,6 +62,47 @@
     return baseSwitch.apply(this, arguments);
   };
 
+  /* ---------------- الأنشطة المحذوفة من التقارير ----------------
+     تُحفظ في الخادم ضمن تعديلات البنك بمعرّف خاص (لا يطابق أي سؤال فيُتجاهل في عرض الأسئلة)،
+     ومعها نسخة على الجهاز احتياطًا. */
+  const EXC_ID = '__v6_report_excluded__', EXC_LS = 'sj_v6_cr_excluded';
+  let excluded = new Set();
+  try { JSON.parse(localStorage.getItem(EXC_LS) || '[]').forEach(k => excluded.add(k)); } catch (e) {}
+  async function loadExcluded() {
+    try {
+      const r = await jsonp({ action: 'getQuestionOverrides' });
+      const it = (r?.overrides || []).filter(x => String(x?.questionId) === EXC_ID).pop();
+      let p = it?.payload; if (typeof p === 'string') { try { p = JSON.parse(p); } catch (e) { p = null; } }
+      if (p && Array.isArray(p.keys)) { excluded = new Set(p.keys); try { localStorage.setItem(EXC_LS, JSON.stringify(p.keys)); } catch (e) {} refreshAll(); }
+    } catch (e) {}
+  }
+  async function saveExcluded() {
+    const keys = [...excluded];
+    try { localStorage.setItem(EXC_LS, JSON.stringify(keys)); } catch (e) {}
+    try { await apiAction('upsertQuestionOverride', { questionId: EXC_ID, payload: JSON.stringify({ keys, updatedAt: new Date().toISOString() }) }); return true; }
+    catch (e) { console.warn(e); return false; }
+  }
+  // تكليف عنوانه اسم طالب (مثل «علي» أو «محمد») يُعد تجريبيًا ولا يدخل التقارير.
+  function studentNameSet() {
+    const set = new Set();
+    const add = n => { n = String(n || '').trim().replace(/\s+/g, ' '); if (!n) return; set.add(n); set.add(n.split(' ')[0]); };
+    (results || []).forEach(r => add(r.studentName));
+    if (typeof studentRoster !== 'undefined' && studentRoster) Object.values(studentRoster).forEach(l => Array.isArray(l) && l.forEach(s => add(s.name)));
+    return set;
+  }
+  let nameCache = null, nameCacheLen = -1;
+  function isNameTitle(t) {
+    if ((results || []).length !== nameCacheLen) { nameCache = studentNameSet(); nameCacheLen = (results || []).length; }
+    t = String(t || '').trim().replace(/\s+/g, ' ');
+    return !!t && nameCache.has(t);
+  }
+  function groupTitle(r) { const task = r.taskId ? taskById(r.taskId) : null; return task?.title || resultTitle(r); }
+  const isExcluded = r => excluded.has(groupKey(r)) || isNameTitle(groupTitle(r));
+  function refreshAll() {
+    try { if (document.getElementById('classreportTab') && !document.getElementById('classreportTab').classList.contains('hidden')) renderTaskChoices(); } catch (e) {}
+    try { if (typeof g.renderTasks === 'function' && Array.isArray(tasks)) g.renderTasks(); } catch (e) {}
+  }
+
   /* ---------------- البيانات ---------------- */
   function filters() {
     return {
@@ -76,6 +117,7 @@
     const to = f.to ? new Date(f.to + 'T23:59:59').getTime() : Infinity;
     return (Array.isArray(results) ? results : []).filter(r => {
       if (r.className !== f.cls) return false;
+      if (isExcluded(r)) return false;
       const t = new Date(resultTime(r)).getTime();
       if (Number.isFinite(t) && (t < from || t > to)) return false;
       const ty = String(r.type || 'training') === 'exam' ? 'test' : String(r.type || 'training');
@@ -96,13 +138,38 @@
     });
     return [...m.values()].sort((a, b) => Math.min(...a.rows.map(x => +new Date(resultTime(x)) || 0)) - Math.min(...b.rows.map(x => +new Date(resultTime(x)) || 0)));
   }
+  function dayKey(v) { const d = new Date(v); if (Number.isNaN(d.getTime())) return ''; return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+  function fillDateOptions(cls) {
+    const days = [...new Set((results || []).filter(r => r.className === cls && !isExcluded(r)).map(r => dayKey(resultTime(r))).filter(Boolean))].sort();
+    [['v6crFrom', 'من البداية'], ['v6crTo', 'حتى اليوم']].forEach(([id, first]) => {
+      const el = document.getElementById(id); if (!el) return;
+      const cur = el.value;
+      el.innerHTML = `<option value="">${first}</option>` + days.map(d => `<option value="${d}">${E(fmtDate(d + 'T12:00:00'))}</option>`).join('');
+      el.value = days.includes(cur) ? cur : '';
+    });
+  }
+  let lastDateCls = null;
   function renderTaskChoices() {
     const box = document.getElementById('v6crTasks'); if (!box) return;
+    const clsNow = document.getElementById('v6crClass')?.value;
+    if (clsNow !== lastDateCls || !document.getElementById('v6crFrom').options.length) { lastDateCls = clsNow; fillDateOptions(clsNow); }
     const f = filters(), groups = groupsOf(classResults(f));
     if (!(results || []).length) { box.innerHTML = ''; setStatus('حمّل لوحة المعلم بمفتاح المعلم أولًا حتى تظهر النتائج.'); return; }
     if (!groups.length) { box.innerHTML = ''; setStatus(`لا توجد نتائج للفصل ${f.cls} في الفترة المحددة.`); return; }
     box.innerHTML = '<b>الأنشطة المشمولة في التقرير</b><div class="v6cr-task-list">' + groups.map(gr =>
-      `<label><input type="checkbox" value="${E(gr.key)}" checked> ${E(gr.title)} <small>${E(TYPE[gr.type] || gr.type)} • ${gr.rows.length} محاولة</small></label>`).join('') + '</div>';
+      `<label><input type="checkbox" value="${E(gr.key)}" checked> ${E(gr.title)} <small>${E(TYPE[gr.type] || gr.type)} • ${gr.rows.length} محاولة</small><button type="button" class="v6cr-x" data-exclude="${E(gr.key)}" data-title="${E(gr.title)}" title="حذف هذا النشاط من التقارير نهائيًا">✕</button></label>`).join('') + '</div>'
+      + (excluded.size ? `<div class="v6cr-excl">محذوف من التقارير: ${excluded.size} نشاطًا <button type="button" class="v6cr-link" id="v6crRestore">استعادتها</button></div>` : '');
+    box.querySelectorAll('[data-exclude]').forEach(b => b.onclick = async e => {
+      e.preventDefault(); e.stopPropagation();
+      const title = b.dataset.title || '';
+      if (!confirm(`حذف «${title}» من جميع تقارير الفصول نهائيًا؟\n(لا تُحذف نتائج الطلاب من قاعدة البيانات، لكنها لا تظهر في التقارير.)`)) return;
+      excluded.add(b.dataset.exclude);
+      const ok = await saveExcluded();
+      if (!ok) alert('حُذف النشاط من التقارير على هذا الجهاز فقط؛ تعذر حفظه في الخادم الآن.');
+      refreshAll();
+    });
+    const rs = document.getElementById('v6crRestore');
+    if (rs) rs.onclick = async () => { if (!confirm('إعادة جميع الأنشطة المحذوفة إلى التقارير؟')) return; excluded.clear(); await saveExcluded(); refreshAll(); };
     setStatus(`${groups.length} نشاطًا و${classResults(f).length} محاولة للفصل ${f.cls}.`, true);
   }
   function setStatus(t, good) { const s = document.getElementById('v6crStatus'); if (s) { s.textContent = t; s.className = good ? 'note good' : 'note'; } }
@@ -420,7 +487,7 @@
     const sel = document.getElementById('v6crClass'); if (!sel) return;
     if (![...sel.options].some(o => o.value === cls)) { alert('الفصل غير موجود: ' + cls); return; }
     if (!(results || []).length) { alert('لا توجد نتائج محمّلة بعد. حدّث اللوحة ثم أعد المحاولة.'); return; }
-    sel.value = cls;
+    sel.value = cls; lastDateCls = null;
     ['v6crFrom', 'v6crTo', 'v6crType'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     renderTaskChoices();
     const boxes = [...document.querySelectorAll('#v6crTasks input[type=checkbox]')];
@@ -433,10 +500,8 @@
   };
 
   const classesForGrade = gr => (typeof GRADE_CLASSES !== 'undefined' && GRADE_CLASSES[gr]) ? GRADE_CLASSES[gr] : (typeof CLASSES !== 'undefined' ? CLASSES : []).filter(c => gradeOfClass(c) === gr);
-  const attemptsOf = (cls, taskId) => (results || []).filter(r => r.className === cls && (!taskId || String(r.taskId) === String(taskId))).length;
+  const attemptsOf = (cls, taskId) => (results || []).filter(r => r.className === cls && (!taskId || String(r.taskId) === String(taskId)) && !isExcluded(r)).length;
 
-  const stripOne = () => { try { return localStorage.getItem('sj_v6_cr_one') === '1'; } catch (e) { return false; } };
-  const stripMode = () => (document.getElementById('v6crStripOne')?.checked ? 'one' : 'full');
   function reportStrip() {
     const sec = document.getElementById('tasksTab'); if (!sec) return;
     let strip = document.getElementById('v6crStrip');
@@ -445,12 +510,22 @@
       sec.querySelector('.table-wrap')?.insertAdjacentElement('beforebegin', strip);
     }
     const all = (typeof CLASSES !== 'undefined' ? CLASSES : []);
-    strip.innerHTML = '<b>تقارير الفصول الشاملة (كل الأنشطة):</b>' + all.map(c => {
+    const row = (label, mode, cls) => `<div class="v6cr-strip-row"><b>${label}</b>` + all.map(c => {
       const n = attemptsOf(c);
-      return `<button class="smallbtn v6cr-btn" data-crclass="${E(c)}" ${n ? '' : 'disabled'} title="${n} محاولة">${E(c)} <small>${n}</small></button>`;
-    }).join('') + `<label class="v6cr-one-toggle"><input type="checkbox" id="v6crStripOne" ${stripOne() ? 'checked' : ''}> صفحة واحدة بدون أسماء (ملف الإنجاز)</label>`;
-    strip.querySelector('#v6crStripOne').onchange = e => { try { localStorage.setItem('sj_v6_cr_one', e.target.checked ? '1' : ''); } catch (x) {} };
-    strip.querySelectorAll('[data-crclass]').forEach(b => b.onclick = () => g.openClassReport(b.dataset.crclass, '', stripMode()));
+      return `<button class="smallbtn v6cr-btn ${cls}" data-crclass="${E(c)}" data-crmode="${mode}" ${n ? '' : 'disabled'} title="${n} محاولة">${E(c)}${mode === 'full' ? ` <small>${n}</small>` : ''}</button>`;
+    }).join('') + '</div>';
+    const nameTasks = (Array.isArray(tasks) ? tasks : []).filter(t => isNameTitle(t.title));
+    strip.innerHTML = row('📊 التقرير الشامل للفصل:', 'full', '') + row('📄 صفحة واحدة بدون أسماء (ملف الإنجاز):', 'one', 'one')
+      + (nameTasks.length ? `<div class="v6cr-strip-row warn"><b>تكليفات عناوينها أسماء طلاب (${nameTasks.length}): ${nameTasks.map(t => '«' + E(t.title) + '»').join('، ')} — مستبعدة من التقارير.</b><button class="smallbtn remove" id="v6crDelNameTasks">حذفها نهائيًا</button></div>` : '');
+    const dn = strip.querySelector('#v6crDelNameTasks');
+    if (dn) dn.onclick = async () => {
+      if (!confirm(`حذف ${nameTasks.length} تكليفًا نهائيًا: ${nameTasks.map(t => t.title).join('، ')}؟`)) return;
+      dn.disabled = true; let fail = 0;
+      for (const t of nameTasks) { try { await apiAction('deleteTask', { id: t.id }); tasks = tasks.filter(x => String(x.id) !== String(t.id)); } catch (e) { fail++; } }
+      if (fail) alert(`تعذر حذف ${fail} تكليفًا.`);
+      g.renderTasks();
+    };
+    strip.querySelectorAll('[data-crclass]').forEach(b => b.onclick = () => g.openClassReport(b.dataset.crclass, '', b.dataset.crmode));
   }
 
   const baseRenderTasks = g.renderTasks;
@@ -467,10 +542,10 @@
           const list = cls ? [cls] : classesForGrade(taskGrade(t));
           td.innerHTML = '<div class="v6cr-cell">' + list.map(c => {
             const n = attemptsOf(c, t.id);
-            return `<button class="smallbtn v6cr-btn" data-crtask="${E(t.id)}" data-crclass="${E(c)}" ${n ? '' : 'disabled'} title="${n} محاولة">${list.length > 1 ? E(c) : 'تقرير ' + E(c)} <small>${n}</small></button>`;
+            return `<span class="v6cr-pair"><button class="smallbtn v6cr-btn" data-crtask="${E(t.id)}" data-crclass="${E(c)}" data-crmode="full" ${n ? '' : 'disabled'} title="التقرير الشامل • ${n} محاولة">${list.length > 1 ? E(c) : 'تقرير ' + E(c)} <small>${n}</small></button><button class="smallbtn v6cr-btn one" data-crtask="${E(t.id)}" data-crclass="${E(c)}" data-crmode="one" ${n ? '' : 'disabled'} title="صفحة واحدة بدون أسماء لملف الإنجاز">📄</button></span>`;
           }).join('') + '</div>';
           tr.insertBefore(td, tr.lastElementChild);
-          td.querySelectorAll('[data-crtask]').forEach(b => b.onclick = () => g.openClassReport(b.dataset.crclass, b.dataset.crtask, stripMode()));
+          td.querySelectorAll('[data-crtask]').forEach(b => b.onclick = () => g.openClassReport(b.dataset.crclass, b.dataset.crtask, b.dataset.crmode || 'full'));
         });
         else if (rows.length === 1) rows[0].firstElementChild?.setAttribute('colspan', '9');
         reportStrip();
@@ -479,5 +554,19 @@
     };
   }
 
+  function mountPortfolioCard() {
+    const tab = document.getElementById('portfolioTab'); if (!tab || document.getElementById('v6crPortfolioCard')) return;
+    const box = document.createElement('div'); box.id = 'v6crPortfolioCard'; box.className = 'v6cr-pcard';
+    box.innerHTML = `<div class="v6cr-pcard-head"><span>📄</span><div><h4>تقرير الفصل لملف الإنجاز — صفحة واحدة بدون أسماء</h4><p>صفحة A4 واحدة بمؤشرات الفصل ونتائج الأنشطة والمهارات والتوصيات، دون ذكر أي اسم طالب. اطبعه أو احفظه PDF.</p></div></div>
+      <div class="v6cr-pcard-row"><div class="field"><label>الفصل</label><select id="v6crPClass">${(typeof CLASSES !== 'undefined' ? CLASSES : []).map(c => `<option>${E(c)}</option>`).join('')}</select></div>
+      <button id="v6crPBuild" class="btn">إنشاء تقرير الصفحة الواحدة</button><button id="v6crPFull" class="btn secondary">التقرير الشامل المفصّل</button></div>`;
+    const head = tab.querySelector('.section-head');
+    head ? head.insertAdjacentElement('afterend', box) : tab.prepend(box);
+    box.querySelector('#v6crPBuild').onclick = () => g.openClassReport(box.querySelector('#v6crPClass').value, '', 'one');
+    box.querySelector('#v6crPFull').onclick = () => g.openClassReport(box.querySelector('#v6crPClass').value, '', 'full');
+  }
+
   mountTab();
+  mountPortfolioCard();
+  loadExcluded();
 })();
