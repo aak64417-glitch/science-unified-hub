@@ -3,6 +3,7 @@
   "use strict";
   var STANDARDS = ["أداء الواجبات الوظيفية", "التفاعل مع المجتمع المهني", "التفاعل مع أولياء الأمور", "التنوع في استراتيجيات التدريس", "تحسين نتائج المتعلمين", "إعداد وتنفيذ خطة التعلم", "توظيف تقنيات ووسائل التعلم المناسبة", "تهيئة البيئة التعليمية", "الإدارة الصفية", "تحليل نتائج المتعلمين وتشخيص مستوياتهم", "تنوع أساليب التقويم"];
   var DEFAULTS = [["حصص الانتظار", "المناوبة والإشراف اليومي", "أعمال اللجان"], ["الزيارات المتبادلة", "المجتمعات المهنية"], ["التواصل مع أولياء الأمور"], ["أنشطة التعلم", "استراتيجيات التدريس"], ["الخطط العلاجية"], ["خطط التعلم", "توزيع المنهج"], ["الدروس التفاعلية", "مقاطع الفيديو التعليمية", "المختبر الافتراضي"], ["تجهيز المختبر"], ["الإدارة الصفية"], ["تحليل الاختبارات"], ["المهام الأدائية", "التقويم التكويني"]];
+  var STATIC = {"1":["حصص الانتظار","المناوبة والإشراف"],"2":["التطوير المهني"],"4":["استراتيجيات التعلم"],"7":["توظيف التقنية في التعلم"],"10":["تقارير تحليل الاختبارات"],"11":["مهام أدائية"]};
   var GENERAL = "تقارير عامة", NEW = "__new__";
 
   function css() {
@@ -108,7 +109,7 @@
     try {
       var sections = (await metaGet(d, "sections")) || {}, hidden = (await metaGet(d, "hiddenSections")) || {};
       var hid = hidden[n] || [];
-      var all = (DEFAULTS[n - 1] || []).concat(sections[n] || []);
+      var all = (STATIC[n] || []).concat(DEFAULTS[n - 1] || [], sections[n] || []);
       return all.filter(function (v, i) { return all.indexOf(v) === i && hid.indexOf(v) < 0; });
     } finally { d.close(); }
   }
@@ -123,5 +124,5 @@
     } finally { d.close(); }
   }
 
-  window.PortfolioMove = { open: open, STANDARDS: STANDARDS, DEFAULTS: DEFAULTS, tabletSections: tabletSections, addTabletSection: addTabletSection };
+  window.PortfolioMove = { open: open, STANDARDS: STANDARDS, STATIC: STATIC, DEFAULTS: DEFAULTS, tabletSections: tabletSections, addTabletSection: addTabletSection };
 })();
