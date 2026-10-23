@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#071a40">
+<title>ملف الإنجاز المهني — علي طاهر البقاشي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#071a40;--navy2:#0d2a5e;--gold:#d4a73c;--gold2:#f3d27a;--ink:#14233f;--muted:#5d6b84;--bg:#f3f5fa;--card:#ffffff}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',Tahoma,Arial,sans-serif}
+body{min-height:100vh}
+img{display:block;max-width:100%}
+.hidden{display:none!important}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+
+/* ===== Hero ===== */
+.hero{position:relative;background:var(--navy);border-bottom:4px solid var(--gold)}
+.hero img{width:100%;height:clamp(170px,22vw,300px);object-fit:cover;object-position:center top}
+.welcome{background:linear-gradient(90deg,var(--navy),var(--navy2));color:#fff;text-align:center;padding:14px 16px;font-weight:700;font-size:clamp(15px,2.2vw,19px);line-height:1.8}
+.welcome b{color:var(--gold2)}
+
+/* ===== Grid ===== */
+.title-row{display:flex;align-items:center;justify-content:center;gap:12px;margin:26px 0 18px}
+.title-row h2{margin:0;font-size:clamp(20px,3vw,28px);font-weight:900;color:var(--navy)}
+.title-row .line{flex:1;max-width:160px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--gold))}
+.title-row .line.r{background:linear-gradient(270deg,transparent,var(--gold))}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;padding-bottom:30px}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
+@media(max-width:350px){.grid{grid-template-columns:1fr}}
+.card{--c:#1f4fa0;position:relative;display:flex;flex-direction:column;background:linear-gradient(160deg,#fff 40%,color-mix(in srgb,var(--c) 10%,#fff));border:1.5px solid color-mix(in srgb,var(--c) 28%,#fff);border-radius:20px;padding:14px 14px 14px;box-shadow:0 10px 26px rgba(7,26,64,.08);cursor:pointer;transition:transform .2s,box-shadow .2s;overflow:hidden;text-align:right;font:inherit;color:inherit}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 34px rgba(7,26,64,.16)}
+.card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;min-height:112px}
+.num{flex:none;width:44px;height:44px;border-radius:50%;background:#fff;border:2.5px solid var(--c);color:var(--c);display:grid;place-items:center;font-weight:900;font-size:21px;box-shadow:0 4px 10px rgba(0,0,0,.08)}
+.thumb{width:118px;height:112px;object-fit:contain;border-radius:12px;margin-inline-start:auto;mix-blend-mode:multiply}
+.card h3{margin:8px 0 4px;font-size:18px;font-weight:900;color:var(--navy);line-height:1.4}
+.card p{margin:0 0 12px;font-size:13.5px;color:var(--muted);line-height:1.7;flex:1}
+.btn{display:flex;align-items:center;justify-content:space-between;gap:8px;border:0;border-radius:14px;padding:11px 16px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 85%,#fff),var(--c));color:#fff;font:inherit;font-weight:800;font-size:15px;box-shadow:0 6px 14px color-mix(in srgb,var(--c) 40%,transparent);cursor:pointer;text-decoration:none}
+.btn .ar{font-size:18px}
+@media(max-width:760px){.card .top{min-height:92px}.thumb{width:96px;height:92px}.card h3{font-size:16px}.btn{font-size:14px;padding:10px 12px}}
+
+.foot{background:var(--navy);border-top:4px solid var(--gold)}
+.foot img{width:100%;height:clamp(60px,7vw,100px);object-fit:cover;object-position:center}
+
+/* ===== Panel (evidence list) ===== */
+.overlay{position:fixed;inset:0;background:rgba(5,15,38,.62);backdrop-filter:blur(3px);z-index:40;display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:761px){.overlay{align-items:center}}
+.panel{--c:#1f4fa0;width:min(760px,100%);max-height:88vh;background:#fff;border-radius:24px 24px 0 0;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+@media(min-width:761px){.panel{border-radius:24px}}
+.phead{display:flex;align-items:center;gap:12px;padding:16px 18px;background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 70%,#000));color:#fff}
+.phead img{width:58px;height:54px;object-fit:contain;background:#fff;border-radius:12px;padding:3px}
+.phead h3{margin:0;font-size:19px;font-weight:900;line-height:1.4}
+.phead small{opacity:.9;font-size:13px}
+.x{margin-inline-start:auto;flex:none;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.2);color:#fff;font-size:22px;cursor:pointer}
+.plist{overflow:auto;padding:14px 16px 20px;display:grid;gap:10px}
+.ev{display:flex;align-items:center;gap:12px;width:100%;text-align:right;border:1.5px solid #e3e8f2;border-radius:16px;background:#fbfcff;padding:12px 14px;cursor:pointer;font:inherit;color:inherit;transition:border-color .15s,background .15s}
+.ev:hover{border-color:var(--c);background:color-mix(in srgb,var(--c) 6%,#fff)}
+.ev .ic{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);font-size:20px}
+.ev .tx{flex:1;min-width:0}
+.ev b{display:block;font-size:15.5px;color:var(--navy);line-height:1.5}
+.ev span{font-size:12.5px;color:var(--muted)}
+.ev .go{color:var(--c);font-weight:900;font-size:18px}
+.weeks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:520px){.weeks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.wk{border:1.5px solid #e3e8f2;border-radius:14px;background:#fff;padding:8px;cursor:pointer;font:inherit;color:inherit;text-align:center}
+.wk:hover{border-color:var(--c)}
+.wk img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:9px;background:#eef2f8}
+.wk b{display:block;font-size:13px;margin-top:6px;color:var(--navy);line-height:1.5}
+.empty{text-align:center;padding:26px 14px;color:var(--muted);line-height:1.9;font-size:15px}
+.empty .big{font-size:38px;display:block;margin-bottom:6px}
+
+/* ===== Viewer ===== */
+.viewer{position:fixed;inset:0;z-index:60;background:#0b1530;display:flex;flex-direction:column}
+.vbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--navy);color:#fff;border-bottom:3px solid var(--gold)}
+.vbar h4{margin:0;font-size:15.5px;font-weight:800;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vbar button{border:0;border-radius:12px;background:var(--gold);color:var(--navy);font:inherit;font-weight:900;padding:9px 16px;cursor:pointer}
+.viewer iframe{flex:1;width:100%;border:0;background:#fff}
+.vload{position:absolute;inset:60px 0 0;display:grid;place-items:center;color:#fff;font-weight:700;pointer-events:none}
+
+/* ===== Lock ===== */
+.lock{min-height:100vh;display:flex;flex-direction:column;background:radial-gradient(circle at 50% 20%,#123577,var(--navy) 70%)}
+.lock .hero{border-bottom-width:3px}
+.lbox{width:min(520px,calc(100% - 32px));margin:34px auto;background:#fff;border-radius:24px;padding:28px 22px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.35);border:2px solid var(--gold)}
+.lic{width:84px;height:84px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;font-size:40px;background:linear-gradient(180deg,var(--gold2),var(--gold));box-shadow:0 8px 20px rgba(212,167,60,.45)}
+.lbox h2{margin:0 0 8px;color:var(--navy);font-size:23px;font-weight:900}
+.lbox p{margin:0 0 18px;color:var(--muted);line-height:1.9;font-size:15.5px}
+.lbox label{display:block;text-align:right;font-weight:800;color:var(--navy);margin-bottom:6px;font-size:14px}
+.lbox input{width:100%;padding:13px 14px;border-radius:14px;border:1.5px solid #cfd8e8;font:inherit;font-size:18px;text-align:center;letter-spacing:2px;direction:ltr}
+.lbox input:focus{outline:none;border-color:var(--gold)}
+.lbox .go{margin-top:12px;width:100%;border:0;border-radius:14px;padding:13px;background:linear-gradient(180deg,#123b85,var(--navy));color:#fff;font:inherit;font-weight:900;font-size:16px;cursor:pointer}
+.msg{min-height:24px;margin-top:10px;font-weight:700;font-size:14px}
+.msg.bad{color:#c0392b}.msg.ok{color:#1b7a43}
+</style>
+</head>
+<body>
+
+<!-- ===== Lock screen ===== -->
+<section id="lock" class="lock hidden">
+  <header class="hero"><img src="principal-assets/hero.webp" alt="ملف الإنجاز المهني لمعلم مادة العلوم علي طاهر البقاشي"></header>
+  <div class="lbox">
+    <div class="lic">🔒</div>
+    <h2>ملف الإنجاز مغلق حاليًا</h2>
+    <p>انتهت فترة الاطلاع المتاحة على ملف الإنجاز المهني.<br>لإعادة فتح الملف يُرجى التواصل مع المعلم <b>علي طاهر البقاشي</b>، وسيصلكم رابط أو رمز إعادة الفتح.</p>
+    <label for="code">رمز إعادة الفتح</label>
+    <input id="code" inputmode="text" autocomplete="off" placeholder="مثال: 000000-XXXXX">
+    <button class="go" id="codeBtn" type="button">فتح الملف</button>
+    <div class="msg" id="msg"></div>
+  </div>
+</section>
+
+<!-- ===== Portal ===== -->
+<main id="portal" class="hidden">
+  <header class="hero"><img src="principal-assets/hero.webp" alt="ملف الإنجاز المهني لمعلم مادة العلوم علي طاهر البقاشي — متوسطة أبي الدرداء — العام الدراسي 1448هـ"></header>
+  <div class="welcome">مرحبًا بكم سعادة قائد المدرسة الأستاذ <b>فوزي محمد الهلال</b> — يسعدني اطلاعكم على ملف الإنجاز المهني وشواهده وفق بنود تقويم الأداء الوظيفي</div>
+  <div class="wrap">
+    <div class="title-row"><span class="line"></span><h2>بنود ملف الإنجاز</h2><span class="line r"></span></div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <footer class="foot"><img src="principal-assets/footer.webp" alt="العلوم تبني العقول وصناعة المستقبل تبدأ من هنا"></footer>
+</main>
+
+<div id="overlay" class="overlay hidden" role="dialog" aria-modal="true">
+  <div class="panel" id="panel">
+    <div class="phead"><img id="pimg" alt=""><div><small id="psub"></small><h3 id="ptitle"></h3></div><button class="x" id="pclose" type="button" aria-label="إغلاق">×</button></div>
+    <div class="plist" id="plist"></div>
+  </div>
+</div>
+
+<div id="viewer" class="viewer hidden">
+  <div class="vbar"><h4 id="vtitle"></h4><button type="button" id="vclose">إغلاق ✕</button></div>
+  <div class="vload" id="vload">جارٍ فتح الشاهد…</div>
+  <iframe id="frame" title="عرض الشاهد"></iframe>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ================= Access control ================= */
+var LIMIT=4, KEY='pf1448.mgr.v1', SKEY='pf1448.mgr.session', SALT='ABD-1448|Ali-AlBaqashi|portfolio-reopen';
+var ALPHA='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function cyrb53(str,seed){var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return 4294967296*(2097151&h2)+(h1>>>0);}
+function sig(serial){var n=cyrb53(SALT+':'+serial,7),out='';for(var i=0;i<5;i++){out+=ALPHA[n%32];n=Math.floor(n/32);}return out;}
+function norm(c){return String(c||'').replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)}).toUpperCase().replace(/[\s_–—−]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');}
+function parseCode(c){c=norm(c);var m=/^(\d{3,9})-?([A-Z2-9]{5})$/.exec(c);if(!m)return null;return sig(m[1])===m[2]?m[1]:null;}
+
+function readCookie(){var m=document.cookie.match(new RegExp('(?:^|; )'+KEY.replace(/\./g,'\\.')+'=([^;]*)'));if(!m)return null;try{return JSON.parse(decodeURIComponent(m[1]))}catch(e){return null}}
+function load(){var a=null,b=readCookie();try{a=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
+  var x=(a&&typeof a==='object')?a:((b&&typeof b==='object')?b:null);
+  return {u:x?(+x.u||0):0,used:x&&Array.isArray(x.used)?x.used.map(String):[]};}
+function save(st){var v=JSON.stringify({u:st.u,used:st.used.slice(-60)});try{localStorage.setItem(KEY,v)}catch(e){}try{document.cookie=KEY+'='+encodeURIComponent(v)+'; max-age=31536000; path=/; SameSite=Lax'}catch(e){}}
+var mem={};function sGet(){try{return sessionStorage.getItem(SKEY)}catch(e){return mem[SKEY]||null}}function sSet(){try{sessionStorage.setItem(SKEY,'1')}catch(e){mem[SKEY]='1'}}function sDel(){try{sessionStorage.removeItem(SKEY)}catch(e){}delete mem[SKEY]}
+
+function reopen(st,serial){if(st.used.indexOf(serial)>=0)return false;st.used.push(serial);st.u=0;sDel();return true;}
+function enter(st){if(sGet()){return true}if(st.u<LIMIT){st.u++;save(st);sSet();return true}return false;}
+
+var st=load();
+var qs=new URLSearchParams(location.search), rc=qs.get('r');
+if(rc!==null){var ser=parseCode(rc);if(ser&&reopen(st,ser))save(st);qs.delete('r');try{history.replaceState(null,'',location.pathname+(qs.toString()?'?'+qs:'')+location.hash)}catch(e){}}
+
+function showLock(){document.getElementById('lock').classList.remove('hidden');document.getElementById('portal').classList.add('hidden');}
+document.getElementById('codeBtn').onclick=tryCode;
+document.getElementById('code').addEventListener('keydown',function(e){if(e.key==='Enter')tryCode()});
+function tryCode(){var msg=document.getElementById('msg'),ser=parseCode(document.getElementById('code').value);msg.className='msg';
+  if(!ser){msg.textContent='الرمز غير صحيح، يُرجى التأكد منه.';msg.classList.add('bad');return}
+  st=load();if(!reopen(st,ser)){msg.textContent='هذا الرمز استُخدم سابقًا. يُرجى طلب رمز جديد من المعلم.';msg.classList.add('bad');return}
+  save(st);enter(st);msg.textContent='تم فتح الملف ✓';msg.classList.add('ok');setTimeout(function(){document.getElementById('lock').classList.add('hidden');showPortal()},500);}
+
+/* ================= Portal content ================= */
+var SNAP={"standards":[{"id":1,"name":"أداء الواجبات الوظيفية","desc":"المناوبات والإشراف والمهام والأنشطة المدرسية."},{"id":2,"name":"التفاعل مع المجتمع المهني","desc":"الشهادات والمشاركات والتطوير المهني."},{"id":3,"name":"التفاعل مع أولياء الأمور","desc":"الشواهد المرتبطة بالتواصل والتحفيز والشراكة الأسرية."},{"id":4,"name":"التنوع في استراتيجيات التدريس","desc":"الأنشطة التعليمية وأساليب التعلم والتدريس."},{"id":5,"name":"تحسين نتائج المتعلمين","desc":"الخطط العلاجية وإجراءات تحسين نواتج التعلم ومتابعة أثرها."},{"id":6,"name":"إعداد وتنفيذ خطة التعلم","desc":"توزيع المنهج والخطط الأسبوعية للعلوم."},{"id":7,"name":"توظيف تقنيات ووسائل التعلم المناسبة","desc":"الدروس التفاعلية والمحقق العلمي والمهام الرقمية."},{"id":8,"name":"تهيئة البيئة التعليمية","desc":"قسم محفوظ لإضافة شواهد البيئة التعليمية."},{"id":9,"name":"الإدارة الصفية","desc":"قسم محفوظ لإضافة شواهد إدارة الصف."},{"id":10,"name":"تحليل نتائج المتعلمين وتشخيص مستوياتهم","desc":"تقارير تحليل الاختبارات التشخيصية والدورية، وحصر الطلاب منخفضي المستوى لتشخيص مستوياتهم."},{"id":11,"name":"تنوع أساليب التقويم","desc":"قسم محفوظ؛ يمكن ربط نماذج تقويم موجودة بعد اعتمادها."}],"items":[{"id":3,"std":1,"title":"حصص الانتظار","kind":"شاهد تنفيذ","src":"evidence-003.html"},{"id":4,"std":1,"title":"الإشراف والمناوبة اليومية","kind":"شاهد تنفيذ","src":"evidence-004.html"},{"id":6,"std":2,"title":"الورشة التعريفية في الأنشطة الطلابية","kind":"شهادة تدريب","src":"evidence-certificates.html#evidence-6"},{"id":7,"std":2,"title":"الورشة التعريفية في الأنشطة الطلابية — شهادة ثانية","kind":"شهادة تدريب","src":"evidence-certificates.html#evidence-7"},{"id":8,"std":2,"title":"اللقاء التعريفي بمشروع ترسيخ القيم وتعزيز الهوية الوطنية","kind":"شهادة تدريب","src":"evidence-certificates.html#evidence-8"},{"id":13,"std":4,"title":"نشاط اكتشاف المتغيرات في التجربة","kind":"شاهد نشاط","src":"evidence-013.html"},{"id":14,"std":4,"title":"تقرير النظرية والقانون العلمي","kind":"تقرير تدريسي","src":"evidence-014.html"},{"id":16,"std":10,"title":"تحليل الاختبار التشخيصي — الفصل 1/1","kind":"تحليل نتائج","src":"analytics-safe.html#evidence-16"},{"id":17,"std":10,"title":"تحليل الاختبار التشخيصي — الفصل 1/2","kind":"تحليل نتائج","src":"analytics-safe.html#evidence-17"},{"id":22,"std":10,"title":"تحليل اختبار الفترة الأولى — الفصل 1/1","kind":"تحليل نتائج","src":"analytics-safe.html#evidence-22"},{"id":47,"std":7,"title":"تقرير نشاط المحقق العلمي","kind":"تقرير توظيف","src":"evidence-047.html"},{"id":50,"std":11,"title":"تقرير تنفيذ المهمة الأدائية","kind":"تقرير تقويم","src":"evidence-050.html"},{"id":51,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 1/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-51"},{"id":52,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 2/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-52"},{"id":53,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 3/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-53"},{"id":54,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 4/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-54"}]};
+var COLORS={1:'#1f4fa0',2:'#6a3fc8',3:'#d33a4a',4:'#b47d0b',5:'#17784a',6:'#0f7a6c',7:'#12708a',8:'#d6336c',9:'#5b3cc4',10:'#c7561a',11:'#1d6fc4',nafs:'#5a35c9'};
+var ICON={'تحليل نتائج':'📊','تقرير حصر':'📋','شاهد تنفيذ':'✅','تقرير تقويم':'📝'};
+var DATA=SNAP;
+var DESC={1:'المناوبة والإشراف وحصص الانتظار والمهام المدرسية.',3:'التواصل والشراكة مع أولياء الأمور.',8:'تهيئة بيئة صفية محفزة للتعلم.',9:'إدارة الصف وتنظيم بيئة التعلم.',10:'تحليل نتائج الاختبارات التشخيصية والدورية وتشخيص المستويات.',11:'نماذج وأدوات تقويم متنوعة.'};
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+function extractData(html){var i=html.indexOf('const DATA=');if(i<0)return null;i+=11;var d=0,inS=false,q='',out='';for(var j=i;j<html.length;j++){var c=html[j];if(inS){if(c==='\\'){j++;continue}if(c===q)inS=false;continue}if(c==='"'||c==="'"){inS=true;q=c;continue}if(c==='{'||c==='[')d++;else if(c==='}'||c===']'){d--;if(d===0){out=html.slice(i,j+1);break}}}
+  try{var x=JSON.parse(out);return {standards:x.standards.map(function(s){return{id:s.id,name:s.name,desc:s.desc}}),items:x.items.filter(function(it){return !it.private&&it.src})}}catch(e){return null}}
+
+function showPortal(){document.getElementById('portal').classList.remove('hidden');render();
+  fetch('index.html',{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var x=t&&extractData(t);if(x&&x.standards&&x.standards.length){DATA=x;render()}}).catch(function(){});}
+
+function render(){var g=document.getElementById('grid'),h='';
+  DATA.standards.forEach(function(s){h+=card(s.id,s.id,s.name,DESC[s.id]||s.desc)});
+  h+=card('nafs','★','تدريب ونتائج نافس','شواهد تدريب طلاب الصف الثالث المتوسط على اختبارات نافس في العلوم.');
+  g.innerHTML=h;}
+function card(key,num,name,desc){return '<button type="button" class="card" style="--c:'+COLORS[key]+'" data-k="'+key+'"><div class="top"><span class="num">'+esc(num)+'</span><img class="thumb" src="principal-assets/card-'+key+'.webp" alt="" loading="lazy"></div><h3>'+esc(name)+'</h3><p>'+esc(desc)+'</p><span class="btn"><span>📂 استعراض الشواهد</span><span class="ar">‹</span></span></button>'}
+
+document.getElementById('grid').addEventListener('click',function(e){var b=e.target.closest('.card');if(b)openPanel(b.dataset.k)});
+
+function openPanel(k){var p=document.getElementById('panel'),list=document.getElementById('plist'),s,items=[],h='';
+  p.style.setProperty('--c',COLORS[k]);document.getElementById('pimg').src='principal-assets/card-'+k+'.webp';
+  if(k==='nafs'){document.getElementById('psub').textContent='شواهد إضافية';document.getElementById('ptitle').textContent='تدريب ونتائج نافس';
+    h='<div class="empty"><span class="big">🗂️</span>شواهد تدريب نافس قيد الاستكمال، وستظهر هنا فور اعتمادها.</div>'+evBtn('../nafs/','واجهة تدريب نافس للطلاب','عرض المنصة','🌐');}
+  else{s=DATA.standards.filter(function(x){return String(x.id)===String(k)})[0];
+    document.getElementById('psub').textContent='البند '+s.id;document.getElementById('ptitle').textContent=s.name;
+    items=DATA.items.filter(function(i){return String(i.std)===String(k)});
+    items.forEach(function(i){h+=evBtn(i.src,i.title,i.kind,ICON[i.kind]||'📄')});
+    if(String(k)==='6'){h+='<div id="weeksBox"><div class="empty">جارٍ تحميل الخطط الأسبوعية…</div></div>';}
+    else if(!items.length)h='<div class="empty"><span class="big">🗂️</span>شواهد هذا البند قيد الاستكمال، وستظهر هنا فور اعتمادها.</div>';}
+  list.innerHTML=h;document.getElementById('overlay').classList.remove('hidden');document.body.style.overflow='hidden';
+  if(String(k)==='6')loadWeeks();}
+function evBtn(src,title,kind,ic){return '<button type="button" class="ev" data-src="'+esc(src)+'" data-t="'+esc(title)+'"><span class="ic">'+ic+'</span><span class="tx"><b>'+esc(title)+'</b><span>'+esc(kind)+'</span></span><span class="go">‹</span></button>'}
+
+var weeksLoaded=false;
+function loadWeeks(){if(window.PORTFOLIO_WEEKS){drawWeeks();return}if(weeksLoaded)return;weeksLoaded=true;var sc=document.createElement('script');sc.src='week-thumbs.js';sc.onload=drawWeeks;sc.onerror=function(){var b=document.getElementById('weeksBox');if(b)b.innerHTML=evBtn('evidence-weeks.html','فهرس الخطط الأسبوعية','توزيع المنهج والخطط الأسبوعية','🗓️')};document.head.appendChild(sc);}
+function drawWeeks(){var b=document.getElementById('weeksBox');if(!b)return;var w=Object.values(window.PORTFOLIO_WEEKS||{}).sort(function(a,c){return a.week-c.week});
+  if(!w.length){b.innerHTML=evBtn('evidence-weeks.html','فهرس الخطط الأسبوعية','توزيع المنهج والخطط الأسبوعية','🗓️');return}
+  b.innerHTML=evBtn('evidence-weeks.html','فهرس الخطط الأسبوعية كاملًا','توزيع المنهج والأسابيع 1–18','🗓️')+'<div class="weeks" style="margin-top:10px">'+w.map(function(x){return '<button type="button" class="wk ev-wk" data-src="'+esc(x.href)+'" data-t="'+esc(x.title)+'"><img src="'+x.thumb+'" alt="" loading="lazy"><b>'+esc(x.title)+'</b></button>'}).join('')+'</div>';}
+
+document.getElementById('plist').addEventListener('click',function(e){var b=e.target.closest('[data-src]');if(b)openViewer(b.dataset.src,b.dataset.t)});
+function closePanel(){document.getElementById('overlay').classList.add('hidden');document.body.style.overflow=''}
+document.getElementById('pclose').onclick=closePanel;
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closePanel()});
+
+var frame=document.getElementById('frame');
+function openViewer(src,t){document.getElementById('vtitle').textContent=t;document.getElementById('vload').classList.remove('hidden');frame.src=src;document.getElementById('viewer').classList.remove('hidden');}
+frame.addEventListener('load',function(){document.getElementById('vload').classList.add('hidden');
+  try{var d=frame.contentDocument;if(!d)return;var p=(frame.contentWindow.location.pathname||'');
+    if(/\/(index\.html)?$/.test(p)&&/portfolio-1448\/(index\.html)?$/.test(p)){closeViewer();return}
+    d.querySelectorAll('a[href="./"],a[href="index.html"],a[href^="tablet-storage"],a[href^="secure-vault"],a[href^="add-report"],a[href^="progress-1448"]').forEach(function(a){a.style.display='none'});}catch(e){}});
+function closeViewer(){document.getElementById('viewer').classList.add('hidden');frame.src='about:blank'}
+document.getElementById('vclose').onclick=closeViewer;
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(!document.getElementById('viewer').classList.contains('hidden'))closeViewer();else closePanel()}});
+/* ================= Start ================= */
+if(enter(st))showPortal();else showLock();
+})();
+</script>
+</body>
+</html>
