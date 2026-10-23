@@ -102,15 +102,13 @@ img{display:block;max-width:100%}
 <section id="lock" class="lock hidden">
   <header class="hero"><img src="principal-assets/hero.webp" alt="ملف الإنجاز المهني لمعلم مادة العلوم علي طاهر البقاشي"></header>
   <div class="lbox">
-    <div class="lic">🔒</div>
-    <h2>ملف الإنجاز مغلق حاليًا</h2>
-    <p>انتهت فترة الاطلاع المتاحة على ملف الإنجاز المهني.<br>لإعادة فتح الملف يُرجى التواصل مع المعلم <b>علي طاهر البقاشي</b>، وسيصلكم رابط أو رمز إعادة الفتح.</p>
-    <label for="code">رمز إعادة الفتح</label>
-    <input id="code" inputmode="text" autocomplete="off" placeholder="مثال: 000000-XXXXX">
-    <button class="go" id="codeBtn" type="button">فتح الملف</button>
-    <div class="msg" id="msg"></div>
+    <div class="lic" id="lic">🔒</div>
+    <h2 id="lh">ملف الإنجاز غير متاح حاليًا</h2>
+    <p id="lp">ملف الإنجاز المهني غير متاح للاطلاع في الوقت الحالي.<br>للاطلاع عليه يُرجى التواصل مع المعلم <b>علي طاهر البقاشي</b>.</p>
+    <button class="go hidden" id="retry" type="button">إعادة المحاولة</button>
   </div>
 </section>
+<section id="wait" class="lock"><div class="lbox" style="margin-top:22vh"><div class="lic">⏳</div><h2>جارٍ فتح ملف الإنجاز…</h2></div></section>
 
 <!-- ===== Portal ===== -->
 <main id="portal" class="hidden">
@@ -136,38 +134,29 @@ img{display:block;max-width:100%}
   <iframe id="frame" title="عرض الشاهد"></iframe>
 </div>
 
+<script src="principal-config.js"></script>
 <script>
 (function(){
 'use strict';
-/* ================= Access control ================= */
-var LIMIT=4, KEY='pf1448.mgr.v1', SKEY='pf1448.mgr.session', SALT='ABD-1448|Ali-AlBaqashi|portfolio-reopen';
-var ALPHA='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-function cyrb53(str,seed){var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return 4294967296*(2097151&h2)+(h1>>>0);}
-function sig(serial){var n=cyrb53(SALT+':'+serial,7),out='';for(var i=0;i<5;i++){out+=ALPHA[n%32];n=Math.floor(n/32);}return out;}
-function norm(c){return String(c||'').replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d)}).replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)}).toUpperCase().replace(/[\s_–—−]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');}
-function parseCode(c){c=norm(c);var m=/^(\d{3,9})-?([A-Z2-9]{5})$/.exec(c);if(!m)return null;return sig(m[1])===m[2]?m[1]:null;}
-
-function readCookie(){var m=document.cookie.match(new RegExp('(?:^|; )'+KEY.replace(/\./g,'\\.')+'=([^;]*)'));if(!m)return null;try{return JSON.parse(decodeURIComponent(m[1]))}catch(e){return null}}
-function load(){var a=null,b=readCookie();try{a=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
-  var x=(a&&typeof a==='object')?a:((b&&typeof b==='object')?b:null);
-  return {u:x?(+x.u||0):0,used:x&&Array.isArray(x.used)?x.used.map(String):[]};}
-function save(st){var v=JSON.stringify({u:st.u,used:st.used.slice(-60)});try{localStorage.setItem(KEY,v)}catch(e){}try{document.cookie=KEY+'='+encodeURIComponent(v)+'; max-age=31536000; path=/; SameSite=Lax'}catch(e){}}
-var mem={};function sGet(){try{return sessionStorage.getItem(SKEY)}catch(e){return mem[SKEY]||null}}function sSet(){try{sessionStorage.setItem(SKEY,'1')}catch(e){mem[SKEY]='1'}}function sDel(){try{sessionStorage.removeItem(SKEY)}catch(e){}delete mem[SKEY]}
-
-function reopen(st,serial){if(st.used.indexOf(serial)>=0)return false;st.used.push(serial);st.u=0;sDel();return true;}
-function enter(st){if(sGet()){return true}if(st.u<LIMIT){st.u++;save(st);sSet();return true}return false;}
-
-var st=load();
-var qs=new URLSearchParams(location.search), rc=qs.get('r');
-if(rc!==null){var ser=parseCode(rc);if(ser&&reopen(st,ser))save(st);qs.delete('r');try{history.replaceState(null,'',location.pathname+(qs.toString()?'?'+qs:'')+location.hash)}catch(e){}}
-
-function showLock(){document.getElementById('lock').classList.remove('hidden');document.getElementById('portal').classList.add('hidden');}
-document.getElementById('codeBtn').onclick=tryCode;
-document.getElementById('code').addEventListener('keydown',function(e){if(e.key==='Enter')tryCode()});
-function tryCode(){var msg=document.getElementById('msg'),ser=parseCode(document.getElementById('code').value);msg.className='msg';
-  if(!ser){msg.textContent='الرمز غير صحيح، يُرجى التأكد منه.';msg.classList.add('bad');return}
-  st=load();if(!reopen(st,ser)){msg.textContent='هذا الرمز استُخدم سابقًا. يُرجى طلب رمز جديد من المعلم.';msg.classList.add('bad');return}
-  save(st);enter(st);msg.textContent='تم فتح الملف ✓';msg.classList.add('ok');setTimeout(function(){document.getElementById('lock').classList.add('hidden');showPortal()},500);}
+/* ================= Access control (من منصة المعلم) ================= */
+var API=String(window.PF_ACCESS_API||'').trim(), opened=false, pollTimer=null;
+function jsonp(params,timeout){return new Promise(function(res,rej){if(!API)return rej(new Error('noapi'));var cb='pfCb'+Date.now()+Math.floor(Math.random()*1e5),s=document.createElement('script'),done=false;
+  var t=setTimeout(function(){fin();rej(new Error('timeout'))},timeout||15000);
+  function fin(){if(done)return;done=true;clearTimeout(t);try{delete window[cb]}catch(e){window[cb]=undefined}s.remove()}
+  window[cb]=function(d){fin();res(d)};var q=new URLSearchParams(params);q.set('callback',cb);q.set('_',Date.now());
+  s.src=API+(API.indexOf('?')>=0?'&':'?')+q.toString();s.onerror=function(){fin();rej(new Error('net'))};document.head.appendChild(s);});}
+function check(first){return jsonp(first?{action:'status',v:'1'}:{action:'status'}).then(function(d){if(d&&d.ok&&d.open){if(!opened){opened=true;showPortal()}return true}showLock(false);return false});}
+function start(tries){document.getElementById('wait').classList.remove('hidden');
+  check(true).then(function(){document.getElementById('wait').classList.add('hidden');schedule()}).catch(function(e){
+    if(e.message!=='noapi'&&tries<2){setTimeout(function(){start(tries+1)},1500);return}
+    document.getElementById('wait').classList.add('hidden');showLock(e.message!=='noapi');});}
+function schedule(){clearInterval(pollTimer);pollTimer=setInterval(function(){if(!opened)return;check(false).catch(function(){})},60000);}
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&opened)check(false).catch(function(){})});
+function showLock(netErr){opened=false;clearInterval(pollTimer);try{closeViewer();closePanel()}catch(e){}
+  document.getElementById('portal').classList.add('hidden');document.getElementById('lock').classList.remove('hidden');
+  document.getElementById('retry').classList.toggle('hidden',!netErr);
+  if(netErr){document.getElementById('lic').textContent='📶';document.getElementById('lh').textContent='تعذر الاتصال';document.getElementById('lp').textContent='تعذر التحقق من إتاحة ملف الإنجاز. تأكدوا من اتصال الإنترنت ثم أعيدوا المحاولة.';}}
+document.getElementById('retry').onclick=function(){document.getElementById('lock').classList.add('hidden');start(0)};
 
 /* ================= Portal content ================= */
 var SNAP={"standards":[{"id":1,"name":"أداء الواجبات الوظيفية","desc":"المناوبات والإشراف والمهام والأنشطة المدرسية."},{"id":2,"name":"التفاعل مع المجتمع المهني","desc":"الشهادات والمشاركات والتطوير المهني."},{"id":3,"name":"التفاعل مع أولياء الأمور","desc":"الشواهد المرتبطة بالتواصل والتحفيز والشراكة الأسرية."},{"id":4,"name":"التنوع في استراتيجيات التدريس","desc":"الأنشطة التعليمية وأساليب التعلم والتدريس."},{"id":5,"name":"تحسين نتائج المتعلمين","desc":"الخطط العلاجية وإجراءات تحسين نواتج التعلم ومتابعة أثرها."},{"id":6,"name":"إعداد وتنفيذ خطة التعلم","desc":"توزيع المنهج والخطط الأسبوعية للعلوم."},{"id":7,"name":"توظيف تقنيات ووسائل التعلم المناسبة","desc":"الدروس التفاعلية والمحقق العلمي والمهام الرقمية."},{"id":8,"name":"تهيئة البيئة التعليمية","desc":"قسم محفوظ لإضافة شواهد البيئة التعليمية."},{"id":9,"name":"الإدارة الصفية","desc":"قسم محفوظ لإضافة شواهد إدارة الصف."},{"id":10,"name":"تحليل نتائج المتعلمين وتشخيص مستوياتهم","desc":"تقارير تحليل الاختبارات التشخيصية والدورية، وحصر الطلاب منخفضي المستوى لتشخيص مستوياتهم."},{"id":11,"name":"تنوع أساليب التقويم","desc":"قسم محفوظ؛ يمكن ربط نماذج تقويم موجودة بعد اعتمادها."}],"items":[{"id":3,"std":1,"title":"حصص الانتظار","kind":"شاهد تنفيذ","src":"evidence-003.html"},{"id":4,"std":1,"title":"الإشراف والمناوبة اليومية","kind":"شاهد تنفيذ","src":"evidence-004.html"},{"id":6,"std":2,"title":"الورشة التعريفية في الأنشطة الطلابية","kind":"شهادة تدريب","src":"evidence-certificates.html#evidence-6"},{"id":7,"std":2,"title":"الورشة التعريفية في الأنشطة الطلابية — شهادة ثانية","kind":"شهادة تدريب","src":"evidence-certificates.html#evidence-7"},{"id":8,"std":2,"title":"اللقاء التعريفي بمشروع ترسيخ القيم وتعزيز الهوية الوطنية","kind":"شهادة تدريب","src":"evidence-certificates.html#evidence-8"},{"id":13,"std":4,"title":"نشاط اكتشاف المتغيرات في التجربة","kind":"شاهد نشاط","src":"evidence-013.html"},{"id":14,"std":4,"title":"تقرير النظرية والقانون العلمي","kind":"تقرير تدريسي","src":"evidence-014.html"},{"id":16,"std":10,"title":"تحليل الاختبار التشخيصي — الفصل 1/1","kind":"تحليل نتائج","src":"analytics-safe.html#evidence-16"},{"id":17,"std":10,"title":"تحليل الاختبار التشخيصي — الفصل 1/2","kind":"تحليل نتائج","src":"analytics-safe.html#evidence-17"},{"id":22,"std":10,"title":"تحليل اختبار الفترة الأولى — الفصل 1/1","kind":"تحليل نتائج","src":"analytics-safe.html#evidence-22"},{"id":47,"std":7,"title":"تقرير نشاط المحقق العلمي","kind":"تقرير توظيف","src":"evidence-047.html"},{"id":50,"std":11,"title":"تقرير تنفيذ المهمة الأدائية","kind":"تقرير تقويم","src":"evidence-050.html"},{"id":51,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 1/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-51"},{"id":52,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 2/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-52"},{"id":53,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 3/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-53"},{"id":54,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 4/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-54"}]};
@@ -181,7 +170,7 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){retur
 function extractData(html){var i=html.indexOf('const DATA=');if(i<0)return null;i+=11;var d=0,inS=false,q='',out='';for(var j=i;j<html.length;j++){var c=html[j];if(inS){if(c==='\\'){j++;continue}if(c===q)inS=false;continue}if(c==='"'||c==="'"){inS=true;q=c;continue}if(c==='{'||c==='[')d++;else if(c==='}'||c===']'){d--;if(d===0){out=html.slice(i,j+1);break}}}
   try{var x=JSON.parse(out);return {standards:x.standards.map(function(s){return{id:s.id,name:s.name,desc:s.desc}}),items:x.items.filter(function(it){return !it.private&&it.src})}}catch(e){return null}}
 
-function showPortal(){document.getElementById('portal').classList.remove('hidden');render();
+function showPortal(){document.getElementById('lock').classList.add('hidden');document.getElementById('portal').classList.remove('hidden');render();
   fetch('index.html',{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){var x=t&&extractData(t);if(x&&x.standards&&x.standards.length){DATA=x;render()}}).catch(function(){});}
 
 function render(){var g=document.getElementById('grid'),h='';
@@ -226,8 +215,7 @@ frame.addEventListener('load',function(){document.getElementById('vload').classL
 function closeViewer(){document.getElementById('viewer').classList.add('hidden');frame.src='about:blank'}
 document.getElementById('vclose').onclick=closeViewer;
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(!document.getElementById('viewer').classList.contains('hidden'))closeViewer();else closePanel()}});
-/* ================= Start ================= */
-if(enter(st))showPortal();else showLock();
+start(0);
 })();
 </script>
 </body>

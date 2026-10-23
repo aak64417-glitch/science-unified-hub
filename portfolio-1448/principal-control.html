@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>التحكم في عرض المدير — ملف الإنجاز 1448هـ</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+<script src="principal-config.js"></script>
+<style>
+:root{--navy:#071a40;--gold:#d4a73c;--ink:#14233f;--muted:#5d6b84;--green:#1b8a4b;--red:#c0392b}
+*{box-sizing:border-box}
+body{margin:0;background:#f3f5fa;color:var(--ink);font-family:'Tajawal',Tahoma,Arial,sans-serif}
+header{background:linear-gradient(135deg,var(--navy),#123b85);color:#fff;padding:20px 16px;text-align:center;border-bottom:4px solid var(--gold)}
+header h1{margin:0;font-size:24px;font-weight:900}
+header p{margin:6px 0 0;opacity:.9}
+.wrap{max-width:900px;margin:0 auto;padding:18px 16px 40px;display:grid;gap:16px}
+.box{background:#fff;border-radius:20px;padding:18px;box-shadow:0 8px 24px rgba(7,26,64,.08);border:1px solid #e3e8f2}
+.box h2{margin:0 0 10px;font-size:19px;color:var(--navy);font-weight:900}
+.box p{margin:0 0 12px;color:var(--muted);line-height:1.8}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:0;border-radius:13px;padding:12px 18px;font:inherit;font-weight:800;cursor:pointer;background:var(--navy);color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.gold{background:var(--gold);color:var(--navy)}
+.btn.light{background:#eef2f8;color:var(--navy)}
+.btn:disabled{opacity:.5;cursor:wait}
+input{width:100%;padding:12px 14px;border-radius:13px;border:1.5px solid #cfd8e8;font:inherit;font-size:16px}
+label{display:block;font-weight:800;margin:0 0 6px;color:var(--navy)}
+.status{display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;background:#f6f8fc;border:2px solid #e3e8f2;margin-bottom:14px}
+.status .dot{width:20px;height:20px;border-radius:50%;background:#9aa6ba;flex:none}
+.status b{font-size:21px}
+.status.on{background:#eaf7ef;border-color:#b9e3c8}.status.on .dot{background:var(--green);box-shadow:0 0 0 6px rgba(27,138,75,.18)}.status.on b{color:var(--green)}
+.status.off{background:#fdecea;border-color:#f3c4bf}.status.off .dot{background:var(--red);box-shadow:0 0 0 6px rgba(192,57,43,.15)}.status.off b{color:var(--red)}
+.big{flex:1;min-width:200px;justify-content:center;font-size:17px;padding:16px}
+.big.open{background:var(--green)}.big.close{background:var(--red)}
+.msg{min-height:22px;margin-top:10px;font-weight:700}
+.msg.err{color:var(--red)}.msg.ok{color:var(--green)}
+.poster{width:100%;border-radius:16px;border:1px solid #e3e8f2}
+.link{direction:ltr;font-family:monospace;font-size:13px;background:#f6f8fc;border:1px dashed #c8d3e6;border-radius:12px;padding:10px;word-break:break-all;text-align:left}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+td{padding:8px;border-bottom:1px solid #eef1f6}
+.note{font-size:13.5px;color:var(--muted);line-height:1.8}
+.warn{background:#fff8e6;border:1.5px solid var(--gold);border-radius:14px;padding:12px 14px;line-height:1.9}
+ol{margin:6px 0 0;padding-inline-start:22px;line-height:2}
+pre{direction:ltr;text-align:left;background:#0d1b3a;color:#e8eefc;padding:12px;border-radius:12px;max-height:240px;overflow:auto;font-size:12px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<header><h1>🪪 التحكم في عرض ملف الإنجاز للمدير</h1><p>صفحة خاصة بالمعلم — لا تُرسل هذا الرابط للإدارة</p></header>
+<div class="wrap">
+
+  <section class="box hidden" id="setupBox">
+    <h2>⚙️ خطوة واحدة قبل التشغيل</h2>
+    <div class="warn">لم يُربط رابط التحكم بعد، لذلك تظهر صفحة المدير مغلقة حاليًا. انشر سكربت التحكم مرة واحدة فقط:
+      <ol>
+        <li>افتح <b>script.google.com</b> ← مشروع جديد.</li>
+        <li>احذف المحتوى والصق الكود أدناه، ثم احفظ.</li>
+        <li>نشر (Deploy) ← نشر جديد ← تطبيق ويب: تنفيذ باسم <b>أنا</b>، ومن يمكنه الوصول <b>أي شخص</b>.</li>
+        <li>انسخ رابط تطبيق الويب المنتهي بـ <span dir="ltr">/exec</span> وأرسله ليتم ربطه بالمنصة.</li>
+      </ol>
+    </div>
+    <div class="row" style="margin:12px 0 8px"><button class="btn gold" type="button" id="copyCode">📋 نسخ كود السكربت</button></div>
+    <pre id="code">جارٍ تحميل الكود…</pre>
+  </section>
+
+  <section class="box">
+    <h2>حالة العرض للمدير</h2>
+    <div class="status" id="status"><span class="dot"></span><div><b id="stText">—</b><div class="note" id="stWhen"></div></div></div>
+    <label for="pin">الرمز السري للمعلم</label>
+    <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="أدخل الرمز السري (أول رمز تكتبه يصبح هو رمزك)">
+    <div class="row" style="margin-top:12px">
+      <button class="btn big open" type="button" id="openBtn">🔓 إتاحة العرض للمدير</button>
+      <button class="btn big close" type="button" id="closeBtn">⛔ إيقاف العرض</button>
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn light" type="button" id="refresh">🔄 تحديث الحالة</button></div>
+    <div class="msg" id="msg"></div>
+    <p class="note">عند الإيقاف تُغلق صفحة المدير خلال دقيقة حتى لو كانت مفتوحة، وتظهر له رسالة بأن الملف غير متاح حاليًا.</p>
+  </section>
+
+  <section class="box">
+    <h2>آخر مرات اطلاع المدير</h2>
+    <div id="views"><p class="note">أدخل الرمز السري ثم اضغط «تحديث الحالة».</p></div>
+  </section>
+
+  <section class="box">
+    <h2>باركود دخول المدير</h2>
+    <img class="poster" src="principal-assets/qr-poster.png" alt="ملصق باركود دخول المدير">
+    <div class="link" id="mainLink"></div>
+    <div class="row" style="margin-top:10px">
+      <a class="btn gold" href="principal-assets/qr-poster.png" download="باركود-ملف-الانجاز-للمدير.png">⬇️ تحميل الملصق</a>
+      <a class="btn light" href="principal-assets/qr-principal.png" download="باركود-المدير.png">⬇️ الباركود وحده</a>
+      <button class="btn light" type="button" id="copyLink">📋 نسخ الرابط</button>
+      <a class="btn light" href="principal.html" target="_blank" rel="noopener">👁️ معاينة صفحة المدير</a>
+    </div>
+  </section>
+</div>
+<script>
+(function(){
+'use strict';
+var API=String(window.PF_ACCESS_API||'').trim(),PK='pf1448.control.pin';
+var MAIN='https://aak64417-glitch.github.io/science-unified-hub/portfolio-1448/principal.html';
+var $=function(id){return document.getElementById(id)};
+$('mainLink').textContent=MAIN;
+try{$('pin').value=localStorage.getItem(PK)||''}catch(e){}
+function pin(){var v=$('pin').value.trim();try{if(v)localStorage.setItem(PK,v)}catch(e){}return v}
+function msg(t,ok){$('msg').textContent=t;$('msg').className='msg '+(ok?'ok':'err')}
+function copy(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){msg('تم النسخ ✓',true)}).catch(function(){prompt('انسخ:',t)})}
+$('copyLink').onclick=function(){copy(MAIN)};
+
+if(!API){$('setupBox').classList.remove('hidden');
+  fetch('principal-access.gs').then(function(r){return r.text()}).then(function(t){$('code').textContent=t}).catch(function(){$('code').textContent='تعذر تحميل الكود.'});
+  $('copyCode').onclick=function(){copy($('code').textContent)};
+  ['openBtn','closeBtn','refresh'].forEach(function(id){$(id).disabled=true});
+  $('stText').textContent='غير مربوط بعد';return;}
+
+function jsonp(params){return new Promise(function(res,rej){var cb='pfC'+Date.now()+Math.floor(Math.random()*1e5),s=document.createElement('script'),done=false;
+  var t=setTimeout(function(){fin();rej(new Error('انتهت مهلة الاتصال'))},20000);
+  function fin(){if(done)return;done=true;clearTimeout(t);try{delete window[cb]}catch(e){}s.remove()}
+  window[cb]=function(d){fin();d&&d.ok?res(d):rej(new Error((d&&d.message)||'رفض الخادم الطلب'))};
+  var q=new URLSearchParams(params);q.set('callback',cb);q.set('_',Date.now());
+  s.src=API+(API.indexOf('?')>=0?'&':'?')+q;s.onerror=function(){fin();rej(new Error('تعذر الاتصال'))};document.head.appendChild(s);});}
+function fmt(iso){try{return new Date(iso).toLocaleString('ar-SA-u-ca-islamic-umalqura-nu-arab',{weekday:'long',day:'numeric',month:'long',hour:'numeric',minute:'2-digit'})}catch(e){return iso}}
+function draw(d){var st=$('status');st.className='status '+(d.open?'on':'off');$('stText').textContent=d.open?'العرض متاح للمدير':'العرض موقوف';
+  $('stWhen').textContent=d.changedAt?('آخر تغيير: '+fmt(d.changedAt)):'';
+  var v=(d.views||[]).slice().reverse();$('views').innerHTML=v.length?'<table>'+v.slice(0,20).map(function(x){return '<tr><td>👁️ '+fmt(x)+'</td></tr>'}).join('')+'</table>':'<p class="note">لا توجد مرات اطلاع مسجلة بعد.</p>';}
+function busy(b){['openBtn','closeBtn','refresh'].forEach(function(id){$(id).disabled=b})}
+function run(p,okText){var k=pin();if(k.length<4){msg('أدخل الرمز السري (4 خانات أو أكثر).');return}
+  busy(true);msg('جارٍ التنفيذ…',true);p.pin=k;jsonp(p).then(function(d){draw(d);msg(okText,true)}).catch(function(e){msg(e.message)}).then(function(){busy(false)});}
+$('openBtn').onclick=function(){run({action:'set',open:'1'},'تمت إتاحة العرض للمدير ✓')};
+$('closeBtn').onclick=function(){run({action:'set',open:'0'},'تم إيقاف العرض ✓')};
+$('refresh').onclick=function(){run({action:'get'},'تم تحديث الحالة ✓')};
+if(pin().length>=4)run({action:'get'},'');
+})();
+</script>
+</body>
+</html>
