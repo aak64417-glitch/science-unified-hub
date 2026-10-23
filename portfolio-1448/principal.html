@@ -134,24 +134,18 @@ img{display:block;max-width:100%}
   <iframe id="frame" title="عرض الشاهد"></iframe>
 </div>
 
-<script src="principal-config.js"></script>
 <script>
 (function(){
 'use strict';
 /* ================= Access control (من منصة المعلم) ================= */
-var API=String(window.PF_ACCESS_API||'').trim(), opened=false, pollTimer=null;
-function jsonp(params,timeout){return new Promise(function(res,rej){if(!API)return rej(new Error('noapi'));var cb='pfCb'+Date.now()+Math.floor(Math.random()*1e5),s=document.createElement('script'),done=false;
-  var t=setTimeout(function(){fin();rej(new Error('timeout'))},timeout||15000);
-  function fin(){if(done)return;done=true;clearTimeout(t);try{delete window[cb]}catch(e){window[cb]=undefined}s.remove()}
-  window[cb]=function(d){fin();res(d)};var q=new URLSearchParams(params);q.set('callback',cb);q.set('_',Date.now());
-  s.src=API+(API.indexOf('?')>=0?'&':'?')+q.toString();s.onerror=function(){fin();rej(new Error('net'))};document.head.appendChild(s);});}
-function check(first){return jsonp(first?{action:'status',v:'1'}:{action:'status'}).then(function(d){if(d&&d.ok&&d.open){if(!opened){opened=true;showPortal()}return true}showLock(false);return false});}
+var opened=false, pollTimer=null;
+function check(){return fetch('principal-access.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('net');return r.json()}).then(function(d){if(d&&d.open===true){if(!opened){opened=true;showPortal()}return true}showLock(false);return false});}
 function start(tries){document.getElementById('wait').classList.remove('hidden');
-  check(true).then(function(){document.getElementById('wait').classList.add('hidden');schedule()}).catch(function(e){
-    if(e.message!=='noapi'&&tries<2){setTimeout(function(){start(tries+1)},1500);return}
-    document.getElementById('wait').classList.add('hidden');showLock(e.message!=='noapi');});}
-function schedule(){clearInterval(pollTimer);pollTimer=setInterval(function(){if(!opened)return;check(false).catch(function(){})},60000);}
-document.addEventListener('visibilitychange',function(){if(!document.hidden&&opened)check(false).catch(function(){})});
+  check().then(function(){document.getElementById('wait').classList.add('hidden');schedule()}).catch(function(e){
+    if(tries<2){setTimeout(function(){start(tries+1)},1500);return}
+    document.getElementById('wait').classList.add('hidden');showLock(true);});}
+function schedule(){clearInterval(pollTimer);pollTimer=setInterval(function(){if(!opened)return;check().catch(function(){})},60000);}
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&opened)check().catch(function(){})});
 function showLock(netErr){opened=false;clearInterval(pollTimer);try{closeViewer();closePanel()}catch(e){}
   document.getElementById('portal').classList.add('hidden');document.getElementById('lock').classList.remove('hidden');
   document.getElementById('retry').classList.toggle('hidden',!netErr);

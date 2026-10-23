@@ -6,7 +6,6 @@
 <meta name="robots" content="noindex,nofollow">
 <title>التحكم في عرض المدير — ملف الإنجاز 1448هـ</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
-<script src="principal-config.js"></script>
 <style>
 :root{--navy:#071a40;--gold:#d4a73c;--ink:#14233f;--muted:#5d6b84;--green:#1b8a4b;--red:#c0392b}
 *{box-sizing:border-box}
@@ -50,36 +49,34 @@ pre{direction:ltr;text-align:left;background:#0d1b3a;color:#e8eefc;padding:12px;
 <div class="wrap">
 
   <section class="box hidden" id="setupBox">
-    <h2>⚙️ خطوة واحدة قبل التشغيل</h2>
-    <div class="warn">لم يُربط رابط التحكم بعد، لذلك تظهر صفحة المدير مغلقة حاليًا. انشر سكربت التحكم مرة واحدة فقط:
+    <h2>⚙️ إعداد لمرة واحدة على هذا الجهاز</h2>
+    <div class="warn">أنشئ «رمز وصول» من GitHub يسمح لهذه اللوحة بتغيير حالة العرض فقط:
       <ol>
-        <li>افتح <b>script.google.com</b> ← مشروع جديد.</li>
-        <li>احذف المحتوى والصق الكود أدناه، ثم احفظ.</li>
-        <li>نشر (Deploy) ← نشر جديد ← تطبيق ويب: تنفيذ باسم <b>أنا</b>، ومن يمكنه الوصول <b>أي شخص</b>.</li>
-        <li>انسخ رابط تطبيق الويب المنتهي بـ <span dir="ltr">/exec</span> وأرسله ليتم ربطه بالمنصة.</li>
+        <li>اضغط الزر أدناه لفتح صفحة إنشاء الرمز في GitHub (سجّل الدخول بحسابك).</li>
+        <li><b>Token name</b>: اكتب مثلًا <span dir="ltr">portfolio-control</span>، وفي <b>Expiration</b> اختر مدة طويلة (مثل 1 year أو Custom).</li>
+        <li><b>Repository access</b> ← <b>Only select repositories</b> ← اختر <span dir="ltr">science-unified-hub</span>.</li>
+        <li><b>Permissions</b> ← <b>Repository permissions</b> ← <b>Contents</b> ← اختر <b>Read and write</b>.</li>
+        <li>اضغط <b>Generate token</b>، ثم انسخ الرمز الذي يبدأ بـ <span dir="ltr">github_pat_</span> والصقه هنا.</li>
       </ol>
     </div>
-    <div class="row" style="margin:12px 0 8px"><button class="btn gold" type="button" id="copyCode">📋 نسخ كود السكربت</button></div>
-    <pre id="code">جارٍ تحميل الكود…</pre>
+    <div class="row" style="margin:12px 0"><a class="btn gold" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">🔑 فتح صفحة إنشاء الرمز</a></div>
+    <label for="tok">رمز الوصول</label>
+    <input id="tok" type="password" autocomplete="off" dir="ltr" placeholder="github_pat_...">
+    <div class="row" style="margin-top:10px"><button class="btn" type="button" id="saveTok">💾 حفظ الرمز على هذا الجهاز</button></div>
+    <p class="note" style="margin-top:8px">يُحفظ الرمز على جهازك فقط ولا يُرفع للمنصة. لا تشاركه مع أحد.</p>
   </section>
 
   <section class="box">
     <h2>حالة العرض للمدير</h2>
     <div class="status" id="status"><span class="dot"></span><div><b id="stText">—</b><div class="note" id="stWhen"></div></div></div>
-    <label for="pin">الرمز السري للمعلم</label>
-    <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="أدخل الرمز السري (أول رمز تكتبه يصبح هو رمزك)">
     <div class="row" style="margin-top:12px">
       <button class="btn big open" type="button" id="openBtn">🔓 إتاحة العرض للمدير</button>
       <button class="btn big close" type="button" id="closeBtn">⛔ إيقاف العرض</button>
     </div>
     <div class="row" style="margin-top:10px"><button class="btn light" type="button" id="refresh">🔄 تحديث الحالة</button></div>
     <div class="msg" id="msg"></div>
-    <p class="note">عند الإيقاف تُغلق صفحة المدير خلال دقيقة حتى لو كانت مفتوحة، وتظهر له رسالة بأن الملف غير متاح حاليًا.</p>
-  </section>
-
-  <section class="box">
-    <h2>آخر مرات اطلاع المدير</h2>
-    <div id="views"><p class="note">أدخل الرمز السري ثم اضغط «تحديث الحالة».</p></div>
+    <p class="note">يصل التغيير إلى صفحة المدير خلال دقيقة إلى دقيقتين تقريبًا. عند الإيقاف تُغلق صفحة المدير حتى لو كانت مفتوحة، وتظهر له رسالة بأن الملف غير متاح حاليًا.</p>
+    <div class="row"><button class="btn light" type="button" id="changeTok">🔑 تغيير رمز الوصول</button></div>
   </section>
 
   <section class="box">
@@ -97,39 +94,36 @@ pre{direction:ltr;text-align:left;background:#0d1b3a;color:#e8eefc;padding:12px;
 <script>
 (function(){
 'use strict';
-var API=String(window.PF_ACCESS_API||'').trim(),PK='pf1448.control.pin';
+var TK='pf1448.control.ghtoken',REPO='aak64417-glitch/science-unified-hub',PATH='portfolio-1448/principal-access.json';
+var URL_API='https://api.github.com/repos/'+REPO+'/contents/'+PATH;
 var MAIN='https://aak64417-glitch.github.io/science-unified-hub/portfolio-1448/principal.html';
 var $=function(id){return document.getElementById(id)};
 $('mainLink').textContent=MAIN;
-try{$('pin').value=localStorage.getItem(PK)||''}catch(e){}
-function pin(){var v=$('pin').value.trim();try{if(v)localStorage.setItem(PK,v)}catch(e){}return v}
+function tok(){try{return localStorage.getItem(TK)||''}catch(e){return ''}}
 function msg(t,ok){$('msg').textContent=t;$('msg').className='msg '+(ok?'ok':'err')}
 function copy(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){msg('تم النسخ ✓',true)}).catch(function(){prompt('انسخ:',t)})}
 $('copyLink').onclick=function(){copy(MAIN)};
-
-if(!API){$('setupBox').classList.remove('hidden');
-  fetch('principal-access.gs').then(function(r){return r.text()}).then(function(t){$('code').textContent=t}).catch(function(){$('code').textContent='تعذر تحميل الكود.'});
-  $('copyCode').onclick=function(){copy($('code').textContent)};
-  ['openBtn','closeBtn','refresh'].forEach(function(id){$(id).disabled=true});
-  $('stText').textContent='غير مربوط بعد';return;}
-
-function jsonp(params){return new Promise(function(res,rej){var cb='pfC'+Date.now()+Math.floor(Math.random()*1e5),s=document.createElement('script'),done=false;
-  var t=setTimeout(function(){fin();rej(new Error('انتهت مهلة الاتصال'))},20000);
-  function fin(){if(done)return;done=true;clearTimeout(t);try{delete window[cb]}catch(e){}s.remove()}
-  window[cb]=function(d){fin();d&&d.ok?res(d):rej(new Error((d&&d.message)||'رفض الخادم الطلب'))};
-  var q=new URLSearchParams(params);q.set('callback',cb);q.set('_',Date.now());
-  s.src=API+(API.indexOf('?')>=0?'&':'?')+q;s.onerror=function(){fin();rej(new Error('تعذر الاتصال'))};document.head.appendChild(s);});}
-function fmt(iso){try{return new Date(iso).toLocaleString('ar-SA-u-ca-islamic-umalqura-nu-arab',{weekday:'long',day:'numeric',month:'long',hour:'numeric',minute:'2-digit'})}catch(e){return iso}}
-function draw(d){var st=$('status');st.className='status '+(d.open?'on':'off');$('stText').textContent=d.open?'العرض متاح للمدير':'العرض موقوف';
-  $('stWhen').textContent=d.changedAt?('آخر تغيير: '+fmt(d.changedAt)):'';
-  var v=(d.views||[]).slice().reverse();$('views').innerHTML=v.length?'<table>'+v.slice(0,20).map(function(x){return '<tr><td>👁️ '+fmt(x)+'</td></tr>'}).join('')+'</table>':'<p class="note">لا توجد مرات اطلاع مسجلة بعد.</p>';}
 function busy(b){['openBtn','closeBtn','refresh'].forEach(function(id){$(id).disabled=b})}
-function run(p,okText){var k=pin();if(k.length<4){msg('أدخل الرمز السري (4 خانات أو أكثر).');return}
-  busy(true);msg('جارٍ التنفيذ…',true);p.pin=k;jsonp(p).then(function(d){draw(d);msg(okText,true)}).catch(function(e){msg(e.message)}).then(function(){busy(false)});}
-$('openBtn').onclick=function(){run({action:'set',open:'1'},'تمت إتاحة العرض للمدير ✓')};
-$('closeBtn').onclick=function(){run({action:'set',open:'0'},'تم إيقاف العرض ✓')};
-$('refresh').onclick=function(){run({action:'get'},'تم تحديث الحالة ✓')};
-if(pin().length>=4)run({action:'get'},'');
+function needSetup(show){$('setupBox').classList.toggle('hidden',!show);busy(show);if(show)$('stText').textContent='يلزم إعداد رمز الوصول'}
+$('saveTok').onclick=function(){var v=$('tok').value.trim();if(!/^(github_pat_|ghp_)/.test(v)){alert('الرمز يجب أن يبدأ بـ github_pat_');return}
+  try{localStorage.setItem(TK,v)}catch(e){}$('tok').value='';needSetup(false);load();};
+$('changeTok').onclick=function(){needSetup(true)};
+function fmt(iso){try{return new Date(iso).toLocaleString('ar-SA-u-ca-islamic-umalqura-nu-arab',{weekday:'long',day:'numeric',month:'long',hour:'numeric',minute:'2-digit'})}catch(e){return iso}}
+function gh(method,body){return fetch(URL_API+(method==='GET'?'?ref=main&t='+Date.now():''),{method:method,cache:'no-store',headers:{'Authorization':'Bearer '+tok(),'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},body:body?JSON.stringify(body):undefined})
+  .then(function(r){return r.json().catch(function(){return {}}).then(function(d){if(!r.ok){var m=r.status===401?'رمز الوصول غير صحيح أو منتهي الصلاحية.':r.status===403||r.status===404?'رمز الوصول لا يملك صلاحية التعديل على المستودع (Contents: Read and write).':r.status===409?'conflict':(d.message||'تعذر الاتصال بـ GitHub');throw new Error(m)}return d})})}
+var sha='';
+function read(){return gh('GET').then(function(d){sha=d.sha;var j={};try{j=JSON.parse(decodeURIComponent(escape(atob(String(d.content).replace(/\s/g,'')))))}catch(e){}draw(j);return j})}
+function draw(j){var on=j.open===true;$('status').className='status '+(on?'on':'off');$('stText').textContent=on?'العرض متاح للمدير':'العرض موقوف';$('stWhen').textContent=j.changedAt?('آخر تغيير: '+fmt(j.changedAt)):''}
+function load(){busy(true);msg('جارٍ قراءة الحالة…',true);read().then(function(){msg('',true)}).catch(function(e){msg(e.message)}).then(function(){busy(false)})}
+function set(open,tries){busy(true);msg('جارٍ الحفظ…',true);var j={open:open,changedAt:new Date().toISOString()};
+  (sha?Promise.resolve():read()).then(function(){return gh('PUT',{message:open?'ملف الإنجاز: إتاحة العرض للمدير':'ملف الإنجاز: إيقاف العرض للمدير',content:btoa(JSON.stringify(j)+'\n'),sha:sha,branch:'main'})})
+  .then(function(d){sha=d.content&&d.content.sha||'';draw(j);msg(open?'تمت إتاحة العرض للمدير ✓ (يصل خلال دقيقة إلى دقيقتين)':'تم إيقاف العرض ✓ (يصل خلال دقيقة إلى دقيقتين)',true)})
+  .catch(function(e){if(e.message==='conflict'&&!tries){sha='';return set(open,1)}msg(e.message==='conflict'?'تعذر الحفظ، أعد المحاولة.':e.message)})
+  .then(function(){busy(false)})}
+$('openBtn').onclick=function(){set(true)};
+$('closeBtn').onclick=function(){set(false)};
+$('refresh').onclick=load;
+if(tok())load();else needSetup(true);
 })();
 </script>
 </body>
