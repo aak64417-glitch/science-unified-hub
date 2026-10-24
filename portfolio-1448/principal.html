@@ -70,6 +70,10 @@ img{display:block;max-width:100%}
 .wk:hover{border-color:var(--c)}
 .wk img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:9px;background:#eef2f8}
 .wk b{display:block;font-size:13px;margin-top:6px;color:var(--navy);line-height:1.5}
+.shotbtn{display:block;width:100%;padding:0;border:1.5px solid #e3e8f2;border-radius:16px;overflow:hidden;background:#fff;cursor:pointer;font:inherit;text-align:center}
+.shotbtn img{width:100%;display:block}
+.shotbtn span{display:block;padding:9px;font-weight:800;color:var(--navy);font-size:14.5px}
+.subh{font-weight:900;color:var(--navy);font-size:16.5px;margin:6px 2px 0}
 .empty{text-align:center;padding:26px 14px;color:var(--muted);line-height:1.9;font-size:15px}
 .empty .big{font-size:38px;display:block;margin-bottom:6px}
 
@@ -178,7 +182,7 @@ document.getElementById('grid').addEventListener('click',function(e){var b=e.tar
 function openPanel(k){var p=document.getElementById('panel'),list=document.getElementById('plist'),s,items=[],h='';
   p.style.setProperty('--c',COLORS[k]);document.getElementById('pimg').src='principal-assets/card-'+k+'.webp';
   if(k==='nafs'){document.getElementById('psub').textContent='شواهد إضافية';document.getElementById('ptitle').textContent='تدريب ونتائج نافس';
-    h='<div class="empty"><span class="big">🗂️</span>شواهد تدريب نافس قيد الاستكمال، وستظهر هنا فور اعتمادها.</div>'+evBtn('../nafs/','واجهة تدريب نافس للطلاب','عرض المنصة','🌐');}
+    h='<button type="button" class="shotbtn" data-src="principal-assets/nafs-platform.webp" data-t="منصة تدريب نافس — واجهة الطالب" data-kind="image"><img src="principal-assets/nafs-platform.webp" alt="واجهة منصة تدريب نافس"><span>منصة تدريب نافس — واجهة الطالب</span></button><div class="subh">📑 تقارير نافس</div><div id="nafsBox"><div class="empty">جارٍ تحميل التقارير…</div></div>';}
   else{s=DATA.standards.filter(function(x){return String(x.id)===String(k)})[0];
     document.getElementById('psub').textContent='البند '+s.id;document.getElementById('ptitle').textContent=s.name;
     items=DATA.items.filter(function(i){return String(i.std)===String(k)});
@@ -186,8 +190,17 @@ function openPanel(k){var p=document.getElementById('panel'),list=document.getEl
     if(String(k)==='6'){h+='<div id="weeksBox"><div class="empty">جارٍ تحميل الخطط الأسبوعية…</div></div>';}
     else if(!items.length)h='<div class="empty"><span class="big">🗂️</span>شواهد هذا البند قيد الاستكمال، وستظهر هنا فور اعتمادها.</div>';}
   list.innerHTML=h;document.getElementById('overlay').classList.remove('hidden');document.body.style.overflow='hidden';
-  if(String(k)==='6')loadWeeks();}
+  if(String(k)==='6')loadWeeks();
+  if(k==='nafs')loadNafs();}
 function evBtn(src,title,kind,ic){return '<button type="button" class="ev" data-src="'+esc(src)+'" data-t="'+esc(title)+'"><span class="ic">'+ic+'</span><span class="tx"><b>'+esc(title)+'</b><span>'+esc(kind)+'</span></span><span class="go">‹</span></button>'}
+
+var NAFS_ICON={pdf:'📕',image:'🖼️',html:'📊'};
+function loadNafs(){fetch('nafs-reports/index.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){drawNafs(j.reports||[])}).catch(function(){drawNafs([])});}
+function drawNafs(list){var b=document.getElementById('nafsBox');if(!b)return;
+  if(!list.length){b.innerHTML='<div class="empty"><span class="big">🗂️</span>لم تُضف تقارير نافس بعد، وستظهر هنا فور إضافتها.</div>';return}
+  b.innerHTML=list.slice().sort(function(a,c){return String(c.date).localeCompare(String(a.date))}).map(function(r){
+    var meta=(r.source==='inside'?'من داخل منصة نافس':'من خارج المنصة');try{meta+=' • '+new Date(r.date).toLocaleDateString('ar-SA-u-ca-islamic-umalqura-nu-arab',{day:'numeric',month:'long',year:'numeric'})}catch(e){}
+    return '<button type="button" class="ev" data-src="'+esc(r.file)+'" data-t="'+esc(r.title)+'" data-kind="'+esc(r.kind)+'"><span class="ic">'+(NAFS_ICON[r.kind]||'📄')+'</span><span class="tx"><b>'+esc(r.title)+'</b><span>'+esc(meta)+'</span></span><span class="go">‹</span></button>'}).join('');}
 
 var weeksLoaded=false;
 function loadWeeks(){if(window.PORTFOLIO_WEEKS){drawWeeks();return}if(weeksLoaded)return;weeksLoaded=true;var sc=document.createElement('script');sc.src='week-thumbs.js';sc.onload=drawWeeks;sc.onerror=function(){var b=document.getElementById('weeksBox');if(b)b.innerHTML=evBtn('evidence-weeks.html','فهرس الخطط الأسبوعية','توزيع المنهج والخطط الأسبوعية','🗓️')};document.head.appendChild(sc);}
@@ -195,18 +208,22 @@ function drawWeeks(){var b=document.getElementById('weeksBox');if(!b)return;var 
   if(!w.length){b.innerHTML=evBtn('evidence-weeks.html','فهرس الخطط الأسبوعية','توزيع المنهج والخطط الأسبوعية','🗓️');return}
   b.innerHTML=evBtn('evidence-weeks.html','فهرس الخطط الأسبوعية كاملًا','توزيع المنهج والأسابيع 1–18','🗓️')+'<div class="weeks" style="margin-top:10px">'+w.map(function(x){return '<button type="button" class="wk ev-wk" data-src="'+esc(x.href)+'" data-t="'+esc(x.title)+'"><img src="'+x.thumb+'" alt="" loading="lazy"><b>'+esc(x.title)+'</b></button>'}).join('')+'</div>';}
 
-document.getElementById('plist').addEventListener('click',function(e){var b=e.target.closest('[data-src]');if(b)openViewer(b.dataset.src,b.dataset.t)});
+document.getElementById('plist').addEventListener('click',function(e){var b=e.target.closest('[data-src]');if(b)openViewer(b.dataset.src,b.dataset.t,b.dataset.kind)});
 function closePanel(){document.getElementById('overlay').classList.add('hidden');document.body.style.overflow=''}
 document.getElementById('pclose').onclick=closePanel;
 document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closePanel()});
 
 var frame=document.getElementById('frame');
-function openViewer(src,t){document.getElementById('vtitle').textContent=t;document.getElementById('vload').classList.remove('hidden');frame.src=src;document.getElementById('viewer').classList.remove('hidden');}
+function openViewer(src,t,kind){if(kind==='pdf'){window.open(src,'_blank','noopener');return}
+  document.getElementById('vtitle').textContent=t;document.getElementById('vload').classList.remove('hidden');
+  if(kind==='image'){frame.removeAttribute('src');frame.srcdoc='<!doctype html><html><body style="margin:0;background:#0b1530;display:flex;justify-content:center"><img src="'+new URL(src,location.href).href+'" style="max-width:100%;height:auto;display:block"></body></html>';}
+  else{frame.removeAttribute('srcdoc');frame.src=src;}
+  document.getElementById('viewer').classList.remove('hidden');}
 frame.addEventListener('load',function(){document.getElementById('vload').classList.add('hidden');
   try{var d=frame.contentDocument;if(!d)return;var p=(frame.contentWindow.location.pathname||'');
     if(/\/(index\.html)?$/.test(p)&&/portfolio-1448\/(index\.html)?$/.test(p)){closeViewer();return}
     d.querySelectorAll('a[href="./"],a[href="index.html"],a[href^="tablet-storage"],a[href^="secure-vault"],a[href^="add-report"],a[href^="progress-1448"]').forEach(function(a){a.style.display='none'});}catch(e){}});
-function closeViewer(){document.getElementById('viewer').classList.add('hidden');frame.src='about:blank'}
+function closeViewer(){document.getElementById('viewer').classList.add('hidden');frame.removeAttribute('srcdoc');frame.src='about:blank'}
 document.getElementById('vclose').onclick=closeViewer;
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(!document.getElementById('viewer').classList.contains('hidden'))closeViewer();else closePanel()}});
 start(0);
