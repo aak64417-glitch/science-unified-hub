@@ -47,39 +47,18 @@ pre{direction:ltr;text-align:left;background:#0d1b3a;color:#e8eefc;padding:12px;
 <body>
 <header><h1>🪪 التحكم في عرض ملف الإنجاز للمدير</h1><p>صفحة خاصة بالمعلم — لا تُرسل هذا الرابط للإدارة</p></header>
 <div class="wrap">
-
-  <section class="box hidden" id="setupBox">
-    <h2>⚙️ إعداد لمرة واحدة على هذا الجهاز</h2>
-    <div class="warn">أنشئ «رمز وصول» من GitHub يسمح لهذه اللوحة بتغيير حالة العرض فقط:
-      <ol>
-        <li>اضغط الزر أدناه لفتح صفحة إنشاء الرمز في GitHub (سجّل الدخول بحسابك).</li>
-        <li><b>Token name</b>: اكتب مثلًا <span dir="ltr">portfolio-control</span>، وفي <b>Expiration</b> اختر مدة طويلة (مثل 1 year أو Custom).</li>
-        <li><b>Repository access</b> ← <b>Only select repositories</b> ← اختر <span dir="ltr">science-unified-hub</span>.</li>
-        <li><b>Permissions</b> ← <b>Repository permissions</b> ← <b>Contents</b> ← اختر <b>Read and write</b>.</li>
-        <li>اضغط <b>Generate token</b>، ثم انسخ الرمز الذي يبدأ بـ <span dir="ltr">github_pat_</span> والصقه هنا.</li>
-      </ol>
+  <section class="box">
+    <h2>رمز دخول المدير اليوم</h2>
+    <div class="status on"><span class="dot"></span><div><b id="codeNow" style="font-size:38px;letter-spacing:8px;direction:ltr;display:block">——</b><div class="note">صالح حتى منتصف الليل بتوقيت الرياض ثم يتغير تلقائيًا</div></div></div>
+    <div class="link" id="dirLink"></div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn gold" type="button" id="copyDir">📋 نسخ رابط الدخول مع الرمز</button>
+      <button class="btn light" type="button" id="copyCode">نسخ الرمز فقط</button>
     </div>
-    <div class="row" style="margin:12px 0"><a class="btn gold" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">🔑 فتح صفحة إنشاء الرمز</a></div>
-    <label for="tok">رمز الوصول</label>
-    <input id="tok" type="password" autocomplete="off" dir="ltr" placeholder="github_pat_...">
-    <div class="row" style="margin-top:10px"><button class="btn" type="button" id="saveTok">💾 حفظ الرمز على هذا الجهاز</button></div>
-    <p class="note" style="margin-top:8px">يُحفظ الرمز على جهازك فقط ولا يُرفع للمنصة. لا تشاركه مع أحد.</p>
+    <p class="note" style="margin-top:10px"><b>للتحكم:</b> أرسل للمدير الرابط أو الرمز عندما تريد إتاحة الملف له، وبعد منتصف الليل لا يعمل رمز الأمس. لإيقاف العرض مبكرًا لا تعطه الرمز الجديد. رمز الغد: <b dir="ltr" id="codeTom"></b></p>
   </section>
 
-  <section class="box">
-    <h2>حالة العرض للمدير</h2>
-    <div class="status" id="status"><span class="dot"></span><div><b id="stText">—</b><div class="note" id="stWhen"></div></div></div>
-    <div class="row" style="margin-top:12px">
-      <button class="btn big open" type="button" id="openBtn">🔓 إتاحة العرض للمدير</button>
-      <button class="btn big close" type="button" id="closeBtn">⛔ إيقاف العرض</button>
-    </div>
-    <div class="row" style="margin-top:10px"><button class="btn light" type="button" id="refresh">🔄 تحديث الحالة</button></div>
-    <div class="msg" id="msg"></div>
-    <p class="note">يصل التغيير إلى صفحة المدير خلال دقيقة إلى دقيقتين تقريبًا. عند الإيقاف تُغلق صفحة المدير حتى لو كانت مفتوحة، وتظهر له رسالة بأن الملف غير متاح حاليًا.</p>
-    <div class="row"><button class="btn light" type="button" id="changeTok">🔑 تغيير رمز الوصول</button></div>
-  </section>
-
-  <section class="box">
+<section class="box">
     <h2>باركود دخول المدير</h2>
     <img class="poster" src="principal-assets/qr-poster.png" alt="ملصق باركود دخول المدير">
     <div class="link" id="mainLink"></div>
@@ -91,39 +70,17 @@ pre{direction:ltr;text-align:left;background:#0d1b3a;color:#e8eefc;padding:12px;
     </div>
   </section>
 </div>
+<script src="principal-code.js"></script>
 <script>
 (function(){
-'use strict';
-var TK='pf1448.control.ghtoken',REPO='aak64417-glitch/science-unified-hub',PATH='portfolio-1448/principal-access.json';
-var URL_API='https://api.github.com/repos/'+REPO+'/contents/'+PATH;
 var MAIN='https://aak64417-glitch.github.io/science-unified-hub/portfolio-1448/principal.html';
-var $=function(id){return document.getElementById(id)};
-$('mainLink').textContent=MAIN;
-function tok(){try{return localStorage.getItem(TK)||''}catch(e){return ''}}
-function msg(t,ok){$('msg').textContent=t;$('msg').className='msg '+(ok?'ok':'err')}
-function copy(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){msg('تم النسخ ✓',true)}).catch(function(){prompt('انسخ:',t)})}
+var $=function(i){return document.getElementById(i)};
+function draw(){var t=PFCode.today();$('codeNow').textContent=t;$('codeTom').textContent=PFCode.code(PFCode.day(1));$('dirLink').textContent=MAIN+'?c='+t;$('mainLink').textContent=MAIN}
+function copy(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){alert('تم النسخ ✓')}).catch(function(){prompt('انسخ:',t)})}
+$('copyDir').onclick=function(){copy(MAIN+'?c='+PFCode.today())};
+$('copyCode').onclick=function(){copy(PFCode.today())};
 $('copyLink').onclick=function(){copy(MAIN)};
-function busy(b){['openBtn','closeBtn','refresh'].forEach(function(id){$(id).disabled=b})}
-function needSetup(show){$('setupBox').classList.toggle('hidden',!show);busy(show);if(show)$('stText').textContent='يلزم إعداد رمز الوصول'}
-$('saveTok').onclick=function(){var v=$('tok').value.trim();if(!/^(github_pat_|ghp_)/.test(v)){alert('الرمز يجب أن يبدأ بـ github_pat_');return}
-  try{localStorage.setItem(TK,v)}catch(e){}$('tok').value='';needSetup(false);load();};
-$('changeTok').onclick=function(){needSetup(true)};
-function fmt(iso){try{return new Date(iso).toLocaleString('ar-SA-u-ca-islamic-umalqura-nu-arab',{weekday:'long',day:'numeric',month:'long',hour:'numeric',minute:'2-digit'})}catch(e){return iso}}
-function gh(method,body){return fetch(URL_API+(method==='GET'?'?ref=main&t='+Date.now():''),{method:method,cache:'no-store',headers:{'Authorization':'Bearer '+tok(),'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},body:body?JSON.stringify(body):undefined})
-  .then(function(r){return r.json().catch(function(){return {}}).then(function(d){if(!r.ok){var m=r.status===401?'رمز الوصول غير صحيح أو منتهي الصلاحية.':r.status===403||r.status===404?'رمز الوصول لا يملك صلاحية التعديل على المستودع (Contents: Read and write).':r.status===409?'conflict':(d.message||'تعذر الاتصال بـ GitHub');throw new Error(m)}return d})})}
-var sha='';
-function read(){return gh('GET').then(function(d){sha=d.sha;var j={};try{j=JSON.parse(decodeURIComponent(escape(atob(String(d.content).replace(/\s/g,'')))))}catch(e){}draw(j);return j})}
-function draw(j){var on=j.open===true;$('status').className='status '+(on?'on':'off');$('stText').textContent=on?'العرض متاح للمدير':'العرض موقوف';$('stWhen').textContent=j.changedAt?('آخر تغيير: '+fmt(j.changedAt)):''}
-function load(){busy(true);msg('جارٍ قراءة الحالة…',true);read().then(function(){msg('',true)}).catch(function(e){msg(e.message)}).then(function(){busy(false)})}
-function set(open,tries){busy(true);msg('جارٍ الحفظ…',true);var j={open:open,changedAt:new Date().toISOString()};
-  (sha?Promise.resolve():read()).then(function(){return gh('PUT',{message:open?'ملف الإنجاز: إتاحة العرض للمدير':'ملف الإنجاز: إيقاف العرض للمدير',content:btoa(JSON.stringify(j)+'\n'),sha:sha,branch:'main'})})
-  .then(function(d){sha=d.content&&d.content.sha||'';draw(j);msg(open?'تمت إتاحة العرض للمدير ✓ (يصل خلال دقيقة إلى دقيقتين)':'تم إيقاف العرض ✓ (يصل خلال دقيقة إلى دقيقتين)',true)})
-  .catch(function(e){if(e.message==='conflict'&&!tries){sha='';return set(open,1)}msg(e.message==='conflict'?'تعذر الحفظ، أعد المحاولة.':e.message)})
-  .then(function(){busy(false)})}
-$('openBtn').onclick=function(){set(true)};
-$('closeBtn').onclick=function(){set(false)};
-$('refresh').onclick=load;
-if(tok())load();else needSetup(true);
+draw();setInterval(draw,60000);
 })();
 </script>
 </body>

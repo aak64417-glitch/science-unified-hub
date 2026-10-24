@@ -107,9 +107,11 @@ img{display:block;max-width:100%}
   <header class="hero"><img src="principal-assets/hero.webp" alt="ملف الإنجاز المهني لمعلم مادة العلوم علي طاهر البقاشي"></header>
   <div class="lbox">
     <div class="lic" id="lic">🔒</div>
-    <h2 id="lh">ملف الإنجاز غير متاح حاليًا</h2>
-    <p id="lp">ملف الإنجاز المهني غير متاح للاطلاع في الوقت الحالي.<br>للاطلاع عليه يُرجى التواصل مع المعلم <b>علي طاهر البقاشي</b>.</p>
-    <button class="go hidden" id="retry" type="button">إعادة المحاولة</button>
+    <h2 id="lh">الدخول إلى ملف الإنجاز</h2>
+    <p id="lp">للاطلاع على ملف الإنجاز المهني أدخلوا رمز الدخول الذي زوّدكم به المعلم <b>علي طاهر البقاشي</b>.</p>
+    <input id="cd" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="······" dir="ltr" style="width:100%;padding:14px;border-radius:13px;border:1.5px solid #cfd8e8;font:inherit;font-size:24px;text-align:center;letter-spacing:8px;margin-top:6px">
+    <button class="go" id="go" type="button" style="margin-top:12px">دخول</button>
+    <div id="cerr" style="color:#c0392b;font-weight:700;margin-top:10px;min-height:20px"></div>
   </div>
 </section>
 <section id="wait" class="lock"><div class="lbox" style="margin-top:22vh"><div class="lic">⏳</div><h2>جارٍ فتح ملف الإنجاز…</h2></div></section>
@@ -138,23 +140,26 @@ img{display:block;max-width:100%}
   <iframe id="frame" title="عرض الشاهد"></iframe>
 </div>
 
+<script src="principal-code.js"></script>
 <script>
 (function(){
 'use strict';
-/* ================= Access control (من منصة المعلم) ================= */
-var opened=false, pollTimer=null;
-function check(){return fetch('principal-access.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('net');return r.json()}).then(function(d){if(d&&d.open===true){if(!opened){opened=true;showPortal()}return true}showLock(false);return false});}
-function start(tries){document.getElementById('wait').classList.remove('hidden');
-  check().then(function(){document.getElementById('wait').classList.add('hidden');schedule()}).catch(function(e){
-    if(tries<2){setTimeout(function(){start(tries+1)},1500);return}
-    document.getElementById('wait').classList.add('hidden');showLock(true);});}
-function schedule(){clearInterval(pollTimer);pollTimer=setInterval(function(){if(!opened)return;check().catch(function(){})},60000);}
-document.addEventListener('visibilitychange',function(){if(!document.hidden&&opened)check().catch(function(){})});
-function showLock(netErr){opened=false;clearInterval(pollTimer);try{closeViewer();closePanel()}catch(e){}
-  document.getElementById('portal').classList.add('hidden');document.getElementById('lock').classList.remove('hidden');
-  document.getElementById('retry').classList.toggle('hidden',!netErr);
-  if(netErr){document.getElementById('lic').textContent='📶';document.getElementById('lh').textContent='تعذر الاتصال';document.getElementById('lp').textContent='تعذر التحقق من إتاحة ملف الإنجاز. تأكدوا من اتصال الإنترنت ثم أعيدوا المحاولة.';}}
-document.getElementById('retry').onclick=function(){document.getElementById('lock').classList.add('hidden');start(0)};
+/* ================= Access control (رمز يومي من المعلم) ================= */
+var opened=false, pollTimer=null, SK='pf1448.pr.day';
+function okDay(){try{return localStorage.getItem(SK)===PFCode.day(0)}catch(e){return false}}
+function tryCode(c){if(String(c).trim()===PFCode.today()){try{localStorage.setItem(SK,PFCode.day(0))}catch(e){}return true}return false}
+function enter(){opened=true;showPortal();clearInterval(pollTimer);pollTimer=setInterval(function(){if(opened&&!okDay())showLock()},60000)}
+function start(){document.getElementById('wait').classList.add('hidden');
+  var q=(location.search.match(/[?&]c=(\d+)/)||[])[1];
+  if(q&&tryCode(q)){try{history.replaceState(null,'',location.pathname)}catch(e){}}
+  if(okDay())enter();else showLock()}
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&opened&&!okDay())showLock()});
+function showLock(){opened=false;clearInterval(pollTimer);try{closeViewer();closePanel()}catch(e){}
+  document.getElementById('portal').classList.add('hidden');document.getElementById('lock').classList.remove('hidden');}
+document.getElementById('go').onclick=function(){var v=document.getElementById('cd').value;
+  if(tryCode(v)){document.getElementById('lock').classList.add('hidden');document.getElementById('cerr').textContent='';enter()}
+  else document.getElementById('cerr').textContent='الرمز غير صحيح أو منتهي. تواصلوا مع المعلم للحصول على رمز اليوم.'};
+document.getElementById('cd').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('go').click()});
 
 /* ================= Portal content ================= */
 var SNAP={"standards":[{"id":1,"name":"أداء الواجبات الوظيفية","desc":"المناوبات والإشراف والمهام والأنشطة المدرسية."},{"id":2,"name":"التفاعل مع المجتمع المهني","desc":"الشهادات والمشاركات والتطوير المهني."},{"id":3,"name":"التفاعل مع أولياء الأمور","desc":"الشواهد المرتبطة بالتواصل والتحفيز والشراكة الأسرية."},{"id":4,"name":"التنوع في استراتيجيات التدريس","desc":"الأنشطة التعليمية وأساليب التعلم والتدريس."},{"id":5,"name":"تحسين نتائج المتعلمين","desc":"الخطط العلاجية وإجراءات تحسين نواتج التعلم ومتابعة أثرها."},{"id":6,"name":"إعداد وتنفيذ خطة التعلم","desc":"توزيع المنهج والخطط الأسبوعية للعلوم."},{"id":7,"name":"توظيف تقنيات ووسائل التعلم المناسبة","desc":"الدروس التفاعلية والمحقق العلمي والمهام الرقمية."},{"id":8,"name":"تهيئة البيئة التعليمية","desc":"قسم محفوظ لإضافة شواهد البيئة التعليمية."},{"id":9,"name":"الإدارة الصفية","desc":"قسم محفوظ لإضافة شواهد إدارة الصف."},{"id":10,"name":"تحليل نتائج المتعلمين وتشخيص مستوياتهم","desc":"تقارير تحليل الاختبارات التشخيصية والدورية، وحصر الطلاب منخفضي المستوى لتشخيص مستوياتهم."},{"id":11,"name":"تنوع أساليب التقويم","desc":"قسم محفوظ؛ يمكن ربط نماذج تقويم موجودة بعد اعتمادها."}],"items":[{"id":3,"std":1,"title":"حصص الانتظار","kind":"شاهد تنفيذ","src":"evidence-003.html"},{"id":4,"std":1,"title":"الإشراف والمناوبة اليومية","kind":"شاهد تنفيذ","src":"evidence-004.html"},{"id":6,"std":2,"title":"الورشة التعريفية في الأنشطة الطلابية","kind":"شهادة تدريب","src":"evidence-certificates.html#evidence-6"},{"id":7,"std":2,"title":"الورشة التعريفية في الأنشطة الطلابية — شهادة ثانية","kind":"شهادة تدريب","src":"evidence-certificates.html#evidence-7"},{"id":8,"std":2,"title":"اللقاء التعريفي بمشروع ترسيخ القيم وتعزيز الهوية الوطنية","kind":"شهادة تدريب","src":"evidence-certificates.html#evidence-8"},{"id":13,"std":4,"title":"نشاط اكتشاف المتغيرات في التجربة","kind":"شاهد نشاط","src":"evidence-013.html"},{"id":14,"std":4,"title":"تقرير النظرية والقانون العلمي","kind":"تقرير تدريسي","src":"evidence-014.html"},{"id":16,"std":10,"title":"تحليل الاختبار التشخيصي — الفصل 1/1","kind":"تحليل نتائج","src":"analytics-safe.html#evidence-16"},{"id":17,"std":10,"title":"تحليل الاختبار التشخيصي — الفصل 1/2","kind":"تحليل نتائج","src":"analytics-safe.html#evidence-17"},{"id":22,"std":10,"title":"تحليل اختبار الفترة الأولى — الفصل 1/1","kind":"تحليل نتائج","src":"analytics-safe.html#evidence-22"},{"id":47,"std":7,"title":"تقرير نشاط المحقق العلمي","kind":"تقرير توظيف","src":"evidence-047.html"},{"id":50,"std":11,"title":"تقرير تنفيذ المهمة الأدائية","kind":"تقرير تقويم","src":"evidence-050.html"},{"id":51,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 1/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-51"},{"id":52,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 2/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-52"},{"id":53,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 3/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-53"},{"id":54,"std":10,"title":"حصر الطلاب منخفضي المستوى — الفصل 4/1","kind":"تقرير حصر","src":"evidence-low-level.html#evidence-54"}]};
@@ -226,7 +231,7 @@ frame.addEventListener('load',function(){document.getElementById('vload').classL
 function closeViewer(){document.getElementById('viewer').classList.add('hidden');frame.removeAttribute('srcdoc');frame.src='about:blank'}
 document.getElementById('vclose').onclick=closeViewer;
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(!document.getElementById('viewer').classList.contains('hidden'))closeViewer();else closePanel()}});
-start(0);
+start();
 })();
 </script>
 </body>
