@@ -87,16 +87,28 @@
   var NAME_GROUP = { label: 'نوع التقرير', options: ['بدون أسماء الطلاب', 'بأسماء الطلاب'] };
 
   /* ===== الإرسال ===== */
+  /* لا يمنع الإرسال عند غياب الرمز: يتحول الزر إلى تنزيل ملف التقرير */
   function ensureToken() {
     if (!window.PFStore) { alert('تعذر تحميل أداة ملف الإنجاز.'); return false; }
-    if (PFStore.token()) return true;
-    if (confirm('يلزم حفظ رمز الوصول لملف الإنجاز على هذا الجهاز أولًا. فتح صفحة تقارير نافس في ملف الإنجاز؟')) window.open('../portfolio-1448/nafs-reports.html', '_blank');
-    return false;
+    return true;
+  }
+  function downloadFile(title, html, names) {
+    var kind = names ? 'بالأسماء' : 'بدون-أسماء';
+    var name = (title || 'تقرير-نافس').replace(/[\\/:*?"<>|\s]+/g, '-').slice(0, 70) + '-' + kind + '.html';
+    var blob = new Blob([html], { type: 'text/html;charset=utf-8' }), url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function () { a.remove(); URL.revokeObjectURL(url); }, 1500);
+    return name;
   }
   function upload(btn, title, html, names) {
     title = prompt('عنوان التقرير في ملف الإنجاز:', title);
     if (title === null) return;
     title = title.trim() || 'تقرير منصة تدريب نافس';
+    if (!PFStore.token()) {
+      var f = downloadFile(title, html, names);
+      alert('لا يوجد رمز وصول على هذا الجهاز، فتم تنزيل التقرير كملف:\n' + f + '\n\nأرسل هذا الملف إلى Claude في المحادثة (' + (names ? 'بالأسماء' : 'بدون أسماء') + ') ليُضاف إلى بند نافس في ملف الإنجاز.');
+      return;
+    }
     var label = btn.innerHTML; btn.disabled = true; btn.innerHTML = '⏳ جارٍ الإرسال…';
     PFStore.addReport({ title: title, source: 'inside', kind: 'html', names: names }, 'html', PFStore.b64utf8(html))
       .then(function () { alert('تم إرسال التقرير إلى ملف الإنجاز ✓\nيظهر في بند نافس للمدير خلال دقيقة إلى دقيقتين.'); })
