@@ -783,7 +783,7 @@ window.addEventListener('load',function(){
     if(o.outs.length>1)notes.push('أضعف ناتج تعلم: «'+o.outs[0].label+'» ('+o.outs[0].value+'%).');
     if(o.improved)notes.push(o.improved+' طالبًا تحسنت نتيجتهم بين أول وآخر محاولة.');
     var h='<header><div><h1>تقرير أداء الطلاب — '+E(t.title)+'</h1><p>منصة تدريب نافس • علوم الصف الثالث المتوسط • متوسطة أبي الدرداء</p><p class="tch">معلما المادة: الأستاذ علي طاهر البقاشي • الأستاذ صالح الكفيل</p></div>'+
-      '<div class="meta"><span>الفصل '+E(o.tc)+'</span><span>'+E(typeName)+'</span><span>'+o.qids.length+' سؤالًا</span>'+(t.closeAt?'<span>حتى '+E(fd(t.closeAt))+'</span>':'')+'</div></header>';
+      '<div class="meta">'+(o.anon?'<span>بدون أسماء الطلاب</span>':'')+'<span>الفصل '+E(o.tc)+'</span><span>'+E(typeName)+'</span><span>'+o.qids.length+' سؤالًا</span>'+(t.closeAt?'<span>حتى '+E(fd(t.closeAt))+'</span>':'')+'</div></header>';
     h+='<div class="kpis">'+kpi('المشاركون',o.np+' / '+(o.size||'—'),o.part+'% من الفصل')+kpi('متوسط النتيجة',o.np?o.avg+'%':'—','آخر محاولة')+kpi('الوسيط',o.np?o.median+'%':'—')+kpi('أعلى',o.np?o.max+'%':'—')+kpi('أدنى',o.np?o.min+'%':'—')+kpi('الإتقان',o.np?o.mastery+'%':'—','80% فأكثر')+kpi('المحاولات',o.res.length)+'</div>';
     if(!o.np)return h+'<section class="box"><h2>لا توجد مشاركات بعد</h2><p class="mut">لم يُسجَّل أي طالب نتيجة في هذا التكليف حتى الآن.</p></section>';
     h+='<div class="row"><section class="box"><h2>توزيع الطلاب حسب المستوى</h2>'+distChart(o.bc,o.np)+'</section>'+
@@ -795,9 +795,9 @@ window.addEventListener('load',function(){
         '<div class="hard"><b>الأصعب:</b> '+o.hard.map(function(q){return '<span>س'+q.n+' ('+q.rate+'%)'+(q.outcome?' — '+E(q.outcome):'')+'</span>'}).join(' • ')+'</div></section>';
     }
     h+='<section class="box"><h2>نتائج الطلاب <small>(آخر محاولة • أفضل محاولة • عدد المحاولات)</small></h2><div class="sgrid'+(o.np>24?' c3':'')+'">'+
-      o.studs.map(function(s,i){var b=BANDS[band(s.last)];return '<div class="s"><span class="sn">'+(i+1)+'. '+E(s.name)+'</span><span class="sp" style="background:'+b.c+';color:'+b.t+'">'+s.last+'%</span><span class="sx">'+s.best+'% • '+s.attempts+'</span></div>'}).join('')+'</div>'+
+      o.studs.map(function(s,i){var b=BANDS[band(s.last)];return '<div class="s"><span class="sn">'+(i+1)+'. '+(o.anon?'طالب':E(s.name))+'</span><span class="sp" style="background:'+b.c+';color:'+b.t+'">'+s.last+'%</span><span class="sx">'+s.best+'% • '+s.attempts+'</span></div>'}).join('')+'</div>'+
       '<div class="legend">'+BANDS.map(function(b){return '<span><i style="background:'+b.c+'"></i>'+b.n+'</span>'}).join('')+'</div></section>';
-    if(o.non.length)h+='<section class="box"><h2>لم يشاركوا بعد ('+o.non.length+')</h2><p class="non">'+o.non.map(function(s){return E(s.name)}).join('، ')+'</p></section>';
+    if(o.non.length)h+='<section class="box"><h2>لم يشاركوا بعد ('+o.non.length+')</h2><p class="non">'+(o.anon?o.non.length+' طالبًا (أُخفيت الأسماء)':o.non.map(function(s){return E(s.name)}).join('، '))+'</p></section>';
     return h;
   }
 
@@ -816,7 +816,7 @@ window.addEventListener('load',function(){
   }
 
   function render(o){
-    var name='تقرير-'+String(o.t.title||'تكليف').replace(/[\\\/:*?"<>|]+/g,'-').trim();
+    var name='تقرير-'+String(o.t.title||'تكليف').replace(/[\\\/:*?"<>|]+/g,'-').trim()+(o.anon?'-بدون-أسماء':'');
     var P='#nafsReport ';
     var css=P+'{position:fixed;inset:0;z-index:2147483000;overflow:auto;background:#e9edf3;direction:rtl;font-family:Tajawal,Tahoma,Arial,sans-serif;color:#0b0b0b;text-align:right}'+P+'*{box-sizing:border-box}'+
     P+'.nr-bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;padding:10px;background:#0d366b}'+
@@ -867,10 +867,10 @@ window.addEventListener('load',function(){
     ensureLibs().catch(function(){});
   }
 
-  window.openTaskReport=function(id){
+  window.openTaskReport=function(id,anon){
     var tmp=document.createElement('div');tmp.id='nafsReportLoading';tmp.style.cssText='position:fixed;inset:0;z-index:2147483001;background:rgba(13,54,107,.55);display:flex;align-items:center;justify-content:center;font:700 16px Tahoma;color:#fff';
     tmp.textContent='⏳ جارٍ إعداد التقرير وجلب أحدث النتائج...';document.body.appendChild(tmp);
-    collect(id).then(render).catch(function(e){alert('تعذر إعداد التقرير: '+(e.message||e))}).then(function(){tmp.remove()});
+    collect(id).then(function(o){o.anon=!!anon;return render(o)}).catch(function(e){alert('تعذر إعداد التقرير: '+(e.message||e))}).then(function(){tmp.remove()});
   };
   var orig=window.renderTasks;
   window.renderTasks=function(){
@@ -879,8 +879,10 @@ window.addEventListener('load',function(){
       if(b.nextElementSibling&&b.nextElementSibling.classList.contains('nafs-report-btn'))return;
       var m=String(b.getAttribute('onclick')).match(/viewTaskParticipants\((.*)\)/);if(!m)return;
       var id;try{id=JSON.parse(m[1])}catch(e){id=m[1].replace(/['"]/g,'')}
-      var r=document.createElement('button');r.className='btn-mini btn-view nafs-report-btn';r.textContent='📊 تقرير';
-      r.onclick=function(){openTaskReport(id)};b.insertAdjacentElement('afterend',r);
+      var r=document.createElement('button');r.className='btn-mini btn-view nafs-report-btn';r.textContent='📊 تقرير بالأسماء';
+      r.onclick=function(){openTaskReport(id,false)};b.insertAdjacentElement('afterend',r);
+      var r2=document.createElement('button');r2.className='btn-mini btn-view nafs-report-btn nafs-report-anon';r2.textContent='📊 تقرير بدون أسماء';
+      r2.onclick=function(){openTaskReport(id,true)};r.insertAdjacentElement('afterend',r2);
     })}catch(e){}
   };
   try{window.renderTasks()}catch(e){}
