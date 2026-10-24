@@ -64,6 +64,7 @@
   function addReport(meta, ext, base64) {
     var id = newId(), file = 'nafs-reports/' + id + '.' + ext;
     var rec = { id: id, title: meta.title, source: meta.source, kind: meta.kind, file: file, date: new Date().toISOString(), notes: meta.notes || '' };
+    if (meta.names === true || meta.names === false) rec.names = meta.names;
     return putFile(file, base64, 'ملف الإنجاز: إضافة تقرير نافس — ' + meta.title).then(function () {
       return writeIndex(function (j) { j.reports.push(rec); }, 'ملف الإنجاز: تحديث فهرس تقارير نافس');
     }).then(function () { return rec; });

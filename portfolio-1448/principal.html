@@ -199,7 +199,7 @@ function loadNafs(){fetch('nafs-reports/index.json?t='+Date.now(),{cache:'no-sto
 function drawNafs(list){var b=document.getElementById('nafsBox');if(!b)return;
   if(!list.length){b.innerHTML='<div class="empty"><span class="big">🗂️</span>لم تُضف تقارير نافس بعد، وستظهر هنا فور إضافتها.</div>';return}
   b.innerHTML=list.slice().sort(function(a,c){return String(c.date).localeCompare(String(a.date))}).map(function(r){
-    var meta=(r.source==='inside'?'من داخل منصة نافس':'من خارج المنصة');try{meta+=' • '+new Date(r.date).toLocaleDateString('ar-SA-u-ca-islamic-umalqura-nu-arab',{day:'numeric',month:'long',year:'numeric'})}catch(e){}
+    var meta=(r.source==='inside'?'من داخل منصة نافس':'من خارج المنصة');if(r.names===true)meta+=' • بالأسماء';else if(r.names===false)meta+=' • بدون أسماء';try{meta+=' • '+new Date(r.date).toLocaleDateString('ar-SA-u-ca-islamic-umalqura-nu-arab',{day:'numeric',month:'long',year:'numeric'})}catch(e){}
     return '<button type="button" class="ev" data-src="'+esc(r.file)+'" data-t="'+esc(r.title)+'" data-kind="'+esc(r.kind)+'"><span class="ic">'+(NAFS_ICON[r.kind]||'📄')+'</span><span class="tx"><b>'+esc(r.title)+'</b><span>'+esc(meta)+'</span></span><span class="go">‹</span></button>'}).join('');}
 
 var weeksLoaded=false;

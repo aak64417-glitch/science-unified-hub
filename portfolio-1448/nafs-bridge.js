@@ -1,6 +1,6 @@
 /* جسر منصة نافس ← ملف الإنجاز
    - «إرسال إلى ملف الإنجاز» لتقرير الإنجاز العام.
-   - إرسال تقرير طالب فردي بدون اسم، أو تقارير طلاب فصل كامل بدون أسماء في ملف واحد.
+   - إرسال تقرير طالب فردي أو تقارير طلاب فصل كامل في ملف واحد، مع الاختيار: بالأسماء أو بدون أسماء.
    كل ما يُرسل يظهر في بند نافس في ملف الإنجاز (ولصفحة المدير). */
 (function () {
   'use strict';
@@ -43,6 +43,13 @@
     return html;
   }
 
+  /* تقرير طالب واحد بالاسم كما في المنصة */
+  function namedStudentHtml(code) {
+    var html = capture(function () { window.printStudentReport(code); });
+    if (!html) throw new Error('تعذر إنشاء تقرير الطالب.');
+    return html;
+  }
+
   /* ترتيب طلاب الفصل وترقيمهم دون الاعتماد على الأسماء */
   function classRoster(cls) {
     return students().filter(function (s) { return String(s.className || '') === String(cls); })
@@ -53,6 +60,32 @@
     return 'طالب رقم ' + (i + 1) + ' — بدون اسم';
   }
 
+  /* ===== نافذة الاختيار ===== */
+  function choose(title, groups) {
+    return new Promise(function (resolve) {
+      var shade = document.createElement('div');
+      shade.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(4,14,34,.6);display:flex;align-items:center;justify-content:center;padding:16px;direction:rtl;font-family:inherit';
+      var h = '<div style="width:min(460px,100%);background:#fff;border-radius:20px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.35);color:#17224d">' +
+        '<h3 style="margin:0 0 12px;color:#0b2f69;font-size:20px">' + esc(title) + '</h3>';
+      groups.forEach(function (g, gi) {
+        h += '<div style="font-weight:800;margin:12px 0 6px">' + esc(g.label) + '</div>';
+        g.options.forEach(function (o, oi) {
+          h += '<label style="display:flex;gap:8px;align-items:center;padding:11px 12px;border:1.5px solid #d7e5f3;border-radius:12px;margin-bottom:6px;cursor:pointer;font-weight:700">' +
+            '<input type="radio" name="pfg' + gi + '" value="' + oi + '"' + (oi === 0 ? ' checked' : '') + ' style="width:auto"> ' + esc(o) + '</label>';
+        });
+      });
+      h += '<div style="display:flex;gap:8px;margin-top:16px"><button type="button" data-ok style="flex:1;border:0;border-radius:12px;padding:12px;background:#176bd5;color:#fff;font:inherit;font-weight:800;cursor:pointer">متابعة</button>' +
+        '<button type="button" data-no style="flex:1;border:0;border-radius:12px;padding:12px;background:#eef2f8;color:#17224d;font:inherit;font-weight:800;cursor:pointer">إلغاء</button></div></div>';
+      shade.innerHTML = h; document.body.appendChild(shade);
+      function done(v) { shade.remove(); resolve(v); }
+      shade.querySelector('[data-no]').onclick = function () { done(null); };
+      shade.querySelector('[data-ok]').onclick = function () {
+        done(groups.map(function (g, gi) { return +shade.querySelector('input[name=pfg' + gi + ']:checked').value; }));
+      };
+    });
+  }
+  var NAME_GROUP = { label: 'نوع التقرير', options: ['بدون أسماء الطلاب', 'بأسماء الطلاب'] };
+
   /* ===== الإرسال ===== */
   function ensureToken() {
     if (!window.PFStore) { alert('تعذر تحميل أداة ملف الإنجاز.'); return false; }
@@ -60,12 +93,12 @@
     if (confirm('يلزم حفظ رمز الوصول لملف الإنجاز على هذا الجهاز أولًا. فتح صفحة تقارير نافس في ملف الإنجاز؟')) window.open('../portfolio-1448/nafs-reports.html', '_blank');
     return false;
   }
-  function upload(btn, title, html) {
+  function upload(btn, title, html, names) {
     title = prompt('عنوان التقرير في ملف الإنجاز:', title);
     if (title === null) return;
     title = title.trim() || 'تقرير منصة تدريب نافس';
     var label = btn.innerHTML; btn.disabled = true; btn.innerHTML = '⏳ جارٍ الإرسال…';
-    PFStore.addReport({ title: title, source: 'inside', kind: 'html' }, 'html', PFStore.b64utf8(html))
+    PFStore.addReport({ title: title, source: 'inside', kind: 'html', names: names }, 'html', PFStore.b64utf8(html))
       .then(function () { alert('تم إرسال التقرير إلى ملف الإنجاز ✓\nيظهر في بند نافس للمدير خلال دقيقة إلى دقيقتين.'); })
       .catch(function (e) { alert('تعذر الإرسال: ' + e.message); })
       .then(function () { btn.disabled = false; btn.innerHTML = label; });
@@ -76,17 +109,20 @@
     if (typeof window.printAchievementReport !== 'function') { alert('تقرير الإنجاز غير متاح في هذه الصفحة.'); return; }
     var html = capture(function () { window.printAchievementReport(); });
     if (!html) return; /* المنصة تعرض تنبيهها الخاص عند عدم توفر البيانات */
-    upload(btn, 'تقرير إنجاز منصة تدريب نافس — ' + hijri(new Date()), finish(html));
+    upload(btn, 'تقرير إنجاز منصة تدريب نافس — ' + hijri(new Date()), finish(html), false);
   }
 
   function sendStudent(btn, code) {
     if (!ensureToken()) return;
     var st = window.studentByCode2 && window.studentByCode2(code);
     if (!st) { alert('لم يتم العثور على الطالب.'); return; }
-    var label = labelFor(st), html;
-    try { html = anonStudentHtml(code, label); } catch (e) { alert(e.message); return; }
-    upload(btn, 'تقرير أداء طالب (بدون اسم) — الفصل ' + (st.className || '') + ' — ' + hijri(new Date()),
-      finish(html, '🔒 أُخفي اسم الطالب في هذا التقرير لأغراض ملف الإنجاز.'));
+    choose('إرسال تقرير الطالب إلى ملف الإنجاز', [NAME_GROUP]).then(function (c) {
+      if (!c) return;
+      var named = c[0] === 1, html;
+      try { html = named ? namedStudentHtml(code) : anonStudentHtml(code, labelFor(st)); } catch (e) { alert(e.message); return; }
+      upload(btn, (named ? 'تقرير أداء الطالب ' + (st.name || '') + ' (بالاسم)' : 'تقرير أداء طالب (بدون اسم)') + ' — الفصل ' + (st.className || '') + ' — ' + hijri(new Date()),
+        finish(html, named ? '' : '🔒 أُخفي اسم الطالب في هذا التقرير لأغراض ملف الإنجاز.'), named);
+    });
   }
 
   function sendClass(btn) {
@@ -94,26 +130,33 @@
     var sel = document.getElementById('reportClass'), cls = sel ? sel.value : '';
     var all = students();
     if (!all.length) { alert('أدخل مفتاح المعلم واضغط «تحديث التقارير» أولًا حتى تظهر بيانات الطلاب.'); return; }
-    var classes = cls ? [cls] : Array.from(new Set(all.map(function (s) { return String(s.className || ''); }))).filter(Boolean).sort();
-    var withResults = new Set(results().map(function (r) { return String(r.studentCode || ''); }));
-    var onlyActive = confirm('هل تريد إرسال تقارير الطلاب الذين لديهم محاولات فقط؟\n\nموافق = الطلاب الذين تدربوا فقط\nإلغاء = جميع طلاب ' + (cls ? 'الفصل ' + cls : 'الفصول'));
-    var head = '', parts = [], count = 0;
-    try {
-      classes.forEach(function (c) {
-        classRoster(c).forEach(function (st, i) {
-          if (onlyActive && !withResults.has(String(st.code || ''))) return;
-          var h = anonStudentHtml(st.code, 'طالب رقم ' + (i + 1) + ' — بدون اسم');
-          var b = h.indexOf('<body>'), e = h.lastIndexOf('</body>');
-          if (!head) head = h.slice(0, b);
-          parts.push(h.slice(b + 6, e < 0 ? undefined : e)); count++;
+    choose('إرسال تقارير الطلاب — ' + (cls ? 'الفصل ' + cls : 'جميع الفصول'), [NAME_GROUP,
+      { label: 'الطلاب المشمولون', options: ['الطلاب الذين تدربوا فقط', 'جميع طلاب ' + (cls ? 'الفصل' : 'الفصول')] }]).then(function (c) {
+      if (!c) return;
+      var named = c[0] === 1, onlyActive = c[1] === 0;
+      var classes = cls ? [cls] : Array.from(new Set(all.map(function (s) { return String(s.className || ''); }))).filter(Boolean).sort();
+      var withResults = new Set(results().map(function (r) { return String(r.studentCode || ''); }));
+      var head = '', parts = [], count = 0;
+      try {
+        classes.forEach(function (cl) {
+          var roster = classRoster(cl);
+          if (named) roster = roster.slice().sort(function (a, b) { return String(a.name || '').localeCompare(String(b.name || ''), 'ar'); });
+          roster.forEach(function (st, i) {
+            if (onlyActive && !withResults.has(String(st.code || ''))) return;
+            var h = named ? namedStudentHtml(st.code) : anonStudentHtml(st.code, 'طالب رقم ' + (i + 1) + ' — بدون اسم');
+            var b = h.indexOf('<body>'), e = h.lastIndexOf('</body>');
+            if (!head) head = h.slice(0, b);
+            parts.push(h.slice(b + 6, e < 0 ? undefined : e)); count++;
+          });
         });
-      });
-    } catch (err) { alert(err.message); return; }
-    if (!count) { alert('لا توجد تقارير طلاب لإرسالها وفق الاختيار.'); return; }
-    head = head.replace(/<title>[\s\S]*?<\/title>/, '<title>تقارير الطلاب بدون أسماء</title>');
-    var html = finish(head + '<body>' + parts.join('<div class="pf-sep"></div>') + '</body></html>',
-      '🔒 تقارير ' + count + ' طالبًا' + (cls ? ' — الفصل ' + esc(cls) : '') + '، وأُخفيت الأسماء واستُبدلت بأرقام لأغراض ملف الإنجاز.');
-    upload(btn, 'تقارير أداء الطلاب (بدون أسماء) — ' + (cls ? 'الفصل ' + cls : 'جميع الفصول') + ' — ' + hijri(new Date()), html);
+      } catch (err) { alert(err.message); return; }
+      if (!count) { alert('لا توجد تقارير طلاب لإرسالها وفق الاختيار.'); return; }
+      head = head.replace(/<title>[\s\S]*?<\/title>/, '<title>تقارير الطلاب ' + (named ? 'بالأسماء' : 'بدون أسماء') + '</title>');
+      var note = named ? '👥 تقارير ' + count + ' طالبًا بأسمائهم' + (cls ? ' — الفصل ' + esc(cls) : '') + '.'
+        : '🔒 تقارير ' + count + ' طالبًا' + (cls ? ' — الفصل ' + esc(cls) : '') + '، وأُخفيت الأسماء واستُبدلت بأرقام لأغراض ملف الإنجاز.';
+      upload(btn, 'تقارير أداء الطلاب (' + (named ? 'بالأسماء' : 'بدون أسماء') + ') — ' + (cls ? 'الفصل ' + cls : 'جميع الفصول') + ' — ' + hijri(new Date()),
+        finish(head + '<body>' + parts.join('<div class="pf-sep"></div>') + '</body></html>', note), named);
+    });
   }
 
   function makeBtn(text, onClick, cls) {
@@ -135,7 +178,7 @@
   ready(function () {
     addToHead('achievement', makeBtn('📁 إرسال إلى ملف الإنجاز', sendAchievement));
     if (typeof window.printStudentReport === 'function')
-      addToHead('reports', makeBtn('📁 إرسال تقارير الطلاب لملف الإنجاز (بدون أسماء)', sendClass));
+      addToHead('reports', makeBtn('📁 إرسال تقارير الطلاب لملف الإنجاز', sendClass));
 
     var body = document.getElementById('appModalBody');
     if (body) new MutationObserver(function () {
@@ -146,7 +189,7 @@
         if (p1) { b = makeBtn('📁 إرسال إلى ملف الإنجاز', sendAchievement); b.style.marginInlineStart = '8px'; p1.parentNode.appendChild(b); }
       } else if (title.indexOf('تقرير الطالب') === 0) {
         var p2 = body.querySelector('button[onclick*="printStudentReport"]'), m = p2 && /printStudentReport\('([^']*)'\)/.exec(p2.getAttribute('onclick') || '');
-        if (m) { var code = m[1].replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&'); b = makeBtn('📁 إرسال لملف الإنجاز (بدون اسم)', function (x) { sendStudent(x, code); }); b.style.marginInlineStart = '8px'; p2.parentNode.appendChild(b); }
+        if (m) { var code = m[1].replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&'); b = makeBtn('📁 إرسال لملف الإنجاز', function (x) { sendStudent(x, code); }); b.style.marginInlineStart = '8px'; p2.parentNode.appendChild(b); }
       }
     }).observe(body, { childList: true });
   });
