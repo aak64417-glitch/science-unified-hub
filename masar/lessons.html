@@ -3077,6 +3077,8 @@ const prevRenderV7=render;render=function(){prevRenderV7();if(state.page==='less
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(state.page==='lesson'&&state.tab==='lab')X7.mount()});
 /* الشرح المبسّط للمهارة */
 const prevRenderSkillV7=renderSkill;renderSkill=function(){const h=prevRenderSkillV7(),s=DB.lessons[state.li].skills[state.si];const card=`<div class="simp"><div class="simp-t">🟢 المهارة ببساطة</div><div class="simp-r"><b>1</b><span><i>الفكرة:</i> ${esc(s.summary)}</span></div><div class="simp-r"><b>2</b><span><i>مثال:</i> ${esc(s.example)}</span></div><div class="simp-r"><b>3</b><span><i>تذكّر:</i> ${esc(s.important)}</span></div><div class="simp-r w"><b>!</b><span><i>انتبه:</i> ${esc(s.common_error)}</span></div><div class="simp-f">فهمت؟ جرّب التدريب في الجهة المقابلة ←</div></div>`;return h.replace('<section class="panel">','<section class="panel">'+card)};
+/* حذف تحدي المنحدر */
+const prevTabsNoRamp=tabs;tabs=function(){if(state.tab==='ramp')state.tab='teach';return prevTabsNoRamp().replace(/<button data-tab="ramp"[^>]*>[\s\S]*?<\/button>/,'')};
 
 /* ===== ربط منصة مسار التقدم (باركود الطالب) ===== */
 const MASAR=(()=>{const q=new URLSearchParams(location.search),token=q.get('t')||'',B='https://yqoleecldcvnfdmkqgeq.supabase.co',K='sb_publishable_P-wXPFs08V6kTx5FkFZXsA_x-ElUhhd';
