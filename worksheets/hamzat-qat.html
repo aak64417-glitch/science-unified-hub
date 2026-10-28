@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta property="og:title" content="ورقة عمل تفاعلية – همزة القطع">
+<meta property="og:description" content="لغتي الخالدة – الصف الأول المتوسط">
+<style>body{margin:0}</style>
+<title>همزة القطع التفاعلية</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@500;700&family=Noto+Naskh+Arabic:wght@500;700&display=swap">
+<style>
+/* Layout: one column worksheet, each section a tinted panel with a navy tab-heading, sticky score bar at bottom */
+html{direction:rtl}
+:root{
+  --bg:#eef3f8; --paper:#ffffff; --ink:#14233a; --muted:#56657a;
+  --navy:#173b6c; --navy-ink:#ffffff; --green:#1f7a4d; --gold:#c98a12;
+  --blue-t:#e8f1fb; --green-t:#eaf6ef; --gold-t:#fdf5e2; --line:#c9d6e5;
+  --ok:#1b8a4c; --ok-t:#dcf3e5; --bad:#c0392b; --bad-t:#fbe3e0; --sol:#7a4bd1; --sol-t:#efe7fd;
+  --wa:#1fa855;
+  --f-display:"Readex Pro","Segoe UI",Tahoma,sans-serif;
+  --f-body:"Noto Naskh Arabic","Traditional Arabic","Times New Roman",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1724; --paper:#172235; --ink:#eaf0f8; --muted:#a5b3c6;
+  --navy:#3f74b8; --navy-ink:#ffffff; --green:#4cc58a; --gold:#e8b44a;
+  --blue-t:#1a2d47; --green-t:#173326; --gold-t:#342a14; --line:#2e4260;
+  --ok:#4cd88a; --ok-t:#173a28; --bad:#ff7b6b; --bad-t:#3e1d1a; --sol:#b998ff; --sol-t:#2b2147;
+  --wa:#25c062; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1724; --paper:#172235; --ink:#eaf0f8; --muted:#a5b3c6;
+  --navy:#3f74b8; --navy-ink:#ffffff; --green:#4cc58a; --gold:#e8b44a;
+  --blue-t:#1a2d47; --green-t:#173326; --gold-t:#342a14; --line:#2e4260;
+  --ok:#4cd88a; --ok-t:#173a28; --bad:#ff7b6b; --bad-t:#3e1d1a; --sol:#b998ff; --sol-t:#2b2147;
+  --wa:#25c062; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.8}
+.wrap{max-width:760px;margin:0 auto;padding-block:20px 110px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+header{background:var(--navy);color:var(--navy-ink);border-radius:18px;padding:20px;text-align:center;display:flex;flex-direction:column;gap:6px}
+header h1{font-family:var(--f-display);font-size:1.6rem;margin:0;text-wrap:balance}
+header .meta{font-family:var(--f-display);font-size:.95rem;opacity:.9}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.idrow{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+@media (max-width:480px){.idrow{grid-template-columns:1fr}}
+label.f{display:flex;flex-direction:column;gap:4px;font-family:var(--f-display);font-size:.9rem;color:var(--muted)}
+input[type=text]{font:inherit;font-family:var(--f-body);font-size:1.05rem;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;width:100%;box-sizing:border-box}
+input[type=text]:focus{outline:3px solid color-mix(in srgb,var(--navy) 40%,transparent);border-color:var(--navy)}
+section{border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;border:1px solid var(--line)}
+section.s1{background:var(--blue-t)} section.s2{background:var(--green-t)} section.s3{background:var(--blue-t)}
+section.s4{background:var(--green-t)} section.s5{background:var(--paper)}
+h2{font-family:var(--f-display);font-size:1.15rem;margin:0;align-self:flex-start;background:var(--navy);color:var(--navy-ink);padding:4px 16px;border-radius:10px}
+section.s2 h2,section.s4 h2{background:var(--green)}
+.q{font-family:var(--f-display);font-weight:700;font-size:1rem;display:flex;gap:8px;align-items:center}
+.num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;color:#fff;font-size:.9rem;flex:none}
+.n1{background:var(--green)} .n2{background:var(--navy)} .n3{background:var(--gold)}
+.words{display:flex;flex-wrap:wrap;gap:10px}
+.w{font-family:var(--f-body);font-size:1.35rem;font-weight:700;background:var(--paper);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:6px 18px;min-width:84px;text-align:center}
+button.w{cursor:pointer;transition:transform .15s,border-color .15s,background .15s}
+button.w:hover{transform:translateY(-2px)}
+button.w[aria-pressed="true"]{border-color:var(--navy);box-shadow:0 0 0 3px color-mix(in srgb,var(--navy) 35%,transparent);border-radius:999px}
+.w.ok{background:var(--ok-t);border-color:var(--ok)} .w.bad{background:var(--bad-t);border-color:var(--bad)}
+.w.miss{border-style:dashed;border-color:var(--sol);background:var(--sol-t)}
+.lesson p{margin:0}
+.ex{font-weight:700;color:var(--green)}
+.fill{display:flex;flex-wrap:wrap;gap:14px 22px}
+.blank{display:flex;align-items:center;gap:2px;font-size:1.35rem;font-weight:700}
+.blank input{width:54px;text-align:center;font-size:1.3rem;padding:4px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:inherit;font-family:var(--f-display);font-size:.85rem;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:2px 10px;cursor:pointer}
+.ex2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.ex2{grid-template-columns:1fr}}
+input.ok{border-color:var(--ok);background:var(--ok-t)} input.bad{border-color:var(--bad);background:var(--bad-t)}
+.tf{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.tf li{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.tf li span{min-width:0}
+.tfb{display:flex;gap:6px;flex:none}
+.tfb button{font-size:1.15rem;width:44px;height:40px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.tfb button[aria-pressed="true"]{border-color:var(--navy);background:var(--blue-t)}
+.tf li.ok{border-color:var(--ok);background:var(--ok-t)} .tf li.bad{border-color:var(--bad);background:var(--bad-t)}
+.sol{background:var(--sol-t);border:1.5px dashed var(--sol);border-radius:12px;padding:10px 14px;color:var(--ink)}
+.sol b{color:var(--sol);font-family:var(--f-display)}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font-family:var(--f-display);font-size:.95rem;border:none;border-radius:10px;padding:8px 16px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.check{background:var(--navy);color:var(--navy-ink)}
+.btn.show{background:var(--paper);color:var(--sol);border:1.5px solid var(--sol)}
+.btn.wa{background:var(--wa);color:#fff}
+.btn.ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--line)}
+.btn:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.fb{font-family:var(--f-display);font-size:.95rem;min-height:1em}
+.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+.remember{background:var(--gold-t);border:1px solid var(--gold);border-radius:12px;padding:8px 14px}
+.remember b{color:var(--gold)}
+.self{display:flex;flex-wrap:wrap;gap:12px}
+.self label{display:flex;align-items:center;gap:8px;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:8px 14px;cursor:pointer;font-family:var(--f-display);font-size:.95rem}
+.self input{width:20px;height:20px;accent-color:var(--navy)}
+.result{background:var(--navy);color:var(--navy-ink);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.result .big{font-family:var(--f-display);font-size:2rem;font-variant-numeric:tabular-nums}
+.result .acts{justify-content:center}
+footer{text-align:center;font-family:var(--f-display);color:var(--muted);font-size:.9rem}
+.bar{position:fixed;inset:auto 0 0 0;background:var(--paper);border-top:1px solid var(--line);padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;gap:8px;justify-content:center;flex-wrap:wrap;z-index:5}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>ورقة عمل تفاعلية – همزة القطع</h1>
+    <div class="meta">مادة: لغتي الخالدة &nbsp;|&nbsp; الصف الأول المتوسط</div>
+  </header>
+
+  <div class="card idrow">
+    <label class="f">اسم الطالب<input type="text" id="sname" autocomplete="name"></label>
+    <label class="f">الفصل<input type="text" id="sclass"></label>
+  </div>
+
+  <!-- 1 -->
+  <section class="s1" id="sec1">
+    <h2>١. تهيئة</h2>
+    <div class="q">اقرأ الكلمات ولاحظ الهمزة:</div>
+    <div class="words">
+      <span class="w">أَحْمَدَ</span><span class="w">إِبْرَاهِيمَ</span><span class="w">أَكَلَ</span><span class="w">إِلَى</span>
+    </div>
+    <label class="f">ماذا تلاحظ في شكل الهمزة؟<input type="text" id="notice"></label>
+    <div class="acts"><button class="btn show" data-sol="sol1">إظهار الحل</button></div>
+    <div class="sol" id="sol1" hidden><b>الحل:</b> الهمزة تُكتب فوق الألف (أ) في «أحمد» و«أكل»، وتُكتب تحت الألف (إ) في «إبراهيم» و«إلى».</div>
+  </section>
+
+  <!-- 2 -->
+  <section class="s2 lesson">
+    <h2>٢. شرح الدرس</h2>
+    <p>همزة القطع همزة تُكتب وتُنطق في ابتداء الكلام ووصله، وتُكتب فوق الألف (أ) مثل: <span class="ex">أَحمد، أَخذ</span>، أو تحت الألف (إ) مثل: <span class="ex">إبراهيم، إِلَى</span>.</p>
+    <p>من مواضعها: معظم الأسماء، والحروف مثل (إنَّ، إلى، إلاّ)، وماضي الفعل الرباعي وأمره ومصدره مثل (<span class="ex">أَكْرَمَ، أَكْرِمْ، إكرام</span>).</p>
+  </section>
+
+  <!-- 3 -->
+  <section class="s3" id="sec3">
+    <h2>٣. أتدرب</h2>
+
+    <div class="q"><span class="num n1">١</span>ضع دائرة حول الكلمات التي تبدأ بهمزة قطع: <span style="font-weight:500;color:var(--muted);font-size:.85rem">(اضغط على الكلمة)</span></div>
+    <div class="words" id="circle">
+      <button class="w" data-ans="0" aria-pressed="false">استخرج</button>
+      <button class="w" data-ans="1" aria-pressed="false">أسد</button>
+      <button class="w" data-ans="0" aria-pressed="false">المدرسة</button>
+      <button class="w" data-ans="1" aria-pressed="false">إحسان</button>
+      <button class="w" data-ans="0" aria-pressed="false">اكتب</button>
+      <button class="w" data-ans="1" aria-pressed="false">إلى</button>
+    </div>
+    <div class="acts"><button class="btn check" id="chk1">تحقق</button><button class="btn show" data-sol="sol31">إظهار الحل</button></div>
+    <div class="fb" id="fb1"></div>
+    <div class="sol" id="sol31" hidden><b>الحل:</b> الكلمات التي تبدأ بهمزة قطع: <b>أسد – إحسان – إلى</b>. أما «استخرج، المدرسة، اكتب» فتبدأ بهمزة وصل.</div>
+
+    <div class="q"><span class="num n2">٢</span>أكمل بـ (أ) أو (إ):</div>
+    <div class="chips"><span style="font-family:var(--f-display);font-size:.85rem;color:var(--muted)">اكتب الحرف أو اختره ثم اضغط على الفراغ:</span><button class="chip" data-ins="أ">أ</button><button class="chip" data-ins="إ">إ</button></div>
+    <div class="fill" id="fill">
+      <span class="blank"><input type="text" id="b1" maxlength="1" data-ans="أ" aria-label="حمد">حمد</span>
+      <span class="blank"><input type="text" id="b2" maxlength="1" data-ans="إ" aria-label="لى">لى</span>
+      <span class="blank"><input type="text" id="b3" maxlength="1" data-ans="إ" aria-label="كرام">كرام</span>
+      <span class="blank"><input type="text" id="b4" maxlength="1" data-ans="إ" aria-label="نسان">نسان</span>
+    </div>
+    <div class="acts"><button class="btn check" id="chk2">تحقق</button><button class="btn show" data-sol="sol32">إظهار الحل</button></div>
+    <div class="fb" id="fb2"></div>
+    <div class="sol" id="sol32" hidden><b>الحل:</b> أحمد – إلى – إكرام – إنسان</div>
+
+    <div class="q"><span class="num n3">٣</span>اكتب مثالاً لهمزة قطع فوق الألف وآخر تحت الألف:</div>
+    <div class="ex2">
+      <label class="f">فوق الألف (أ)<input type="text" id="e1"></label>
+      <label class="f">تحت الألف (إ)<input type="text" id="e2"></label>
+    </div>
+    <div class="acts"><button class="btn check" id="chk3">تحقق</button><button class="btn show" data-sol="sol33">إظهار الحل</button></div>
+    <div class="fb" id="fb3"></div>
+    <div class="sol" id="sol33" hidden><b>إجابة نموذجية:</b> فوق الألف: أحمد، أخذ، أكرم – تحت الألف: إبراهيم، إلى، إكرام.</div>
+  </section>
+
+  <!-- 4 -->
+  <section class="s4" id="sec4">
+    <h2>٤. لعبة تعليمية «صح أم خطأ؟»</h2>
+    <div class="q">ضع ✓ أو ✗ :</div>
+    <ol class="tf" id="tf">
+      <li data-ans="t"><span>١) همزة القطع تُنطق في أول الكلام ووصله.</span><span class="tfb"><button data-v="t" aria-pressed="false" aria-label="صح">✓</button><button data-v="f" aria-pressed="false" aria-label="خطأ">✗</button></span></li>
+      <li data-ans="t"><span>٢) كلمة «إلى» تبدأ بهمزة قطع تحت الألف.</span><span class="tfb"><button data-v="t" aria-pressed="false" aria-label="صح">✓</button><button data-v="f" aria-pressed="false" aria-label="خطأ">✗</button></span></li>
+      <li data-ans="f"><span>٣) كلمة «استخرج» تبدأ بهمزة قطع.</span><span class="tfb"><button data-v="t" aria-pressed="false" aria-label="صح">✓</button><button data-v="f" aria-pressed="false" aria-label="خطأ">✗</button></span></li>
+    </ol>
+    <div class="acts"><button class="btn check" id="chk4">تحقق</button><button class="btn show" data-sol="sol4">إظهار الحل</button></div>
+    <div class="fb" id="fb4"></div>
+    <div class="sol" id="sol4" hidden><b>الحل:</b> ١) ✓ &nbsp; ٢) ✓ &nbsp; ٣) ✗ لأن «استخرج» تبدأ بهمزة وصل.</div>
+  </section>
+
+  <!-- 5 -->
+  <section class="s5">
+    <h2>٥. التغذية الراجعة</h2>
+    <div class="remember"><b>تذكّر:</b> همزة القطع تُنطق دائمًا وتُكتب (أ) أو (إ).</div>
+    <div class="q">قيّم فهمك:</div>
+    <div class="self">
+      <label><input type="radio" name="self" id="self1" value="فهمت الدرس جيدًا">فهمت الدرس جيدًا</label>
+      <label><input type="radio" name="self" id="self2" value="أحتاج إلى تدريب إضافي">أحتاج إلى تدريب إضافي</label>
+    </div>
+  </section>
+
+  <div class="result" id="result">
+    <div style="font-family:var(--f-display)">نتيجتك</div>
+    <div class="big" id="score">٠ / ١٥</div>
+    <div class="fb" id="scoreMsg" style="color:var(--navy-ink)">اضغط «تصحيح الكل» لمعرفة نتيجتك.</div>
+    <div class="acts">
+      <a class="btn wa" id="waResult" href="https://wa.me/" target="_blank" rel="noopener">إرسال نتيجتي عبر الواتساب</a>
+      <a class="btn wa" id="waShare" href="https://wa.me/" target="_blank" rel="noopener">مشاركة الورقة عبر الواتساب</a>
+    </div>
+  </div>
+
+  <footer>إعداد المعلم: عبدالمنعم الحدب</footer>
+</div>
+
+<div class="bar">
+  <button class="btn check" id="checkAll">تصحيح الكل</button>
+  <button class="btn show" id="showAll">إظهار كل الحلول</button>
+  <button class="btn ghost" id="reset">إعادة المحاولة</button>
+</div>
+
+<script>
+const PAGE_URL = "https://aak64417-glitch.github.io/science-unified-hub/worksheets/hamzat-qat.html";
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const ar = n => String(n).replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+const norm = s => (s||"").trim().replace(/[ً-ْـ]/g,"");
+let lastBlank = null, scores = {s1:0,s2:0,s3:0,s4:0};
+
+function fb(id, ok, total){
+  const el = $(id); el.className = "fb " + (ok===total ? "ok" : "bad");
+  el.textContent = ok===total ? `ممتاز! إجاباتك صحيحة (${ar(ok)} من ${ar(total)})` : `صحيح ${ar(ok)} من ${ar(total)} — راجع المظلّل بالأحمر وحاول مرة أخرى`;
+}
+
+/* 3-1 circle */
+$$("#circle .w").forEach(b => b.addEventListener("click", () => {
+  b.setAttribute("aria-pressed", b.getAttribute("aria-pressed")==="true" ? "false" : "true");
+  b.classList.remove("ok","bad","miss");
+}));
+function check1(){
+  let ok = 0;
+  $$("#circle .w").forEach(b => {
+    const sel = b.getAttribute("aria-pressed")==="true", ans = b.dataset.ans==="1";
+    b.classList.remove("ok","bad","miss");
+    if (sel && ans) b.classList.add("ok");
+    else if (sel && !ans) b.classList.add("bad");
+    else if (!sel && ans) b.classList.add("miss");
+    if (sel===ans) ok++;
+  });
+  scores.s1 = ok; fb("#fb1", ok, 6);
+}
+
+/* 3-2 fill */
+$$("#fill input").forEach(i => {
+  i.addEventListener("focus", () => lastBlank = i);
+  i.addEventListener("input", () => i.classList.remove("ok","bad"));
+});
+$$(".chip").forEach(c => c.addEventListener("click", () => {
+  const t = lastBlank || $$("#fill input").find(i => !i.value) || $("#b1");
+  t.value = c.dataset.ins; t.classList.remove("ok","bad");
+  const nxt = $$("#fill input").find(i => !i.value); if (nxt) { nxt.focus(); lastBlank = nxt; }
+}));
+function check2(){
+  let ok = 0;
+  $$("#fill input").forEach(i => {
+    const good = i.value.trim() === i.dataset.ans;
+    i.classList.remove("ok","bad"); if (i.value.trim()) i.classList.add(good ? "ok" : "bad"); else i.classList.add("bad");
+    if (good) ok++;
+  });
+  scores.s2 = ok; fb("#fb2", ok, 4);
+}
+
+/* 3-3 examples */
+function check3(){
+  const a = norm($("#e1").value), b = norm($("#e2").value);
+  const g1 = a.length>1 && a[0]==="أ", g2 = b.length>1 && b[0]==="إ";
+  [["#e1",g1,a],["#e2",g2,b]].forEach(([id,g]) => { const el=$(id); el.classList.remove("ok","bad"); el.classList.add(g?"ok":"bad"); });
+  const ok = (g1?1:0)+(g2?1:0); scores.s3 = ok;
+  fb("#fb3", ok, 2);
+  if (ok<2) $("#fb3").textContent += " (الأولى تبدأ بـ أ، والثانية بـ إ)";
+}
+
+/* 4 true/false */
+$$("#tf li").forEach(li => li.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  li.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed","false"));
+  b.setAttribute("aria-pressed","true"); li.classList.remove("ok","bad");
+})));
+function check4(){
+  let ok = 0;
+  $$("#tf li").forEach(li => {
+    const p = li.querySelector('button[aria-pressed="true"]');
+    const good = p && p.dataset.v === li.dataset.ans;
+    li.classList.remove("ok","bad"); li.classList.add(good ? "ok" : "bad");
+    if (good) ok++;
+  });
+  scores.s4 = ok; fb("#fb4", ok, 3);
+}
+
+$("#chk1").onclick = () => { check1(); updateScore(); };
+$("#chk2").onclick = () => { check2(); updateScore(); };
+$("#chk3").onclick = () => { check3(); updateScore(); };
+$("#chk4").onclick = () => { check4(); updateScore(); };
+
+/* solutions */
+$$("[data-sol]").forEach(b => b.addEventListener("click", () => {
+  const s = document.getElementById(b.dataset.sol); s.hidden = !s.hidden;
+  b.textContent = s.hidden ? "إظهار الحل" : "إخفاء الحل";
+}));
+$("#showAll").onclick = () => {
+  const anyHidden = $$(".sol").some(s => s.hidden);
+  $$(".sol").forEach(s => s.hidden = !anyHidden);
+  $$("[data-sol]").forEach(b => b.textContent = anyHidden ? "إخفاء الحل" : "إظهار الحل");
+  $("#showAll").textContent = anyHidden ? "إخفاء كل الحلول" : "إظهار كل الحلول";
+};
+
+/* score + whatsapp */
+function updateScore(){
+  const t = scores.s1+scores.s2+scores.s3+scores.s4;
+  $("#score").textContent = `${ar(t)} / ١٥`;
+  $("#scoreMsg").textContent = t===15 ? "أحسنت! أتقنت همزة القطع" : t>=11 ? "جيد جدًا، راجع الأخطاء القليلة" : "راجع شرح الدرس ثم أعد المحاولة";
+  updateWA(t);
+}
+function updateWA(t){
+  const name = $("#sname").value.trim(), cls = $("#sclass").value.trim();
+  const self = (document.querySelector('input[name="self"]:checked')||{}).value || "";
+  let msg = "ورقة عمل تفاعلية – همزة القطع\n";
+  if (name) msg += "اسم الطالب: " + name + "\n";
+  if (cls) msg += "الفصل: " + cls + "\n";
+  msg += `الدرجة: ${ar(t ?? 0)} من ١٥\n`;
+  msg += `• ضع دائرة: ${ar(scores.s1)}/٦\n• أكمل بـ أ أو إ: ${ar(scores.s2)}/٤\n• اكتب مثالًا: ${ar(scores.s3)}/٢\n• صح أم خطأ: ${ar(scores.s4)}/٣`;
+  if (self) msg += "\nتقييمي لفهمي: " + self;
+  $("#waResult").href = "https://wa.me/?text=" + encodeURIComponent(msg);
+  const share = "ورقة عمل تفاعلية – همزة القطع (لغتي الخالدة – الصف الأول المتوسط)\nحلّ الورقة من الرابط:\n" + (PAGE_URL || "");
+  $("#waShare").href = "https://wa.me/?text=" + encodeURIComponent(share);
+}
+["#sname","#sclass"].forEach(id => $(id).addEventListener("input", () => updateWA(scores.s1+scores.s2+scores.s3+scores.s4)));
+$$('input[name="self"]').forEach(r => r.addEventListener("change", () => updateWA(scores.s1+scores.s2+scores.s3+scores.s4)));
+
+$("#checkAll").onclick = () => { check1(); check2(); check3(); check4(); updateScore(); $("#result").scrollIntoView({behavior:"smooth",block:"center"}); };
+$("#reset").onclick = () => {
+  $$("#circle .w").forEach(b => { b.setAttribute("aria-pressed","false"); b.classList.remove("ok","bad","miss"); });
+  $$("#fill input, #e1, #e2").forEach(i => { i.value=""; i.classList.remove("ok","bad"); });
+  $$("#tf li").forEach(li => { li.classList.remove("ok","bad"); li.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false")); });
+  $$(".fb").forEach(f => { if (f.id!=="scoreMsg") { f.textContent=""; f.className="fb"; } });
+  $$(".sol").forEach(s => s.hidden = true); $$("[data-sol]").forEach(b => b.textContent="إظهار الحل");
+  $("#showAll").textContent = "إظهار كل الحلول";
+  $("#notice").value = "";
+  scores = {s1:0,s2:0,s3:0,s4:0}; updateScore(); $("#scoreMsg").textContent = "اضغط «تصحيح الكل» لمعرفة نتيجتك.";
+  window.scrollTo({top:0,behavior:"smooth"});
+};
+updateWA(0); $("#score").textContent = "٠ / ١٥";
+</script>
+
+</body>
+</html>
