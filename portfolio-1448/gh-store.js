@@ -124,5 +124,6 @@
     return { readIndex: rIndex, add: add, remove: remove, update: update };
   }
 
-  window.PFStore = { token: token, setToken: setToken, readIndex: readIndex, addReport: addReport, removeReport: removeReport, b64utf8: b64utf8, collection: collection };
+  window.PFStore = { token: token, setToken: setToken, readIndex: readIndex, addReport: addReport, removeReport: removeReport, b64utf8: b64utf8, collection: collection,
+    shared: collection('portfolio-1448/shared-reports/index.json', 'shared-reports', 'شاهد معروض للمدير') };
 })();

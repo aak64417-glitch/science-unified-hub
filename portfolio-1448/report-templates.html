@@ -257,6 +257,7 @@ details.more summary{cursor:pointer;font-weight:700;color:#ffe2a0;font-size:15px
       <select id="saveSec"></select>
       <label for="saveFmt">صيغة الشاهد</label>
       <select id="saveFmt"><option value="png">صورة PNG (تُعرض مباشرة)</option><option value="pdf">ملف PDF</option></select>
+      <label class="chk"><input type="checkbox" id="shareP" checked> 👁 إظهاره في صفحة المدير أيضًا (رفع إلى المنصة)</label><div class="hint" id="shareHint"></div>
       <p class="actions"><button class="btn green" type="button" id="saveConfirm">✓ تأكيد الحفظ</button><button class="btn sub" type="button" id="saveCancel">إلغاء</button></p>
     </div>
     <p class="status" id="status" role="status"></p>
@@ -273,6 +274,8 @@ details.more summary{cursor:pointer;font-weight:700;color:#ffe2a0;font-size:15px
 
 <nav class="tabs"><button class="btn on" type="button" data-tab="edit">✎ التحرير</button><button class="btn" type="button" data-tab="view">👁 المعاينة</button></nav>
 
+<script src="gh-store.js"></script>
+<script src="share-report.js"></script>
 <script src="vendor/html-to-image.js"></script>
 <script src="vendor/jspdf.umd.min.js"></script>
 <script>
@@ -531,7 +534,7 @@ function libDB(){return new Promise((ok,fail)=>{const r=indexedDB.open("portfoli
 function libReq(db,store,mode,fn){return new Promise((ok,fail)=>{const tx=db.transaction(store,mode);let v;const q=fn(tx.objectStore(store));q.onsuccess=()=>{v=q.result};tx.oncomplete=()=>ok(v);tx.onerror=()=>fail(tx.error);tx.onabort=()=>fail(tx.error||new Error("أُلغي الحفظ"))})}
 async function sectionsFor(n){let extra=[],hidden=[],used=[];try{const db=await libDB();const sec=(await libReq(db,"metadata","readonly",s=>s.get("sections")))||{};const hid=(await libReq(db,"metadata","readonly",s=>s.get("hiddenSections")))||{};const recs=await libReq(db,"reports","readonly",s=>s.getAll());db.close();extra=sec[n]||[];hidden=hid[n]||[];used=recs.filter(r=>+r.criterion===n&&r.subsection).map(r=>r.subsection)}catch(e){}
  return[...new Set([...(DEFAULTS[n-1]||[]),...extra,...used])].filter(x=>!hidden.includes(x))}
-$("toPortfolio").onclick=async()=>{const box=$("saveBox");if(box.classList.contains("open")){box.classList.remove("open");return}const list=await sectionsFor(S.c),sel=$("saveSec");sel.replaceChildren();list.forEach(x=>sel.add(new Option(x,x)));const want=tplOf(S.tpl,S.c).sub;if(want&&list.includes(want))sel.value=want;box.classList.add("open")};
+$("toPortfolio").onclick=async()=>{const box=$("saveBox");if(box.classList.contains("open")){box.classList.remove("open");return}const list=await sectionsFor(S.c),sel=$("saveSec");sel.replaceChildren();list.forEach(x=>sel.add(new Option(x,x)));const want=tplOf(S.tpl,S.c).sub;if(want&&list.includes(want))sel.value=want;const tok=!!(window.PFStore&&PFStore.token());$("shareHint").textContent=tok?"":"⚠ رمز الوصول غير محفوظ على هذا الجهاز؛ سيُحفظ التقرير على الجهاز فقط. احفظ الرمز من «لوحة التحكم بعرض المدير» لإظهار التقارير للمدير.";$("shareP").checked=tok;box.classList.add("open")};
 $("saveCancel").onclick=()=>$("saveBox").classList.remove("open");
 $("saveConfirm").onclick=e=>busy(e.target,"جارٍ إنشاء التقرير وحفظه في ملف الإنجاز…",async()=>{
  if(!S.title.trim())throw new Error("اكتب اسم التقرير أولًا.");
@@ -540,7 +543,10 @@ $("saveConfirm").onclick=e=>busy(e.target,"جارٍ إنشاء التقرير و
  const rec={id:(crypto.randomUUID?crypto.randomUUID():"r"+Date.now()+Math.random().toString(36).slice(2)),criterion:S.c,subsection:section,title:(S.kicker.trim()+" "+S.title.trim()).trim(),kind:"",filename:file.name,date:Date.now(),file};
  const db=await libDB();try{await libReq(db,"reports","readwrite",s=>s.put(rec))}finally{db.close()}
  LS.set("portfolio-report-update",String(Date.now()));$("saveBox").classList.remove("open");
- status("✓ حُفظ التقرير شاهدًا في البند "+S.c+" / "+section+". يظهر الآن داخل البند في ملف الإنجاز. لإظهاره للمدير ارفعه من «إدارة التقارير والحفظ».");
+ let shareNote="";
+ if($("shareP").checked){status("✓ حُفظ على الجهاز. جارٍ رفعه لصفحة المدير…");try{rec.shared=await PFShare.share({...rec,eventDate:S.date});const db2=await libDB();try{await libReq(db2,"reports","readwrite",s=>s.put(rec))}finally{db2.close()}shareNote=" ويظهر في صفحة المدير خلال دقيقة إلى دقيقتين."}catch(err){shareNote=" ⚠ لم يُرفع للمدير: "+err.message+" يمكنك رفعه لاحقًا من «إدارة التقارير والحفظ» بزر «👁 إظهار للمدير»."}}
+ else shareNote=" (على هذا الجهاز فقط).";
+ status("✓ حُفظ التقرير شاهدًا في البند "+S.c+" / "+section+shareNote);
  $("backLink").href="./#std-"+S.c});
 
 /* ---------- البدء ---------- */
