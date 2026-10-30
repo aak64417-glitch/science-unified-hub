@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>مقاطع الفيديو | ملف الإنجاز 1448هـ</title>
+<style>
+@font-face{font-family:Tajawal;font-weight:400;font-display:swap;src:url(vendor/fonts/tajawal-arabic-400-normal.woff2) format("woff2")}
+@font-face{font-family:Tajawal;font-weight:700;font-display:swap;src:url(vendor/fonts/tajawal-arabic-700-normal.woff2) format("woff2")}
+@font-face{font-family:Tajawal;font-weight:800;font-display:swap;src:url(vendor/fonts/tajawal-arabic-800-normal.woff2) format("woff2")}
+*{box-sizing:border-box}
+body{margin:0;background:#071b3c;color:#eef6ff;font:16px Tajawal,Tahoma,Arial,sans-serif}
+main{max-width:1040px;margin:auto;padding:18px 16px 40px}
+h1{color:#ffe2a0;margin:14px 0 6px;font-size:25px}
+.lead{color:#bed9f4;margin:0 0 14px;line-height:1.8}
+.box{background:#10325a;border:1px solid #3a6c9c;border-radius:17px;padding:18px;margin:14px 0}
+.box h2{margin:0 0 10px;color:#ffe2a0;font-size:19px}
+label{display:block;margin:12px 0 6px;font-weight:700;color:#d7ebff}
+input,select,textarea{width:100%;border:1px solid #83b7db;border-radius:11px;padding:11px 12px;font:inherit;background:#fff;color:#122b43}
+textarea{resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{border:0;border-radius:11px;background:#1569ab;color:#fff;font:700 15px Tajawal,Tahoma,sans-serif;padding:11px 16px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.sub{background:#173f6c;border:1px solid #3d72a6}
+.btn.gold{background:#d9a62e;color:#2b1d00}
+.btn.red{background:#8f2e3a}
+.btn:disabled{opacity:.5;cursor:wait}
+.top{display:flex;gap:8px;flex-wrap:wrap}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1;min-width:150px;background:#0c2849;border:1.5px solid #335f8c;color:#fff;border-radius:12px;padding:12px;font:700 15px Tajawal,Tahoma,sans-serif;cursor:pointer}
+.seg button.on{border-color:#ffd36b;background:#1b4675;box-shadow:0 0 0 2px #ffd36b55}
+.hint{font-size:13.5px;color:#a9c8e4;line-height:1.75;margin-top:6px}
+.warn{border-right:4px solid #f2bd5b;background:#3d3018;color:#ffe9bd;padding:11px 13px;border-radius:10px;line-height:1.8;font-size:14.5px}
+.msg{min-height:24px;margin-top:10px;line-height:1.8;font-weight:700}
+.msg.ok{color:#9ff0c0}.msg.err{color:#ffb4b4}
+.detect{margin-top:8px;font-size:14px;font-weight:700}
+.detect.ok{color:#9ff0c0}.detect.bad{color:#ffcf8a}
+.hidden{display:none!important}
+.acts{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 12px}
+.acts .btn{padding:7px 11px;font-size:13.5px}
+.vwrap{position:relative;display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:#0f2d57;border:1px solid rgba(141,206,255,.35)}
+.vwrap .pfv-card{border:0;border-radius:0}
+.std-h{margin:18px 0 4px;color:#ffe2a0;font-size:17px}
+@media(max-width:600px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><a class="btn sub" id="back" href="./">↩ العودة إلى ملف الإنجاز</a><a class="btn sub" href="principal.html" target="_blank" rel="noopener">👁️ معاينة صفحة المدير</a></div>
+  <h1>🎬 مقاطع الفيديو</h1>
+  <p class="lead">أضف مقطع فيديو إلى أي بند من بنود ملف الإنجاز، برابط (يوتيوب أو Google Drive) أو برفع الملف نفسه. ما يُضاف هنا يظهر داخل البند في ملف الإنجاز وفي صفحة المدير.</p>
+
+  <section class="box hidden" id="setupBox">
+    <h2>🔑 رمز الوصول غير محفوظ على هذا الجهاز</h2>
+    <div class="warn">لإضافة المقاطع وحذفها يلزم رمز الوصول نفسه المستخدم في <a href="principal-control.html" style="color:#ffe2a0">لوحة التحكم بعرض المدير</a> وفي صفحة تقارير نافس. إن كان محفوظًا هناك على هذا الجهاز فسيعمل هنا تلقائيًا.</div>
+    <label for="tok">رمز الوصول</label>
+    <input id="tok" type="password" autocomplete="off" dir="ltr" placeholder="github_pat_...">
+    <p><button class="btn" type="button" id="saveTok">💾 حفظ الرمز على هذا الجهاز</button></p>
+  </section>
+
+  <section class="box">
+    <h2>➕ إضافة مقطع فيديو</h2>
+    <div class="row">
+      <div><label for="std">البند</label><select id="std"></select></div>
+      <div><label for="sec">القسم داخل البند</label><select id="sec"></select></div>
+    </div>
+    <div id="otherWrap" class="hidden"><label for="other">اسم القسم</label><input id="other" maxlength="80" placeholder="اكتب اسم القسم"></div>
+    <label for="title">عنوان المقطع</label>
+    <input id="title" maxlength="140" placeholder="مثال: تنفيذ تجربة التفاعل الكيميائي مع طلاب ١/١">
+    <div class="row">
+      <div><label for="date">تاريخ التنفيذ</label><input id="date" type="date"></div>
+      <div><label for="notes">وصف مختصر (اختياري)</label><input id="notes" maxlength="200"></div>
+    </div>
+
+    <label>طريقة الإضافة</label>
+    <div class="seg"><button type="button" class="on" data-m="link">🔗 رابط فيديو (يوتيوب / Drive)</button><button type="button" data-m="file">📁 رفع ملف فيديو من الجهاز</button></div>
+
+    <div id="linkBox">
+      <label for="url">رابط المقطع</label>
+      <input id="url" type="url" dir="ltr" placeholder="https://youtu.be/...  أو  https://drive.google.com/file/d/...">
+      <div class="detect" id="detect"></div>
+      <div class="hint">يوتيوب: ارفع المقطع بخيار «غير مُدرج» ثم انسخ رابط المشاركة. Google Drive: من «مشاركة» اختر «أي شخص لديه الرابط» ثم انسخ الرابط. هذه الطريقة مناسبة للمقاطع الطويلة.</div>
+    </div>
+    <div id="fileBox" class="hidden">
+      <label for="file">ملف الفيديو (MP4 أو MOV أو WebM)</label>
+      <input id="file" type="file" accept="video/mp4,video/quicktime,video/webm,video/x-m4v,.mp4,.mov,.m4v,.webm">
+      <div class="hint" id="fileInfo">الحد الأقصى 50 ميجابايت (دقيقة إلى دقيقتين تقريبًا من تصوير الجوال). المقاطع الأطول أضفها برابط يوتيوب أو Drive. يفضّل MP4 لأنه يعمل على جميع الأجهزة.</div>
+    </div>
+
+    <div class="warn" style="margin-top:14px">🔒 ملفات المنصة منشورة على موقع عام؛ أي شخص يملك رابط المقطع يمكنه مشاهدته. تجنّب المقاطع التي تُظهر وجوه الطلاب أو أسماءهم إلا بعد التأكد من موافقة المدرسة وأولياء الأمور، ويُفضَّل لها رابط يوتيوب «غير مُدرج» أو Drive يمكنك إيقافه لاحقًا.</div>
+    <p><button class="btn gold" type="button" id="add">📤 إضافة المقطع إلى ملف الإنجاز</button></p>
+    <div class="msg" id="msg" role="status"></div>
+  </section>
+
+  <section class="box">
+    <h2>المقاطع المضافة</h2>
+    <label for="filter">عرض</label>
+    <select id="filter"><option value="all">جميع البنود</option></select>
+    <div id="list"><p class="hint">جارٍ التحميل…</p></div>
+  </section>
+</main>
+
+<script src="gh-store.js"></script>
+<script src="video-player.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var esc=PFVideo.esc;
+var STANDARDS=["أداء الواجبات الوظيفية","التفاعل مع المجتمع المهني","التفاعل مع أولياء الأمور","التنوع في استراتيجيات التدريس","تحسين نتائج المتعلمين","إعداد وتنفيذ خطة التعلم","توظيف تقنيات ووسائل التعلم المناسبة","تهيئة البيئة التعليمية","الإدارة الصفية","تحليل نتائج المتعلمين وتشخيص مستوياتهم","تنوع أساليب التقويم"];
+var DEFAULTS=[["حصص الانتظار","المناوبة والإشراف","أعمال اللجان","الالتزام بالدوام الرسمي","التكاليف من إدارة المدرسة","المشاركة في المناسبات الوطنية","تحضير الدروس في منصة مدرستي","رصد الدرجات في نظام نور","حضور الاجتماعات المدرسية","الإذاعة والأنشطة المدرسية","المبادرات والأعمال التطوعية"],["التطوير المهني","الزيارات المتبادلة","المجتمعات المهنية","الدورات التدريبية","حضور الورش والملتقيات","تقديم ورش ودروس تطبيقية","الدروس النموذجية","اجتماعات القسم والمشرف التربوي","تبادل الخبرات مع الزملاء"],["التواصل مع أولياء الأمور","اجتماعات أولياء الأمور","إشعارات المستوى والتقدم","رسائل التواصل عبر منصة مدرستي","سجل التواصل مع أولياء الأمور","إشراك أولياء الأمور في الخطط العلاجية","التهنئة والتحفيز","استطلاعات رأي أولياء الأمور"],["استراتيجيات التعلم","أنشطة التعلم","استراتيجيات التدريس","التعلم التعاوني","التعلم النشط","التعلم باللعب والمسابقات","التعلم بالمشروعات","الاستقصاء والتجارب العملية","التعلم المقلوب","التعليم المتمايز"],["الخطط العلاجية","متابعة الطلاب منخفضي المستوى","حصص التقوية","برامج الإثراء للمتفوقين","التدريب على اختبارات نافس","تكريم المتفوقين والمتميزين","مقارنة النتائج قبل المعالجة وبعدها"],["خطط التعلم","توزيع المنهج","تحضير الدروس","الخطة الفصلية","خطة الأنشطة الصفية","خطط الواجبات المنزلية","ملف المادة"],["توظيف التقنية في التعلم","الدروس التفاعلية","مقاطع الفيديو التعليمية","المختبر الافتراضي","منصة مدرستي","الاختبارات الإلكترونية","العروض التقديمية","المنصات التعليمية من إعداد المعلم","الوسائل التعليمية"],["تجهيز المختبر","تهيئة الفصل وتنظيمه","لوحات وجداريات الفصل","ركن العلوم","إجراءات الأمن والسلامة","البيئة الآمنة والمحفزة"],["الإدارة الصفية","قواعد السلوك الصفي","إدارة وقت الحصة","التعزيز ولوحات التميز","متابعة الحضور والانضباط","توزيع الأدوار والمجموعات","معالجة السلوكيات الصفية"],["تقارير تحليل الاختبارات","الاختبارات التشخيصية","تحليل نتائج الفترات","تحليل نتائج نافس","تصنيف مستويات الطلاب","الخطط المبنية على نتائج التحليل"],["مهام أدائية","التقويم التكويني","الاختبارات القصيرة","الاختبارات الفترية والنهائية","التقويم الذاتي وتقويم الأقران","سلالم التقدير","الملاحظة والأسئلة الشفهية","الواجبات المنزلية","المشاريع والبحوث","ملفات إنجاز الطلاب"]];
+var MAX=50*1024*1024, EXT={mp4:'mp4',m4v:'mp4',mov:'mov',webm:'webm'};
+var store=PFStore.collection('portfolio-1448/videos/index.json','videos','مقطع فيديو');
+var items=[], mode='link';
+PFVideo.injectCss();
+
+STANDARDS.forEach(function(n,i){$('std').add(new Option((i+1)+'. '+n,String(i+1)));$('filter').add(new Option('البند '+(i+1)+' — '+n,String(i+1)))});
+function fillSec(){var n=+$('std').value,sel=$('sec');sel.replaceChildren();var used=items.filter(function(r){return +r.std===n}).map(function(r){return r.section});
+  var all=[];(DEFAULTS[n-1]||[]).concat(used).forEach(function(x){if(x&&all.indexOf(x)<0)all.push(x)});
+  all.forEach(function(x){sel.add(new Option(x,x))});sel.add(new Option('➕ قسم آخر…','__other'));toggleOther()}
+function toggleOther(){$('otherWrap').classList.toggle('hidden',$('sec').value!=='__other')}
+$('std').onchange=fillSec;$('sec').onchange=toggleOther;
+var qs=new URLSearchParams(location.search),qc=+qs.get('criterion');
+if(qc>=1&&qc<=11){$('std').value=String(qc);$('filter').value=String(qc);$('back').href='./#std-'+qc}
+var d=new Date();$('date').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+
+document.querySelectorAll('.seg button').forEach(function(b){b.onclick=function(){mode=b.dataset.m;document.querySelectorAll('.seg button').forEach(function(x){x.classList.toggle('on',x===b)});$('linkBox').classList.toggle('hidden',mode!=='link');$('fileBox').classList.toggle('hidden',mode!=='file')}});
+$('url').addEventListener('input',function(){var p=PFVideo.parse($('url').value),el=$('detect');
+  if(!$('url').value.trim()){el.textContent='';return}
+  if(!p){el.className='detect bad';el.textContent='الرابط يجب أن يبدأ بـ https://';return}
+  var t={youtube:'✓ رابط يوتيوب — سيُشغَّل داخل المنصة',drive:'✓ رابط Google Drive — سيُشغَّل داخل المنصة (تأكد أن المشاركة «أي شخص لديه الرابط»)',direct:'✓ رابط ملف فيديو مباشر — سيُشغَّل داخل المنصة',link:'⚠ رابط من موقع آخر — سيظهر زر لفتحه في نافذة جديدة'}[p.type];
+  el.className='detect '+(p.type==='link'?'bad':'ok');el.textContent=t});
+$('file').addEventListener('change',function(){var f=$('file').files[0];if(!f)return;var mb=(f.size/1048576).toFixed(1);
+  $('fileInfo').textContent='الملف: '+f.name+' — '+mb+' ميجابايت'+(f.size>MAX?' ⚠ أكبر من الحد المسموح (50 ميجابايت). أضفه برابط يوتيوب أو Drive.':' ✓');
+  if(!$('title').value.trim())$('title').value=f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').slice(0,140)});
+
+function msg(t,ok){$('msg').textContent=t;$('msg').className='msg '+(ok?'ok':'err')}
+function readB64(blob){return new Promise(function(ok,fail){var r=new FileReader();r.onload=function(){ok(String(r.result).split(',')[1]||'')};r.onerror=function(){fail(new Error('تعذر قراءة الملف'))};r.readAsDataURL(blob)})}
+/* لقطة مصغرة من المقطع */
+function grabThumb(file){return new Promise(function(ok){var url=URL.createObjectURL(file),v=document.createElement('video'),done=false;
+  function fin(x){if(done)return;done=true;URL.revokeObjectURL(url);ok(x)}
+  setTimeout(function(){fin(null)},9000);
+  v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';
+  v.onloadedmetadata=function(){var dur=isFinite(v.duration)?v.duration:0;try{v.currentTime=Math.min(1.2,dur/3||0.1)}catch(e){fin(null)}};
+  v.onseeked=function(){try{var w=640,h=Math.round(w*(v.videoHeight||360)/(v.videoWidth||640)),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(v,0,0,w,h);
+    fin({b64:c.toDataURL('image/jpeg',.8).split(',')[1],dur:isFinite(v.duration)?Math.round(v.duration):0})}catch(e){fin(null)}};
+  v.onerror=function(){fin(null)};v.src=url})}
+
+$('add').onclick=function(){
+  if(!PFStore.token()){msg('احفظ رمز الوصول أولًا.');$('setupBox').classList.remove('hidden');$('setupBox').scrollIntoView({behavior:'smooth'});return}
+  var title=$('title').value.trim(),std=+$('std').value,sec=$('sec').value==='__other'?$('other').value.trim():$('sec').value;
+  if(!title){msg('اكتب عنوان المقطع.');return}
+  if(!sec){msg('اكتب اسم القسم.');return}
+  var meta={title:title,std:std,section:sec,date:$('date').value||'',notes:$('notes').value.trim()};
+  var btn=$('add');
+  if(mode==='link'){var p=PFVideo.parse($('url').value);if(!p){msg('ألصق رابطًا صحيحًا يبدأ بـ https://');return}
+    meta.type=p.type;meta.url=p.url;if(p.vid)meta.vid=p.vid;
+    btn.disabled=true;msg('جارٍ الحفظ…',true);
+    store.add(meta,[]).then(done).catch(fail);return}
+  var f=$('file').files[0];if(!f){msg('اختر ملف الفيديو.');return}
+  var ext=EXT[(f.name.split('.').pop()||'').toLowerCase()]||(f.type==='video/mp4'?'mp4':f.type==='video/webm'?'webm':f.type==='video/quicktime'?'mov':'');
+  if(!ext){msg('صيغة غير مدعومة. استخدم MP4 أو MOV أو WebM.');return}
+  if(f.size>MAX){msg('حجم الملف أكبر من 50 ميجابايت. أضفه برابط يوتيوب أو Drive.');return}
+  meta.type='file';btn.disabled=true;msg('جارٍ تجهيز المقطع…',true);
+  grabThumb(f).then(function(th){if(th&&th.dur)meta.duration=th.dur;
+    return readB64(f).then(function(b64){msg('جارٍ رفع المقطع ('+(f.size/1048576).toFixed(1)+' ميجابايت)… قد يستغرق ذلك عدة دقائق، لا تغلق الصفحة.',true);
+      var files=[{ext:ext,base64:b64,role:'main'}];if(th&&th.b64)files.push({ext:'jpg',base64:th.b64,role:'thumb'});
+      return store.add(meta,files)})}).then(done).catch(fail);
+  function done(rec){items.push(rec);draw();fillSec();$('title').value='';$('notes').value='';$('url').value='';$('detect').textContent='';$('file').value='';btn.disabled=false;
+    msg('✓ أُضيف المقطع إلى البند '+rec.std+' / '+rec.section+'. يظهر في ملف الإنجاز وصفحة المدير خلال دقيقة إلى دقيقتين.',true)}
+  function fail(e){btn.disabled=false;msg(e.message==='Failed to fetch'?'انقطع الاتصال أثناء الرفع. تحقق من الإنترنت وأعد المحاولة، أو أضف المقطع برابط.':e.message)}
+};
+
+function draw(){var el=$('list'),flt=$('filter').value,list=PFVideo.sortByDate(items).filter(function(r){return flt==='all'||String(r.std)===flt});
+  if(!list.length){el.innerHTML='<p class="hint">لا توجد مقاطع'+(flt==='all'?'':' في هذا البند')+' بعد.</p>';return}
+  var groups={};list.forEach(function(r){(groups[r.std]=groups[r.std]||[]).push(r)});
+  el.innerHTML=Object.keys(groups).sort(function(a,b){return a-b}).map(function(k){return '<h3 class="std-h">البند '+k+' — '+esc(STANDARDS[k-1]||'')+'</h3><div class="pfv-grid">'+groups[k].map(function(r){
+    return '<div class="vwrap">'+PFVideo.card(r)+'<div class="acts"><button class="btn sub" type="button" data-ren="'+esc(r.id)+'">✎ تعديل العنوان</button><button class="btn red" type="button" data-del="'+esc(r.id)+'">🗑 حذف</button></div></div>'}).join('')+'</div>'}).join('')}
+$('filter').onchange=draw;
+$('list').addEventListener('click',function(e){
+  var c=e.target.closest('[data-vid]'),del=e.target.closest('[data-del]'),ren=e.target.closest('[data-ren]');
+  if(c){var r=items.filter(function(x){return x.id===c.dataset.vid})[0];if(r)PFVideo.play(r);return}
+  if(del||ren){if(!PFStore.token()){msg('احفظ رمز الوصول أولًا.');$('setupBox').classList.remove('hidden');return}}
+  if(del){var rd=items.filter(function(x){return x.id===del.dataset.del})[0];if(!rd||!confirm('حذف المقطع «'+rd.title+'» من ملف الإنجاز؟'))return;
+    del.disabled=true;store.remove(rd).then(function(){items=items.filter(function(x){return x.id!==rd.id});draw();msg('تم حذف المقطع ✓',true)}).catch(function(err){del.disabled=false;msg(err.message)})}
+  if(ren){var rr=items.filter(function(x){return x.id===ren.dataset.ren})[0];if(!rr)return;var v=prompt('عنوان المقطع:',rr.title);if(!v||!v.trim())return;
+    ren.disabled=true;store.update(rr.id,{title:v.trim()}).then(function(){rr.title=v.trim();draw();msg('تم تعديل العنوان ✓',true)}).catch(function(err){ren.disabled=false;msg(err.message)})}
+});
+$('saveTok').onclick=function(){var v=$('tok').value.trim();if(!/^(github_pat_|ghp_)/.test(v)){alert('الرمز يجب أن يبدأ بـ github_pat_');return}PFStore.setToken(v);$('tok').value='';$('setupBox').classList.add('hidden');load()};
+function load(){
+  if(!PFStore.token()){$('setupBox').classList.remove('hidden');PFVideo.load().then(function(l){items=l;draw();fillSec()});return}
+  store.readIndex().then(function(x){items=x.data.items;draw();fillSec()}).catch(function(e){$('list').innerHTML='<p class="hint">'+esc(e.message)+'</p>';PFVideo.load().then(function(l){items=l;draw();fillSec()})})}
+fillSec();load();
+})();
+</script>
+</body>
+</html>

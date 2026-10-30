@@ -140,6 +140,7 @@ img{display:block;max-width:100%}
   <iframe id="frame" title="عرض الشاهد"></iframe>
 </div>
 
+<script src="video-player.js"></script>
 <script src="principal-code.js"></script>
 <script>
 (function(){
@@ -196,7 +197,13 @@ function openPanel(k){var p=document.getElementById('panel'),list=document.getEl
     else if(!items.length)h='<div class="empty"><span class="big">🗂️</span>شواهد هذا البند قيد الاستكمال، وستظهر هنا فور اعتمادها.</div>';}
   list.innerHTML=h;document.getElementById('overlay').classList.remove('hidden');document.body.style.overflow='hidden';
   if(String(k)==='6')loadWeeks();
-  if(k==='nafs')loadNafs();}
+  if(k==='nafs')loadNafs();
+  if(k!=='nafs')loadVids(k);}
+function loadVids(k){if(!window.PFVideo)return;PFVideo.load().then(function(all){var list=PFVideo.sortByDate(all.filter(function(r){return String(r.std)===String(k)}));var box=document.getElementById('plist');if(!list.length||!box||document.getElementById('psub').textContent!=='البند '+k)return;PFVideo.injectCss();
+  var em=box.querySelector(':scope > .empty');if(em)em.remove();
+  var wrap=document.createElement('div');wrap.className='pf-vids';wrap.innerHTML='<div class="subh">🎬 مقاطع الفيديو</div><div class="pfv-grid">'+list.map(function(r){return PFVideo.card(r)}).join('')+'</div>';
+  wrap.addEventListener('click',function(e){var c=e.target.closest('[data-vid]');if(!c)return;e.stopPropagation();var r=list.filter(function(x){return x.id===c.dataset.vid})[0];if(r)PFVideo.play(r)});
+  box.appendChild(wrap)})}
 function evBtn(src,title,kind,ic){return '<button type="button" class="ev" data-src="'+esc(src)+'" data-t="'+esc(title)+'"><span class="ic">'+ic+'</span><span class="tx"><b>'+esc(title)+'</b><span>'+esc(kind)+'</span></span><span class="go">‹</span></button>'}
 
 var NAFS_ICON={pdf:'📕',image:'🖼️',html:'📊'};

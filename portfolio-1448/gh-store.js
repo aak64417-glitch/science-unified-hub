@@ -75,5 +75,54 @@
     });
   }
 
-  window.PFStore = { token: token, setToken: setToken, readIndex: readIndex, addReport: addReport, removeReport: removeReport, b64utf8: b64utf8 };
+  /* مجموعة عامة بفهرس مستقل (مثل مقاطع الفيديو) */
+  function collection(indexPath, folder, label) {
+    function rIndex() {
+      return call('GET', indexPath).then(function (d) {
+        var j = {}; try { j = JSON.parse(utf8b64(d.content)); } catch (e) {}
+        if (!Array.isArray(j.items)) j.items = [];
+        return { data: j, sha: d.sha };
+      }).catch(function (e) { if (e.status === 404 && token()) return { data: { items: [] }, sha: '' }; throw e; });
+    }
+    function wIndex(mutate, message, tries) {
+      return rIndex().then(function (cur) {
+        mutate(cur.data);
+        var body = { message: message, content: b64utf8(JSON.stringify(cur.data, null, 1) + '\n'), branch: 'main' };
+        if (cur.sha) body.sha = cur.sha;
+        return call('PUT', indexPath, body).then(function () { return cur.data; });
+      }).catch(function (e) {
+        if (e.message === 'conflict' && !tries) return wIndex(mutate, message, 1);
+        throw e;
+      });
+    }
+    /* files: [{ext, base64, role}] — role: main | thumb */
+    function add(meta, files) {
+      var id = newId(), rec = {}; for (var k in meta) rec[k] = meta[k];
+      rec.id = id; rec.added = new Date().toISOString();
+      var chain = Promise.resolve();
+      (files || []).forEach(function (f) {
+        var path = folder + '/' + id + (f.role === 'thumb' ? '-thumb' : '') + '.' + f.ext;
+        if (f.role === 'thumb') rec.thumb = path; else rec.file = path;
+        chain = chain.then(function () { return putFile(path, f.base64, 'ملف الإنجاز: ' + label + ' — ' + meta.title); });
+      });
+      return chain.then(function () {
+        return wIndex(function (j) { j.items.push(rec); }, 'ملف الإنجاز: تحديث فهرس ' + label);
+      }).then(function () { return rec; });
+    }
+    function remove(rec) {
+      var chain = Promise.resolve();
+      [rec.file, rec.thumb].forEach(function (pth) {
+        if (pth && pth.indexOf(folder + '/') === 0) chain = chain.then(function () { return deleteFile(pth, 'ملف الإنجاز: حذف ' + label + ' — ' + rec.title); });
+      });
+      return chain.then(function () {
+        return wIndex(function (j) { j.items = j.items.filter(function (r) { return r.id !== rec.id; }); }, 'ملف الإنجاز: تحديث فهرس ' + label);
+      });
+    }
+    function update(id, changes) {
+      return wIndex(function (j) { j.items.forEach(function (r) { if (r.id === id) for (var k in changes) r[k] = changes[k]; }); }, 'ملف الإنجاز: تعديل ' + label);
+    }
+    return { readIndex: rIndex, add: add, remove: remove, update: update };
+  }
+
+  window.PFStore = { token: token, setToken: setToken, readIndex: readIndex, addReport: addReport, removeReport: removeReport, b64utf8: b64utf8, collection: collection };
 })();
