@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>قوالب التقارير الجاهزة | ملف الإنجاز 1448هـ</title>
+<style>
+@font-face{font-family:Tajawal;font-weight:400;font-display:swap;src:url(vendor/fonts/tajawal-arabic-400-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:Tajawal;font-weight:500;font-display:swap;src:url(vendor/fonts/tajawal-arabic-500-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:Tajawal;font-weight:700;font-display:swap;src:url(vendor/fonts/tajawal-arabic-700-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:Tajawal;font-weight:800;font-display:swap;src:url(vendor/fonts/tajawal-arabic-800-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:Tajawal;font-weight:400;font-display:swap;src:url(vendor/fonts/tajawal-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122,U+2212}
+@font-face{font-family:Tajawal;font-weight:500;font-display:swap;src:url(vendor/fonts/tajawal-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122,U+2212}
+@font-face{font-family:Tajawal;font-weight:700;font-display:swap;src:url(vendor/fonts/tajawal-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122,U+2212}
+@font-face{font-family:Tajawal;font-weight:800;font-display:swap;src:url(vendor/fonts/tajawal-latin-800-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122,U+2212}
+
+/* ===== واجهة التحرير ===== */
+*{box-sizing:border-box}
+html,body{margin:0;background:#071b3c;color:#eef6ff;font-family:Tajawal,Tahoma,Arial,sans-serif}
+a{color:#c5e6ff}
+.bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;background:#0a2550;border-bottom:1px solid #2b5c8f}
+.bar h1{margin:0;font-size:19px;color:#ffe2a0;flex:1;min-width:180px}
+.btn{border:0;border-radius:11px;background:#1569ab;color:#fff;font:700 15px Tajawal,Tahoma,sans-serif;padding:10px 15px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;line-height:1.2}
+.btn.sub{background:#173f6c;border:1px solid #3d72a6}
+.btn.gold{background:#d9a62e;color:#2b1d00}
+.btn.green{background:#1d8657}
+.btn.red{background:#8f2e3a}
+.btn:disabled{opacity:.5;cursor:wait}
+.wrap{display:grid;grid-template-columns:minmax(360px,450px) 1fr;gap:16px;padding:16px;align-items:start}
+.panel{display:flex;flex-direction:column;gap:12px}
+.card{background:#10325a;border:1px solid #3a6c9c;border-radius:16px;padding:14px}
+.card h2{margin:0 0 10px;font-size:17px;color:#ffe2a0;display:flex;align-items:center;gap:8px}
+.card h2 b{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#d9a62e;color:#2b1d00;font-size:14px}
+label{display:block;font-weight:700;font-size:14px;margin:10px 0 5px;color:#d7ebff}
+input,select,textarea{width:100%;border:1px solid #7fb1d8;border-radius:10px;padding:10px 11px;font:15px Tajawal,Tahoma,sans-serif;background:#fff;color:#14283c}
+textarea{resize:vertical;min-height:70px;line-height:1.7}
+.hint{font-size:12.5px;color:#a9c8e4;margin-top:4px;line-height:1.6}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tpls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tpl{background:#0c2849;border:1.5px solid #335f8c;color:#fff;border-radius:12px;padding:10px;text-align:right;cursor:pointer;font:600 14px Tajawal,Tahoma,sans-serif;line-height:1.45}
+.tpl small{display:block;color:#9fc3e3;font-weight:500;font-size:12px}
+.tpl.on{border-color:#ffd36b;background:#1b4675;box-shadow:0 0 0 2px #ffd36b55}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:42px;height:42px;border-radius:12px;border:2px solid #ffffff44;cursor:pointer;padding:0;overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
+.sw.on{border-color:#ffd36b;box-shadow:0 0 0 3px #ffd36b66}
+.sw i{display:block}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.slot{background:#0c2849;border:1px dashed #5a8cbc;border-radius:12px;padding:8px}
+.slot .th{height:92px;border-radius:9px;background:#163c66 center/cover no-repeat;display:grid;place-items:center;color:#9fc3e3;font-size:13px;cursor:pointer;margin-bottom:6px;position:relative}
+.slot .th input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.slot .x{background:#8f2e3a;color:#fff;border:0;border-radius:8px;padding:4px 8px;font:12px Tajawal,sans-serif;cursor:pointer;margin-top:5px}
+.slot input[type=text]{padding:7px 9px;font-size:13px}
+.inforow{display:grid;grid-template-columns:120px 1fr;gap:6px;margin-bottom:6px}
+.inforow input{padding:8px 9px;font-size:14px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.status{min-height:22px;font-size:14px;color:#ffe2a0;line-height:1.7}
+.fit{font-size:13px;padding:8px 10px;border-radius:10px;margin-top:8px;display:none}
+.fit.warn{display:block;background:#4b3714;border-right:4px solid #f2bd5b;color:#ffe6b0}
+.previewBox{position:sticky;top:70px;background:#0b2346;border:1px solid #2f5f90;border-radius:16px;padding:12px;overflow:hidden}
+.previewBox .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:#bcd9f3;font-size:14px;gap:8px;flex-wrap:wrap}
+.scaler{transform-origin:top right}
+.drafts{display:none}
+.drafts.open{display:block}
+.dr{display:flex;align-items:center;gap:8px;padding:9px;border:1px solid #3a6c9c;border-radius:11px;margin:7px 0;background:#0c2849;flex-wrap:wrap}
+.dr span{flex:1;min-width:150px;font-size:14px}
+.dr small{color:#9fc3e3;display:block}
+.savebox{display:none;margin-top:10px;padding:12px;border-radius:12px;background:#0c2849;border:1px solid #d9a62e}
+.savebox.open{display:block}
+.tabs{display:none}
+details.more summary{cursor:pointer;font-weight:700;color:#ffe2a0;font-size:15px}
+.chk{display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:700;font-size:14px}
+.chk input{width:20px;height:20px}
+@media(max-width:1050px){
+ .wrap{grid-template-columns:1fr;padding:10px 10px 80px}
+ .previewBox{position:static}
+ body[data-tab=edit] .previewBox{display:none}
+ body[data-tab=view] .panel{display:none}
+ .tabs{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:30;background:#0a2550;border-top:1px solid #2b5c8f;padding:8px;gap:8px}
+ .tabs .btn{flex:1;justify-content:center}
+ .tabs .btn.on{background:#d9a62e;color:#2b1d00}
+}
+@media(max-width:520px){.tpls,.slots{grid-template-columns:1fr}.inforow{grid-template-columns:1fr}}
+
+/* ===== ورقة التقرير (A4 = 794×1123) ===== */
+.sheet{--c1:#0b3b5c;--c2:#127c8a;--c3:#e2ac2a;--soft:#eaf6f7;--fs:1;width:794px;min-height:1123px;background:#fff;color:#1b2a36;font-family:Tajawal,Tahoma,Arial,sans-serif;position:relative;overflow:hidden;display:flex;flex-direction:column;font-size:calc(13.5px*var(--fs));line-height:1.65}
+.sheet *{box-sizing:border-box}
+.sheet .bg{position:absolute;inset:0;pointer-events:none;background:
+ radial-gradient(circle at 100% 0,color-mix(in srgb,var(--c2) 16%,transparent) 0 150px,transparent 151px),
+ radial-gradient(circle at 0 100%,color-mix(in srgb,var(--c3) 14%,transparent) 0 170px,transparent 171px)}
+.s-hd{position:relative;display:grid;grid-template-columns:auto 1fr minmax(90px,auto);gap:10px;align-items:center;padding:20px 22px 12px;background:linear-gradient(180deg,var(--soft),#fff 92%)}
+.s-hd:after{content:"";position:absolute;left:22px;right:22px;bottom:0;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--c3),var(--c2) 50%,var(--c1))}
+.s-org{white-space:nowrap;font-size:calc(12.5px*var(--fs));font-weight:700;color:var(--c1);line-height:1.75}
+.s-org div:last-child{color:var(--c2);font-weight:800;font-size:calc(13.5px*var(--fs))}
+.s-ttl{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.s-kick{display:inline-flex;align-items:center;gap:8px;background:var(--c1);color:#fff;font-weight:800;font-size:calc(19px*var(--fs));padding:5px 22px;border-radius:30px;box-shadow:0 3px 0 var(--c3)}
+.s-kick svg{width:22px;height:22px}
+.s-big{font-weight:800;font-size:calc(31px*var(--fs));color:var(--c1);line-height:1.25;letter-spacing:0}
+.s-rib{background:linear-gradient(90deg,var(--c3),color-mix(in srgb,var(--c3) 70%,#fff),var(--c3));color:#2a1e00;font-weight:800;font-size:calc(15.5px*var(--fs));padding:5px 34px;clip-path:polygon(4% 0,96% 0,100% 50%,96% 100%,4% 100%,0 50%);line-height:1.5}
+.s-logo{display:flex;justify-content:flex-start;align-items:center}
+.s-logo img{max-width:150px;max-height:92px;object-fit:contain}
+.s-logo .lt{border:2px solid var(--c2);color:var(--c2);border-radius:14px;padding:10px 12px;text-align:center;font-weight:800;font-size:15px;line-height:1.4}
+.s-body{position:relative;flex:1;display:flex;flex-direction:column;gap:12px;padding:14px 20px 12px}
+.s-info{display:grid;gap:0;background:#fff;border:1.5px solid color-mix(in srgb,var(--c3) 60%,#fff);border-radius:16px;box-shadow:0 4px 14px color-mix(in srgb,var(--c1) 10%,transparent)}
+.s-cell{display:flex;align-items:center;gap:9px;padding:10px 12px;border-left:1px solid color-mix(in srgb,var(--c2) 22%,#fff)}
+.s-cell:last-child{border-left:0}
+.s-ic{flex:none;width:38px;height:38px;border-radius:50%;background:var(--c1);color:#fff;display:grid;place-items:center}
+.s-ic svg{width:20px;height:20px}
+.s-cell b{display:block;color:var(--c2);font-size:calc(12.5px*var(--fs));font-weight:800}
+.s-cell span.dt{white-space:pre}
+.s-cell span{display:block;font-weight:700;font-size:calc(13px*var(--fs));white-space:pre-line;line-height:1.5;color:#1b2a36}
+.s-ph{display:grid;gap:10px}
+.s-ph figure{margin:0;position:relative;border-radius:14px;overflow:hidden;border:2.5px solid color-mix(in srgb,var(--c3) 75%,#fff);background:var(--soft)}
+.s-ph img{width:100%;height:100%;object-fit:cover;display:block}
+.s-ph figcaption{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);max-width:88%;background:color-mix(in srgb,var(--c1) 92%,transparent);color:#fff;font-weight:700;font-size:calc(12.5px*var(--fs));padding:3px 16px;border-radius:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-ph .empty{display:grid;place-items:center;color:var(--c2);font-weight:700;border-style:dashed}
+.l2{grid-template-columns:1fr 1fr}.l2 figure{height:255px}
+.l3{grid-template-columns:1.35fr 1fr;grid-template-rows:150px 150px}.l3 figure:first-child{grid-row:span 2}
+.l4{grid-template-columns:1fr 1fr}.l4 figure{height:178px}
+.l6{grid-template-columns:1fr 1fr 1fr}.l6 figure{height:150px}
+.l1{grid-template-columns:1fr}.l1 figure{height:300px}
+.s-boxes{display:grid;grid-template-columns:1fr 1fr;gap:12px;grid-auto-flow:row dense}
+.s-box{background:#fff;border:1.5px solid color-mix(in srgb,var(--c2) 35%,#fff);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.s-box.full{grid-column:1/-1}
+.s-box.tall{grid-row:span 2}
+.s-bh{display:flex;align-items:center;gap:9px;background:linear-gradient(90deg,var(--c1),var(--c2));color:#fff;padding:6px 12px;font-weight:800;font-size:calc(15px*var(--fs))}
+.s-bh i{flex:none;width:30px;height:30px;border-radius:50%;background:var(--c3);color:var(--c1);display:grid;place-items:center}
+.s-bh i svg{width:17px;height:17px}
+.s-bb{padding:10px 13px;flex:1}
+.s-p{white-space:pre-line;font-weight:500;font-size:calc(14px*var(--fs));line-height:1.85;margin:0}
+.s-ul{list-style:none;margin:0;padding:0}
+.s-ul li{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px dashed color-mix(in srgb,var(--c2) 25%,#fff);font-weight:500}
+.s-ul li:last-child{border-bottom:0}
+.s-ul li em{flex:none;font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;margin-top:2px}
+.s-ul.n li em{background:var(--c3);color:#2a1e00}
+.s-ul.l li em{background:var(--c2);color:#fff}
+.s-ul.l li em svg{width:13px;height:13px}
+.s-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+.s-cd{background:var(--soft);border:1px solid color-mix(in srgb,var(--c2) 25%,#fff);border-radius:12px;padding:9px 10px;text-align:center}
+.s-cd em{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--c1);color:#fff;font-style:normal;font-weight:800;font-size:13px;margin-bottom:4px}
+.s-cd strong{display:block;color:var(--c1);font-weight:800;font-size:calc(14px*var(--fs));line-height:1.45}
+.s-cd span{display:block;font-weight:500;font-size:calc(12.5px*var(--fs));line-height:1.6;margin-top:2px}
+.s-ft{display:grid;grid-template-columns:1fr 215px;gap:12px;align-items:stretch}
+.s-ft.solo{grid-template-columns:1fr}
+.s-msg{background:linear-gradient(135deg,var(--soft),#fff);border:1.5px solid color-mix(in srgb,var(--c2) 35%,#fff);border-radius:16px;padding:12px 16px;display:flex;align-items:center;font-weight:800;color:var(--c1);font-size:calc(15px*var(--fs));line-height:1.8;white-space:pre-line;text-align:center;justify-content:center}
+.s-sign{border:1.5px solid color-mix(in srgb,var(--c3) 70%,#fff);border-radius:16px;padding:10px 12px;text-align:center;background:#fff}
+.s-sign b{display:block;color:var(--c2);font-size:calc(12.5px*var(--fs));font-weight:800}
+.s-sign strong{display:block;color:var(--c1);font-size:calc(17px*var(--fs));font-weight:800;line-height:1.5}
+.s-sign span{display:block;font-size:calc(12.5px*var(--fs));font-weight:600;line-height:1.5}
+.s-appr{display:flex;justify-content:space-between;gap:16px;padding:0 6px;font-weight:700;color:var(--c1);font-size:calc(13.5px*var(--fs))}
+.s-appr div{flex:1;text-align:center}
+.s-appr i{display:block;font-style:normal;border-bottom:1.5px dotted var(--c2);height:26px;margin:2px 30px 0}
+.s-strip{height:12px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3))}
+.ghost{opacity:.55}
+.ghost .s-p,.ghost .s-ul li{color:#7a8d9c}
+
+@media print{
+ @page{size:A4;margin:0}
+ html,body{background:#fff}
+ .bar,.panel,.tabs,.previewBox .ph,.fit{display:none!important}
+ .wrap{display:block;padding:0}
+ .previewBox{display:block!important;position:static;border:0;padding:0;background:#fff}
+ .scaler{transform:none!important;height:auto!important}
+ .sheet{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body data-tab="edit">
+<header class="bar">
+  <a class="btn sub" id="backLink" href="./">↩ ملف الإنجاز</a>
+  <h1>🎨 قوالب التقارير الجاهزة</h1>
+  <button class="btn sub" id="newBtn" type="button">＋ تقرير جديد</button>
+  <button class="btn sub" id="draftsBtn" type="button">🗂 مسوداتي</button>
+</header>
+
+<main class="wrap">
+<section class="panel">
+
+  <div class="card drafts" id="drafts"><h2>🗂 المسودات المحفوظة على هذا الجهاز</h2><div id="draftList"></div></div>
+
+  <div class="card">
+    <h2><b>١</b>البند والقالب</h2>
+    <label for="crit">البند الوزاري</label>
+    <select id="crit"></select>
+    <label>اختر القالب</label>
+    <div class="tpls" id="tpls"></div>
+    <label>نمط الألوان</label>
+    <div class="swatches" id="swatches"></div>
+    <div class="row2">
+      <div><label for="pcount">عدد صور الشواهد</label><select id="pcount"><option value="0">بدون صور</option><option value="1">صورة واحدة</option><option value="2">صورتان</option><option value="3">3 صور</option><option value="4">4 صور</option><option value="6">6 صور</option></select></div>
+      <div><label for="fs">حجم الخط</label><select id="fs"><option value="0.9">صغير</option><option value="1">متوسط</option><option value="1.08">كبير</option></select></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><b>٢</b>اسم التقرير والتاريخ</h2>
+    <label for="kicker">السطر العلوي (نوع التقرير)</label>
+    <input id="kicker" maxlength="40">
+    <label for="title">اسم التقرير</label>
+    <input id="title" maxlength="80">
+    <label for="subtitle">العنوان الفرعي (الشريط الذهبي) — اختياري</label>
+    <input id="subtitle" maxlength="90">
+    <div class="row2">
+      <div><label for="date">التاريخ</label><input id="date" type="date"></div>
+      <div><label for="dateText">التاريخ كما يظهر</label><textarea id="dateText" style="min-height:48px" maxlength="80"></textarea></div>
+    </div>
+    <div class="hint">يتحول التاريخ تلقائيًا إلى الهجري (أم القرى) مع اسم اليوم، ويمكنك تعديله يدويًا.</div>
+    <label>بطاقات المعلومات (العنوان — القيمة)</label>
+    <div id="infoRows"></div>
+    <div class="hint">البطاقة التي تُترك قيمتها فارغة لا تظهر في التقرير، عدا بطاقة التاريخ فتأخذ التاريخ تلقائيًا.</div>
+  </div>
+
+  <div class="card" id="photoCard">
+    <h2><b>٣</b>الشواهد المصورة</h2>
+    <div class="slots" id="slots"></div>
+    <div class="hint">اضغط على المربع لاختيار صورة، واكتب وصفًا قصيرًا يظهر على الصورة.</div>
+  </div>
+
+  <div class="card">
+    <h2><b>٤</b>محتوى التقرير</h2>
+    <div id="secFields"></div>
+  </div>
+
+  <div class="card">
+    <h2><b>٥</b>الختام والتوقيع</h2>
+    <label for="closing">رسالة ختامية — اختياري</label>
+    <textarea id="closing" maxlength="300"></textarea>
+    <div class="row2">
+      <div><label for="preparer">إعداد وتوثيق</label><input id="preparer" maxlength="60"></div>
+      <div><label for="role">الصفة</label><input id="role" maxlength="60"></div>
+    </div>
+    <label class="chk"><input type="checkbox" id="showAppr"> إظهار خانة اعتماد مدير المدرسة</label>
+    <label for="principal">اسم مدير المدرسة</label>
+    <input id="principal" maxlength="60">
+    <details class="more" style="margin-top:12px">
+      <summary>⚙ ترويسة التقرير والشعار</summary>
+      <label for="org">أسطر الترويسة (سطر لكل جهة)</label>
+      <textarea id="org" rows="4"></textarea>
+      <label for="logo">شعار يظهر يسار الترويسة (صورة) — اختياري</label>
+      <input id="logo" type="file" accept="image/*">
+      <p><button class="btn red" type="button" id="logoClear">إزالة الشعار</button></p>
+      <div class="hint">تُحفظ الترويسة والشعار على هذا الجهاز وتُستخدم في كل التقارير.</div>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2><b>٦</b>الحفظ والتصدير</h2>
+    <div class="actions">
+      <button class="btn gold" type="button" id="toPortfolio">📥 حفظ في ملف الإنجاز</button>
+      <button class="btn" type="button" id="dlPdf">📄 تنزيل PDF</button>
+      <button class="btn" type="button" id="dlPng">🖼 تنزيل صورة</button>
+      <button class="btn sub" type="button" id="printBtn">🖨 طباعة</button>
+    </div>
+    <div class="savebox" id="saveBox">
+      <label for="saveSec">القسم داخل البند</label>
+      <select id="saveSec"></select>
+      <label for="saveFmt">صيغة الشاهد</label>
+      <select id="saveFmt"><option value="png">صورة PNG (تُعرض مباشرة)</option><option value="pdf">ملف PDF</option></select>
+      <p class="actions"><button class="btn green" type="button" id="saveConfirm">✓ تأكيد الحفظ</button><button class="btn sub" type="button" id="saveCancel">إلغاء</button></p>
+    </div>
+    <p class="status" id="status" role="status"></p>
+    <div class="hint">تُحفظ المسودة تلقائيًا على هذا الجهاز أثناء الكتابة. الحفظ في ملف الإنجاز يضيف التقرير شاهدًا في البند والقسم المختار.</div>
+  </div>
+</section>
+
+<section class="previewBox" id="previewBox">
+  <div class="ph"><span>👁 المعاينة المباشرة — مقاس A4</span><span id="fitNote"></span></div>
+  <div class="fit" id="fit"></div>
+  <div class="scaler" id="scaler"><div class="sheet" id="sheet"></div></div>
+</section>
+</main>
+
+<nav class="tabs"><button class="btn on" type="button" data-tab="edit">✎ التحرير</button><button class="btn" type="button" data-tab="view">👁 المعاينة</button></nav>
+
+<script src="vendor/html-to-image.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- الأيقونات ---------- */
+const P={
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+users:'<circle cx="9" cy="8" r="3.4"/><circle cx="17" cy="9" r="2.7"/><path d="M2.5 20c0-3.8 2.9-6 6.5-6s6.5 2.2 6.5 6M15 14.2c3.3-.4 6.5 1.4 6.5 5.3"/>',
+pin:'<path d="M12 22s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/>',
+cal:'<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4M7.5 14h2M11 14h2M14.5 14h2M7.5 17.5h2M11 17.5h2"/>',
+target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.2"/><circle cx="12" cy="12" r="1.6"/>',
+list:'<rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+check:'<path d="M5 12.5l4.2 4.2L19 7"/>',
+bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.8.7 1.1 1.4 1.1 2.2h5c0-.8.3-1.5 1.1-2.2A6 6 0 0 0 12 3z"/>',
+gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+chart:'<path d="M4 20h16"/><rect x="5.5" y="12" width="3" height="6" rx=".8"/><rect x="10.5" y="8" width="3" height="10" rx=".8"/><rect x="15.5" y="4" width="3" height="14" rx=".8"/>',
+star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+book:'<path d="M4 5.5C4 4.1 5.1 3 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.4 2"/>',
+cls:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M7 9h6"/>',
+chat:'<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+flag:'<path d="M5 22V3M5 4h12l-2.5 4L17 12H5"/>',
+flask:'<path d="M9 3h6M10 3v6L4.5 19A1.5 1.5 0 0 0 5.8 21h12.4a1.5 1.5 0 0 0 1.3-2L14 9V3M7.5 15h9"/>',
+laptop:'<rect x="4" y="4" width="16" height="11" rx="1.6"/><path d="M2 19h20"/>',
+shield:'<path d="M12 3l8 3v6c0 4.6-3.4 8-8 9-4.6-1-8-4.4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/>',
+award:'<circle cx="12" cy="9" r="6"/><path d="M8.5 14l-1.5 8 5-2.6 5 2.6-1.5-8"/>',
+pen:'<path d="M4 20l4.5-1 11-11a2.1 2.1 0 0 0-3-3l-11 11z"/><path d="M14.5 6.5l3 3"/>',
+rocket:'<path d="M12 15l-3-3c1.7-5 5.3-8.4 11-9-.6 5.7-4 9.3-9 11z"/><path d="M9 12l-4-.5L7.5 8 11 8.5M12 15l.5 4 3.5-2.5-.5-3.5M6 18c-1 1-1.5 3-1.5 3s2-.5 3-1.5"/>',
+heart:'<path d="M12 20s-8-4.6-8-10.2A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 8 2.8C20 15.4 12 20 12 20z"/>'};
+const ico=(k,sw=2)=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+sw+'" stroke-linecap="round" stroke-linejoin="round">'+(P[k]||P.list)+'</svg>';
+
+/* ---------- البنود والأقسام (مطابقة لصفحة إدارة التقارير) ---------- */
+const STANDARDS=["أداء الواجبات الوظيفية","التفاعل مع المجتمع المهني","التفاعل مع أولياء الأمور","التنوع في استراتيجيات التدريس","تحسين نتائج المتعلمين","إعداد وتنفيذ خطة التعلم","توظيف تقنيات ووسائل التعلم المناسبة","تهيئة البيئة التعليمية","الإدارة الصفية","تحليل نتائج المتعلمين وتشخيص مستوياتهم","تنوع أساليب التقويم"];
+const DEFAULTS=[["حصص الانتظار","المناوبة والإشراف","أعمال اللجان","الالتزام بالدوام الرسمي","التكاليف من إدارة المدرسة","المشاركة في المناسبات الوطنية","تحضير الدروس في منصة مدرستي","رصد الدرجات في نظام نور","حضور الاجتماعات المدرسية","الإذاعة والأنشطة المدرسية","المبادرات والأعمال التطوعية"],["التطوير المهني","الزيارات المتبادلة","المجتمعات المهنية","الدورات التدريبية","حضور الورش والملتقيات","تقديم ورش ودروس تطبيقية","الدروس النموذجية","اجتماعات القسم والمشرف التربوي","تبادل الخبرات مع الزملاء"],["التواصل مع أولياء الأمور","اجتماعات أولياء الأمور","إشعارات المستوى والتقدم","رسائل التواصل عبر منصة مدرستي","سجل التواصل مع أولياء الأمور","إشراك أولياء الأمور في الخطط العلاجية","التهنئة والتحفيز","استطلاعات رأي أولياء الأمور"],["استراتيجيات التعلم","أنشطة التعلم","استراتيجيات التدريس","التعلم التعاوني","التعلم النشط","التعلم باللعب والمسابقات","التعلم بالمشروعات","الاستقصاء والتجارب العملية","التعلم المقلوب","التعليم المتمايز"],["الخطط العلاجية","متابعة الطلاب منخفضي المستوى","حصص التقوية","برامج الإثراء للمتفوقين","التدريب على اختبارات نافس","تكريم المتفوقين والمتميزين","مقارنة النتائج قبل المعالجة وبعدها"],["خطط التعلم","توزيع المنهج","تحضير الدروس","الخطة الفصلية","خطة الأنشطة الصفية","خطط الواجبات المنزلية","ملف المادة"],["توظيف التقنية في التعلم","الدروس التفاعلية","مقاطع الفيديو التعليمية","المختبر الافتراضي","منصة مدرستي","الاختبارات الإلكترونية","العروض التقديمية","المنصات التعليمية من إعداد المعلم","الوسائل التعليمية"],["تجهيز المختبر","تهيئة الفصل وتنظيمه","لوحات وجداريات الفصل","ركن العلوم","إجراءات الأمن والسلامة","البيئة الآمنة والمحفزة"],["الإدارة الصفية","قواعد السلوك الصفي","إدارة وقت الحصة","التعزيز ولوحات التميز","متابعة الحضور والانضباط","توزيع الأدوار والمجموعات","معالجة السلوكيات الصفية"],["تقارير تحليل الاختبارات","الاختبارات التشخيصية","تحليل نتائج الفترات","تحليل نتائج نافس","تصنيف مستويات الطلاب","الخطط المبنية على نتائج التحليل"],["مهام أدائية","التقويم التكويني","الاختبارات القصيرة","الاختبارات الفترية والنهائية","التقويم الذاتي وتقويم الأقران","سلالم التقدير","الملاحظة والأسئلة الشفهية","الواجبات المنزلية","المشاريع والبحوث","ملفات إنجاز الطلاب"]];
+
+/* ---------- القوالب ----------
+   info: [أيقونة، عنوان البطاقة]   — بطاقة الأيقونة cal تأخذ التاريخ تلقائيًا
+   secs: [المفتاح، العنوان، النوع، الأيقونة، العرض]
+   النوع: p فقرة | n قائمة مرقمة | l قائمة بعلامات | c بطاقات
+   العرض: 1 نصف | 2 كامل | r نصف بارتفاع مضاعف */
+const D=['cal','التاريخ'],PL=['pin','المكان'],CL=['cls','الفصل'];
+const T=[
+// 1
+{id:"wait",c:1,kicker:"تقرير",title:"حصص الانتظار",sub:"حصص الانتظار",info:[CL,['book','الحصة'],['user','المادة'],D],secs:[["goal","هدف الحصة","p","target",1],["done","النشاط المنفذ","l","list",1],["notes","ملاحظات وانطباعات","p","pen",2]]},
+{id:"duty",c:1,kicker:"تقرير",title:"المناوبة والإشراف اليومي",sub:"المناوبة والإشراف",info:[['clock','الفترة'],['pin','موقع الإشراف'],['users','المشاركون'],D],secs:[["tasks","المهام المنفذة","l","list",1],["obs","الملاحظات","l","bulb",1],["act","الإجراءات المتخذة","n","gear",2]]},
+{id:"national",c:1,kicker:"تقرير مشاركة",title:"في مناسبة وطنية",sub:"المشاركة في المناسبات الوطنية",info:[['flag','المناسبة'],['users','المشاركون'],PL,D],secs:[["goal","أهداف المشاركة","p","target",1],["acts","الفعاليات المنفذة","l","star",1],["out","أثر المشاركة","p","heart",2]]},
+{id:"committee",c:1,kicker:"تقرير",title:"أعمال اللجان",sub:"أعمال اللجان",info:[['list','اسم اللجنة'],['user','الصفة في اللجنة'],PL,D],secs:[["tasks","المهام المسندة","n","list",1],["done","ما تم إنجازه","l","check",1],["rec","التوصيات","l","bulb",2]]},
+// 2
+{id:"plc",c:2,kicker:"تقرير اجتماع",title:"مجتمع التعلم المهني",sub:"المجتمعات المهنية",info:[['user','المشرف التربوي'],['users','المشاركون'],['pin','مكان الاجتماع'],['cal','تاريخ الاجتماع']],secs:[["goal","هدف الاجتماع","p","target",1],["topics","أبرز الموضوعات التي تمت مناقشتها","n","list","r"],["out","أهم المخرجات والقرارات","l","bulb",1],["plan","الخطة المقترحة للتنفيذ","c","gear",2],["exp","النتائج المتوقعة","c","chart",2]]},
+{id:"visit",c:2,kicker:"تقرير",title:"زيارة صفية تبادلية",sub:"الزيارات المتبادلة",info:[['user','المعلم المزور'],['book','الدرس'],CL,D],secs:[["goal","هدف الزيارة","p","target",1],["str","جوانب التميز","l","star",1],["gain","الفوائد المكتسبة","l","bulb",1],["rec","المقترحات","l","pen",1]]},
+{id:"course",c:2,kicker:"تقرير حضور",title:"دورة تدريبية / ورشة عمل",sub:"الدورات التدريبية",info:[['award','اسم البرنامج'],['user','المدرب / الجهة'],['clock','المدة'],D],secs:[["goal","أهداف البرنامج","l","target",1],["axes","محاور البرنامج","n","list",1],["apply","التطبيق في الميدان التعليمي","p","rocket",2]]},
+{id:"model",c:2,kicker:"تقرير تنفيذ",title:"درس تطبيقي",sub:"تقديم ورش ودروس تطبيقية",info:[['book','عنوان الدرس'],['users','الحضور'],CL,D],secs:[["goal","أهداف الدرس","l","target",1],["str","الاستراتيجيات المستخدمة","l","bulb",1],["steps","إجراءات التنفيذ","c","gear",2],["out","النتائج والانطباعات","p","chart",2]]},
+// 3
+{id:"pmeet",c:3,kicker:"تقرير",title:"اجتماع أولياء الأمور",sub:"اجتماعات أولياء الأمور",info:[['users','عدد الحضور'],['cls','الصف / الفصول'],PL,D],secs:[["goal","هدف الاجتماع","p","target",1],["topics","محاور اللقاء","n","list",1],["rec","التوصيات والمخرجات","l","bulb",2]]},
+{id:"pcontact",c:3,kicker:"تقرير",title:"التواصل مع أولياء الأمور",sub:"سجل التواصل مع أولياء الأمور",info:[['chat','وسيلة التواصل'],['users','عدد المستهدفين'],CL,D],secs:[["reason","سبب التواصل","p","chat",1],["done","الإجراءات المنفذة","l","check",1],["result","النتيجة والمتابعة","p","chart",2]]},
+{id:"ppraise",c:3,kicker:"تقرير",title:"التهنئة والتحفيز",sub:"التهنئة والتحفيز",info:[['star','المناسبة'],['users','عدد الطلاب'],CL,D],secs:[["goal","الهدف","p","target",1],["how","أساليب التحفيز","l","heart",1],["out","الأثر","p","chart",2]]},
+// 4
+{id:"strategy",c:4,kicker:"تقرير تطبيق",title:"استراتيجية تدريس",sub:"استراتيجيات التدريس",info:[['bulb','الاستراتيجية'],['book','الدرس'],CL,D],secs:[["goal","أهداف التطبيق","l","target",1],["steps","خطوات التنفيذ","n","list",1],["result","أثر التطبيق على الطلاب","p","chart",2]]},
+{id:"coop",c:4,kicker:"تقرير",title:"التعلم التعاوني",sub:"التعلم التعاوني",info:[['users','عدد المجموعات'],['book','الدرس'],CL,D],secs:[["goal","الهدف","p","target",1],["roles","توزيع الأدوار","l","users",1],["steps","مراحل النشاط","c","gear",2],["out","النتائج","p","chart",2]]},
+{id:"inquiry",c:4,kicker:"تقرير تنفيذ",title:"تجربة عملية",sub:"الاستقصاء والتجارب العملية",info:[['flask','التجربة'],['book','الدرس'],CL,D],secs:[["goal","هدف التجربة","p","target",1],["tools","الأدوات والمواد","l","flask",1],["steps","خطوات التنفيذ","n","list",1],["obs","الملاحظات والنتائج","p","bulb",1]]},
+{id:"contest",c:4,kicker:"تقرير",title:"مسابقة صفية",sub:"التعلم باللعب والمسابقات",info:[['award','اسم المسابقة'],['users','المشاركون'],CL,D],secs:[["goal","أهداف المسابقة","l","target",1],["rules","آلية التنفيذ","n","gear",1],["win","الفائزون والتكريم","l","star",1],["out","الأثر","p","chart",1]]},
+// 5
+{id:"remedial",c:5,kicker:"تقرير",title:"الخطة العلاجية",sub:"الخطط العلاجية",info:[['users','عدد الطلاب'],CL,['clock','مدة التنفيذ'],D],secs:[["goal","أهداف الخطة","l","target",1],["skills","المهارات المستهدفة","n","list",1],["proc","إجراءات المعالجة","c","gear",2],["result","نتائج المتابعة","p","chart",2]]},
+{id:"enrich",c:5,kicker:"تقرير",title:"البرنامج الإثرائي",sub:"برامج الإثراء للمتفوقين",info:[['users','عدد الطلاب'],CL,['clock','المدة'],D],secs:[["goal","أهداف البرنامج","l","target",1],["acts","الأنشطة الإثرائية","n","rocket",1],["out","المخرجات","p","star",2]]},
+{id:"honor",c:5,kicker:"تقرير",title:"تكريم المتفوقين",sub:"تكريم المتفوقين والمتميزين",info:[['award','المناسبة'],['users','عدد المكرَّمين'],PL,D],secs:[["goal","الهدف من التكريم","p","target",1],["crit","معايير الاختيار","l","list",1],["out","الأثر","p","heart",2]]},
+{id:"nafis",c:5,kicker:"تقرير",title:"التدريب على اختبارات نافس",sub:"التدريب على اختبارات نافس",info:[['cls','الصف / الفصول'],['users','عدد الطلاب'],['clock','مدة التدريب'],D],secs:[["goal","أهداف التدريب","l","target",1],["areas","المجالات المستهدفة","n","list",1],["proc","آلية التدريب","c","gear",2],["result","النتائج والمتابعة","p","chart",2]]},
+// 6
+{id:"semplan",c:6,kicker:"تقرير",title:"الخطة الفصلية وتوزيع المنهج",sub:"الخطة الفصلية",info:[['book','المادة'],['cls','الصف'],['clock','الفصل الدراسي'],D],secs:[["goal","أهداف الخطة","l","target",1],["units","الوحدات والفصول","n","list",1],["notes","آلية المتابعة والتنفيذ","p","gear",2]]},
+{id:"prep",c:6,kicker:"تقرير",title:"تحضير الدروس",sub:"تحضير الدروس",info:[['book','المادة'],['cls','الصف'],['laptop','منصة التحضير'],D],secs:[["parts","عناصر التحضير","l","list",1],["lessons","الدروس المحضّرة","n","book",1],["notes","ملاحظات","p","pen",2]]},
+// 7
+{id:"interactive",c:7,kicker:"تقرير تنفيذ",title:"درس تفاعلي رقمي",sub:"الدروس التفاعلية",info:[['laptop','الأداة / المنصة'],['book','الدرس'],CL,D],secs:[["goal","أهداف الدرس","l","target",1],["steps","مراحل التنفيذ","n","list",1],["out","تفاعل الطلاب والنتائج","p","chart",2]]},
+{id:"vlab",c:7,kicker:"تقرير",title:"توظيف المختبر الافتراضي",sub:"المختبر الافتراضي",info:[['flask','التجربة الافتراضية'],['book','الدرس'],CL,D],secs:[["goal","الهدف","p","target",1],["steps","خطوات التنفيذ","n","list",1],["out","النتائج","p","chart",2]]},
+{id:"platform",c:7,kicker:"تقرير",title:"منصة تعليمية من إعداد المعلم",sub:"المنصات التعليمية من إعداد المعلم",info:[['laptop','اسم المنصة'],['users','المستفيدون'],['cls','الصفوف'],D],secs:[["goal","فكرة المنصة وهدفها","p","bulb",1],["feat","أبرز المزايا","l","star",1],["out","الأثر على التعلم","p","chart",2]]},
+// 8
+{id:"lab",c:8,kicker:"تقرير",title:"تجهيز المختبر",sub:"تجهيز المختبر",info:[['flask','المختبر'],['list','نوع التجهيز'],PL,D],secs:[["done","الأعمال المنفذة","l","check",1],["tools","الأدوات والمواد","l","flask",1],["notes","ملاحظات","p","pen",2]]},
+{id:"corner",c:8,kicker:"تقرير",title:"ركن العلوم",sub:"ركن العلوم",info:[['pin','موقع الركن'],CL,['users','المشاركون'],D],secs:[["goal","الهدف","p","target",1],["parts","محتويات الركن","l","list",1],["out","الأثر","p","heart",2]]},
+{id:"safety",c:8,kicker:"تقرير",title:"إجراءات الأمن والسلامة",sub:"إجراءات الأمن والسلامة",info:[['shield','الإجراء'],PL,['users','المستهدفون'],D],secs:[["goal","الهدف","p","target",1],["steps","الإجراءات المنفذة","n","shield",1],["rec","التوصيات","l","bulb",2]]},
+// 9
+{id:"rules",c:9,kicker:"تقرير",title:"قواعد السلوك الصفي",sub:"قواعد السلوك الصفي",info:[CL,['users','عدد الطلاب'],['book','المادة'],D],secs:[["rules","القواعد المتفق عليها","n","list",1],["how","آلية التطبيق والمتابعة","l","gear",1],["out","الأثر على الانضباط","p","chart",2]]},
+{id:"reinforce",c:9,kicker:"تقرير",title:"التعزيز ولوحات التميز",sub:"التعزيز ولوحات التميز",info:[CL,['star','نوع التعزيز'],['clock','الفترة'],D],secs:[["goal","الهدف","p","target",1],["ways","أساليب التعزيز","l","heart",1],["out","النتائج","p","chart",2]]},
+// 10
+{id:"diag",c:10,kicker:"تقرير تحليل",title:"الاختبار التشخيصي",sub:"الاختبارات التشخيصية",info:[CL,['users','عدد الطلاب'],['book','المادة'],D],secs:[["goal","هدف الاختبار","p","target",1],["strong","مهارات متقنة","l","star",1],["weak","مهارات تحتاج إلى دعم","l","bulb",1],["plan","الإجراءات المبنية على التحليل","n","gear",1]]},
+{id:"period",c:10,kicker:"تقرير تحليل",title:"نتائج الفترة",sub:"تحليل نتائج الفترات",info:[CL,['users','عدد الطلاب'],['clock','الفترة'],D],secs:[["read","قراءة النتائج","p","chart",1],["levels","توزيع المستويات","c","users",1],["plan","الإجراءات المقترحة","n","gear",2]]},
+{id:"levels",c:10,kicker:"تقرير",title:"تصنيف مستويات الطلاب",sub:"تصنيف مستويات الطلاب",info:[CL,['users','عدد الطلاب'],['list','أداة التصنيف'],D],secs:[["levels","فئات المستويات","c","chart",2],["plan","الإجراء لكل فئة","n","gear",2]]},
+// 11
+{id:"perf",c:11,kicker:"تقرير",title:"المهام الأدائية",sub:"مهام أدائية",info:[['list','المهمة'],['book','الدرس'],CL,D],secs:[["goal","هدف المهمة","p","target",1],["crit","معايير التقييم","l","list",1],["out","نتائج الطلاب","p","chart",2]]},
+{id:"formative",c:11,kicker:"تقرير",title:"التقويم التكويني",sub:"التقويم التكويني",info:[['list','الأداة'],['book','الدرس'],CL,D],secs:[["tools","أدوات التقويم المستخدمة","l","list",1],["use","توظيف النتائج","n","gear",1],["out","الأثر","p","chart",2]]},
+{id:"quiz",c:11,kicker:"تقرير",title:"الاختبار القصير",sub:"الاختبارات القصيرة",info:[['book','الدرس / الوحدة'],CL,['users','عدد الطلاب'],D],secs:[["goal","هدف الاختبار","p","target",1],["result","النتائج","c","chart",1],["plan","التغذية الراجعة والمعالجة","n","gear",2]]},
+{id:"rubric",c:11,kicker:"تقرير",title:"سلالم التقدير",sub:"سلالم التقدير",info:[['list','المهارة المقيَّمة'],['book','الدرس'],CL,D],secs:[["levels","مستويات السلم","c","chart",2],["use","آلية التطبيق","n","gear",1],["out","النتائج","p","star",1]]}
+];
+const GENERAL={id:"general",kicker:"تقرير",title:"",sub:"",info:[['user','المنفذ'],['users','المستهدفون'],PL,D],secs:[["goal","الهدف","p","target",1],["steps","إجراءات التنفيذ","n","list",1],["out","النتائج والأثر","l","chart",1],["rec","التوصيات","l","bulb",1]]};
+const tplOf=(id,c)=>T.find(t=>t.id===id)||{...GENERAL,c};
+const HINT={p:"اكتب الفقرة هنا…",n:"بند في كل سطر",l:"بند في كل سطر",c:"بطاقة في كل سطر بالصيغة: العنوان: الوصف"};
+
+/* ---------- الأنماط اللونية ---------- */
+const THEMES=[
+ {k:"teal",c1:"#0b3b5c",c2:"#127c8a",c3:"#e2ac2a",soft:"#eaf6f7"},
+ {k:"green",c1:"#0f5a43",c2:"#1e8a5f",c3:"#d6a53a",soft:"#ecf6f0"},
+ {k:"blue",c1:"#123f86",c2:"#2a72c9",c3:"#efb33c",soft:"#eaf2fc"},
+ {k:"purple",c1:"#3d2a6e",c2:"#6a4fb3",c3:"#e6a83c",soft:"#f2eefb"},
+ {k:"maroon",c1:"#6a1f2e",c2:"#a33a4c",c3:"#d9a441",soft:"#f9eef0"},
+ {k:"brown",c1:"#5b3b1f",c2:"#9a6a37",c3:"#3f8f8a",soft:"#f7f1e8"}];
+const themeFor=c=>THEMES[(c-1)%THEMES.length].k;
+
+/* ---------- الإعدادات الثابتة على الجهاز ---------- */
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const ORG_DEFAULT="المملكة العربية السعودية\nوزارة التعليم\nالإدارة العامة للتعليم بمحافظة الأحساء\nمدرسة أبي الدرداء المتوسطة";
+let logo=LS.get("rt-logo","");
+
+/* ---------- الحالة ---------- */
+let S=null;
+function hijri(iso){if(!iso)return "";const d=new Date(iso+"T12:00:00");if(isNaN(d))return "";
+ try{const w=new Intl.DateTimeFormat("ar-SA",{weekday:"long"}).format(d);const h=new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-arab",{day:"numeric",month:"long",year:"numeric"}).format(d);return w+"\n"+h}catch(e){return d.toLocaleDateString("ar-SA")}}
+function todayISO(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function freshState(c,tplId){const t=tplOf(tplId,c);const iso=todayISO();return{id:"d"+Date.now()+Math.random().toString(36).slice(2,7),c,tpl:t.id,theme:themeFor(c),kicker:t.kicker,title:t.title,subtitle:"",date:iso,dateText:hijri(iso),info:t.info.map(([i,l])=>({i,l,v:""})),pcount:4,photos:[],secs:{},closing:"",preparer:LS.get("rt-prep","علي طاهر البقاشي"),role:LS.get("rt-role","معلم العلوم"),showAppr:LS.get("rt-appr","1")==="1",principal:LS.get("rt-principal","فوزي محمد الهلال"),fs:1,updated:Date.now()}}
+const hasContent=()=>S.photos.some(p=>p&&p.src)||Object.values(S.secs).some(v=>v&&v.trim())||S.info.some(x=>x.v.trim())||S.subtitle.trim()||S.closing.trim();
+
+/* ---------- تخزين المسودات ---------- */
+function draftDB(){return new Promise((ok,fail)=>{const r=indexedDB.open("portfolio-report-templates-v1",1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains("drafts"))r.result.createObjectStore("drafts",{keyPath:"id"})};r.onsuccess=()=>ok(r.result);r.onerror=()=>fail(r.error)})}
+async function dOp(mode,fn){const db=await draftDB();return new Promise((ok,fail)=>{const tx=db.transaction("drafts",mode);let out;const q=fn(tx.objectStore("drafts"));q.onsuccess=()=>{out=q.result};tx.oncomplete=()=>{db.close();ok(out)};tx.onerror=()=>{db.close();fail(tx.error)};tx.onabort=()=>{db.close();fail(tx.error||new Error("أُلغيت العملية"))}})}
+let saveTimer=null;
+function autosave(){clearTimeout(saveTimer);saveTimer=setTimeout(async()=>{if(!hasContent())return;S.updated=Date.now();try{await dOp("readwrite",s=>s.put(JSON.parse(JSON.stringify(S))));LS.set("rt-last",S.id)}catch(e){status("تعذر حفظ المسودة: "+e.message)}},700)}
+async function paintDrafts(){const box=$("draftList");box.textContent="جارٍ التحميل…";try{const list=(await dOp("readonly",s=>s.getAll())).sort((a,b)=>b.updated-a.updated);box.replaceChildren();if(!list.length){box.textContent="لا توجد مسودات بعد.";return}
+ for(const d of list){const row=document.createElement("div");row.className="dr";const sp=document.createElement("span");sp.innerHTML=esc((d.kicker?d.kicker+" ":"")+(d.title||"بدون عنوان"))+"<small>البند "+d.c+" • "+esc(new Date(d.updated).toLocaleString("ar-SA"))+"</small>";const op=document.createElement("button");op.className="btn";op.type="button";op.textContent="فتح";op.onclick=()=>{S=d;S.photos=S.photos||[];loadUI();$("drafts").classList.remove("open");status("تم فتح المسودة.")};const del=document.createElement("button");del.className="btn red";del.type="button";del.textContent="حذف";del.onclick=async()=>{if(!confirm("حذف هذه المسودة نهائيًا؟"))return;await dOp("readwrite",s=>s.delete(d.id));paintDrafts()};row.append(sp,op,del);box.appendChild(row)}}catch(e){box.textContent="تعذر قراءة المسودات: "+e.message}}
+
+/* ---------- بناء الواجهة ---------- */
+STANDARDS.forEach((n,i)=>$("crit").add(new Option((i+1)+". "+n,String(i+1))));
+function paintTemplates(){const box=$("tpls");box.replaceChildren();const list=T.filter(t=>t.c===S.c).concat([{...GENERAL,c:S.c}]);
+ for(const t of list){const b=document.createElement("button");b.type="button";b.className="tpl"+(t.id===S.tpl?" on":"");b.innerHTML=esc(t.id==="general"?"قالب عام مرن":(t.kicker+" "+t.title))+"<small>"+esc(t.id==="general"?"عنوان ومحتوى تحددهما بنفسك":t.secs.map(s=>s[1]).join("، "))+"</small>";
+ b.onclick=()=>{if(t.id===S.tpl)return;if(hasContent()&&!confirm("تغيير القالب يستبدل بطاقات المعلومات وأقسام المحتوى. تبقى الصور والتاريخ. هل تتابع؟"))return;applyTemplate(t.id);};box.appendChild(b)}}
+function applyTemplate(id){const t=tplOf(id,S.c);S.tpl=t.id;S.kicker=t.kicker;S.title=t.title;S.info=t.info.map(([i,l])=>({i,l,v:""}));S.secs={};loadUI()}
+function paintSwatches(){const box=$("swatches");box.replaceChildren();for(const th of THEMES){const b=document.createElement("button");b.type="button";b.className="sw"+(th.k===S.theme?" on":"");b.title="نمط ألوان";b.innerHTML='<i style="background:'+th.c1+'"></i><i style="background:'+th.c2+'"></i><i style="background:'+th.c3+'"></i><i style="background:'+th.soft+'"></i>';b.onclick=()=>{S.theme=th.k;paintSwatches();changed()};box.appendChild(b)}}
+function paintInfo(){const box=$("infoRows");box.replaceChildren();S.info.forEach((x,i)=>{const row=document.createElement("div");row.className="inforow";const l=document.createElement("input");l.value=x.l;l.maxLength=30;l.setAttribute("aria-label","عنوان البطاقة "+(i+1));l.oninput=()=>{x.l=l.value;changed()};const v=document.createElement("input");v.value=x.v;v.maxLength=70;v.placeholder=x.i==="cal"?"يأخذ التاريخ تلقائيًا":"اكتب القيمة";v.setAttribute("aria-label","قيمة "+x.l);v.oninput=()=>{x.v=v.value;changed()};row.append(l,v);box.appendChild(row)})}
+function paintSlots(){const box=$("slots");box.replaceChildren();$("photoCard").style.display=S.pcount?"":"none";
+ for(let i=0;i<S.pcount;i++){const p=S.photos[i]||(S.photos[i]={src:"",cap:""});const slot=document.createElement("div");slot.className="slot";const th=document.createElement("div");th.className="th";if(p.src)th.style.backgroundImage="url("+p.src+")";else th.textContent="＋ صورة "+(i+1);const f=document.createElement("input");f.type="file";f.accept="image/*";f.setAttribute("aria-label","اختيار صورة "+(i+1));f.onchange=async()=>{const file=f.files[0];if(!file)return;status("جارٍ تجهيز الصورة…");try{p.src=await shrink(file,1600,.86);status("");paintSlots();changed()}catch(e){status("تعذر قراءة الصورة: "+e.message)}};th.appendChild(f);
+ const cap=document.createElement("input");cap.type="text";cap.maxLength=60;cap.placeholder="وصف الصورة";cap.value=p.cap;cap.oninput=()=>{p.cap=cap.value;changed()};slot.append(th,cap);if(p.src){const x=document.createElement("button");x.type="button";x.className="x";x.textContent="إزالة الصورة";x.onclick=()=>{p.src="";paintSlots();changed()};slot.appendChild(x)}box.appendChild(slot)}}
+function paintSecs(){const t=tplOf(S.tpl,S.c),box=$("secFields");box.replaceChildren();for(const [k,title,type] of t.secs){const l=document.createElement("label");l.textContent=title;l.htmlFor="sec-"+k;const ta=document.createElement("textarea");ta.id="sec-"+k;ta.rows=type==="p"?3:4;ta.maxLength=1200;ta.placeholder=HINT[type];ta.value=S.secs[k]||"";ta.oninput=()=>{S.secs[k]=ta.value;changed()};box.append(l,ta)}}
+function loadUI(){$("crit").value=String(S.c);paintTemplates();paintSwatches();$("pcount").value=String(S.pcount);$("fs").value=String(S.fs);["kicker","title","subtitle","date","dateText","closing","preparer","role","principal"].forEach(k=>$(k).value=S[k]||"");$("showAppr").checked=!!S.showAppr;$("org").value=LS.get("rt-org",ORG_DEFAULT);paintInfo();paintSlots();paintSecs();render()}
+
+/* ---------- الصور ---------- */
+function shrink(file,max,q){return new Promise((ok,fail)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{let w=img.naturalWidth,h=img.naturalHeight,r=Math.min(1,max/Math.max(w,h));const c=document.createElement("canvas");c.width=Math.round(w*r);c.height=Math.round(h*r);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);ok(c.toDataURL("image/jpeg",q))};img.onerror=()=>{URL.revokeObjectURL(url);fail(new Error("صيغة غير مدعومة"))};img.src=url})}
+
+/* ---------- رسم التقرير ---------- */
+function lines(v){return String(v||"").split(/\n+/).map(s=>s.trim()).filter(Boolean)}
+function secHTML([k,title,type,icon,span],val,ghost){const L=lines(val);let body="";
+ if(ghost){body='<p class="s-p">'+esc(HINT[type])+'</p>'}
+ else if(type==="p")body='<p class="s-p">'+esc(String(val).trim())+'</p>';
+ else if(type==="c")body='<div class="s-cards">'+L.map((s,i)=>{const m=s.split(/[:：]/);const h=m.shift().trim(),d=m.join(":").trim();return '<div class="s-cd"><em>'+(i+1)+'</em><strong>'+esc(h)+'</strong>'+(d?'<span>'+esc(d)+'</span>':'')+'</div>'}).join("")+'</div>';
+ else body='<ul class="s-ul '+type+'">'+L.map((s,i)=>'<li><em>'+(type==="n"?(i+1):ico("check",3))+'</em><span>'+esc(s)+'</span></li>').join("")+'</ul>';
+ const cls="s-box"+(span===2?" full":"")+(span==="r"?" tall":"")+(ghost?" ghost":"");
+ return '<section class="'+cls+'"><div class="s-bh"><i>'+ico(icon,2.2)+'</i>'+esc(title)+'</div><div class="s-bb">'+body+'</div></section>'}
+function render(exporting=false){
+ const t=tplOf(S.tpl,S.c),th=THEMES.find(x=>x.k===S.theme)||THEMES[0],sh=$("sheet");
+ sh.style.cssText="--c1:"+th.c1+";--c2:"+th.c2+";--c3:"+th.c3+";--soft:"+th.soft+";--fs:"+S.fs;
+ const org=lines(LS.get("rt-org",ORG_DEFAULT));
+ const info=S.info.map(x=>({...x,v:x.v.trim()||(x.i==="cal"?S.dateText.trim():"")})).filter(x=>x.v||(!exporting));
+ const infoHTML=info.length?'<div class="s-info" style="grid-template-columns:repeat('+info.length+',1fr)">'+info.map(x=>'<div class="s-cell'+(x.v?'':' ghost')+'"><div class="s-ic">'+ico(x.i)+'</div><div><b>'+esc(x.l)+'</b><span'+(x.i==="cal"?' class="dt"':'')+'>'+esc(x.v||"—")+'</span></div></div>').join("")+'</div>':"";
+ let ph=[];for(let i=0;i<S.pcount;i++){const p=S.photos[i]||{};if(p.src)ph.push(p);else if(!exporting)ph.push({ghost:true,n:i+1})}
+ const lay=ph.length>=6?6:ph.length===5?6:ph.length;
+ const phHTML=ph.length?'<div class="s-ph l'+lay+'">'+ph.map(p=>p.ghost?'<figure class="empty ghost">صورة الشاهد '+p.n+'</figure>':'<figure><img src="'+p.src+'" alt="">'+(p.cap.trim()?'<figcaption>'+esc(p.cap.trim())+'</figcaption>':'')+'</figure>').join("")+'</div>':"";
+ const boxes=t.secs.map(s=>{const v=(S.secs[s[0]]||"").trim();if(!v)return exporting?"":secHTML(s,"",true);return secHTML(s,v,false)}).join("");
+ const prep=S.preparer.trim();
+ const ft=(S.closing.trim()||prep)?'<div class="s-ft'+((S.closing.trim()&&prep)?'':' solo')+'">'+(S.closing.trim()?'<div class="s-msg">'+esc(S.closing.trim())+'</div>':'')+(prep?'<div class="s-sign"><b>إعداد وتوثيق التقرير</b><strong>'+esc(prep)+'</strong><span>'+esc(S.role.trim())+'</span><span>'+esc(org[org.length-1]||"")+'</span></div>':'')+'</div>':"";
+ const appr=S.showAppr&&S.principal.trim()?'<div class="s-appr"><div>معلم المادة<br>'+esc(prep)+'<i></i></div><div>مدير المدرسة<br>'+esc(S.principal.trim())+'<i></i></div></div>':"";
+ const kick=S.kicker.trim(),title=S.title.trim()||(exporting?"":"عنوان التقرير");
+ sh.innerHTML='<div class="bg"></div><header class="s-hd"><div class="s-org">'+org.map(l=>'<div>'+esc(l)+'</div>').join("")+'</div><div class="s-ttl">'+(kick?'<span class="s-kick">'+ico("list",2.2)+esc(kick)+'</span>':'')+(title?'<div class="s-big">'+esc(title)+'</div>':'')+(S.subtitle.trim()?'<div class="s-rib">'+esc(S.subtitle.trim())+'</div>':'')+'</div><div class="s-logo">'+(logo?'<img src="'+logo+'" alt="">':'')+'</div></header><div class="s-body">'+infoHTML+phHTML+(boxes?'<div class="s-boxes">'+boxes+'</div>':'')+ft+appr+'</div><div class="s-strip"></div>';
+ if(!exporting){fitPreview();const h=sh.offsetHeight;const f=$("fit");if(h>1130){f.className="fit warn";f.textContent="⚠ المحتوى أطول من صفحة A4؛ سيُصغَّر ليناسب صفحة واحدة عند التصدير. لنتيجة أوضح قلّل النص أو اختر خطًا أصغر أو صورًا أقل."}else{f.className="fit";f.textContent=""}}}
+function fitPreview(){const box=$("previewBox"),sc=$("scaler"),sh=$("sheet");const avail=box.clientWidth-24;const k=Math.min(1,avail/794);sc.style.transform="scale("+k+")";sc.style.width="794px";sc.style.height=(sh.offsetHeight*k)+"px";sc.style.marginInlineStart=Math.max(0,(avail-794*k)/2)+"px"}
+let rT=null;function changed(){clearTimeout(rT);rT=setTimeout(()=>render(),90);autosave()}
+window.addEventListener("resize",fitPreview);
+
+/* ---------- ربط الحقول ---------- */
+["kicker","title","subtitle","dateText","closing","role","principal","preparer"].forEach(k=>$(k).addEventListener("input",()=>{S[k]=$(k).value;if(k==="preparer")LS.set("rt-prep",S.preparer);if(k==="role")LS.set("rt-role",S.role);if(k==="principal")LS.set("rt-principal",S.principal);changed()}));
+$("date").addEventListener("change",()=>{S.date=$("date").value;S.dateText=hijri(S.date);$("dateText").value=S.dateText;changed()});
+$("showAppr").addEventListener("change",()=>{S.showAppr=$("showAppr").checked;LS.set("rt-appr",S.showAppr?"1":"0");changed()});
+$("pcount").addEventListener("change",()=>{S.pcount=+$("pcount").value;paintSlots();changed()});
+$("fs").addEventListener("change",()=>{S.fs=+$("fs").value;changed()});
+$("org").addEventListener("input",()=>{LS.set("rt-org",$("org").value.trim()||ORG_DEFAULT);changed()});
+$("logo").addEventListener("change",async()=>{const f=$("logo").files[0];if(!f)return;try{const c=await new Promise((ok,fail)=>{const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{const r=Math.min(1,400/Math.max(im.naturalWidth,im.naturalHeight)),cv=document.createElement("canvas");cv.width=Math.round(im.naturalWidth*r);cv.height=Math.round(im.naturalHeight*r);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);URL.revokeObjectURL(u);ok(cv.toDataURL("image/png"))};im.onerror=()=>fail(new Error("صورة غير صالحة"));im.src=u});logo=c;LS.set("rt-logo",c);render()}catch(e){status("تعذر قراءة الشعار: "+e.message)}});
+$("logoClear").onclick=()=>{logo="";LS.set("rt-logo","");$("logo").value="";render()};
+$("crit").addEventListener("change",()=>{const c=+$("crit").value;if(hasContent()&&!confirm("تغيير البند يبدأ تقريرًا جديدًا (المسودة الحالية محفوظة في «مسوداتي»). هل تتابع؟")){$("crit").value=String(S.c);return}S=freshState(c,(T.find(t=>t.c===c)||GENERAL).id);loadUI()});
+$("newBtn").onclick=()=>{if(hasContent()&&!confirm("بدء تقرير جديد؟ المسودة الحالية محفوظة في «مسوداتي».")) return;S=freshState(S.c,(T.find(t=>t.c===S.c)||GENERAL).id);loadUI();status("")};
+$("draftsBtn").onclick=()=>{const d=$("drafts");d.classList.toggle("open");if(d.classList.contains("open")){paintDrafts();if(innerWidth<=1050)setTab("edit");d.scrollIntoView({behavior:"smooth"})}};
+function setTab(t){document.body.dataset.tab=t;document.querySelectorAll(".tabs .btn").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));if(t==="view")requestAnimationFrame(fitPreview);window.scrollTo(0,0)}
+document.querySelectorAll(".tabs .btn").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+function status(s){$("status").textContent=s}
+
+/* ---------- التصدير ---------- */
+async function snapshot(kind){
+ if(!window.htmlToImage)throw new Error("مكتبة التصدير لم تُحمَّل. تحقق من الاتصال وأعد تحميل الصفحة.");
+ render(true);const sh=$("sheet");
+ try{await document.fonts.ready;await Promise.all([...sh.querySelectorAll("img")].map(im=>im.complete?0:new Promise(r=>{im.onload=im.onerror=r})));
+  const H=Math.max(1123,sh.offsetHeight),opt={width:794,height:H,pixelRatio:2.5,backgroundColor:"#ffffff",cacheBust:false,style:{transform:"none",margin:"0"}};
+  const fn=kind==="jpeg"?(n,o)=>htmlToImage.toJpeg(n,{...o,quality:.95}):htmlToImage.toPng;
+  await fn(sh,{...opt,pixelRatio:1}); // تهيئة أولى (ضرورية في Safari لظهور الصور والخطوط)
+  const url=await fn(sh,opt);return{url,W:794,H}}
+ finally{render(false)}}
+function fileBase(){return((S.kicker.trim()+" "+S.title.trim()).trim()||"تقرير").replace(/[\\/:*?"<>|]/g,"_").slice(0,80)}
+async function makeFile(fmt){if(fmt==="pdf"){if(!window.jspdf)throw new Error("مكتبة PDF لم تُحمَّل.");const {url,W,H}=await snapshot("jpeg");const pdf=new window.jspdf.jsPDF({unit:"mm",format:"a4",orientation:"portrait"});let w=210,h=210*H/W;if(h>297){h=297;w=297*W/H}pdf.addImage(url,"JPEG",(210-w)/2,0,w,h,undefined,"FAST");pdf.setProperties({title:fileBase()});const blob=pdf.output("blob");return new File([blob],fileBase()+".pdf",{type:"application/pdf"})}
+ const {url}=await snapshot("png");const blob=await (await fetch(url)).blob();return new File([blob],fileBase()+".png",{type:"image/png"})}
+function download(file){const u=URL.createObjectURL(file),a=document.createElement("a");a.href=u;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
+async function busy(btn,label,fn){const all=[...document.querySelectorAll(".actions .btn")];all.forEach(b=>b.disabled=true);status(label);try{await fn()}catch(e){status("⚠ "+e.message);console.error(e)}finally{all.forEach(b=>b.disabled=false)}}
+$("dlPng").onclick=e=>busy(e.target,"جارٍ إنشاء الصورة…",async()=>{download(await makeFile("png"));status("✓ تم تنزيل الصورة.")});
+$("dlPdf").onclick=e=>busy(e.target,"جارٍ إنشاء ملف PDF…",async()=>{download(await makeFile("pdf"));status("✓ تم تنزيل ملف PDF.")});
+$("printBtn").onclick=()=>{render(true);setTimeout(()=>{window.print()},150)};
+window.addEventListener("afterprint",()=>render(false));
+
+/* ---------- الحفظ في ملف الإنجاز (مكتبة التابلت) ---------- */
+function libDB(){return new Promise((ok,fail)=>{const r=indexedDB.open("portfolio-tablet-library-v1",1);r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains("reports"))d.createObjectStore("reports",{keyPath:"id"});if(!d.objectStoreNames.contains("metadata"))d.createObjectStore("metadata")};r.onsuccess=()=>ok(r.result);r.onerror=()=>fail(r.error)})}
+function libReq(db,store,mode,fn){return new Promise((ok,fail)=>{const tx=db.transaction(store,mode);let v;const q=fn(tx.objectStore(store));q.onsuccess=()=>{v=q.result};tx.oncomplete=()=>ok(v);tx.onerror=()=>fail(tx.error);tx.onabort=()=>fail(tx.error||new Error("أُلغي الحفظ"))})}
+async function sectionsFor(n){let extra=[],hidden=[],used=[];try{const db=await libDB();const sec=(await libReq(db,"metadata","readonly",s=>s.get("sections")))||{};const hid=(await libReq(db,"metadata","readonly",s=>s.get("hiddenSections")))||{};const recs=await libReq(db,"reports","readonly",s=>s.getAll());db.close();extra=sec[n]||[];hidden=hid[n]||[];used=recs.filter(r=>+r.criterion===n&&r.subsection).map(r=>r.subsection)}catch(e){}
+ return[...new Set([...(DEFAULTS[n-1]||[]),...extra,...used])].filter(x=>!hidden.includes(x))}
+$("toPortfolio").onclick=async()=>{const box=$("saveBox");if(box.classList.contains("open")){box.classList.remove("open");return}const list=await sectionsFor(S.c),sel=$("saveSec");sel.replaceChildren();list.forEach(x=>sel.add(new Option(x,x)));const want=tplOf(S.tpl,S.c).sub;if(want&&list.includes(want))sel.value=want;box.classList.add("open")};
+$("saveCancel").onclick=()=>$("saveBox").classList.remove("open");
+$("saveConfirm").onclick=e=>busy(e.target,"جارٍ إنشاء التقرير وحفظه في ملف الإنجاز…",async()=>{
+ if(!S.title.trim())throw new Error("اكتب اسم التقرير أولًا.");
+ const fmt=$("saveFmt").value,section=$("saveSec").value,file=await makeFile(fmt);
+ if(file.size>20*1024*1024)throw new Error("حجم الملف أكبر من 20 ميجابايت؛ قلّل عدد الصور.");
+ const rec={id:(crypto.randomUUID?crypto.randomUUID():"r"+Date.now()+Math.random().toString(36).slice(2)),criterion:S.c,subsection:section,title:(S.kicker.trim()+" "+S.title.trim()).trim(),kind:"",filename:file.name,date:Date.now(),file};
+ const db=await libDB();try{await libReq(db,"reports","readwrite",s=>s.put(rec))}finally{db.close()}
+ LS.set("portfolio-report-update",String(Date.now()));$("saveBox").classList.remove("open");
+ status("✓ حُفظ التقرير شاهدًا في البند "+S.c+" / "+section+". يظهر الآن داخل البند في ملف الإنجاز. لإظهاره للمدير ارفعه من «إدارة التقارير والحفظ».");
+ $("backLink").href="./#std-"+S.c});
+
+/* ---------- البدء ---------- */
+(async()=>{const qs=new URLSearchParams(location.search);const qc=Math.min(11,Math.max(1,+qs.get("criterion")||0));let loaded=null;
+ if(!qc){try{const last=LS.get("rt-last","");if(last)loaded=await dOp("readonly",s=>s.get(last))}catch(e){}}
+ S=loaded||freshState(qc||1,(T.find(t=>t.c===(qc||1))||GENERAL).id);S.photos=S.photos||[];
+ if(qc)$("backLink").href="./#std-"+qc;
+ loadUI();if(document.fonts)document.fonts.ready.then(()=>render())})();
+</script>
+</body>
+</html>
