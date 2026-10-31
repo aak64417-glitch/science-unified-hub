@@ -116,13 +116,17 @@ var items=[], mode='link';
 PFVideo.injectCss();
 
 STANDARDS.forEach(function(n,i){$('std').add(new Option((i+1)+'. '+n,String(i+1)));$('filter').add(new Option('البند '+(i+1)+' — '+n,String(i+1)))});
-function fillSec(){var n=+$('std').value,sel=$('sec');sel.replaceChildren();var used=items.filter(function(r){return +r.std===n}).map(function(r){return r.section});
-  var all=[];(DEFAULTS[n-1]||[]).concat(used).forEach(function(x){if(x&&all.indexOf(x)<0)all.push(x)});
+$('std').add(new Option('★ تدريب ونتائج نافس','nafs'));$('filter').add(new Option('★ تدريب ونتائج نافس','nafs'));
+var NAFS_SECS=['تدريب الطلاب على نافس','شرح المهارات والمراجعة','نتائج وتكريم'];
+function stdKey(v){return v==='nafs'?'nafs':+v}
+function stdName(k){return k==='nafs'?'تدريب ونتائج نافس':'البند '+k+' — '+(STANDARDS[k-1]||'')}
+function fillSec(){var n=stdKey($('std').value),sel=$('sec');sel.replaceChildren();var used=items.filter(function(r){return stdKey(String(r.std))===n}).map(function(r){return r.section});
+  var all=[];(n==='nafs'?NAFS_SECS:(DEFAULTS[n-1]||[])).concat(used).forEach(function(x){if(x&&all.indexOf(x)<0)all.push(x)});
   all.forEach(function(x){sel.add(new Option(x,x))});sel.add(new Option('➕ قسم آخر…','__other'));toggleOther()}
 function toggleOther(){$('otherWrap').classList.toggle('hidden',$('sec').value!=='__other')}
 $('std').onchange=fillSec;$('sec').onchange=toggleOther;
-var qs=new URLSearchParams(location.search),qc=+qs.get('criterion');
-if(qc>=1&&qc<=11){$('std').value=String(qc);$('filter').value=String(qc);$('back').href='./#std-'+qc}
+var qs=new URLSearchParams(location.search),qc=qs.get('criterion');
+if(qc==='nafs'||(+qc>=1&&+qc<=11)){$('std').value=String(qc);$('filter').value=String(qc);$('back').href=qc==='nafs'?'./#nafs':'./#std-'+qc}
 var d=new Date();$('date').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 
 document.querySelectorAll('.seg button').forEach(function(b){b.onclick=function(){mode=b.dataset.m;document.querySelectorAll('.seg button').forEach(function(x){x.classList.toggle('on',x===b)});$('linkBox').classList.toggle('hidden',mode!=='link');$('fileBox').classList.toggle('hidden',mode!=='file')}});
@@ -183,7 +187,7 @@ function compressVideo(file,onProg){
 
 $('add').onclick=function(){
   if(!PFStore.token()){msg('احفظ رمز الوصول أولًا.');$('setupBox').classList.remove('hidden');$('setupBox').scrollIntoView({behavior:'smooth'});return}
-  var title=$('title').value.trim(),std=+$('std').value,sec=$('sec').value==='__other'?$('other').value.trim():$('sec').value;
+  var title=$('title').value.trim(),std=stdKey($('std').value),sec=$('sec').value==='__other'?$('other').value.trim():$('sec').value;
   if(!title){msg('اكتب عنوان المقطع.');return}
   if(!sec){msg('اكتب اسم القسم.');return}
   var meta={title:title,std:std,section:sec,date:$('date').value||'',notes:$('notes').value.trim()};
@@ -207,14 +211,14 @@ $('add').onclick=function(){
         var files=[{ext:out.ext,base64:b64,role:'main'}];if(th&&th.b64)files.push({ext:'jpg',base64:th.b64,role:'thumb'});
         return store.add(meta,files)})})}).then(done).catch(fail);
   function done(rec){items.push(rec);draw();fillSec();$('title').value='';$('notes').value='';$('url').value='';$('detect').textContent='';$('file').value='';btn.disabled=false;
-    msg('✓ أُضيف المقطع إلى البند '+rec.std+' / '+rec.section+'. يظهر في ملف الإنجاز وصفحة المدير خلال دقيقة إلى دقيقتين.',true)}
+    msg('✓ أُضيف المقطع إلى '+(rec.std==='nafs'?'تدريب ونتائج نافس':'البند '+rec.std)+' / '+rec.section+'. يظهر في ملف الإنجاز وصفحة المدير خلال دقيقة إلى دقيقتين.',true)}
   function fail(e){btn.disabled=false;progress(null);msg(e.message==='Failed to fetch'?'انقطع الاتصال أثناء الرفع. تحقق من الإنترنت وأعد المحاولة، أو أضف المقطع برابط.':e.message)}
 };
 
 function draw(){var el=$('list'),flt=$('filter').value,list=PFVideo.sortByDate(items).filter(function(r){return flt==='all'||String(r.std)===flt});
   if(!list.length){el.innerHTML='<p class="hint">لا توجد مقاطع'+(flt==='all'?'':' في هذا البند')+' بعد.</p>';return}
   var groups={};list.forEach(function(r){(groups[r.std]=groups[r.std]||[]).push(r)});
-  el.innerHTML=Object.keys(groups).sort(function(a,b){return a-b}).map(function(k){return '<h3 class="std-h">البند '+k+' — '+esc(STANDARDS[k-1]||'')+'</h3><div class="pfv-grid">'+groups[k].map(function(r){
+  el.innerHTML=Object.keys(groups).sort(function(a,b){return (a==='nafs'?99:+a)-(b==='nafs'?99:+b)}).map(function(k){return '<h3 class="std-h">'+esc(stdName(k==='nafs'?k:+k))+'</h3><div class="pfv-grid">'+groups[k].map(function(r){
     return '<div class="vwrap">'+PFVideo.card(r)+'<div class="acts"><button class="btn sub" type="button" data-ren="'+esc(r.id)+'">✎ تعديل العنوان</button><button class="btn red" type="button" data-del="'+esc(r.id)+'">🗑 حذف</button></div></div>'}).join('')+'</div>'}).join('')}
 $('filter').onchange=draw;
 $('list').addEventListener('click',function(e){

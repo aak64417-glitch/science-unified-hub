@@ -186,7 +186,7 @@ function openPanel(k){var p=document.getElementById('panel'),list=document.getEl
   list.innerHTML=h;document.getElementById('overlay').classList.remove('hidden');document.body.style.overflow='hidden';
   if(String(k)==='6')loadWeeks();
   if(k==='nafs')loadNafs();
-  if(k!=='nafs'){loadShared(k);loadVids(k);}}
+  if(k!=='nafs'){loadShared(k);}loadVids(k);}
 function loadShared(k){fetch('shared-reports/index.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
   var list=(j.items||[]).filter(function(r){return String(r.std)===String(k)}).sort(function(a,c){return String(c.date||c.added).localeCompare(String(a.date||a.added))});
   var box=document.getElementById('plist');if(!list.length||!box||document.getElementById('psub').textContent!=='البند '+k)return;
@@ -195,7 +195,7 @@ function loadShared(k){fetch('shared-reports/index.json?t='+Date.now(),{cache:'n
   wrap.innerHTML='<div class="subh">📑 تقارير وشواهد مضافة</div>'+list.map(function(r){var meta=r.section||'';try{if(r.date)meta+=(meta?' • ':'')+new Date(r.date+'T12:00:00').toLocaleDateString('ar-SA-u-ca-islamic-umalqura-nu-arab',{day:'numeric',month:'long',year:'numeric'})}catch(e){}
     return '<button type="button" class="ev" data-src="'+esc(r.file)+'" data-t="'+esc(r.title)+'" data-kind="'+esc(r.kind)+'"><span class="ic">'+(r.kind==='pdf'?'📕':'🖼️')+'</span><span class="tx"><b>'+esc(r.title)+'</b><span>'+esc(meta)+'</span></span><span class="go">‹</span></button>'}).join('');
   var vids=box.querySelector('.pf-vids');if(vids)box.insertBefore(wrap,vids);else box.appendChild(wrap)}).catch(function(){})}
-function loadVids(k){if(!window.PFVideo)return;PFVideo.load().then(function(all){var list=PFVideo.sortByDate(all.filter(function(r){return String(r.std)===String(k)}));var box=document.getElementById('plist');if(!list.length||!box||document.getElementById('psub').textContent!=='البند '+k)return;PFVideo.injectCss();
+function loadVids(k){if(!window.PFVideo)return;PFVideo.load().then(function(all){var list=PFVideo.sortByDate(all.filter(function(r){return String(r.std)===String(k)}));var box=document.getElementById('plist');var sub=document.getElementById('psub').textContent;if(!list.length||!box||(k==='nafs'?sub!=='شواهد إضافية':sub!=='البند '+k))return;PFVideo.injectCss();
   var em=box.querySelector(':scope > .empty');if(em)em.remove();
   var wrap=document.createElement('div');wrap.className='pf-vids';wrap.innerHTML='<div class="subh">🎬 مقاطع الفيديو</div><div class="pfv-grid">'+list.map(function(r){return PFVideo.card(r)}).join('')+'</div>';
   wrap.addEventListener('click',function(e){var c=e.target.closest('[data-vid]');if(!c)return;e.stopPropagation();var r=list.filter(function(x){return x.id===c.dataset.vid})[0];if(r)PFVideo.play(r)});
