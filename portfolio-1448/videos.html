@@ -84,7 +84,8 @@ textarea{resize:vertical}
     <div id="fileBox" class="hidden">
       <label for="file">ملف الفيديو (MP4 أو MOV أو WebM)</label>
       <input id="file" type="file" accept="video/mp4,video/quicktime,video/webm,video/x-m4v,.mp4,.mov,.m4v,.webm">
-      <div class="hint" id="fileInfo">الحد الأقصى 50 ميجابايت (دقيقة إلى دقيقتين تقريبًا من تصوير الجوال). المقاطع الأطول أضفها برابط يوتيوب أو Drive. يفضّل MP4 لأنه يعمل على جميع الأجهزة.</div>
+      <div class="hint" id="fileInfo">المقاطع حتى 15 ميجابايت تُرفع مباشرة. الأكبر منها تُضغط تلقائيًا على جهازك قبل الرفع (يستغرق الضغط مدة تقارب طول المقطع). المقاطع الأطول من 6 دقائق أضفها برابط يوتيوب أو Drive.</div>
+      <div id="prog" class="hidden" style="margin-top:10px"><div style="height:12px;border-radius:8px;background:#0c2849;border:1px solid #3a6c9c;overflow:hidden"><i id="progBar" style="display:block;height:100%;width:0;background:linear-gradient(90deg,#d9a62e,#f1c75a);transition:width .3s"></i></div></div>
     </div>
 
     <div class="warn" style="margin-top:14px">🔒 ملفات المنصة منشورة على موقع عام؛ أي شخص يملك رابط المقطع يمكنه مشاهدته. تجنّب المقاطع التي تُظهر وجوه الطلاب أو أسماءهم إلا بعد التأكد من موافقة المدرسة وأولياء الأمور، ويُفضَّل لها رابط يوتيوب «غير مُدرج» أو Drive يمكنك إيقافه لاحقًا.</div>
@@ -109,7 +110,7 @@ var $=function(id){return document.getElementById(id)};
 var esc=PFVideo.esc;
 var STANDARDS=["أداء الواجبات الوظيفية","التفاعل مع المجتمع المهني","التفاعل مع أولياء الأمور","التنوع في استراتيجيات التدريس","تحسين نتائج المتعلمين","إعداد وتنفيذ خطة التعلم","توظيف تقنيات ووسائل التعلم المناسبة","تهيئة البيئة التعليمية","الإدارة الصفية","تحليل نتائج المتعلمين وتشخيص مستوياتهم","تنوع أساليب التقويم"];
 var DEFAULTS=[["حصص الانتظار","المناوبة والإشراف","أعمال اللجان","الالتزام بالدوام الرسمي","التكاليف من إدارة المدرسة","المشاركة في المناسبات الوطنية","تحضير الدروس في منصة مدرستي","رصد الدرجات في نظام نور","حضور الاجتماعات المدرسية","الإذاعة والأنشطة المدرسية","المبادرات والأعمال التطوعية"],["التطوير المهني","الزيارات المتبادلة","المجتمعات المهنية","الدورات التدريبية","حضور الورش والملتقيات","تقديم ورش ودروس تطبيقية","الدروس النموذجية","اجتماعات القسم والمشرف التربوي","تبادل الخبرات مع الزملاء"],["التواصل مع أولياء الأمور","اجتماعات أولياء الأمور","إشعارات المستوى والتقدم","رسائل التواصل عبر منصة مدرستي","سجل التواصل مع أولياء الأمور","إشراك أولياء الأمور في الخطط العلاجية","التهنئة والتحفيز","استطلاعات رأي أولياء الأمور"],["استراتيجيات التعلم","أنشطة التعلم","استراتيجيات التدريس","التعلم التعاوني","التعلم النشط","التعلم باللعب والمسابقات","التعلم بالمشروعات","الاستقصاء والتجارب العملية","التعلم المقلوب","التعليم المتمايز"],["الخطط العلاجية","متابعة الطلاب منخفضي المستوى","حصص التقوية","برامج الإثراء للمتفوقين","التدريب على اختبارات نافس","تكريم المتفوقين والمتميزين","مقارنة النتائج قبل المعالجة وبعدها"],["خطط التعلم","توزيع المنهج","تحضير الدروس","الخطة الفصلية","خطة الأنشطة الصفية","خطط الواجبات المنزلية","ملف المادة"],["توظيف التقنية في التعلم","الدروس التفاعلية","مقاطع الفيديو التعليمية","المختبر الافتراضي","منصة مدرستي","الاختبارات الإلكترونية","العروض التقديمية","المنصات التعليمية من إعداد المعلم","الوسائل التعليمية"],["تجهيز المختبر","تهيئة الفصل وتنظيمه","لوحات وجداريات الفصل","ركن العلوم","إجراءات الأمن والسلامة","البيئة الآمنة والمحفزة"],["الإدارة الصفية","قواعد السلوك الصفي","إدارة وقت الحصة","التعزيز ولوحات التميز","متابعة الحضور والانضباط","توزيع الأدوار والمجموعات","معالجة السلوكيات الصفية"],["تقارير تحليل الاختبارات","الاختبارات التشخيصية","تحليل نتائج الفترات","تحليل نتائج نافس","تصنيف مستويات الطلاب","الخطط المبنية على نتائج التحليل"],["مهام أدائية","التقويم التكويني","الاختبارات القصيرة","الاختبارات الفترية والنهائية","التقويم الذاتي وتقويم الأقران","سلالم التقدير","الملاحظة والأسئلة الشفهية","الواجبات المنزلية","المشاريع والبحوث","ملفات إنجاز الطلاب"]];
-var MAX=50*1024*1024, EXT={mp4:'mp4',m4v:'mp4',mov:'mov',webm:'webm'};
+var MAX=15*1024*1024,MAXDUR=6*60, EXT={mp4:'mp4',m4v:'mp4',mov:'mov',webm:'webm'};
 var store=PFStore.collection('portfolio-1448/videos/index.json','videos','مقطع فيديو');
 var items=[], mode='link';
 PFVideo.injectCss();
@@ -131,7 +132,7 @@ $('url').addEventListener('input',function(){var p=PFVideo.parse($('url').value)
   var t={youtube:'✓ رابط يوتيوب — سيُشغَّل داخل المنصة',drive:'✓ رابط Google Drive — سيُشغَّل داخل المنصة (تأكد أن المشاركة «أي شخص لديه الرابط»)',direct:'✓ رابط ملف فيديو مباشر — سيُشغَّل داخل المنصة',link:'⚠ رابط من موقع آخر — سيظهر زر لفتحه في نافذة جديدة'}[p.type];
   el.className='detect '+(p.type==='link'?'bad':'ok');el.textContent=t});
 $('file').addEventListener('change',function(){var f=$('file').files[0];if(!f)return;var mb=(f.size/1048576).toFixed(1);
-  $('fileInfo').textContent='الملف: '+f.name+' — '+mb+' ميجابايت'+(f.size>MAX?' ⚠ أكبر من الحد المسموح (50 ميجابايت). أضفه برابط يوتيوب أو Drive.':' ✓');
+  $('fileInfo').textContent='الملف: '+f.name+' — '+mb+' ميجابايت'+(f.size>MAX?' — سيُضغط تلقائيًا قبل الرفع.':' ✓');
   if(!$('title').value.trim())$('title').value=f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').slice(0,140)});
 
 function msg(t,ok){$('msg').textContent=t;$('msg').className='msg '+(ok?'ok':'err')}
@@ -145,6 +146,40 @@ function grabThumb(file){return new Promise(function(ok){var url=URL.createObjec
   v.onseeked=function(){try{var w=640,h=Math.round(w*(v.videoHeight||360)/(v.videoWidth||640)),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(v,0,0,w,h);
     fin({b64:c.toDataURL('image/jpeg',.8).split(',')[1],dur:isFinite(v.duration)?Math.round(v.duration):0})}catch(e){fin(null)}};
   v.onerror=function(){fin(null)};v.src=url})}
+
+/* ضغط المقطع على الجهاز: تشغيله على لوحة رسم وتسجيله بدقة وجودة أقل */
+function progress(p){$('prog').classList.toggle('hidden',p==null);$('progBar').style.width=Math.round((p||0)*100)+'%'}
+function compressVideo(file,onProg){
+  var mime=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].filter(function(m){try{return window.MediaRecorder&&MediaRecorder.isTypeSupported(m)}catch(e){return false}})[0];
+  if(!mime||!HTMLCanvasElement.prototype.captureStream)return Promise.reject(new Error('متصفح هذا الجهاز لا يدعم ضغط الفيديو. أضف المقطع برابط يوتيوب أو Drive.'));
+  /* يجب أن يبدأ التشغيل مباشرة بعد ضغط الزر (قيود Safari) */
+  var url=URL.createObjectURL(file),v=document.createElement('video');v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';v.src=url;
+  var AC=window.AudioContext||window.webkitAudioContext,ac=null,dest=null;
+  try{if(AC){ac=new AC();var srcNode=ac.createMediaElementSource(v);dest=ac.createMediaStreamDestination();srcNode.connect(dest);if(ac.resume)ac.resume()}}catch(e){ac=null;dest=null}
+  if(!dest)v.muted=true;
+  var playP=v.play();
+  return new Promise(function(ok,fail){
+    var rec=null,chunks=[],raf=0,stopped=false,canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+    function clean(){cancelAnimationFrame(raf);try{v.pause()}catch(e){}URL.revokeObjectURL(url);if(ac&&ac.close)ac.close().catch(function(){})}
+    function bad(m){if(stopped)return;stopped=true;try{rec&&rec.state!=='inactive'&&rec.stop()}catch(e){}clean();fail(new Error(m))}
+    if(playP&&playP.catch)playP.catch(function(){bad('تعذر تشغيل المقطع لضغطه على هذا الجهاز. أضفه برابط يوتيوب أو Drive.')});
+    v.onerror=function(){bad('تعذر قراءة ملف الفيديو.')};
+    function start(){if(rec||stopped)return;var dur=v.duration;
+      if(!isFinite(dur)||dur<=0)return bad('تعذر معرفة مدة المقطع.');
+      if(dur>MAXDUR)return bad('المقطع أطول من 6 دقائق؛ أضفه برابط يوتيوب أو Drive للحفاظ على جودته.');
+      var w=v.videoWidth||1280,h=v.videoHeight||720,k=Math.min(1,1280/Math.max(w,h));canvas.width=Math.round(w*k/2)*2;canvas.height=Math.round(h*k/2)*2;
+      var target=13.5*1024*1024*8/dur,vb=Math.max(350000,Math.min(2200000,target-96000));
+      var stream=canvas.captureStream(30);if(dest)dest.stream.getAudioTracks().forEach(function(t){stream.addTrack(t)});
+      try{rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:vb,audioBitsPerSecond:96000})}catch(e){try{rec=new MediaRecorder(stream)}catch(e2){return bad('تعذر بدء ضغط الفيديو على هذا الجهاز.')}}
+      rec.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
+      rec.onstop=function(){if(stopped&&!v.ended)return;stopped=true;clean();var type=(rec.mimeType||mime).split(';')[0];var blob=new Blob(chunks,{type:type});
+        if(blob.size<20000)return fail(new Error('فشل ضغط المقطع على هذا الجهاز. أضفه برابط يوتيوب أو Drive.'));ok({blob:blob,ext:/webm/.test(type)?'webm':'mp4',dur:Math.round(dur)})};
+      rec.start(1000);
+      (function draw(){if(stopped)return;try{ctx.drawImage(v,0,0,canvas.width,canvas.height)}catch(e){}onProg(Math.min(.99,v.currentTime/dur));raf=requestAnimationFrame(draw)})()}
+    v.onplaying=start;v.ontimeupdate=function(){if(!rec&&v.readyState>=2&&isFinite(v.duration))start()};
+    v.onended=function(){setTimeout(function(){try{rec&&rec.state!=='inactive'&&rec.stop()}catch(e){}},300)};
+    document.addEventListener('visibilitychange',function vis(){if(document.hidden&&!stopped){document.removeEventListener('visibilitychange',vis);bad('توقف الضغط لأن الصفحة لم تعد ظاهرة. أبقِ الصفحة مفتوحة على الشاشة حتى ينتهي، ثم أعد المحاولة.')}});
+  })}
 
 $('add').onclick=function(){
   if(!PFStore.token()){msg('احفظ رمز الوصول أولًا.');$('setupBox').classList.remove('hidden');$('setupBox').scrollIntoView({behavior:'smooth'});return}
@@ -160,15 +195,20 @@ $('add').onclick=function(){
   var f=$('file').files[0];if(!f){msg('اختر ملف الفيديو.');return}
   var ext=EXT[(f.name.split('.').pop()||'').toLowerCase()]||(f.type==='video/mp4'?'mp4':f.type==='video/webm'?'webm':f.type==='video/quicktime'?'mov':'');
   if(!ext){msg('صيغة غير مدعومة. استخدم MP4 أو MOV أو WebM.');return}
-  if(f.size>MAX){msg('حجم الملف أكبر من 50 ميجابايت. أضفه برابط يوتيوب أو Drive.');return}
-  meta.type='file';btn.disabled=true;msg('جارٍ تجهيز المقطع…',true);
-  grabThumb(f).then(function(th){if(th&&th.dur)meta.duration=th.dur;
-    return readB64(f).then(function(b64){msg('جارٍ رفع المقطع ('+(f.size/1048576).toFixed(1)+' ميجابايت)… قد يستغرق ذلك عدة دقائق، لا تغلق الصفحة.',true);
-      var files=[{ext:ext,base64:b64,role:'main'}];if(th&&th.b64)files.push({ext:'jpg',base64:th.b64,role:'thumb'});
-      return store.add(meta,files)})}).then(done).catch(fail);
+  meta.type='file';btn.disabled=true;
+  var prep;
+  if(f.size>MAX){msg('جارٍ ضغط المقطع على جهازك… أبقِ هذه الصفحة مفتوحة على الشاشة حتى ينتهي (تقريبًا بطول المقطع).',true);progress(0);
+    prep=compressVideo(f,function(p){progress(p);msg('جارٍ ضغط المقطع… '+Math.round(p*100)+'% — أبقِ الصفحة مفتوحة على الشاشة.',true)}).then(function(r){
+      if(r.blob.size>18*1024*1024)throw new Error('حجم المقطع بعد الضغط ما زال كبيرًا. أضفه برابط يوتيوب أو Drive.');meta.duration=r.dur;return {blob:r.blob,ext:r.ext}})}
+  else prep=Promise.resolve({blob:f,ext:ext});
+  prep.then(function(out){progress(null);msg('جارٍ تجهيز الرفع…',true);
+    return grabThumb(f).then(function(th){if(th&&th.dur&&!meta.duration)meta.duration=th.dur;
+      return readB64(out.blob).then(function(b64){msg('جارٍ رفع المقطع ('+(out.blob.size/1048576).toFixed(1)+' ميجابايت)… لا تغلق الصفحة.',true);
+        var files=[{ext:out.ext,base64:b64,role:'main'}];if(th&&th.b64)files.push({ext:'jpg',base64:th.b64,role:'thumb'});
+        return store.add(meta,files)})})}).then(done).catch(fail);
   function done(rec){items.push(rec);draw();fillSec();$('title').value='';$('notes').value='';$('url').value='';$('detect').textContent='';$('file').value='';btn.disabled=false;
     msg('✓ أُضيف المقطع إلى البند '+rec.std+' / '+rec.section+'. يظهر في ملف الإنجاز وصفحة المدير خلال دقيقة إلى دقيقتين.',true)}
-  function fail(e){btn.disabled=false;msg(e.message==='Failed to fetch'?'انقطع الاتصال أثناء الرفع. تحقق من الإنترنت وأعد المحاولة، أو أضف المقطع برابط.':e.message)}
+  function fail(e){btn.disabled=false;progress(null);msg(e.message==='Failed to fetch'?'انقطع الاتصال أثناء الرفع. تحقق من الإنترنت وأعد المحاولة، أو أضف المقطع برابط.':e.message)}
 };
 
 function draw(){var el=$('list'),flt=$('filter').value,list=PFVideo.sortByDate(items).filter(function(r){return flt==='all'||String(r.std)===flt});
