@@ -1,87 +1,11 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
-<title>التحكم في عرض المدير — ملف الإنجاز 1448هـ</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root{--navy:#071a40;--gold:#d4a73c;--ink:#14233f;--muted:#5d6b84;--green:#1b8a4b;--red:#c0392b}
-*{box-sizing:border-box}
-body{margin:0;background:#f3f5fa;color:var(--ink);font-family:'Tajawal',Tahoma,Arial,sans-serif}
-header{background:linear-gradient(135deg,var(--navy),#123b85);color:#fff;padding:20px 16px;text-align:center;border-bottom:4px solid var(--gold)}
-header h1{margin:0;font-size:24px;font-weight:900}
-header p{margin:6px 0 0;opacity:.9}
-.wrap{max-width:900px;margin:0 auto;padding:18px 16px 40px;display:grid;gap:16px}
-.box{background:#fff;border-radius:20px;padding:18px;box-shadow:0 8px 24px rgba(7,26,64,.08);border:1px solid #e3e8f2}
-.box h2{margin:0 0 10px;font-size:19px;color:var(--navy);font-weight:900}
-.box p{margin:0 0 12px;color:var(--muted);line-height:1.8}
-.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.btn{border:0;border-radius:13px;padding:12px 18px;font:inherit;font-weight:800;cursor:pointer;background:var(--navy);color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
-.btn.gold{background:var(--gold);color:var(--navy)}
-.btn.light{background:#eef2f8;color:var(--navy)}
-.btn:disabled{opacity:.5;cursor:wait}
-input{width:100%;padding:12px 14px;border-radius:13px;border:1.5px solid #cfd8e8;font:inherit;font-size:16px}
-label{display:block;font-weight:800;margin:0 0 6px;color:var(--navy)}
-.status{display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;background:#f6f8fc;border:2px solid #e3e8f2;margin-bottom:14px}
-.status .dot{width:20px;height:20px;border-radius:50%;background:#9aa6ba;flex:none}
-.status b{font-size:21px}
-.status.on{background:#eaf7ef;border-color:#b9e3c8}.status.on .dot{background:var(--green);box-shadow:0 0 0 6px rgba(27,138,75,.18)}.status.on b{color:var(--green)}
-.status.off{background:#fdecea;border-color:#f3c4bf}.status.off .dot{background:var(--red);box-shadow:0 0 0 6px rgba(192,57,43,.15)}.status.off b{color:var(--red)}
-.big{flex:1;min-width:200px;justify-content:center;font-size:17px;padding:16px}
-.big.open{background:var(--green)}.big.close{background:var(--red)}
-.msg{min-height:22px;margin-top:10px;font-weight:700}
-.msg.err{color:var(--red)}.msg.ok{color:var(--green)}
-.poster{width:100%;border-radius:16px;border:1px solid #e3e8f2}
-.link{direction:ltr;font-family:monospace;font-size:13px;background:#f6f8fc;border:1px dashed #c8d3e6;border-radius:12px;padding:10px;word-break:break-all;text-align:left}
-table{width:100%;border-collapse:collapse;font-size:14.5px}
-td{padding:8px;border-bottom:1px solid #eef1f6}
-.note{font-size:13.5px;color:var(--muted);line-height:1.8}
-.warn{background:#fff8e6;border:1.5px solid var(--gold);border-radius:14px;padding:12px 14px;line-height:1.9}
-ol{margin:6px 0 0;padding-inline-start:22px;line-height:2}
-pre{direction:ltr;text-align:left;background:#0d1b3a;color:#e8eefc;padding:12px;border-radius:12px;max-height:240px;overflow:auto;font-size:12px}
-.hidden{display:none!important}
-</style>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="refresh" content="0;url=principal.html">
+<title>عرض ملف الإنجاز للمدير</title>
 </head>
-<body>
-<header><h1>🪪 التحكم في عرض ملف الإنجاز للمدير</h1><p>صفحة خاصة بالمعلم — لا تُرسل هذا الرابط للإدارة</p></header>
-<div class="wrap">
-  <section class="box">
-    <h2>رمز دخول المدير اليوم</h2>
-    <div class="status on"><span class="dot"></span><div><b id="codeNow" style="font-size:38px;letter-spacing:8px;direction:ltr;display:block">——</b><div class="note">صالح حتى منتصف الليل بتوقيت الرياض ثم يتغير تلقائيًا</div></div></div>
-    <div class="link" id="dirLink"></div>
-    <div class="row" style="margin-top:10px">
-      <button class="btn gold" type="button" id="copyDir">📋 نسخ رابط الدخول مع الرمز</button>
-      <button class="btn light" type="button" id="copyCode">نسخ الرمز فقط</button>
-    </div>
-    <p class="note" style="margin-top:10px"><b>للتحكم:</b> أرسل للمدير الرابط أو الرمز عندما تريد إتاحة الملف له، وبعد منتصف الليل لا يعمل رمز الأمس. لإيقاف العرض مبكرًا لا تعطه الرمز الجديد. رمز الغد: <b dir="ltr" id="codeTom"></b></p>
-  </section>
-
-<section class="box">
-    <h2>باركود دخول المدير</h2>
-    <img class="poster" src="principal-assets/qr-poster.png" alt="ملصق باركود دخول المدير">
-    <div class="link" id="mainLink"></div>
-    <div class="row" style="margin-top:10px">
-      <a class="btn gold" href="principal-assets/qr-poster.png" download="باركود-ملف-الانجاز-للمدير.png">⬇️ تحميل الملصق</a>
-      <a class="btn light" href="principal-assets/qr-principal.png" download="باركود-المدير.png">⬇️ الباركود وحده</a>
-      <button class="btn light" type="button" id="copyLink">📋 نسخ الرابط</button>
-      <a class="btn light" href="principal.html" target="_blank" rel="noopener">👁️ معاينة صفحة المدير</a>
-    </div>
-  </section>
-</div>
-<script src="principal-code.js"></script>
-<script>
-(function(){
-var MAIN='https://aak64417-glitch.github.io/science-unified-hub/portfolio-1448/principal.html';
-var $=function(i){return document.getElementById(i)};
-function draw(){var t=PFCode.today();$('codeNow').textContent=t;$('codeTom').textContent=PFCode.code(PFCode.day(1));$('dirLink').textContent=MAIN+'?c='+t;$('mainLink').textContent=MAIN}
-function copy(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){alert('تم النسخ ✓')}).catch(function(){prompt('انسخ:',t)})}
-$('copyDir').onclick=function(){copy(MAIN+'?c='+PFCode.today())};
-$('copyCode').onclick=function(){copy(PFCode.today())};
-$('copyLink').onclick=function(){copy(MAIN)};
-draw();setInterval(draw,60000);
-})();
-</script>
-</body>
-</html>
+<body style="font-family:Tahoma,Arial,sans-serif;text-align:center;padding:45px">
+<p>تم إلغاء الرمز اليومي. يمكن فتح ملف الإنجاز مباشرة عبر الرابط الثابت.</p>
+<p><a href="principal.html">فتح ملف الإنجاز للمدير</a></p>
+<script>location.replace('principal.html');</script>
+</body></html>
