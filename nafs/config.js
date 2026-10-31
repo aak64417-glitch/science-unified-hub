@@ -887,3 +887,117 @@ window.addEventListener('load',function(){
   };
   try{window.renderTasks()}catch(e){}
 });
+// ===== أسئلة التكليفات السابقة ومنع تكرار الأسئلة 2026-10-31 =====
+window.addEventListener('load',function(){
+  if(typeof window.saveTask!=='function'||typeof window.openTaskEditor!=='function')return;
+  function cls(v){v=String(v==null?'':v).trim();
+    if(/^\d{4}-\d{2}-\d{2}T/.test(v)){var d=new Date(new Date(v).getTime()+12*3600e3);v=(d.getUTCMonth()+1)+'/'+d.getUTCDate();}return v}
+  function E(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function allTasks(){try{return Array.isArray(tasks)?tasks:[]}catch(e){return[]}}
+  function bankMap(){var m={};try{(typeof mergedBank==='function'?mergedBank():[]).forEach(function(q){m[String(q.id)]=q})}catch(e){}return m}
+  var editingId='';
+  function curClass(){var el=document.getElementById('teClass');return el?cls(el.value):''}
+  function usedMap(c,exclude){var m={};allTasks().forEach(function(t){
+      if(String(t.taskId)===String(exclude||'')||cls(t.className)!==c)return;
+      (t.questionIds||[]).forEach(function(q){q=String(q);(m[q]=m[q]||[]).push(t)})});return m}
+  function countBy(ids,bank,f){var m={};ids.forEach(function(id){var q=bank[id]||{};var k=f(q)||'غير محدد';m[k]=(m[k]||0)+1});return Object.keys(m).sort(function(a,b){return m[b]-m[a]}).map(function(k){return E(k)+' <b>'+m[k]+'</b>'}).join(' • ')}
+  var dom=function(q){return q.officialDomain||q.domain||''},lvl=function(q){return q.cognitiveLevel||''},unit=function(q){return q.lesson||''};
+
+  // ملخص في محرر التكليف + خيار إخفاء المكرر
+  function renderBox(){
+    var tools=document.querySelector('#appModalBody .picker-tools');if(!tools)return;
+    var box=document.getElementById('dupBox');
+    if(!box){box=document.createElement('div');box.id='dupBox';box.className='helper';box.style.cssText='border:2px solid #f0b429;background:#fff8e6;margin-top:10px';tools.parentNode.insertBefore(box,tools)}
+    var c=curClass(),used=usedMap(c,editingId),ids=Object.keys(used),bank=bankMap();
+    var tl={};ids.forEach(function(id){used[id].forEach(function(t){tl[t.taskId]=t.title||t.taskId})});
+    var hide=box.dataset.hide==='1';
+    if(!ids.length){box.innerHTML='📋 لم يُكلَّف الفصل '+E(c)+' بأي أسئلة سابقًا.';return}
+    box.innerHTML='<b>📋 سبق تكليف الفصل '+E(c)+' بـ '+ids.length+' سؤالًا في '+Object.keys(tl).length+' تكليفات:</b> '+Object.keys(tl).map(function(k){return '«'+E(tl[k])+'»'}).join('، ')+
+      '<br><span>حسب المجال: '+countBy(ids,bank,dom)+'</span><br><span>حسب الوحدة: '+countBy(ids,bank,unit)+'</span><br><span>حسب المستوى: '+countBy(ids,bank,lvl)+'</span>'+
+      '<br><label style="display:flex;justify-content:flex-start;gap:8px;align-items:center;margin-top:6px;font-weight:700;cursor:pointer;text-align:right"><input type="checkbox" id="dupHide" style="width:auto;margin:0" '+(hide?'checked':'')+'> إخفاء الأسئلة التي سبق تكليفها لهذا الفصل (ولا يقترحها «اقتراح أسئلة»)</label>'+
+      '<br><small>الأسئلة المكررة تظهر في الجدول بخلفية صفراء وعلامة 🔁.</small>';
+    document.getElementById('dupHide').onchange=function(){box.dataset.hide=this.checked?'1':'';window.renderTaskPicker()};
+  }
+  var origFiltered=window.currentTaskFiltered;
+  if(typeof origFiltered==='function')window.currentTaskFiltered=function(){
+    var list=origFiltered.apply(this,arguments),box=document.getElementById('dupBox');
+    if(box&&box.dataset.hide==='1'){var used=usedMap(curClass(),editingId);list=list.filter(function(q){return!used[String(q.id)]})}
+    return list;
+  };
+  var origPicker=window.renderTaskPicker;
+  window.renderTaskPicker=function(){
+    var r=origPicker.apply(this,arguments);
+    try{var used=usedMap(curClass(),editingId);
+      document.querySelectorAll('#taskPickerRows tr').forEach(function(tr){
+        var id=tr.children[1]&&tr.children[1].textContent.trim(),u=used[id];if(!u)return;
+        tr.style.background='#fff4d6';var cell=tr.children[tr.children.length-1];
+        cell.insertAdjacentHTML('beforeend','<div style="margin-top:4px;color:#8a5a00;font-weight:700;font-size:.85em">🔁 سبق في: '+u.map(function(t){return E(t.title||t.taskId)}).join('، ')+'</div>')});
+    }catch(e){}
+    return r;
+  };
+  var origOpen=window.openTaskEditor;
+  window.openTaskEditor=function(task){
+    editingId=task&&task.taskId?String(task.taskId):'';
+    var r=origOpen.apply(this,arguments);
+    setTimeout(function(){renderBox();var sel=document.getElementById('teClass');if(sel)sel.addEventListener('change',function(){renderBox();window.renderTaskPicker()});window.renderTaskPicker()},80);
+    return r;
+  };
+
+  // تنبيه عند الحفظ إذا تكررت الأسئلة
+  function ask(html,buttons){return new Promise(function(res){
+    var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:2147483600;background:rgba(10,25,50,.55);display:flex;align-items:center;justify-content:center;padding:16px';
+    ov.innerHTML='<div dir="rtl" style="background:#fff;border-radius:18px;max-width:560px;width:100%;max-height:85vh;overflow:auto;padding:18px 20px;box-shadow:0 20px 60px rgba(0,0,0,.35);font-family:inherit;line-height:1.8">'+html+
+      '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px">'+buttons.map(function(b,i){return '<button data-i="'+i+'" style="flex:1 1 150px;border:0;border-radius:12px;padding:11px 12px;font:inherit;font-weight:800;cursor:pointer;color:#fff;background:'+b.c+'">'+b.t+'</button>'}).join('')+'</div></div>';
+    ov.addEventListener('click',function(e){var b=e.target.closest('button[data-i]');if(!b)return;ov.remove();res(buttons[+b.dataset.i].v)});
+    document.body.appendChild(ov)})}
+  var origSave=window.saveTask;
+  window.saveTask=async function(id){
+    try{
+      var sel=(typeof taskSelection!=='undefined')?taskSelection:null;
+      if(!sel||!sel.size)return origSave.apply(this,arguments);
+      var c=curClass(),used=usedMap(c,id),dups=[...sel].map(String).filter(function(q){return used[q]});
+      if(!dups.length)return origSave.apply(this,arguments);
+      var bank=bankMap(),selArr=[...sel].map(String).sort().join('|');
+      var same=allTasks().filter(function(t){return String(t.taskId)!==String(id||'')&&cls(t.className)===c&&(t.questionIds||[]).map(String).sort().join('|')===selArr});
+      var tl={};dups.forEach(function(q){used[q].forEach(function(t){tl[t.taskId]=t.title||t.taskId})});
+      var html='<h3 style="margin:0 0 6px;color:#b45309">⚠️ تنبيه: أسئلة مكررة</h3>'+
+        (same.length?'<p style="margin:0 0 6px;color:#b91c1c;font-weight:800">هذا التكليف مطابق تمامًا لتكليف سابق: «'+E(same[0].title)+'»</p>':'')+
+        '<p style="margin:0">من أصل <b>'+sel.size+'</b> سؤالًا مختارًا، <b>'+dups.length+'</b> سؤالًا سبق تكليف الفصل <b>'+E(c)+'</b> بها في: '+Object.keys(tl).map(function(k){return '«'+E(tl[k])+'»'}).join('، ')+'</p>'+
+        '<div style="margin-top:8px;font-size:.9em;max-height:180px;overflow:auto;border:1px solid #eee;border-radius:10px;padding:6px 10px">'+dups.slice(0,40).map(function(q){var b=bank[q]||{};return '<div>• <b>'+E(q)+'</b> — '+E((b.text||'').slice(0,90))+'</div>'}).join('')+(dups.length>40?'<div>… و'+(dups.length-40)+' أخرى</div>':'')+'</div>'+
+        '<p style="margin:8px 0 0">هل توافق على إضافتها رغم التكرار، أم تستبعدها؟</p>';
+      var v=await ask(html,[{t:'✅ موافق — إضافتها',c:'#1e8e3e',v:'add'},{t:'🚫 استبعاد المكرر ('+dups.length+')',c:'#d93025',v:'drop'},{t:'↩️ رجوع للتعديل',c:'#5b6b85',v:'back'}]);
+      if(v==='back')return;
+      if(v==='drop'){
+        dups.forEach(function(q){sel.delete(q)});
+        if(!sel.size){window.renderTaskPicker();return alert('بعد استبعاد المكرر لم يبقَ أي سؤال. اختر أسئلة جديدة ثم احفظ.')}
+        window.renderTaskPicker();
+        if(!confirm('تم استبعاد '+dups.length+' سؤالًا مكررًا، وبقي '+sel.size+' سؤالًا. هل تريد حفظ التكليف الآن؟'))return;
+      }
+    }catch(e){console.warn('dup check',e)}
+    return origSave.apply(this,arguments);
+  };
+
+  // زر عرض أسئلة كل تكليف
+  window.viewTaskQuestions=function(id){
+    var t=allTasks().find(function(x){return String(x.taskId)===String(id)});if(!t)return;
+    var bank=bankMap(),ids=(t.questionIds||[]).map(String);
+    var rows=ids.map(function(q,i){var b=bank[q]||{};return '<tr><td>'+(i+1)+'</td><td>'+E(q)+'</td><td>'+E(dom(b))+'<br><small>'+E(unit(b))+'</small></td><td>'+E(b.outcomeCode||'')+'<br><small>'+E(b.outcomeTitle||'')+'</small></td><td>'+E(lvl(b))+'</td><td style="min-width:260px">'+E(b.text||'—')+'</td></tr>'}).join('');
+    openModal('أسئلة التكليف — '+(t.title||''),
+      '<div class="helper"><b>الفصل:</b> '+E(cls(t.className))+' • <b>عدد الأسئلة:</b> '+ids.length+
+      '<br><b>حسب المجال:</b> '+countBy(ids,bank,dom)+'<br><b>حسب الوحدة:</b> '+countBy(ids,bank,unit)+'<br><b>حسب المستوى:</b> '+countBy(ids,bank,lvl)+
+      '<br><b>حسب ناتج التعلم:</b> '+countBy(ids,bank,function(q){return q.outcomeTitle||q.outcomeCode})+'</div>'+
+      '<div class="bank-table-wrap" style="margin-top:10px;max-height:60vh"><table><thead><tr><th>#</th><th>الرمز</th><th>المجال</th><th>الناتج</th><th>المستوى</th><th>السؤال</th></tr></thead><tbody>'+rows+'</tbody></table></div>');
+  };
+  var origTasks=window.renderTasks;
+  window.renderTasks=function(){
+    var r=origTasks.apply(this,arguments);
+    try{document.querySelectorAll('#tasksList button[onclick*="viewTaskParticipants"]').forEach(function(b){
+      if(b.previousElementSibling&&b.previousElementSibling.classList.contains('nafs-q-btn'))return;
+      var m=String(b.getAttribute('onclick')).match(/viewTaskParticipants\((.*)\)/);if(!m)return;
+      var id;try{id=JSON.parse(m[1])}catch(e){id=m[1].replace(/['"]/g,'')}
+      var q=document.createElement('button');q.className='btn-mini btn-view nafs-q-btn';q.textContent='📋 الأسئلة';
+      q.onclick=function(){viewTaskQuestions(id)};b.insertAdjacentElement('beforebegin',q)})}catch(e){}
+    return r;
+  };
+  try{window.renderTasks()}catch(e){}
+});
