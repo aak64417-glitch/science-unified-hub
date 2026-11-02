@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; font-src 'none'; form-action 'none'; base-uri 'none'">
+<title>معاينة النسخة الاحتياطية لنافس — دون تعديل</title>
+<style>
+:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#edf5fc;color:#142f52;font-family:Tahoma,Arial,sans-serif;line-height:1.8}main{max-width:840px;margin:0 auto;padding:18px}h1{margin:16px 0 4px;font-size:clamp(23px,5vw,32px)}h2{margin:0 0 10px;font-size:20px}p{margin:6px 0 12px}.sub{color:#516780}.card{background:#fff;border:1px solid #dce8f5;border-radius:19px;padding:19px;margin:14px 0;box-shadow:0 6px 24px #244d7010}.warning{border-right:5px solid #dd9b27}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}.stat{background:#f0f7ff;border-radius:14px;padding:12px;text-align:center}.stat b{display:block;font-size:27px;color:#0d62aa}.stat small{font-size:12px}.btn{font:inherit;cursor:pointer;background:#126db4;color:white;border:0;border-radius:12px;padding:10px 17px}.secondary{background:#e9f1fb;color:#164d7b}.file{max-width:100%;border:1px solid #cbdae8;border-radius:10px;padding:9px}.line{border-top:1px solid #e5edf5;padding:9px 0}#names{max-height:390px;overflow:auto}#names[hidden]{display:none}.muted{font-size:13px;color:#607087}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #e4edf8;text-align:right;padding:7px}#status{font-weight:700;color:#17649b}@media(max-width:520px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body><main>
+<h1>معاينة نسخة نافس القديمة</h1>
+<p class="sub">قراءة وفحص فقط — لا يتم تعديل لوحة المعلم، ولا الإرسال للخادم، ولا تغيير رمز الدخول أو النتائج.</p>
+<div class="card warning"><b>حماية البيانات:</b> لا تستخدم أي خيار إعادة تهيئة أو تحديث بيانات في لوحة المعلم حاليًا. هذه المعاينة منفصلة تمامًا عن المنصة وتعرض السجلات الموجودة في النسخة، ولا تعني أنها جميع السجلات الأصلية.</div>
+<div class="card">
+<h2>مصدر المعاينة</h2>
+<p>يمكن فتح النسخة المحفوظة في هذا المتصفح أو اختيار ملف النسخة الاحتياطية الذي نزّلته على التابلت.</p>
+<button class="btn" type="button" id="readCache">قراءة النسخة القديمة من المتصفح</button>
+<p style="margin-top:13px">أو اختر الملف الخاص من جهازك (لن يُرفع إلى الإنترنت):</p>
+<input class="file" type="file" id="file" accept=".json,application/json">
+<p id="status" aria-live="polite"></p>
+</div>
+<section class="card" id="summary" hidden>
+<h2>ملخص السجلات الموجودة بالنسخة</h2>
+<div class="grid"><div class="stat"><b id="nStudents">0</b><small>طلاب</small></div><div class="stat"><b id="nResults">0</b><small>نتائج</small></div><div class="stat"><b id="nSessions">0</b><small>جلسات</small></div><div class="stat"><b id="nTasks">0</b><small>تكليفات</small></div></div>
+<h2>توزيع الطلاب حسب الفصل</h2><table><thead><tr><th>الفصل</th><th>العدد</th></tr></thead><tbody id="classes"></tbody></table>
+<p class="muted">الأعداد هنا مقتصرة على النسخة المقروءة. لا تُدمج تلقائيًا في قاعدة البيانات.</p>
+<button class="btn secondary" type="button" id="toggle">عرض أسماء الطلاب محليًا</button>
+<p class="muted">لا تُرسل لقطة شاشة تحتوي على أسماء الطلاب.</p>
+<div id="names" hidden></div>
+</section>
+</main>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+let current=null;
+function status(t){$('status').textContent=t}
+function arr(v){return Array.isArray(v)?v:[]}
+function line(parent,tag,txt){const x=document.createElement(tag);x.textContent=txt;parent.appendChild(x);return x}
+function load(c,source){
+  if(!c||typeof c!=='object'||Array.isArray(c))throw new Error('صيغة البيانات غير صحيحة.');
+  if(!['students','results','sessions','tasks'].some(k=>Array.isArray(c[k])))throw new Error('الملف لا يحتوي على بنية نسخ نافس المعروفة.');
+  current=c;
+  const students=arr(c.students),results=arr(c.results),sessions=arr(c.sessions),tasks=arr(c.tasks);
+  $('summary').hidden=false;
+  $('nStudents').textContent=students.length;$('nResults').textContent=results.length;$('nSessions').textContent=sessions.length;$('nTasks').textContent=tasks.length;
+  const counts=new Map();
+  students.forEach(x=>{const cls=String(x?.className||x?.class||'غير محدد');counts.set(cls,(counts.get(cls)||0)+1)});
+  $('classes').replaceChildren();
+  [...counts.entries()].sort((a,b)=>a[0].localeCompare(b[0],'ar')).forEach(([cls,count])=>{
+    const tr=document.createElement('tr');line(tr,'td',cls);line(tr,'td',String(count));$('classes').appendChild(tr)
+  });
+  const list=$('names');list.replaceChildren();list.hidden=true;$('toggle').textContent='عرض أسماء الطلاب محليًا';
+  students.forEach((x,i)=>{const p=line(list,'div',String(i+1)+' — '+String(x?.name||'(اسم غير موجود)')+' — '+String(x?.className||x?.class||''));p.className='line'});
+  status('تم فحص '+source+' للقراءة فقط. لم تُغيَّر أي بيانات.');
+}
+$('readCache').addEventListener('click',()=>{
+ try{
+   const raw=localStorage.getItem('nafsTeacherFastCacheV3');
+   if(!raw)throw new Error('لا توجد نسخة قديمة محفوظة في المتصفح الحالي؛ استخدم ملف النسخة الاحتياطية.');
+   load(JSON.parse(raw),'النسخة المحلية القديمة');
+ }catch(e){status('تعذر الفحص: '+e.message)}
+});
+$('file').addEventListener('change',async()=>{
+  const file=$('file').files&&$('file').files[0];if(!file)return;
+  try{if(file.size>20*1024*1024)throw new Error('حجم الملف كبير؛ تحقق من أنه النسخة الاحتياطية الصحيحة.');load(JSON.parse(await file.text()),'الملف المختار من الجهاز')}
+  catch(e){status('تعذر فتح الملف: '+e.message)}
+});
+$('toggle').addEventListener('click',()=>{
+ if(!current)return;
+ $('names').hidden=!$('names').hidden;
+ $('toggle').textContent=$('names').hidden?'عرض أسماء الطلاب محليًا':'إخفاء أسماء الطلاب';
+});
+})();
+</script></body></html>
