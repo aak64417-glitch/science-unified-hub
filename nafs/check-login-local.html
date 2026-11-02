@@ -6,6 +6,7 @@
 <div class="card"><h2>النسخ المحلية الموجودة</h2><div id="cacheState"></div><small>تُعرض الأعداد فقط، دون أسماء أو نتائج أو تفاصيل.</small></div>
 <div class="card"><h2>فحص رمز لديك (اختياري)</h2><p>يمكنك اختبار مطابقة رمز تتذكره للرمز المحفوظ في هذا المتصفح. لا تظهر قيمة أي رمز في التقرير.</p><input type="password" id="candidate" autocomplete="off" placeholder="أدخل الرمز للمقارنة محليًا"> <button id="compare" type="button">مقارنة محلية</button><p id="compareResult"></p><small>لا تحفظ الصفحة الرمز الذي تكتبه؛ يُفرَّغ حقل المقارنة بعد الفحص.</small></div>
 <div class="card warn"><h2>تنبيه مهم</h2><p>لا تمسح بيانات الموقع ولا الذاكرة المؤقتة، ولا تغيّر مفتاح المعلم من هذه الصفحة. إذا وجدت نسخة محلية قديمة، لا تضغط تحديث البيانات في لوحة نافس إلى أن تُحفظ نسخة احتياطية آمنة.</p></div>
+<div class="card"><h2>حفظ نسخة احتياطية قبل الاسترجاع</h2><p>سيُحفظ ملف JSON على هذا الجهاز فقط من النسخة المحلية القديمة، دون رفعه لأي خادم. يحتوي الملف على بيانات طلاب؛ احتفظ به بشكل خاص ولا ترسله في المحادثة.</p><button type="button" id="backup">تنزيل النسخة القديمة (137 طالبًا)</button><p id="backupState"></p><small>الزر لا يغيّر البيانات أو المفتاح المخزن.</small></div>
 <button type="button" id="check">إعادة الفحص</button> <button type="button" id="copy">نسخ التقرير المختصر دون أسرار</button><p id="copyState"></p>
 </main><script>
 (function(){
@@ -27,6 +28,19 @@ $('cacheState').textContent=lines.join('\n');
 $('cacheState').style.whiteSpace='pre-line';
 report='فحص نافس (المتصفح الحالي)\nحالة المفتاح: '+(!access?'تعذر القراءة':key?'محفوظ':'غير محفوظ')+'\n'+lines.join('\n')+'\nلا يتضمن التقرير مفاتيح أو أسماء.';
 }
+$('backup').onclick=function(){
+ try{
+  const raw=localStorage.getItem('nafsTeacherFastCacheV3');
+  if(!raw)throw Error('النسخة القديمة غير موجودة في هذا المتصفح.');
+  const c=JSON.parse(raw);
+  if(!c || !Array.isArray(c.students) || !c.students.length)throw Error('لا توجد سجلات طلاب في النسخة القديمة. لم يتم التنزيل.');
+  const blob=new Blob([raw],{type:'application/json;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url;a.download='nafs-local-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),15000);
+  $('backupState').textContent='تم طلب تنزيل ملف النسخة القديمة. تحقق من مجلد التنزيلات في جهازك.';
+ }catch(e){$('backupState').textContent='تعذر الحفظ: '+e.message}
+};
 $('check').onclick=check;
 $('compare').onclick=function(){
  const entered=$('candidate').value;
