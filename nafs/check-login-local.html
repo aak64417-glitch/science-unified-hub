@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>فحص دخول نافس - قراءة فقط</title>
+<style>body{font-family:Tahoma,Arial,sans-serif;background:#edf5fc;color:#173458;margin:0;padding:18px}main{max-width:720px;margin:auto}h1{color:#0b4385}.card{background:#fff;border-radius:18px;padding:19px;margin:14px 0;box-shadow:0 3px 15px #143c6219}strong{color:#124f9b}.status{font-size:19px;font-weight:bold}button{background:#145fba;border:0;color:#fff;border-radius:12px;padding:13px 20px;font:inherit;cursor:pointer}input{padding:12px;max-width:100%;border:1px solid #a9bdd7;border-radius:9px;font:inherit}.warn{border-right:4px solid #cc8a17}small{color:#506784}li{margin:9px 0}#report{white-space:pre-line}</style></head>
+<body><main><h1>فحص دخول نافس</h1><p>فحص محلي للمتصفح الحالي، لا يتصل بخادم نافس ولا يرسل رمز الدخول أو بيانات الطلاب ولا يغيّر أي بيانات.</p>
+<div class="card"><h2>حالة الرمز المحفوظ</h2><div id="keyState" class="status">جارٍ الفحص...</div><small>وجود الرمز لا يعني أنه صحيح لدى الخادم.</small></div>
+<div class="card"><h2>النسخ المحلية الموجودة</h2><div id="cacheState"></div><small>تُعرض الأعداد فقط، دون أسماء أو نتائج أو تفاصيل.</small></div>
+<div class="card"><h2>فحص رمز لديك (اختياري)</h2><p>يمكنك اختبار مطابقة رمز تتذكره للرمز المحفوظ في هذا المتصفح. لا تظهر قيمة أي رمز في التقرير.</p><input type="password" id="candidate" autocomplete="off" placeholder="أدخل الرمز للمقارنة محليًا"> <button id="compare" type="button">مقارنة محلية</button><p id="compareResult"></p><small>لا تحفظ الصفحة الرمز الذي تكتبه؛ يُفرَّغ حقل المقارنة بعد الفحص.</small></div>
+<div class="card warn"><h2>تنبيه مهم</h2><p>لا تمسح بيانات الموقع ولا الذاكرة المؤقتة، ولا تغيّر مفتاح المعلم من هذه الصفحة. إذا وجدت نسخة محلية قديمة، لا تضغط تحديث البيانات في لوحة نافس إلى أن تُحفظ نسخة احتياطية آمنة.</p></div>
+<button type="button" id="check">إعادة الفحص</button> <button type="button" id="copy">نسخ التقرير المختصر دون أسرار</button><p id="copyState"></p>
+</main><script>
+(function(){
+const $=id=>document.getElementById(id);
+const cacheKeys=['nafsTeacherFinalCacheV1','nafsTeacherFastCacheV3'];
+let report='';
+function count(v){return Array.isArray(v)?v.length:'غير متاح'}
+function check(){
+let key=null, access=true, lines=[];
+try{key=localStorage.getItem('nafsTeacherKey')}catch(e){access=false}
+$('keyState').textContent=!access?'تعذر قراءة ذاكرة هذا المتصفح':key?'مفتاح محفوظ في هذا المتصفح':'لا يوجد مفتاح معلم محفوظ في هذا المتصفح';
+for(const name of cacheKeys){
+ try{const raw=localStorage.getItem(name);
+ if(!raw){lines.push(name+': لا توجد نسخة');continue}
+ const c=JSON.parse(raw);lines.push(name+': نسخة موجودة | الطلاب '+count(c.students)+' | النتائج '+count(c.results)+' | الجلسات '+count(c.sessions)+' | التكليفات '+count(c.tasks));
+ }catch(e){lines.push(name+': نسخة موجودة لكن تعذر تحليلها')}
+}
+$('cacheState').textContent=lines.join('\n');
+$('cacheState').style.whiteSpace='pre-line';
+report='فحص نافس (المتصفح الحالي)\nحالة المفتاح: '+(!access?'تعذر القراءة':key?'محفوظ':'غير محفوظ')+'\n'+lines.join('\n')+'\nلا يتضمن التقرير مفاتيح أو أسماء.';
+}
+$('check').onclick=check;
+$('compare').onclick=function(){
+ const entered=$('candidate').value;
+ let stored=null;try{stored=localStorage.getItem('nafsTeacherKey')}catch(e){}
+ $('compareResult').textContent=!entered?'أدخل رمزًا للمقارنة.':stored===null?'لا يوجد رمز محفوظ للمقارنة.':entered===stored?'الرمز المدخل مطابق للمحفوظ محليًا (لم تُفحص صلاحيته لدى الخادم).':'الرمز المدخل مختلف عن المحفوظ محليًا.';
+ $('candidate').value='';
+};
+$('copy').onclick=function(){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(report).then(()=>$('copyState').textContent='تم نسخ التقرير المختصر.',()=>$('copyState').textContent='تعذر النسخ، يمكنك تصوير النتائج.')}else $('copyState').textContent='يمكنك تصوير النتائج.'};
+check();
+})();
+</script></body></html>
