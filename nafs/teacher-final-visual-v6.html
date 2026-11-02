@@ -1118,34 +1118,12 @@ function saveServerCache(r){
 function restoreServerCache(){
   try{const c=JSON.parse(localStorage.getItem(DASH_CACHE_KEY)||'null');if(!c)return 0;applyServerData(c);return c.savedAt||1}catch(e){return 0}
 }
-function hasNafsRecords(r){
-  return !!(r && typeof r==='object' &&
-    ['students','results','sessions','tasks'].some(k=>Array.isArray(r[k]) && r[k].length>0));
-}
-function hasNafsStructure(r){
-  return !!(r && typeof r==='object' &&
-    ['students','results','sessions','tasks'].some(k=>Array.isArray(r[k])));
-}
 async function fetchDashboard(){
-  let lite=null, liteError=null;
-  try{
-    lite=await jsonp({action:'dashboardLite',key:teacherKey()},50000);
-    if(hasNafsRecords(lite))return lite;
-  }catch(e){
-    liteError=e;
+  try{return await jsonp({action:'dashboardLite',key:teacherKey()},50000)}
+  catch(e){
+    // عند انتهاء المهلة لا نرسل الطلب الكامل الأثقل حتى لا يتضاعف الانتظار
     if(/مهلة/.test(e.message||''))throw e;
-  }
-  // استجابة Lite الفارغة لا تعني نجاح المزامنة. جرّب المسار الكامل.
-  try{
-    const full=await jsonp({action:'dashboard',key:teacherKey()},50000);
-    if(hasNafsRecords(full))return full;
-    if(!hasNafsStructure(full))throw new Error('استجابة الخادم غير مكتملة');
-    // لا تحفظ صفرًا على أنه آخر نسخة صحيحة؛ فقد تكون مشكلة مفتاح أو مصدر.
-    throw new Error('أعاد الخادم قوائم فارغة. لم تُستبدل البيانات المحفوظة. تحقق من مفتاح المعلم ومصدر البيانات.');
-  }catch(e){
-    if(liteError && !hasNafsStructure(lite))
-      throw new Error('تعذر جلب بيانات نافس: '+liteError.message+' / '+e.message);
-    throw e;
+    return await jsonp({action:'dashboard',key:teacherKey()},50000);
   }
 }
 function refreshData(silent=false){
@@ -1165,7 +1143,6 @@ function refreshData(silent=false){
     if(!silent){notice('جاري تحديث بيانات نافس من الخادم...');tick=setInterval(()=>notice('جاري تحديث بيانات نافس من الخادم... '+Math.round((Date.now()-refreshStartedAt)/1000)+'ث'),1000)}
     try{
       const res=await Promise.all([fetchDashboard(),bankReady]);
-      if(!hasNafsRecords(res[0]))throw new Error('لم تصل بيانات الطلاب أو النتائج؛ تم الحفاظ على النسخة السابقة.');
       applyServerData(res[0]);saveServerCache(res[0]);
       notice('تم التحديث خلال '+((Date.now()-refreshStartedAt)/1000).toFixed(1)+'ث: بنك الأسئلة + بيانات المعلم + التكليفات.');
     }catch(e){
