@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#062749">
+<title>المصحح الشامل | بوابة العلوم الموحدة</title>
+<link rel="icon" href="../icon-192.png">
+<link rel="apple-touch-icon" href="../icon-192.png">
+<style>
+:root{--bg:#04182d;--panel:#0a2c4f;--panel2:#0d3a66;--line:#2a6797;--gold:#ffd778;--text:#f3f8ff;--muted:#b9d1e8;--ok:#2fbf71;--bad:#e5534b;--part:#f0a63a;--pend:#8a9bb0;--blank:#55657a}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+background-image:radial-gradient(circle at 85% 0%,rgba(50,132,201,.25),transparent 30%),linear-gradient(180deg,#072d53 0%,#04162b 60%)}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:30;background:rgba(2,29,56,.97);border-bottom:1px solid #1b689d;backdrop-filter:blur(10px)}
+.top-in{max-width:1180px;margin:auto;padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:900;color:var(--gold);font-size:19px;white-space:nowrap}
+.back{text-decoration:none;color:var(--muted);font-size:14px;border:1px solid #ffffff30;padding:6px 10px;border-radius:10px}
+.exam-pick{margin-inline-start:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tabs{max-width:1180px;margin:auto;padding:0 16px 10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tab{border:1px solid #2f6f9f;background:#0a2c4f;border-radius:14px;padding:10px 6px;font-weight:800;cursor:pointer;color:#d9e8f6}
+.tab.on{border-color:var(--gold);background:#ffffff12;color:#ffe59c}
+.tab small{display:block;font-weight:500;font-size:11px;color:var(--muted);margin-top:2px}
+main{max-width:1180px;margin:auto;padding:16px}
+.panel{display:none}.panel.on{display:block}
+.box{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:16px;box-shadow:0 10px 26px #0004}
+.box h2{margin:0 0 10px;font-size:20px;color:#ffe59c}
+.box h3{margin:0 0 8px;font-size:16px}
+.hint{color:var(--muted);font-size:13px;line-height:1.8;margin:0 0 10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:700}
+input,select,textarea{background:#06213d;border:1px solid #2f6f9f;border-radius:11px;padding:9px 10px;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid #ffd77888;border-color:var(--gold)}
+textarea{width:100%;min-height:90px;resize:vertical;line-height:1.7}
+.btn{border:1px solid #ffffff40;background:#0f4a7e;border-radius:12px;padding:9px 14px;font-weight:800;cursor:pointer;white-space:nowrap}
+.btn:hover{filter:brightness(1.15)}
+.btn.gold{background:linear-gradient(#ffe8a6,#e8b849);color:#3d2b08;border-color:#ffe199}
+.btn.green{background:#13795b}.btn.red{background:#8a2c35}.btn.ghost{background:transparent}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:10px}
+.sources{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.src{border:1px solid #ffffff40;border-radius:18px;padding:16px;cursor:pointer;text-align:right;display:flex;gap:12px;align-items:flex-start;box-shadow:inset 0 1px #ffffff30}
+.src .ic{font-size:34px;line-height:1}
+.src b{display:block;font-size:16px;margin-bottom:4px}
+.src span{font-size:12.5px;color:#e3eefa;line-height:1.7}
+.s1{background:linear-gradient(135deg,#087f79,#0a4d5f)}.s2{background:linear-gradient(135deg,#5142b9,#2a1f7f)}
+.s3{background:linear-gradient(135deg,#0e70cd,#0a3f83)}.s4{background:linear-gradient(135deg,#bf7b2f,#76451d)}
+.qlist{display:flex;flex-direction:column;gap:8px}
+.q{display:grid;grid-template-columns:44px 1fr;gap:8px;align-items:start;background:#06213d;border:1px solid #23557f;border-radius:14px;padding:10px}
+.q .no{font-weight:900;color:var(--gold);text-align:center;padding-top:8px}
+.q .fields{display:grid;grid-template-columns:minmax(150px,1.1fr) minmax(120px,1.6fr) 72px minmax(90px,.8fr) 34px;gap:6px;align-items:center}
+.q .qt{grid-column:1/-1;font-size:12px;color:var(--muted);line-height:1.6}
+.q .x{background:none;border:0;color:#ff9a9a;font-size:20px;cursor:pointer}
+@media(max-width:700px){.q .fields{grid-template-columns:1fr 1fr}.q .fields .k{grid-column:1/-1}.q .x{justify-self:end}}
+.total{font-weight:900;color:#ffe59c}
+.students{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.stu{display:flex;align-items:center;gap:10px;background:#06213d;border:1px solid #23557f;border-radius:13px;padding:9px 12px;cursor:pointer}
+.stu .nm{font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stu .tag{font-size:11px;color:var(--muted);border:1px solid #ffffff25;border-radius:999px;padding:2px 8px}
+.pill{font-weight:900;border-radius:999px;padding:3px 10px;font-size:13px;white-space:nowrap}
+.g-ex{background:#147a4c}.g-vg{background:#1d6c8f}.g-g{background:#5a5fb3}.g-p{background:#9a6b1d}.g-f{background:#8a2c35}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stat{background:#0b3c6a;border:1px solid #2c6696;border-radius:16px;padding:12px;text-align:center}
+.stat b{display:block;font-size:26px}.stat span{font-size:12.5px;color:var(--muted);font-weight:700}
+.bars{display:flex;flex-direction:column;gap:7px}
+.bar{display:grid;grid-template-columns:96px 1fr 40px;gap:8px;align-items:center;font-size:13px}
+.bar i{display:block;height:16px;border-radius:8px;background:#ffffff14;overflow:hidden}
+.bar i em{display:block;height:100%;border-radius:8px}
+.tw{overflow-x:auto;border-radius:14px;border:1px solid #23557f}
+table{border-collapse:collapse;width:100%;font-size:13px;background:#06213d}
+th,td{padding:7px 8px;border-bottom:1px solid #1b4468;text-align:center;white-space:nowrap}
+th{background:#0b3c6a;position:sticky;top:0}
+td.nm{text-align:right;font-weight:800;cursor:pointer}
+.c{display:inline-block;min-width:22px;height:22px;line-height:22px;border-radius:6px;font-size:11px;font-weight:900}
+.c.ok{background:var(--ok)}.c.bad{background:var(--bad)}.c.part{background:var(--part);color:#2b1a00}.c.blank{background:var(--blank)}.c.pend{background:var(--pend);color:#102030}.c.nokey{background:#333}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:8px 0}
+.empty{text-align:center;color:var(--muted);padding:22px;border:1px dashed #2f6f9f;border-radius:14px}
+dialog{border:1px solid #4389bd;border-radius:22px;background:linear-gradient(180deg,#0c3e6d,#071e38);color:var(--text);padding:0;width:min(760px,calc(100% - 20px));max-height:calc(100vh - 24px)}
+dialog::backdrop{background:rgba(1,12,25,.8);backdrop-filter:blur(5px)}
+.dh{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid #2a6797;position:sticky;top:0;background:#0c3e6d;z-index:2}
+.dh h3{margin:0;flex:1;color:#ffe59c}
+.db{padding:14px 16px;overflow:auto;max-height:calc(100vh - 150px)}
+.df{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #2a6797;flex-wrap:wrap}
+.ans{display:grid;grid-template-columns:60px 1fr 70px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #ffffff14}
+.ans .lbl{font-weight:900;color:var(--gold);font-size:14px}
+.ans .lbl small{display:block;font-size:10px;color:var(--muted);font-weight:500}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{min-width:40px;height:38px;border-radius:11px;border:1px solid #3a7bb0;background:#06213d;font-weight:900;cursor:pointer;font-size:16px}
+.chip.on{background:var(--gold);color:#3d2b08;border-color:var(--gold)}
+.res{font-size:12px;font-weight:900;text-align:center}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#0e5132;border:1px solid #2fbf71;border-radius:14px;padding:11px 18px;font-weight:800;z-index:200;display:none;max-width:calc(100% - 32px);text-align:center}
+.toast.err{background:#5a1f26;border-color:#e5534b}
+#scanCanvas{width:100%;border-radius:12px;background:#000;display:block}
+.prev{font-size:12px}
+.prev td,.prev th{padding:4px 6px;max-width:140px;overflow:hidden;text-overflow:ellipsis}
+.prev th.ans-col{background:#13795b}.prev th.name-col{background:#9a6b1d}
+.mini{font-size:12px;color:var(--muted)}
+@media(max-width:600px){main{padding:12px}.box{padding:13px;border-radius:16px}.brand{font-size:17px}.tab{font-size:13px}.ans{grid-template-columns:48px 1fr 54px}}
+@media print{
+ body{background:#fff!important;color:#000}
+ .top,.tabs,.no-print,#pKey,#pAns,dialog,.toast{display:none!important}
+ main{max-width:none;padding:0}.panel{display:block!important}
+ .box{background:#fff;border:1px solid #999;box-shadow:none;break-inside:avoid}
+ .box h2{color:#000}.stat{background:#f3f3f3;border-color:#bbb}.stat span,.hint,.mini{color:#333}
+ table{background:#fff}th{background:#e8e8e8;color:#000}td,th{border-color:#ccc}.tw{border-color:#bbb;overflow:visible}
+ .bar i{background:#eee}
+}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="top-in">
+  <a class="back" href="../index.html">‹ البوابة</a>
+  <div class="brand">✅ المصحح الشامل</div>
+  <div class="exam-pick">
+   <select id="examSel" aria-label="الاختبار الحالي"></select>
+   <button class="btn sm" id="newExam" type="button">＋ اختبار</button>
+   <button class="btn sm ghost" id="moreBtn" type="button">⋯</button>
+  </div>
+ </div>
+ <nav class="tabs">
+  <button class="tab on" data-tab="pKey" type="button">١ مفتاح الإجابة<small id="tabKeyInfo">0 سؤال</small></button>
+  <button class="tab" data-tab="pAns" type="button">٢ إجابات الطلاب<small id="tabAnsInfo">0 طالب</small></button>
+  <button class="tab" data-tab="pRes" type="button">٣ النتائج والتحليل<small id="tabResInfo">—</small></button>
+ </nav>
+</header>
+
+<main>
+<!-- ============ KEY ============ -->
+<section class="panel on" id="pKey">
+ <div class="box">
+  <h2>بيانات الاختبار</h2>
+  <div class="grid2">
+   <label class="f">اسم الاختبار<input id="exTitle"></label>
+   <label class="f">الفصل / الصف<input id="exCls" placeholder="مثال: ٣/٢"></label>
+   <label class="f">درجة النجاح (%)<input id="exPass" type="number" min="0" max="100"></label>
+   <label class="f">تحويل الدرجة إلى (اختياري)<input id="exScale" type="number" min="0" placeholder="مثال: 20"></label>
+  </div>
+ </div>
+
+ <div class="box">
+  <h2>إدخال المفتاح بسرعة</h2>
+  <p class="hint">اكتب الإجابات بأي شكل: <b>ب ج أ د ص خ</b> أو <b>بجأد</b> أو <b>1-ب 2-ج 3-ص 4-9.8</b> أو سطرًا لكل سؤال. يُكتشف نوع كل سؤال تلقائيًا (اختيار، صح/خطأ، رقمي، نصي) ويمكنك تعديله بعدها.</p>
+  <textarea id="quickKey" placeholder="ب ج أ د ص خ ..."></textarea>
+  <div class="row" style="margin-top:8px">
+   <button class="btn gold" id="applyQuick" type="button">تطبيق المفتاح</button>
+   <button class="btn" id="importKeyFile" type="button">📂 استيراد من بنك أسئلة / ملف</button>
+   <button class="btn ghost" id="demoBtn" type="button">🎯 تجربة بمثال</button>
+  </div>
+ </div>
+
+ <div class="box">
+  <div class="row" style="justify-content:space-between;margin-bottom:8px">
+   <h2 style="margin:0">الأسئلة</h2>
+   <span class="total" id="keyTotal"></span>
+  </div>
+  <div class="legend">
+   <span>• <b>متعدد الإجابات</b>: افصل بفاصلة (أ،ج) وتُمنح درجة جزئية</span>
+   <span>• <b>نصية/كلمات مفتاحية</b>: افصل البدائل بـ |</span>
+   <span>• <b>رقمية</b>: السماحية رقم أو نسبة مثل 5%</span>
+  </div>
+  <div class="qlist" id="qlist"></div>
+  <div class="row" style="margin-top:10px">
+   <button class="btn" id="addQ" type="button">＋ سؤال</button>
+   <button class="btn sm ghost" id="addQ5" type="button">＋ ٥ أسئلة</button>
+   <label class="mini row">درجة كل الأسئلة <input id="allPts" type="number" min="0" step="0.25" style="width:80px"><button class="btn sm" id="setAllPts" type="button">تعميم</button></label>
+   <button class="btn sm red" id="clearQ" type="button" style="margin-inline-start:auto">حذف كل الأسئلة</button>
+  </div>
+ </div>
+</section>
+
+<!-- ============ ANSWERS ============ -->
+<section class="panel" id="pAns">
+ <div class="box">
+  <h2>من أين إجابات الطلاب؟</h2>
+  <p class="hint">اختر أي مصدر، ويمكنك الجمع بين أكثر من مصدر لنفس الاختبار (يُدمج الطالب بالاسم).</p>
+  <div class="sources">
+   <button class="src s1" id="srcManual" type="button"><div class="ic">✍️</div><div><b>اختبار ورقي — إدخال يدوي</b><span>أزرار سريعة لكل سؤال، أو اكتب إجابات الطالب متتالية مثل «بجأدص».</span></div></button>
+   <button class="src s2" id="srcFile" type="button"><div class="ic">📊</div><div><b>ملف أو لصق جدول</b><span>Google Forms، Microsoft Forms، Excel، CSV، مدرستي، أو أي جدول منسوخ.</span></div></button>
+   <button class="src s3" id="srcScan" type="button"><div class="ic">📷</div><div><b>تصوير ورقة التظليل</b><span>صوّر أوراق الطلاب بالجوال ويُقرأ التظليل تلقائيًا (يمكن اختيار عدة صور).</span></div></button>
+   <button class="src s4" id="srcPrint" type="button"><div class="ic">🖨️</div><div><b>طباعة ورقة التظليل</b><span>ورقة إجابة A4 مصممة لهذا الاختبار وجاهزة للتصحيح بالكاميرا.</span></div></button>
+  </div>
+  <input type="file" id="scanInput" accept="image/*" multiple hidden>
+  <input type="file" id="fileInput" accept=".csv,.tsv,.txt,.xlsx,.xls,.ods,.json" hidden>
+ </div>
+
+ <div class="box">
+  <div class="row" style="justify-content:space-between">
+   <h2 style="margin:0">الطلاب <span class="mini" id="stuCount"></span></h2>
+   <div class="row">
+    <button class="btn sm" id="rosterBtn" type="button">👥 إضافة قائمة أسماء</button>
+    <button class="btn sm red" id="clearStu" type="button">حذف الكل</button>
+   </div>
+  </div>
+  <div class="students" id="stuList"></div>
+ </div>
+</section>
+
+<!-- ============ RESULTS ============ -->
+<section class="panel" id="pRes">
+ <div class="box">
+  <div class="row" style="justify-content:space-between">
+   <h2 style="margin:0" id="resTitle">النتائج</h2>
+   <div class="row no-print">
+    <button class="btn sm gold" id="copySum" type="button">📋 نسخ الملخص</button>
+    <button class="btn sm" id="exportCsv" type="button">⬇️ Excel</button>
+    <button class="btn sm" id="printRes" type="button">🖨️ طباعة</button>
+   </div>
+  </div>
+  <div class="stats" id="stats" style="margin-top:12px"></div>
+ </div>
+ <div class="box">
+  <h2>توزيع التقديرات</h2>
+  <div class="bars" id="dist"></div>
+ </div>
+ <div class="box">
+  <div class="row" style="justify-content:space-between"><h2 style="margin:0">كشف الدرجات</h2>
+   <select id="sortSel" class="no-print"><option value="score">ترتيب حسب الدرجة</option><option value="name">ترتيب أبجدي</option><option value="add">ترتيب الإدخال</option></select></div>
+  <div class="legend"><span><i class="c ok">✓</i> صحيحة</span><span><i class="c part">½</i> جزئية</span><span><i class="c bad">✗</i> خاطئة</span><span><i class="c blank">–</i> متروكة</span><span><i class="c pend">؟</i> بانتظار تقدير المعلم</span></div>
+  <div class="tw" id="resTable"></div>
+ </div>
+ <div class="box">
+  <h2>تحليل الأسئلة</h2>
+  <p class="hint">نسبة الإجابة الصحيحة لكل سؤال وأكثر إجابة خاطئة تكرارًا — الأسئلة الأقل من 50% تحتاج إعادة شرح.</p>
+  <div class="tw" id="itemTable"></div>
+ </div>
+</section>
+</main>
+
+<!-- ============ DIALOGS ============ -->
+<dialog id="dStu">
+ <div class="dh"><h3 id="dStuTitle">إجابات الطالب</h3><span class="pill g-g" id="dStuScore">0</span></div>
+ <div class="db">
+  <div class="grid2">
+   <label class="f">اسم الطالب<input id="stuName" list="stuNames" autocomplete="off"></label>
+   <label class="f">إدخال سريع (الإجابات بالترتيب)<input id="stuQuick" placeholder="بجأد ص خ ..."></label>
+  </div>
+  <datalist id="stuNames"></datalist>
+  <div id="stuAns" style="margin-top:8px"></div>
+ </div>
+ <div class="df">
+  <button class="btn red" id="stuDel" type="button" style="margin-inline-end:auto">حذف</button>
+  <button class="btn ghost" id="stuCancel" type="button">إلغاء</button>
+  <button class="btn" id="stuSaveNext" type="button">حفظ والتالي</button>
+  <button class="btn gold" id="stuSave" type="button">حفظ</button>
+ </div>
+</dialog>
+
+<dialog id="dImp">
+ <div class="dh"><h3>استيراد جدول</h3><button class="btn sm ghost" id="impClose" type="button">✕</button></div>
+ <div class="db">
+  <div class="row">
+   <button class="btn" id="impPick" type="button">📂 اختيار ملف</button>
+   <span class="mini">CSV، Excel (xlsx)، TSV — أو الصق الجدول من Excel أو Google Sheets بالأسفل</span>
+  </div>
+  <textarea id="impText" placeholder="الصق هنا..." style="margin-top:8px;min-height:70px"></textarea>
+  <div id="impMap" style="display:none;margin-top:10px">
+   <div class="grid2">
+    <label class="f">عمود اسم الطالب<select id="impName"></select></label>
+    <label class="f">أول عمود للإجابات<select id="impStart"></select></label>
+    <label class="f">عدد الأسئلة<input id="impCount" type="number" min="1"></label>
+    <label class="f">الصف الأول<select id="impHeader"><option value="1">عناوين</option><option value="0">بيانات</option></select></label>
+   </div>
+   <p class="hint" style="margin-top:8px" id="impInfo"></p>
+   <div class="tw prev" id="impPrev"></div>
+  </div>
+ </div>
+ <div class="df"><button class="btn ghost" id="impCancel" type="button">إلغاء</button><button class="btn gold" id="impGo" type="button" disabled>استيراد</button></div>
+</dialog>
+
+<dialog id="dScan">
+ <div class="dh"><h3 id="scanTitle">قراءة ورقة التظليل</h3><span class="mini" id="scanQueue"></span></div>
+ <div class="db">
+  <canvas id="scanCanvas"></canvas>
+  <p class="hint" id="scanMsg" style="margin-top:8px"></p>
+  <label class="f">اسم الطالب<input id="scanName" list="stuNames" autocomplete="off"></label>
+  <div id="scanAns" class="mini" style="margin-top:8px;line-height:2"></div>
+ </div>
+ <div class="df">
+  <button class="btn ghost" id="scanSkip" type="button">تخطي</button>
+  <button class="btn" id="scanEdit" type="button">حفظ ومراجعة</button>
+  <button class="btn gold" id="scanSave" type="button">حفظ</button>
+ </div>
+</dialog>
+
+<dialog id="dText">
+ <div class="dh"><h3 id="dTextTitle"></h3></div>
+ <div class="db"><p class="hint" id="dTextHint"></p><textarea id="dTextVal" style="min-height:160px"></textarea></div>
+ <div class="df"><button class="btn ghost" id="dTextCancel" type="button">إلغاء</button><button class="btn gold" id="dTextOk" type="button">موافق</button></div>
+</dialog>
+
+<dialog id="dMore">
+ <div class="dh"><h3>إدارة الاختبار</h3></div>
+ <div class="db"><div class="row" style="flex-direction:column;align-items:stretch">
+  <button class="btn" id="dupExam" type="button">📄 نسخ الاختبار (نفس المفتاح بدون طلاب) — لفصل آخر</button>
+  <button class="btn" id="backupExam" type="button">💾 حفظ نسخة احتياطية (ملف)</button>
+  <button class="btn" id="restoreExam" type="button">📥 فتح نسخة احتياطية</button>
+  <button class="btn red" id="delExam" type="button">🗑️ حذف هذا الاختبار</button>
+ </div></div>
+ <div class="df"><button class="btn ghost" id="moreClose" type="button">إغلاق</button></div>
+ <input type="file" id="restoreInput" accept=".json" hidden>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* =================== helpers =================== */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const r2=n=>Math.round(n*100)/100;
+const fmt=n=>{const v=r2(n);return Number.isInteger(v)?String(v):v.toFixed(2).replace(/0$/,'')};
+function toast(m,err){const t=$('#toast');t.textContent=m;t.className='toast'+(err?' err':'');t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2600)}
+const LET=['أ','ب','ج','د','هـ','و'];
+const TYPES={
+ mcq:{l:'اختيار من متعدد',ph:'ب'},
+ multi:{l:'متعدد الإجابات',ph:'أ،ج'},
+ tf:{l:'صح / خطأ',ph:'ص أو خ'},
+ num:{l:'إجابة رقمية',ph:'9.8'},
+ text:{l:'إجابة قصيرة',ph:'البناء الضوئي | التمثيل الضوئي'},
+ kw:{l:'كلمات مفتاحية',ph:'ضوء | كلوروفيل | جلوكوز'},
+ order:{l:'ترتيب / مزاوجة',ph:'ب ج أ د'},
+ manual:{l:'مقالي (تقدير المعلم)',ph:'الإجابة النموذجية (للعرض فقط)'}
+};
+const BUB=t=>t==='mcq'||t==='multi'||t==='tf';
+
+/* =================== Arabic-aware normalisation =================== */
+function digits(s){return String(s??'').replace(/[٠-٩]/g,d=>d.charCodeAt(0)-1632).replace(/[۰-۹]/g,d=>d.charCodeAt(0)-1776).replace(/٫/g,'.')}
+function norm(s){return digits(s).toLowerCase()
+ .replace(/[ً-ٰٟـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي')
+ .replace(/[^\p{L}\p{N}.\-\s]/gu,' ').replace(/\s+/g,' ').trim()}
+const CH=Object.assign(Object.create(null),{'ا':0,'ب':1,'ج':2,'د':3,'ه':4,'و':5,a:0,b:1,c:2,d:3,e:4,f:5,'1':0,'2':1,'3':2,'4':3,'5':4,'6':5});
+const MULTI_RE=/^[ابجدهوa-f1-6](\s+[ابجدهوa-f1-6])+$/;
+function choiceIdx(raw,q){
+ if(raw==null)return -1; let t=norm(raw); if(!t)return -1;
+ t=t.replace(/^(الخيار|خيار|option|choice)\s*/,'');
+ if(t in CH)return CH[t];
+ const O=q&&q.opts;
+ if(O){const i=O.findIndex(o=>o&&norm(o)===t); if(i>=0)return i}
+ const m=t.match(/^([ابجدهوa-f])\s/); if(m)return CH[m[1]];
+ if(O){const i=O.findIndex(o=>{const n=norm(o);return n.length>3&&(t.includes(n)||n.includes(t))}); if(i>=0)return i}
+ return -2;
+}
+function choiceSet(raw,q){
+ const s=new Set(); if(raw==null||!String(raw).trim())return s;
+ if(q&&q.opts){const t=norm(raw);q.opts.forEach((o,i)=>{const n=norm(o);if(n.length>1&&t.includes(n))s.add(i)});if(s.size)return s}
+ let toks=norm(raw).split(/[\s+\/]+/).filter(Boolean);
+ if(toks.length===1&&toks[0].length>1&&[...toks[0]].every(c=>c in CH))toks=[...toks[0]];
+ toks.forEach(k=>{const i=choiceIdx(k,null);if(i>=0)s.add(i)}); return s;
+}
+const TRUE=['ص','صح','صحيح','صحيحه','صواب','true','t','yes','y','نعم','1','correct','right'];
+const FALSE=['خ','خطا','خاطي','خاطيه','false','f','no','n','لا','0','wrong','x'];
+function tfVal(raw){const r=String(raw??'').trim(); if(!r)return null;
+ if(/^[✓✔√]$/.test(r))return true; if(/^[✗✘×]$/.test(r))return false;
+ const t=norm(r); if(TRUE.includes(t))return true; if(FALSE.includes(t))return false; return undefined}
+function numVal(raw){let t=digits(raw).replace(/\s/g,''); if(!t)return null;
+ t=t.replace(/,(?=\d{1,2}$)/,'.').replace(/[,،]/g,'');
+ let m=t.match(/^(-?\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)/); if(m)return +m[1]/+m[2];
+ m=t.match(/-?\d*\.?\d+(?:e-?\d+)?/i); return m?parseFloat(m[0]):NaN}
+function lev(a,b){if(a===b)return 0;const m=a.length,n=b.length;if(!m)return n;if(!n)return m;
+ let p=Array.from({length:n+1},(_,i)=>i);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
+const noAl=s=>s.split(' ').map(w=>w.replace(/^(وال|بال|كال|فال|لل|ال)(?=..)/,'')).join(' ');
+function close(a,b,strict){if(a===b)return true; if(noAl(a)===noAl(b))return true; if(strict)return false;
+ const A=noAl(a),B=noAl(b),L=Math.max(A.length,B.length),d=lev(A,B); return L>=10?d<=2:L>=6?d<=1:false}
+function kwHit(t,k,strict){if(t.includes(k)||noAl(t).includes(noAl(k)))return true; if(k.includes(' '))return false; return t.split(' ').some(w=>close(w,k,strict))}
+function seq(raw){let toks=norm(raw).split(/[\s\-–>]+/).filter(Boolean);
+ if(toks.length===1&&toks[0].length>1&&[...toks[0]].every(c=>c in CH))toks=[...toks[0]];
+ return toks.map(x=>{const i=choiceIdx(x,null);return i>=0?'#'+i:x})}
+
+/* =================== grading engine =================== */
+function grade(q,raw){
+ const P=+q.pts||0, blank=raw==null||!String(raw).trim();
+ if(q.t==='manual'){ if(blank)return{s:0,st:'pend'}; const v=Math.max(0,Math.min(P,numVal(raw)||0)); return{s:r2(v),st:v>=P?'ok':v>0?'part':'bad'} }
+ if(!String(q.key??'').trim())return{s:0,st:'nokey'};
+ if(blank)return{s:0,st:'blank'};
+ let f=0;
+ switch(q.t){
+  case 'mcq':{ if(String(raw).trim()==='*'||MULTI_RE.test(norm(raw)))break; const k=choiceIdx(q.key,q),a=choiceIdx(raw,q); f=k>=0&&a===k?1:0; break }
+  case 'multi':{ const K=choiceSet(q.key,q),S=choiceSet(raw,q); if(!K.size)break; let ok=0,w=0; S.forEach(i=>K.has(i)?ok++:w++); f=Math.max(0,(ok-w)/K.size); break }
+  case 'tf':{ const a=tfVal(raw),k=tfVal(q.key); f=a!=null&&a===k?1:0; break }
+  case 'num':{ const v=numVal(raw),k=numVal(q.key); if(v==null||isNaN(v)||isNaN(k))break;
+    const tol=digits(q.tol||'').trim(); let T=0; if(tol.endsWith('%'))T=Math.abs(k)*parseFloat(tol)/100; else if(tol)T=Math.abs(numVal(tol))||0;
+    f=Math.abs(v-k)<=T+1e-9?1:0; break }
+  case 'text':{ const t=norm(raw); f=String(q.key).split('|').map(norm).filter(Boolean).some(k=>close(t,k,q.strict))?1:0; break }
+  case 'kw':{ const t=norm(raw),ks=String(q.key).split('|').map(norm).filter(Boolean); if(!ks.length)break;
+    const hits=ks.filter(k=>kwHit(t,k,q.strict)).length, need=Math.min(ks.length,+q.need||ks.length); f=Math.min(1,hits/need); break }
+  case 'order':{ const K=seq(q.key),S=seq(raw); if(!K.length)break; let c=0; K.forEach((k,i)=>{if(S[i]===k)c++}); f=c/K.length; break }
+ }
+ const s=r2(f*P); return{s,st:f>=1-1e-9?'ok':f>0?'part':'bad'};
+}
+function result(e,s){let tot=0,max=0,pend=0;const r=e.qs.map((q,i)=>{const g=grade(q,s.ans[i]);tot+=g.s;max+=+q.pts||0;if(g.st==='pend')pend++;return g});
+ return{r,tot:r2(tot),max:r2(max),pct:max?tot/max*100:0,pend}}
+function gradeOf(p,pass){pass=+pass||50;
+ if(p>=90)return['ممتاز','g-ex']; if(p>=80)return['جيد جدًا','g-vg']; if(p>=70)return['جيد','g-g']; if(p>=pass)return['مقبول','g-p']; return['دون المستوى','g-f']}
+function showAns(q,raw){if(raw==null||!String(raw).trim())return'—';
+ if(q.t==='mcq'){if(String(raw).trim()==='*')return'متعدد';const i=choiceIdx(raw,q);return i>=0?LET[i]:String(raw)}
+ if(q.t==='tf'){const v=tfVal(raw);return v===true?'ص':v===false?'خ':String(raw)}
+ if(q.t==='multi'){const s=[...choiceSet(raw,q)].sort();return s.length?s.map(i=>LET[i]).join('،'):String(raw)}
+ return String(raw)}
+
+/* =================== storage =================== */
+const STORE='ug.v1';
+let DB={exams:[],cur:null};
+function load(){try{const v=JSON.parse(localStorage.getItem(STORE));if(v&&Array.isArray(v.exams))DB=v}catch(e){} if(!DB.exams.length)makeExam()}
+let saveT; function save(now){clearTimeout(saveT);const w=()=>{try{localStorage.setItem(STORE,JSON.stringify(DB))}catch(e){toast('تعذر الحفظ على هذا الجهاز',1)}};now?w():saveT=setTimeout(w,250)}
+const EX=()=>DB.exams.find(e=>e.id===DB.cur)||DB.exams[0];
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function makeExam(title){const e={id:uid('e'),title:title||'اختبار جديد',cls:'',pass:50,scale:'',qs:[],st:[],created:Date.now()};DB.exams.unshift(e);DB.cur=e.id;save(1);return e}
+const newQ=(t='mcq',key='')=>({t,key,pts:1,n:4,tol:'',need:'',strict:false});
+
+/* =================== header & tabs =================== */
+function renderHeader(){const e=EX();
+ $('#examSel').innerHTML=DB.exams.map(x=>`<option value="${x.id}"${x.id===e.id?' selected':''}>${esc(x.title)}${x.cls?' — '+esc(x.cls):''}</option>`).join('');
+ $('#exTitle').value=e.title;$('#exCls').value=e.cls;$('#exPass').value=e.pass;$('#exScale').value=e.scale||'';
+ $('#tabKeyInfo').textContent=e.qs.length+' سؤال';$('#tabAnsInfo').textContent=e.st.length+' طالب';
+ const done=e.st.length?e.st.map(s=>result(e,s).pct).reduce((a,b)=>a+b,0)/e.st.length:null;
+ $('#tabResInfo').textContent=done==null?'—':'المتوسط '+Math.round(done)+'%'}
+function renderAll(){renderHeader();renderKey();renderStudents();if($('#pRes').classList.contains('on'))renderResults()}
+$$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(x=>x.classList.toggle('on',x===b));$$('.panel').forEach(p=>p.classList.toggle('on',p.id===b.dataset.tab));if(b.dataset.tab==='pRes')renderResults();window.scrollTo({top:0})});
+function goTab(id){$(`.tab[data-tab="${id}"]`).click()}
+$('#examSel').onchange=ev=>{DB.cur=ev.target.value;save(1);renderAll()};
+$('#newExam').onclick=()=>{makeExam();renderAll();goTab('pKey');$('#exTitle').select()};
+[['#exTitle','title'],['#exCls','cls'],['#exPass','pass'],['#exScale','scale']].forEach(([s,k])=>$(s).oninput=ev=>{EX()[k]=ev.target.value;save();renderHeader()});
+$('#moreBtn').onclick=()=>$('#dMore').showModal();$('#moreClose').onclick=()=>$('#dMore').close();
+$('#dupExam').onclick=()=>{const e=EX(),c=JSON.parse(JSON.stringify(e));c.id=uid('e');c.st=[];c.cls='';c.title=e.title+' (نسخة)';c.created=Date.now();DB.exams.unshift(c);DB.cur=c.id;save(1);$('#dMore').close();renderAll();toast('تم النسخ — غيّر اسم الفصل')};
+$('#delExam').onclick=()=>{if(!confirm('حذف «'+EX().title+'» وكل نتائجه نهائيًا؟'))return;DB.exams=DB.exams.filter(x=>x!==EX());if(!DB.exams.length)makeExam();DB.cur=DB.exams[0].id;save(1);$('#dMore').close();renderAll()};
+$('#backupExam').onclick=()=>{const e=EX();download(JSON.stringify({universalGrader:1,exam:e},null,1),(e.title||'اختبار')+'.json','application/json')};
+$('#restoreExam').onclick=()=>$('#restoreInput').click();
+$('#restoreInput').onchange=async ev=>{const f=ev.target.files[0];ev.target.value='';if(!f)return;try{const j=JSON.parse(await f.text());const e=j.exam||j;if(!Array.isArray(e.qs))throw 0;e.id=uid('e');e.st=e.st||[];DB.exams.unshift(e);DB.cur=e.id;save(1);$('#dMore').close();renderAll();toast('تم فتح النسخة')}catch(_){toast('الملف ليس نسخة احتياطية صالحة',1)}};
+function download(text,name,type){const b=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function askText(title,hint,val=''){return new Promise(res=>{const d=$('#dText');$('#dTextTitle').textContent=title;$('#dTextHint').textContent=hint;$('#dTextVal').value=val;
+ $('#dTextOk').onclick=()=>{d.close();res($('#dTextVal').value)};$('#dTextCancel').onclick=()=>{d.close();res(null)};d.showModal()})}
+
+/* =================== key editor =================== */
+function renderKey(){const e=EX(),L=$('#qlist');
+ if(!e.qs.length){L.innerHTML='<div class="empty">لا توجد أسئلة بعد — أدخل المفتاح بالأعلى أو أضف سؤالًا.</div>';$('#keyTotal').textContent='';return}
+ L.innerHTML=e.qs.map((q,i)=>{const T=TYPES[q.t]||TYPES.mcq;let extra='';
+  if(q.t==='mcq'||q.t==='multi')extra=`<select data-f="n" title="عدد الخيارات">${[2,3,4,5,6].map(n=>`<option value="${n}"${(+q.n||4)===n?' selected':''}>${n} خيارات</option>`).join('')}</select>`;
+  else if(q.t==='num')extra=`<input data-f="tol" value="${esc(q.tol)}" placeholder="السماحية ±">`;
+  else if(q.t==='kw')extra=`<input data-f="need" type="number" min="1" value="${esc(q.need)}" placeholder="المطلوب للدرجة الكاملة">`;
+  else if(q.t==='text')extra=`<label class="mini row"><input type="checkbox" data-f="strict"${q.strict?' checked':''}> مطابقة تامة</label>`;
+  else extra='<span></span>';
+  return `<div class="q" data-i="${i}"><div class="no">${i+1}</div><div class="fields">
+   <select data-f="t">${Object.entries(TYPES).map(([k,v])=>`<option value="${k}"${k===q.t?' selected':''}>${v.l}</option>`).join('')}</select>
+   <input class="k" data-f="key" value="${esc(q.key)}" placeholder="${esc(T.ph)}">
+   <input data-f="pts" type="number" min="0" step="0.25" value="${esc(q.pts)}" title="الدرجة">
+   ${extra}
+   <button class="x" data-del="${i}" type="button" title="حذف">✕</button>
+   ${q.text?`<div class="qt">${esc(q.text)}${q.opts?' — '+q.opts.map((o,j)=>LET[j]+') '+esc(o)).join('  '):''}</div>`:''}
+  </div></div>`}).join('');
+ updTotal()}
+function updTotal(){const e=EX();const t=e.qs.reduce((a,q)=>a+(+q.pts||0),0);$('#keyTotal').textContent=`${e.qs.length} سؤال — المجموع ${fmt(t)} درجة`;renderHeader()}
+$('#qlist').addEventListener('input',ev=>{const el=ev.target,f=el.dataset.f,box=el.closest('.q');if(!f||!box)return;const q=EX().qs[+box.dataset.i];
+ q[f]=el.type==='checkbox'?el.checked:el.value; save(); if(f==='pts')updTotal()});
+$('#qlist').addEventListener('change',ev=>{if(ev.target.dataset.f==='t'||ev.target.dataset.f==='n')renderKey()});
+$('#qlist').addEventListener('click',ev=>{const d=ev.target.dataset.del;if(d==null)return;const e=EX();e.qs.splice(+d,1);e.st.forEach(s=>{const a={};Object.keys(s.ans).forEach(k=>{k=+k;if(k<+d)a[k]=s.ans[k];else if(k>+d)a[k-1]=s.ans[k]});s.ans=a});save();renderKey()});
+$('#addQ').onclick=()=>{const e=EX();const last=e.qs[e.qs.length-1];const q=newQ(last?last.t:'mcq');if(last){q.pts=last.pts;q.n=last.n}e.qs.push(q);save();renderKey();const ins=$$('#qlist .k');ins[ins.length-1]?.focus()};
+$('#addQ5').onclick=()=>{for(let i=0;i<5;i++)$('#addQ').onclick()};
+$('#setAllPts').onclick=()=>{const v=$('#allPts').value;if(v==='')return;EX().qs.forEach(q=>q.pts=v);save();renderKey()};
+$('#clearQ').onclick=()=>{if(EX().qs.length&&confirm('حذف كل الأسئلة؟')){EX().qs=[];save();renderKey()}};
+
+function detectType(v){const r=String(v).trim(),t=norm(r);
+ if(/^[✓✔√✗✘×]$/.test(r)||['ص','خ','صح','خطا','صحيح','خاطي','صواب','true','false','t','f'].includes(t))return'tf';
+ if(t in CH&&!/\d/.test(t))return'mcq';
+ if(/^[ابجدهوa-f]([\s،,]+[ابجدهوa-f])+$/.test(norm(r.replace(/[،,]/g,' ')))&&/[،,]/.test(r))return'multi';
+ if(/^-?[\d٠-٩.,/]+\s*\S{0,6}$/.test(r)&&!isNaN(numVal(r)))return'num';
+ if(r.includes('|'))return'text';
+ return'text'}
+function parseQuick(txt){const out=[];txt=digits(txt).replace(/هـ/g,'ه');
+ const pairRe=/(\d+)\s*(?:[-\):]|\.(?!\d))\s*([^\s]+)/g;
+ txt.split(/\n+/).forEach(line=>{line=line.trim();if(!line)return;
+  const pairs=[...line.matchAll(pairRe)];
+  if(pairs.length&&pairs.map(m=>m[0]).join('').replace(/\s/g,'').length>=line.replace(/\s/g,'').length*.6){pairs.forEach(m=>out.push({n:+m[1],v:m[2]}));return}
+  const m=line.match(/^(\d+)\s+(.+)$/);
+  if(m&&!/^-?\d/.test(m[2]))return out.push({n:+m[1],v:m[2].trim()});
+  let toks=line.split(/[\s;؛]+/).filter(Boolean);
+  if(toks.length===1&&toks[0].length>1&&[...norm(toks[0])].every(c=>c in CH&&!/\d/.test(c))&&!/[،,]/.test(toks[0]))toks=[...norm(toks[0])].map(c=>c==='ا'?'أ':c);
+  if(toks.length>1&&toks.every(t=>!/[،,]/.test(t)))toks.forEach(v=>out.push({v}));else if(toks.length>1)toks.forEach(v=>out.push({v}));else out.push({v:line});
+ });
+ let pos=0;return out.map(o=>{const p=o.n?o.n-1:pos;pos=p+1;return{p,v:o.v}})}
+$('#applyQuick').onclick=()=>{const items=parseQuick($('#quickKey').value);if(!items.length)return toast('اكتب المفتاح أولًا',1);const e=EX();
+ items.forEach(({p,v})=>{while(e.qs.length<=p)e.qs.push(newQ());const q=e.qs[p],t=detectType(v);
+  if(!(q.key===''&&q.t!=='mcq'&&t==='text'))q.t=t; q.key=v.replace(/^ا$/,'أ');
+  if(q.t==='mcq'){const i=choiceIdx(v,null);if(i>=(+q.n||4))q.n=i+1}});
+ save();renderKey();toast(`تم ضبط ${items.length} إجابة`)};
+
+/* =================== table import (CSV / Excel / paste / JSON bank) =================== */
+function parseDelim(text){text=text.replace(/^﻿/,'');const first=text.split(/\r?\n/,1)[0];
+ const d=[ '\t',';',','].map(c=>[c,first.split(c).length]).sort((a,b)=>b[1]-a[1])[0][0];
+ const rows=[];let row=[],cell='',q=false;
+ for(let i=0;i<text.length;i++){const c=text[i];
+  if(q){if(c==='"'){if(text[i+1]==='"'){cell+='"';i++}else q=false}else cell+=c}
+  else if(c==='"'&&cell==='')q=true; else if(c===d){row.push(cell);cell=''}
+  else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell=''}
+  else cell+=c}
+ if(cell!==''||row.length){row.push(cell);rows.push(row)}
+ return rows.filter(r=>r.some(c=>String(c).trim()!==''))}
+let xlsxP;function loadXLSX(){return xlsxP||(xlsxP=new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=()=>res(window.XLSX);s.onerror=()=>{xlsxP=null;rej()};document.head.append(s)}))}
+async function fileRows(f){const n=f.name.toLowerCase();
+ if(/\.(xlsx|xls|ods)$/.test(n)){let X;try{X=await loadXLSX()}catch(_){throw new Error('تعذر تحميل قارئ Excel — احفظ الملف بصيغة CSV')}
+  const wb=X.read(await f.arrayBuffer(),{type:'array'});return X.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:'',raw:false}).filter(r=>r.some(c=>String(c).trim()))}
+ return parseDelim(await f.text())}
+
+const SKIP_RE=/طابع|timestamp|time|وقت|تاريخ|date|email|بريد|score|درجه|الدرجات|المجموع|النتيجه|نقاط|points|total|feedback|ملاحظ|^id$|المعرف|start|completion|الاكتمال|البدء|الهويه|سجل/i;
+const NAME_RE=/اسم|name|الطالب|student/i;
+const KEYROW=['مفتاح','مفتاح الاجابه','الاجابه النموذجيه','نموذج الاجابه','الاجابات الصحيحه','key','answer key','answers','الحل'];
+let IMP={rows:[],mode:'answers'};
+function openImport(mode){IMP={rows:[],mode};$('#impText').value='';$('#impMap').style.display='none';$('#impGo').disabled=true;$('#dImp').showModal()}
+$('#impClose').onclick=$('#impCancel').onclick=()=>$('#dImp').close();
+$('#impPick').onclick=()=>$('#fileInput').click();
+$('#fileInput').onchange=async ev=>{const f=ev.target.files[0];ev.target.value='';if(!f)return;
+ try{ if(/\.json$/i.test(f.name)){ const j=JSON.parse(await f.text()); if(j.universalGrader||j.exam)return toast('هذا ملف نسخة احتياطية — افتحه من قائمة ⋯',1); importBank(j); $('#dImp').close(); return }
+  setRows(await fileRows(f)) }catch(e){toast(e.message||'تعذر قراءة الملف',1)}};
+$('#impText').addEventListener('input',()=>{const t=$('#impText').value;if(t.trim())setRows(parseDelim(t))});
+function setRows(rows){if(!rows.length)return toast('الملف فارغ',1);IMP.rows=rows;const e=EX();
+ const h=rows[0].map(c=>norm(c));
+ const ansLike=r=>r.slice(1).filter(c=>{const v=String(c??'').trim();return v&&(norm(v).length<=2||!isNaN(numVal(v))||tfVal(v)!=null)}).length;
+ const looksHeader=rows.length>1&&(h.some(c=>NAME_RE.test(c)||SKIP_RE.test(c)||/^(q|س|سوال)\s*\d/.test(c))||ansLike(rows[0])<ansLike(rows[1])/2);
+ $('#impHeader').value=looksHeader?'1':'0';
+ const W=Math.max(...rows.map(r=>r.length));
+ let nc=looksHeader?h.findIndex(c=>NAME_RE.test(c)&&!/email|بريد|مستخدم|user/.test(c)):-1;
+ if(nc<0){nc=0;for(let c=0;c<W;c++){if(!(looksHeader&&SKIP_RE.test(h[c]))&&!/^\d{4}[-/]|^\d+[:/]/.test(String(rows[looksHeader?1:0][c]||''))){nc=c;break}}}
+ let st=nc+1;while(st<W&&looksHeader&&SKIP_RE.test(h[st]))st++;
+ const opts=Array.from({length:W},(_,c)=>`<option value="${c}">${c+1}: ${esc(String(looksHeader?rows[0][c]:rows[0][c]).slice(0,40))}</option>`).join('');
+ $('#impName').innerHTML='<option value="-1">— بدون أسماء —</option>'+opts;$('#impStart').innerHTML=opts;
+ $('#impName').value=nc;$('#impStart').value=Math.min(st,W-1);
+ $('#impCount').value=e.qs.length||Math.max(1,ansCols(W,Math.min(st,W-1),999).length);
+ $('#impMap').style.display='block';$('#impGo').disabled=false;preview()}
+function ansCols(W,start,count){const hdr=$('#impHeader').value==='1'?IMP.rows[0]:null;const cols=[];
+ for(let c=start;c<W&&cols.length<count;c++){if(hdr&&SKIP_RE.test(norm(hdr[c]))&&c!==start)continue;if(c===+$('#impName').value)continue;cols.push(c)}return cols}
+function preview(){const rows=IMP.rows,W=Math.max(...rows.map(r=>r.length)),nc=+$('#impName').value,cols=ansCols(W,+$('#impStart').value,+$('#impCount').value||1),hd=$('#impHeader').value==='1';
+ const body=rows.slice(hd?1:0);const keyRow=body.findIndex(r=>nc>=0&&KEYROW.includes(norm(r[nc])));
+ $('#impInfo').innerHTML=`سيُستورد <b>${body.length-(keyRow>=0?1:0)}</b> طالب و<b>${cols.length}</b> سؤال (الأعمدة الخضراء).`+(keyRow>=0?' 🔑 وُجد صف «مفتاح» وسيُستخدم كمفتاح الإجابة.':'')+(EX().qs.length||keyRow>=0?'':' لا يوجد مفتاح بعد — يمكنك إضافة صف باسم «مفتاح» أو إدخاله لاحقًا.');
+ const sh=rows.slice(0,7);$('#impPrev').innerHTML='<table><tr>'+Array.from({length:W},(_,c)=>`<th class="${cols.includes(c)?'ans-col':c===nc?'name-col':''}">${c+1}</th>`).join('')+'</tr>'+sh.map(r=>'<tr>'+Array.from({length:W},(_,c)=>`<td>${esc(String(r[c]??'').slice(0,30))}</td>`).join('')+'</tr>').join('')+'</table>'}
+['#impName','#impStart','#impCount','#impHeader'].forEach(s=>$(s).addEventListener('input',preview));
+$('#impGo').onclick=()=>{const e=EX(),rows=IMP.rows,W=Math.max(...rows.map(r=>r.length)),nc=+$('#impName').value,cols=ansCols(W,+$('#impStart').value,+$('#impCount').value||1),hd=$('#impHeader').value==='1';
+ const hdr=hd?rows[0]:null;let body=rows.slice(hd?1:0);
+ const ki=body.findIndex(r=>nc>=0&&KEYROW.includes(norm(r[nc])));
+ while(e.qs.length<cols.length)e.qs.push(newQ());
+ if(hdr)cols.forEach((c,j)=>{if(!e.qs[j].text&&String(hdr[c]).trim().length>3)e.qs[j].text=String(hdr[c]).trim()});
+ if(ki>=0){const kr=body[ki];cols.forEach((c,j)=>{const v=String(kr[c]??'').trim();if(!v)return;const q=e.qs[j];q.t=detectType(v);q.key=v});body.splice(ki,1)}
+ if(IMP.mode==='key'&&ki<0&&body.length===1){const kr=body[0];cols.forEach((c,j)=>{const v=String(kr[c]??'').trim();if(v){e.qs[j].t=detectType(v);e.qs[j].key=v}});body=[]}
+ let added=0,upd=0;body.forEach((r,ri)=>{const name=nc>=0?String(r[nc]??'').trim():'';const nm=name||('طالب '+(e.st.length+1));
+  const ans={};cols.forEach((c,j)=>{const v=String(r[c]??'').trim();if(v!=='')ans[j]=v});
+  let s=name?e.st.find(x=>norm(x.name)===norm(name)):null;if(s){Object.assign(s.ans,ans);upd++}else{e.st.push({id:uid('s'),name:nm,ans,src:'ملف'});added++}});
+ save(1);$('#dImp').close();renderAll();toast(`تمت إضافة ${added} طالب`+(upd?` وتحديث ${upd}`:'')+(ki>=0?' + المفتاح':''));
+ if(!e.qs.some(q=>String(q.key).trim()))setTimeout(()=>{goTab('pKey');toast('أدخل مفتاح الإجابة ليتم التصحيح')},900)};
+
+async function importBank(data){const arr=Array.isArray(data)?data:(Object.values(data).find(Array.isArray)||[]);
+ if(!arr.length||typeof arr[0]!=='object')return toast('لم أتعرف على صيغة الملف',1);
+ const ks=Object.keys(arr[0]);const find=re=>ks.find(k=>re.test(k));
+ const kAns=find(/الاجابة الصحيحة|الإجابة الصحيحة|^answer$|correct|^key$|الإجابة$/i),kTxt=find(/نص السؤال|question|^text$|السؤال/i),kNum=find(/رقم السؤال|^id$|^no$|number/i);
+ const kOpts=ks.filter(k=>/^الخيار|^option|^choice|^[abcd]$/i.test(k));
+ if(!kAns)return toast('لم أجد عمود الإجابة الصحيحة في الملف',1);
+ const sel=await askText('اختيار الأسئلة',`الملف يحتوي ${arr.length} سؤالًا. اكتب أرقام الأسئلة المطلوبة (مثل: 1-20, 35, 41) أو اتركه فارغًا للكل.`,'');if(sel===null)return;
+ let pick=arr;if(sel.trim()){const want=new Set();digits(sel).split(/[,،\s]+/).forEach(p=>{const m=p.match(/^(\d+)(?:-(\d+))?$/);if(m)for(let i=+m[1];i<=(+(m[2]||m[1]));i++)want.add(i)});
+  pick=arr.filter((x,i)=>want.has(kNum?+digits(x[kNum]):i+1))}
+ const e=EX();if(e.qs.length&&!confirm('استبدال الأسئلة الحالية بأسئلة الملف؟ (اختر إلغاء للإضافة بعدها)'))0;else e.qs=[];
+ pick.forEach(x=>{const opts=kOpts.map(k=>String(x[k]??'')).filter(Boolean);const a=String(x[kAns]??'').trim();
+  const q=newQ(opts.length?'mcq':detectType(a),a);if(opts.length){q.opts=opts;q.n=Math.max(2,Math.min(6,opts.length))}if(kTxt)q.text=String(x[kTxt]).slice(0,220);e.qs.push(q)});
+ save(1);renderAll();toast(`تم استيراد ${pick.length} سؤالًا`)}
+$('#importKeyFile').onclick=()=>openImport('key');
+$('#srcFile').onclick=()=>openImport('answers');
+
+/* =================== students =================== */
+function renderStudents(){const e=EX(),L=$('#stuList');$('#stuCount').textContent=e.st.length?`(${e.st.length})`:'';
+ $('#stuNames').innerHTML=e.st.map(s=>`<option value="${esc(s.name)}">`).join('');
+ if(!e.st.length){L.innerHTML='<div class="empty">لم تُضف إجابات بعد — اختر مصدرًا من الأعلى.</div>';return}
+ L.innerHTML=e.st.map((s,i)=>{const R=result(e,s),[g,c]=gradeOf(R.pct,e.pass);const filled=Object.values(s.ans).filter(v=>String(v).trim()).length;
+  return `<div class="stu" data-i="${i}"><span class="nm">${esc(s.name)}</span>${s.src?`<span class="tag">${esc(s.src)}</span>`:''}${R.pend?`<span class="tag">✍️ ${R.pend} بانتظار التقدير</span>`:''}${filled?`<span class="pill ${c}">${fmt(R.tot)} / ${fmt(R.max)}</span>`:'<span class="tag">بدون إجابات</span>'}</div>`}).join('')}
+$('#stuList').onclick=ev=>{const r=ev.target.closest('.stu');if(r)openStudent(+r.dataset.i)};
+$('#clearStu').onclick=()=>{if(EX().st.length&&confirm('حذف جميع الطلاب وإجاباتهم؟')){EX().st=[];save();renderAll()}};
+$('#rosterBtn').onclick=async()=>{const t=await askText('قائمة الطلاب','الصق أسماء الطلاب، اسم في كل سطر (من نور أو مدرستي أو Excel). تُضاف بدون إجابات لتختارها عند الإدخال أو التصوير.');if(!t)return;const e=EX();let n=0;
+ t.split(/\n+/).map(x=>x.replace(/^\s*\d+[\s.\-)]*/,'').split('\t')[0].trim()).filter(Boolean).forEach(nm=>{if(!e.st.some(s=>norm(s.name)===norm(nm))){e.st.push({id:uid('s'),name:nm,ans:{},src:''});n++}});save();renderAll();toast(`أُضيف ${n} اسم`)};
+
+let curStu=-1,draft=null;
+function openStudent(i){const e=EX();if(!e.qs.length){goTab('pKey');return toast('أضف الأسئلة أولًا',1)}
+ curStu=i;const s=i>=0?e.st[i]:{name:'',ans:{}};draft={name:s.name,ans:{...s.ans}};
+ $('#dStuTitle').textContent=i>=0?'تعديل إجابات الطالب':'طالب جديد';$('#stuName').value=draft.name;$('#stuQuick').value='';$('#stuDel').style.display=i>=0?'':'none';
+ drawStuAns();$('#dStu').showModal();if(i<0)setTimeout(()=>$('#stuName').focus(),50)}
+function drawStuAns(){const e=EX();$('#stuAns').innerHTML=e.qs.map((q,i)=>{const v=draft.ans[i]??'';let ctl;
+  if(q.t==='mcq'){const k=choiceIdx(v,q);ctl=`<div class="chips">${LET.slice(0,+q.n||4).map((l,j)=>`<button type="button" class="chip${k===j?' on':''}" data-q="${i}" data-v="${l}">${l}</button>`).join('')}</div>`}
+  else if(q.t==='tf'){const t=tfVal(v);ctl=`<div class="chips"><button type="button" class="chip${t===true?' on':''}" data-q="${i}" data-v="ص">ص ✓</button><button type="button" class="chip${t===false?' on':''}" data-q="${i}" data-v="خ">خ ✗</button></div>`}
+  else if(q.t==='multi'){const S=choiceSet(v,q);ctl=`<div class="chips">${LET.slice(0,+q.n||4).map((l,j)=>`<button type="button" class="chip${S.has(j)?' on':''}" data-q="${i}" data-m="${j}">${l}</button>`).join('')}</div>`}
+  else if(q.t==='manual')ctl=`<div><input type="number" min="0" max="${esc(q.pts)}" step="0.25" data-q="${i}" value="${esc(v)}" placeholder="الدرجة من ${esc(q.pts)}" style="width:100%">${q.key?`<div class="mini" style="margin-top:4px">النموذجية: ${esc(q.key)}</div>`:''}</div>`;
+  else ctl=`<input data-q="${i}" value="${esc(v)}" placeholder="إجابة الطالب" style="width:100%"${q.t==='num'?' inputmode="decimal"':''}>`;
+  return `<div class="ans"><div class="lbl">س${i+1}<small>${TYPES[q.t].l}</small></div>${ctl}<div class="res" id="r${i}"></div></div>`}).join('');updDraft()}
+function updDraft(){const e=EX();let tot=0,max=0;e.qs.forEach((q,i)=>{const g=grade(q,draft.ans[i]);tot+=g.s;max+=+q.pts||0;const el=$('#r'+i);
+  if(el)el.innerHTML=`<i class="c ${g.st}">${{ok:'✓',bad:'✗',part:'½',blank:'–',pend:'؟',nokey:'🔑'}[g.st]}</i> ${fmt(g.s)}`});
+ const p=max?tot/max*100:0,[,c]=gradeOf(p,e.pass);const S=$('#dStuScore');S.textContent=`${fmt(tot)} / ${fmt(max)}`;S.className='pill '+c}
+$('#stuAns').addEventListener('click',ev=>{const b=ev.target.closest('.chip');if(!b)return;const i=+b.dataset.q,q=EX().qs[i];
+ if(b.dataset.m!=null){const S=choiceSet(draft.ans[i],q),j=+b.dataset.m;S.has(j)?S.delete(j):S.add(j);draft.ans[i]=[...S].sort().map(x=>LET[x]).join('،')}
+ else draft.ans[i]=b.classList.contains('on')?'':b.dataset.v;
+ const sib=$$(`.chip[data-q="${i}"]`);if(b.dataset.m!=null)b.classList.toggle('on');else sib.forEach(x=>x.classList.toggle('on',x===b&&draft.ans[i]!==''));updDraft()});
+$('#stuAns').addEventListener('input',ev=>{const i=ev.target.dataset.q;if(i==null)return;draft.ans[+i]=ev.target.value;updDraft()});
+$('#stuQuick').addEventListener('change',()=>{const items=parseQuick($('#stuQuick').value);const e=EX();let k=0;
+ items.forEach(({p,v})=>{if(p<e.qs.length){draft.ans[p]=v;k++}});drawStuAns();toast(`تم ملء ${k} إجابة`)});
+function commitStudent(){const e=EX(),name=$('#stuName').value.trim()||('طالب '+(e.st.length+(curStu<0?1:0)));
+ if(curStu>=0){Object.assign(e.st[curStu],{name,ans:draft.ans})}
+ else{const ex=e.st.find(x=>norm(x.name)===norm(name));if(ex){ex.ans={...ex.ans,...draft.ans};ex.src=ex.src||'يدوي'}else e.st.push({id:uid('s'),name,ans:draft.ans,src:'يدوي'})}
+ save(1);renderAll()}
+$('#stuSave').onclick=()=>{commitStudent();$('#dStu').close()};
+$('#stuSaveNext').onclick=()=>{commitStudent();openStudent(-1);toast('تم الحفظ')};
+$('#stuCancel').onclick=()=>$('#dStu').close();
+$('#stuDel').onclick=()=>{if(confirm('حذف هذا الطالب؟')){EX().st.splice(curStu,1);save(1);$('#dStu').close();renderAll()}};
+$('#srcManual').onclick=()=>openStudent(-1);
+
+/* =================== results =================== */
+function renderResults(){const e=EX(),scale=+e.scale||0;$('#resTitle').textContent=`نتائج ${e.title}${e.cls?' — '+e.cls:''}`;
+ const rows=e.st.map((s,i)=>({s,i,R:result(e,s)}));
+ if(!rows.length||!e.qs.length){$('#stats').innerHTML='<div class="empty" style="grid-column:1/-1">أضف الأسئلة وإجابات الطلاب لتظهر النتائج.</div>';$('#dist').innerHTML='';$('#resTable').innerHTML='';$('#itemTable').innerHTML='';return}
+ const P=rows.map(r=>r.R.pct),avg=P.reduce((a,b)=>a+b,0)/P.length,pass=+e.pass||50,np=P.filter(p=>p>=pass).length,pend=rows.reduce((a,r)=>a+r.R.pend,0);
+ $('#stats').innerHTML=[[rows.length,'عدد الطلاب'],[Math.round(avg)+'%','المتوسط'],[Math.round(Math.max(...P))+'%','أعلى نسبة'],[Math.round(Math.min(...P))+'%','أدنى نسبة'],[Math.round(np/rows.length*100)+'%',`نسبة النجاح (${np})`]].concat(pend?[[pend,'إجابات بانتظار تقديرك']]:[]).map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('');
+ const bins=[['ممتاز','g-ex','#2fbf71'],['جيد جدًا','g-vg','#38a3d1'],['جيد','g-g','#7f86e0'],['مقبول','g-p','#e0a03a'],['دون المستوى','g-f','#e5534b']];
+ $('#dist').innerHTML=bins.map(([n,,col])=>{const k=P.filter(p=>gradeOf(p,pass)[0]===n).length;return `<div class="bar"><span>${n}</span><i><em style="width:${k/rows.length*100}%;background:${col}"></em></i><b>${k}</b></div>`}).join('');
+ const sort=$('#sortSel').value;if(sort==='score')rows.sort((a,b)=>b.R.pct-a.R.pct);else if(sort==='name')rows.sort((a,b)=>a.s.name.localeCompare(b.s.name,'ar'));
+ const sym={ok:'✓',bad:'✗',part:'½',blank:'–',pend:'؟',nokey:'🔑'};
+ $('#resTable').innerHTML=`<table><tr><th>#</th><th>الطالب</th><th>الدرجة</th>${scale?`<th>من ${scale}</th>`:''}<th>%</th><th>التقدير</th>${e.qs.map((_,i)=>`<th>${i+1}</th>`).join('')}</tr>`+
+  rows.map((r,k)=>{const[g,c]=gradeOf(r.R.pct,pass);return `<tr><td>${k+1}</td><td class="nm" data-i="${r.i}">${esc(r.s.name)}</td><td><b>${fmt(r.R.tot)}</b>/${fmt(r.R.max)}</td>${scale?`<td><b>${fmt(r.R.pct*scale/100)}</b></td>`:''}<td>${Math.round(r.R.pct)}%</td><td><span class="pill ${c}">${g}</span></td>${r.R.r.map((x,j)=>`<td title="${esc(showAns(e.qs[j],r.s.ans[j]))}"><i class="c ${x.st}">${sym[x.st]}</i></td>`).join('')}</tr>`}).join('')+'</table>';
+ $('#itemTable').innerHTML='<table><tr><th>س</th><th>النوع</th><th>المفتاح</th><th>نسبة الصحيح</th><th>أكثر خطأ تكرارًا</th><th>متروك</th><th>الحكم</th></tr>'+e.qs.map((q,j)=>{
+  let ok=0,cnt=0,bl=0;const wrong={};rows.forEach(r=>{const g=r.R.r[j];if(g.st==='nokey')return;cnt++;ok+=(+q.pts?g.s/+q.pts:0);if(g.st==='blank')bl++;if(g.st==='bad'||g.st==='part'){const a=showAns(q,r.s.ans[j]);wrong[a]=(wrong[a]||0)+1}});
+  const pc=cnt?ok/cnt*100:0,top=Object.entries(wrong).sort((a,b)=>b[1]-a[1])[0];
+  const v=!cnt?'—':pc>=80?'✅ متقن':pc>=50?'🟡 متوسط':'🔴 يحتاج إعادة شرح';
+  return `<tr><td><b>${j+1}</b></td><td>${TYPES[q.t].l}</td><td>${esc(q.t==='manual'?'—':showAns(q,q.key))}</td><td><div class="bar" style="grid-template-columns:1fr 40px"><i><em style="width:${pc}%;background:${pc>=80?'#2fbf71':pc>=50?'#e0a03a':'#e5534b'}"></em></i><b>${Math.round(pc)}%</b></div></td><td>${top?esc(top[0])+' ('+top[1]+')':'—'}</td><td>${bl}</td><td>${v}</td></tr>`}).join('')+'</table>'}
+$('#sortSel').onchange=renderResults;
+$('#resTable').onclick=ev=>{const t=ev.target.closest('td.nm');if(t)openStudent(+t.dataset.i)};
+$('#dStu').addEventListener('close',()=>{if($('#pRes').classList.contains('on'))renderResults()});
+$('#printRes').onclick=()=>{renderResults();window.print()};
+$('#exportCsv').onclick=()=>{const e=EX(),scale=+e.scale||0;const q=v=>{v=String(v??'');return/[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+ const head=['الطالب','الدرجة','من'].concat(scale?['من '+scale]:[],['النسبة','التقدير'],e.qs.map((_,i)=>'س'+(i+1)+' إجابة'),e.qs.map((_,i)=>'س'+(i+1)+' درجة'));
+ const lines=[head.map(q).join(',')];e.st.forEach(s=>{const R=result(e,s);lines.push([s.name,R.tot,R.max].concat(scale?[r2(R.pct*scale/100)]:[],[Math.round(R.pct)+'%',gradeOf(R.pct,e.pass)[0]],e.qs.map((x,i)=>showAns(x,s.ans[i])),R.r.map(g=>g.s)).map(q).join(','))});
+ lines.push(['مفتاح الإجابة','','',...(scale?['']:[]),'',''].concat(e.qs.map(x=>x.t==='manual'?'مقالي':showAns(x,x.key))).map(q).join(','));
+ download('﻿'+lines.join('\r\n'),`نتائج ${e.title}${e.cls?' '+e.cls:''}.csv`,'text/csv;charset=utf-8')};
+$('#copySum').onclick=async()=>{const e=EX();if(!e.st.length)return;const R=e.st.map(s=>({n:s.name,p:result(e,s).pct}));const avg=R.reduce((a,b)=>a+b.p,0)/R.length,pass=+e.pass||50;
+ const top=R.filter(r=>r.p>=90).sort((a,b)=>b.p-a.p);
+ const txt=`📝 نتائج ${e.title}${e.cls?' — '+e.cls:''}\n👥 عدد الطلاب: ${R.length}\n📊 المتوسط: ${Math.round(avg)}%\n✅ نسبة النجاح: ${Math.round(R.filter(r=>r.p>=pass).length/R.length*100)}%\n`+(top.length?`🌟 المتميزون:\n${top.map(r=>'• '+r.n+' ('+Math.round(r.p)+'%)').join('\n')}\n`:'')+`\nبالتوفيق للجميع 🌱`;
+ try{await navigator.clipboard.writeText(txt);toast('تم نسخ الملخص')}catch(_){askText('الملخص','انسخ النص:',txt)}};
+
+/* =================== bubble sheet (OMR) =================== */
+const SH={W:210,H:297,M:[[14,14],[196,14],[14,283],[196,283]],ms:9,rows:25,cols:3,top:74,rowH:7.3,colW:62,r:2.5,gap:7.6};
+function bubbleLayout(e){const items=[];let k=0;e.qs.forEach((q,i)=>{if(!BUB(q.t)||k>=SH.rows*SH.cols)return;
+ const c=Math.floor(k/SH.rows),row=k%SH.rows,right=SH.W-20-c*SH.colW,y=SH.top+row*SH.rowH,n=q.t==='tf'?2:Math.max(2,Math.min(6,+q.n||4));
+ items.push({i,q,y,n,numX:right-3,xs:Array.from({length:n},(_,j)=>right-12-j*SH.gap)});k++});return items}
+function sheetSVG(e){const items=bubbleLayout(e),M=SH.M,h=SH.ms/2;
+ const lbl=(q,j)=>q.t==='tf'?(j?'خ':'ص'):LET[j];
+ const others=e.qs.map((q,i)=>BUB(q.t)?null:i+1).filter(Boolean);
+ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SH.W} ${SH.H}" width="${SH.W}mm" height="${SH.H}mm" font-family="Tahoma,Arial,sans-serif" direction="rtl" style="direction:rtl">
+ <rect width="${SH.W}" height="${SH.H}" fill="#fff"/>
+ ${M.map(([x,y])=>`<rect x="${x-h}" y="${y-h}" width="${SH.ms}" height="${SH.ms}" fill="#000"/>`).join('')}
+ <text x="105" y="27" text-anchor="middle" font-size="7" font-weight="bold">${esc(e.title)}</text>
+ <text x="105" y="34" text-anchor="middle" font-size="3.6" fill="#333">ورقة الإجابة — ظلّل دائرة واحدة بالكامل لكل سؤال بقلم رصاص أو أزرق داكن، ولا تكتب خارج المربعات</text>
+ <text x="188" y="46" text-anchor="start" font-size="4.6">اسم الطالب: ......................................................</text>
+ <text x="70" y="46" text-anchor="start" font-size="4.6">الفصل: ${esc(e.cls)||'............'}</text>
+ <text x="188" y="56" text-anchor="start" font-size="4.6">الدرجة: ............ / ${fmt(e.qs.reduce((a,q)=>a+(+q.pts||0),0))}</text>
+ ${others.length?`<text x="188" y="64" text-anchor="start" font-size="3.4" fill="#444">الأسئلة (${others.slice(0,25).join('، ')}${others.length>25?'…':''}) تُجاب في ورقة الأسئلة</text>`:''}
+ <line x1="22" y1="${SH.top-6.5}" x2="188" y2="${SH.top-6.5}" stroke="#999" stroke-width=".3"/>
+ ${items.map(it=>`<text x="${it.numX}" y="${it.y+1.4}" text-anchor="middle" font-size="3.8" font-weight="bold">${it.i+1}</text>`+
+  it.xs.map((x,j)=>`<circle cx="${x}" cy="${it.y}" r="${SH.r}" fill="none" stroke="#666" stroke-width=".3"/><text x="${x}" y="${it.y+1.05}" text-anchor="middle" font-size="2.7" fill="#b5b5b5">${lbl(it.q,j)}</text>`).join('')).join('')}
+ <text x="105" y="290" text-anchor="middle" font-size="2.8" fill="#888">المصحح الشامل — بوابة العلوم الموحدة • رمز النموذج ${esc(e.id.slice(-6))}-${items.length}</text>
+ </svg>`}
+$('#srcPrint').onclick=()=>{const e=EX(),items=bubbleLayout(e);if(!items.length)return toast('لا توجد أسئلة اختيار أو صح/خطأ للطباعة — أضف المفتاح أولًا',1);
+ const cnt=e.qs.filter(q=>BUB(q.t)).length;if(cnt>items.length)toast(`الورقة تتسع لـ ${items.length} سؤالًا فقط`,1);
+ const w=window.open('','_blank');if(!w)return toast('اسمح بالنوافذ المنبثقة للطباعة',1);
+ w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>ورقة إجابة — ${esc(e.title)}</title><style>@page{size:A4;margin:0}html,body{margin:0;background:#888}svg{display:block;margin:0 auto;background:#fff}@media print{body{background:#fff}}</style></head><body>${sheetSVG(e)}<script>onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`);w.document.close()};
+
+function solve(A,b){const n=b.length,M=A.map((r,i)=>r.concat(b[i]));
+ for(let c=0;c<n;c++){let p=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[p][c]))p=r;[M[c],M[p]]=[M[p],M[c]];
+  for(let r=0;r<n;r++){if(r===c)continue;const f=M[r][c]/M[c][c];for(let k=c;k<=n;k++)M[r][k]-=f*M[c][k]}}
+ return M.map((r,i)=>r[n]/r[i])}
+function homography(src,dst){const A=[],b=[];for(let k=0;k<4;k++){const[x,y]=src[k],[u,v]=dst[k];A.push([x,y,1,0,0,0,-u*x,-u*y]);b.push(u);A.push([0,0,0,x,y,1,-v*x,-v*y]);b.push(v)}const h=solve(A,b);h.push(1);return h}
+const hp=(h,x,y)=>{const w=h[6]*x+h[7]*y+1;return[(h[0]*x+h[1]*y+h[2])/w,(h[3]*x+h[4]*y+h[5])/w]};
+
+function scanImage(img,e){
+ const LIM=1600,sc=Math.min(1,LIM/Math.max(img.naturalWidth,img.naturalHeight)),W=Math.round(img.naturalWidth*sc),H=Math.round(img.naturalHeight*sc);
+ const cv=document.createElement('canvas');cv.width=W;cv.height=H;const cx=cv.getContext('2d',{willReadFrequently:true});cx.drawImage(img,0,0,W,H);
+ const d=cx.getImageData(0,0,W,H).data,N=W*H,g=new Uint8Array(N);for(let i=0,j=0;i<N;i++,j+=4)g[i]=(d[j]*299+d[j+1]*587+d[j+2]*114)/1000;
+ // adaptive threshold via integral image
+ const W1=W+1,I=new Float64Array(W1*(H+1));for(let y=1;y<=H;y++){let rs=0;for(let x=1;x<=W;x++){rs+=g[(y-1)*W+x-1];I[y*W1+x]=I[(y-1)*W1+x]+rs}}
+ const R=Math.max(8,Math.round(Math.min(W,H)/10)),bin=new Uint8Array(N);
+ for(let y=0;y<H;y++){const y0=Math.max(0,y-R),y1=Math.min(H,y+R+1);for(let x=0;x<W;x++){const x0=Math.max(0,x-R),x1=Math.min(W,x+R+1);
+  const m=(I[y1*W1+x1]-I[y0*W1+x1]-I[y1*W1+x0]+I[y0*W1+x0])/((x1-x0)*(y1-y0));const v=g[y*W+x];bin[y*W+x]=v<m*.72&&v<150?1:0}}
+ // connected components → square marker candidates
+ const lab=new Int32Array(N),stack=new Int32Array(N),cand=[];let id=0;const mn=Math.min(W,H);
+ for(let p=0;p<N;p++){if(!bin[p]||lab[p])continue;id++;let sp=0;stack[sp++]=p;lab[p]=id;let a=0,x0=W,x1=0,y0=H,y1=0,sx=0,sy=0;
+  while(sp){const q=stack[--sp],x=q%W,y=(q/W)|0;a++;sx+=x;sy+=y;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
+   if(x>0&&bin[q-1]&&!lab[q-1]){lab[q-1]=id;stack[sp++]=q-1}if(x<W-1&&bin[q+1]&&!lab[q+1]){lab[q+1]=id;stack[sp++]=q+1}
+   if(y>0&&bin[q-W]&&!lab[q-W]){lab[q-W]=id;stack[sp++]=q-W}if(y<H-1&&bin[q+W]&&!lab[q+W]){lab[q+W]=id;stack[sp++]=q+W}}
+  const w=x1-x0+1,h=y1-y0+1;if(w<mn*.018||h<mn*.018||w>mn*.14||h>mn*.14)continue;const asp=w/h;if(asp<.6||asp>1.65)continue;if(a/(w*h)<.82)continue;
+  cand.push({cx:sx/a,cy:sy/a,w,h,a})}
+ if(cand.length<4)return{err:'لم أجد المربعات السوداء الأربعة في زوايا الورقة. صوّر الورقة كاملة ومستقيمة وبإضاءة جيدة.'};
+ const maxA=Math.max(...cand.map(c=>c.a));const big=cand.filter(c=>c.a>=maxA*.35);
+ const corners=[[0,0],[W,0],[0,H],[W,H]].map(([X,Y])=>big.reduce((b,c)=>{const dd=Math.hypot(c.cx-X,c.cy-Y);return!b||dd<b.d?{c,d:dd}:b},null).c);
+ if(new Set(corners).size<4)return{err:'تعذر تمييز زوايا الورقة الأربع. أعد التصوير بحيث تظهر الورقة كاملة.'};
+ const Hm=homography(SH.M,corners.map(c=>[c.cx,c.cy]));
+ // sanity: the four markers should form a convex quad of reasonable size
+ const span=Math.hypot(corners[3].cx-corners[0].cx,corners[3].cy-corners[0].cy);if(span<mn*.5)return{err:'الورقة صغيرة جدًا في الصورة — قرّب الجوال.'};
+ const hist=new Uint32Array(256);g.forEach(v=>hist[v]++);let acc=0,white=255;for(let v=255;v>=0;v--){acc+=hist[v];if(acc>=N*.25){white=Math.max(120,v);break}}
+ const items=bubbleLayout(e),step=SH.r*.2,rad=SH.r*.6,out=[];
+ const dark=(bx,by)=>{let s=0,n=0;for(let dy=-rad;dy<=rad+1e-6;dy+=step)for(let dx=-rad;dx<=rad+1e-6;dx+=step){if(dx*dx+dy*dy>rad*rad)continue;const[u,v]=hp(Hm,bx+dx,by+dy);const X=Math.round(u),Y=Math.round(v);if(X<0||Y<0||X>=W||Y>=H)continue;s+=g[Y*W+X];n++}return n?Math.max(0,1-s/n/white):0};
+ items.forEach(it=>{const ds=it.xs.map(x=>dark(x,it.y)),srt=[...ds].sort((a,b)=>b-a),thr=Math.max(.3,srt[srt.length-1]+.2);
+  let marked=ds.map((v,j)=>v>=thr?j:-1).filter(j=>j>=0);
+  if(marked.length>1&&it.q.t!=='multi'&&srt[0]-srt[1]>=.25)marked=[ds.indexOf(srt[0])];
+  let val='';if(marked.length===1)val=it.q.t==='tf'?(marked[0]?'خ':'ص'):LET[marked[0]];else if(marked.length>1)val=it.q.t==='multi'?marked.map(j=>LET[j]).join('،'):'*';
+  out.push({it,ds,marked,val})});
+ return{cv,Hm,corners,out,W,H}}
+
+let SQ=[],SR=null;
+$('#srcScan').onclick=()=>{if(!bubbleLayout(EX()).length){goTab('pKey');return toast('أدخل مفتاح الإجابة (اختيار أو صح/خطأ) أولًا',1)}$('#scanInput').click()};
+$('#scanInput').onchange=ev=>{SQ=[...ev.target.files];ev.target.value='';SQ.total=SQ.length;nextScan()};
+async function nextScan(){const d=$('#dScan');if(!SQ.length){if(d.open)d.close();renderAll();return}
+ const f=SQ.shift();$('#scanQueue').textContent=SQ.total>1?`${SQ.total-SQ.length} / ${SQ.total}`:'';
+ $('#scanMsg').textContent='جارٍ القراءة…';$('#scanAns').innerHTML='';if(!d.open)d.showModal();
+ let img;try{const url=URL.createObjectURL(f);img=new Image();img.src=url;await img.decode()}catch(_){$('#scanMsg').textContent='تعذر فتح الصورة.';SR=null;return}
+ await new Promise(r=>setTimeout(r,30));
+ const e=EX();SR=scanImage(img,e);const C=$('#scanCanvas'),k=Math.min(1,900/Math.max(img.naturalWidth,img.naturalHeight));C.width=Math.round(img.naturalWidth*k);C.height=Math.round(img.naturalHeight*k);
+ const x=C.getContext('2d');x.drawImage(img,0,0,C.width,C.height);
+ if(SR.err){$('#scanMsg').innerHTML='⚠️ '+SR.err;$('#scanSave').disabled=$('#scanEdit').disabled=true;return}
+ $('#scanSave').disabled=$('#scanEdit').disabled=false;
+ const s=C.width/SR.W;x.lineWidth=2;SR.corners.forEach(c=>{x.strokeStyle='#e5534b';x.strokeRect((c.cx-c.w/2)*s,(c.cy-c.h/2)*s,c.w*s,c.h*s)});
+ const rr=Math.hypot(...[0,1].map(t=>hp(SR.Hm,SH.r,0)[t]-hp(SR.Hm,0,0)[t]))*s;
+ SR.out.forEach(o=>o.it.xs.forEach((bx,j)=>{const[u,v]=hp(SR.Hm,bx,o.it.y);x.beginPath();x.arc(u*s,v*s,rr+1.5,0,7);
+  const on=o.marked.includes(j);x.strokeStyle=on?(o.val==='*'?'#f0a63a':'#2fbf71'):'rgba(80,160,255,.45)';x.lineWidth=on?3:1;x.stroke()}));
+ const blanks=SR.out.filter(o=>!o.val).length,multi=SR.out.filter(o=>o.val==='*').length;
+ const R=result(e,{ans:Object.fromEntries(SR.out.map(o=>[o.it.i,o.val]))});
+ $('#scanMsg').innerHTML=`✅ قُرئت ${SR.out.length} إجابة — الدرجة المبدئية <b>${fmt(R.tot)} / ${fmt(R.max)}</b>`+(blanks?` • ${blanks} متروكة`:'')+(multi?` • <span style="color:#f0a63a">${multi} بأكثر من تظليل</span>`:'')+' (الدوائر الخضراء = ما قرأه النظام)';
+ $('#scanAns').innerHTML=SR.out.map(o=>`س${o.it.i+1}: <b>${o.val==='*'?'متعدد':o.val||'—'}</b>`).join(' &nbsp;• ');
+ const e2=EX();const blank=e2.st.find(s=>!Object.keys(s.ans).length);$('#scanName').value=blank?blank.name:'';setTimeout(()=>$('#scanName').focus(),50)}
+function saveScan(){if(!SR||SR.err)return null;const e=EX(),name=$('#scanName').value.trim()||('ورقة '+(e.st.length+1));const ans={};SR.out.forEach(o=>ans[o.it.i]=o.val);
+ let i=e.st.findIndex(s=>norm(s.name)===norm(name));if(i>=0){Object.assign(e.st[i].ans,ans);e.st[i].src='تظليل'}else{e.st.push({id:uid('s'),name,ans,src:'تظليل'});i=e.st.length-1}save(1);return i}
+$('#scanSave').onclick=()=>{if(saveScan()!=null)toast('تم الحفظ');nextScan()};
+$('#scanEdit').onclick=()=>{const i=saveScan();SQ=[];$('#dScan').close();renderAll();if(i!=null)openStudent(i)};
+$('#scanSkip').onclick=()=>nextScan();
+$('#dScan').addEventListener('cancel',()=>{SQ=[];renderAll()});
+
+/* =================== demo =================== */
+$('#demoBtn').onclick=()=>{const e=makeExam('اختبار تجريبي — الخلية');e.cls='٣/١';
+ e.qs=[newQ('mcq','ب'),newQ('mcq','د'),newQ('mcq','أ'),newQ('tf','ص'),newQ('tf','خ'),newQ('multi','أ،ج'),newQ('num','9.8'),newQ('text','البناء الضوئي | التمثيل الضوئي'),newQ('kw','ضوء | كلوروفيل | جلوكوز'),newQ('manual','تفسير دور الميتوكوندريا في إنتاج الطاقة')];
+ e.qs[6].tol='0.1';e.qs[8].pts=3;e.qs[9].pts=4;
+ const S=[['سارة',['ب','د','أ','ص','خ','أ،ج','9.8','التمثيل الضوئى','يحتاج النبات الضوء والكلوروفيل لصنع الجلوكوز','4']],['محمد',['ب','ج','أ','صح','خطأ','أ','9.81','البناء الضوئي','الضوء والكلوروفيل','3']],['عبدالله',['أ','د','ب','خ','خ','أ،ب','10','التنفس','الضوء','']],['ريم',['B','D','A','T','F','A,C','٩٫٨','بناء ضوئي','كلوروفيل وجلوكوز','2']],['خالد',['ب','د','','ص','ص','ج','9','البناء الضوئي','','1']]];
+ e.st=S.map(([n,a])=>({id:uid('s'),name:n,ans:Object.fromEntries(a.map((v,i)=>[i,v])),src:'مثال'}));save(1);renderAll();toast('تم إنشاء اختبار تجريبي — افتح تبويب النتائج')};
+
+load();renderAll();
+</script>
+</body>
+</html>
