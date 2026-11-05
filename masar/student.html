@@ -146,7 +146,7 @@ main{max-width:760px;margin:-52px auto 40px;padding:0 16px;position:relative;z-i
 <script src="missions-data.js"></script>
 <script>
 const BASE="https://yqoleecldcvnfdmkqgeq.supabase.co",KEY="sb_publishable_P-wXPFs08V6kTx5FkFZXsA_x-ElUhhd",
-token=new URLSearchParams(location.search).get("t")||"",
+token=new URLSearchParams(location.search).get("t")||"",DEMO=!token&&new URLSearchParams(location.search).has("demo"),
 H={"apikey":KEY,"Authorization":"Bearer "+KEY,"Content-Type":"application/json"},
 $=id=>document.getElementById(id);
 let lessons=[],student={};
@@ -200,8 +200,8 @@ const BADGES=[
 function checkBadges(){for(const [id,ic,name,ok] of BADGES){if(!me.badges.includes(id)&&ok()){me.badges.push(id);save();setTimeout(()=>{toast(ic+" حصلت على وسام: "+name);if(id!=="first")confetti()},600)}}}
 
 /* ===== الشبكة ===== */
-async function rpc(name,p){const r=await fetch(BASE+"/rest/v1/rpc/"+name,{method:"POST",headers:H,body:JSON.stringify(p)});const t=await r.text();let j;try{j=JSON.parse(t)}catch{j={error:t}}if(!r.ok||j.error)throw Error(j.error||j.message||"فشل الاتصال");return j}
-async function logLogin(ls){try{const k="masar_login_"+token.slice(-16),VK="masar_visit_"+token.slice(-16);let last=0;try{last=+sessionStorage.getItem(k)||0}catch(e){}const key=(ls[0]||{}).key;if(!key)return;if(Date.now()-last<30*60000){try{if(!sessionStorage.getItem(VK))sessionStorage.setItem(VK,JSON.stringify({start:last,key}))}catch(e){}return}await rpc("masar_student_submit",{p_token:token,p_lesson_key:key,p_skill_key:"دخول المنصة",p_skill_title:"دخول المنصة",p_assessment_kind:"دخول",p_correct:0,p_total:1,p_seconds:0});try{const n=Date.now();sessionStorage.setItem(k,String(n));sessionStorage.setItem(VK,JSON.stringify({start:n,key}))}catch(e){}}catch(e){}}
+async function rpc(name,p){if(DEMO){await new Promise(r=>setTimeout(r,250));return name==="masar_student_home"?{name:"طالب تجريبي",class:"معاينة المعلم",lessons:[{key:"العلم وعملياته",title:"العلم وعملياته",enabled:true}]}:{ok:true}}const r=await fetch(BASE+"/rest/v1/rpc/"+name,{method:"POST",headers:H,body:JSON.stringify(p)});const t=await r.text();let j;try{j=JSON.parse(t)}catch{j={error:t}}if(!r.ok||j.error)throw Error(j.error||j.message||"فشل الاتصال");return j}
+async function logLogin(ls){if(DEMO)return;try{const k="masar_login_"+token.slice(-16),VK="masar_visit_"+token.slice(-16);let last=0;try{last=+sessionStorage.getItem(k)||0}catch(e){}const key=(ls[0]||{}).key;if(!key)return;if(Date.now()-last<30*60000){try{if(!sessionStorage.getItem(VK))sessionStorage.setItem(VK,JSON.stringify({start:last,key}))}catch(e){}return}await rpc("masar_student_submit",{p_token:token,p_lesson_key:key,p_skill_key:"دخول المنصة",p_skill_title:"دخول المنصة",p_assessment_kind:"دخول",p_correct:0,p_total:1,p_seconds:0});try{const n=Date.now();sessionStorage.setItem(k,String(n));sessionStorage.setItem(VK,JSON.stringify({start:n,key}))}catch(e){}}catch(e){}}
 (function(){const VK="masar_visit_"+token.slice(-16);let sent=0;const send=()=>{try{const v=JSON.parse(sessionStorage.getItem(VK)||"null");if(!v||!v.key||Date.now()-sent<15000)return;sent=Date.now();fetch(BASE+"/rest/v1/rpc/masar_student_submit",{method:"POST",keepalive:true,headers:H,body:JSON.stringify({p_token:token,p_lesson_key:v.key,p_skill_key:"خروج المنصة",p_skill_title:"خروج المنصة",p_assessment_kind:"خروج",p_correct:0,p_total:1,p_seconds:Math.min(36000,Math.round((Date.now()-v.start)/1000))})}).catch(()=>{})}catch(e){}};addEventListener("pagehide",send);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")send()})})();
 
 /* ===== الواجهة ===== */
@@ -362,7 +362,7 @@ function confetti(){if(matchMedia("(prefers-reduced-motion:reduce)").matches)ret
 
 /* ===== البدء ===== */
 async function init(){
-  if(!token||token.length<40)throw Error("امسح الباركود الخاص بك مرة أخرى، أو اطلب بطاقتك من المعلم.");
+  if(!DEMO&&(!token||token.length<40))throw Error("امسح الباركود الخاص بك مرة أخرى، أو اطلب بطاقتك من المعلم.");
   const d=await rpc("masar_student_home",{p_token:token});
   lessons=(d.lessons||[]).filter(l=>l&&l.enabled!==false&&l.active!==false);
   student=d;logLogin(lessons);
