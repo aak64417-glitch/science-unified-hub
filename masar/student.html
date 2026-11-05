@@ -90,6 +90,17 @@ main{max-width:760px;margin:-52px auto 40px;padding:0 16px;position:relative;z-i
 .spin{width:44px;height:44px;border:5px solid var(--soft);border-top-color:var(--brand);border-radius:50%;margin:0 auto 12px;animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.path{display:flex;flex-direction:column;gap:8px;margin:12px 0 4px;position:relative}
+.node{display:flex;align-items:center;gap:12px;width:100%;text-align:right;padding:10px 12px;border-radius:18px;background:var(--soft);color:var(--muted);font-weight:700;font-size:16px}
+.node b{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:2px solid var(--line);font-size:16px;flex-shrink:0}
+.node.done{background:var(--okbg);color:var(--ok)}.node.done b{border-color:var(--ok);font-size:12px}
+.node.cur{background:linear-gradient(90deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 6px 16px #1467a840;animation:pulse 2s infinite}.node.cur b{background:#fff;color:var(--brand);border-color:#fff;font-size:20px}
+.node.lock{opacity:.6}.node.boss b{font-size:22px}
+.more{display:block;width:100%;background:none;color:var(--brand);font-weight:700;font-size:14px;padding:10px 0 0}
+.mcard{text-align:right}.memo{font-size:46px;text-align:center;line-height:1.3;margin-top:8px}
+.mbox{border-radius:16px;padding:12px 14px;margin:0 0 10px;font-size:17px}
+.mbox.idea{background:var(--soft);font-weight:700;font-size:18px}.mbox.ex{background:var(--okbg)}.mbox.warn{background:#fff4e2;color:#6d4a08}
+@media (prefers-color-scheme:dark){.mbox.warn{background:#3a3010;color:#f5d27a}}
 @media print{body{display:none!important}}
 </style>
 </head>
@@ -132,6 +143,7 @@ main{max-width:760px;margin:-52px auto 40px;padding:0 16px;position:relative;z-i
 </main>
 <div class="toast" id="toast"></div>
 
+<script src="missions-data.js"></script>
 <script>
 const BASE="https://yqoleecldcvnfdmkqgeq.supabase.co",KEY="sb_publishable_P-wXPFs08V6kTx5FkFZXsA_x-ElUhhd",
 token=new URLSearchParams(location.search).get("t")||"",
@@ -159,7 +171,7 @@ SKILLS=[8,3,3,3,3,3,3,3,3,3,3,3,3,3];
 /* ===== التخزين المحلي (لا يؤثر على الخادم) ===== */
 const ME="masar_v2_"+token.slice(-16);
 const today=()=>new Date().toLocaleDateString("en-CA");
-function load(){try{const d=JSON.parse(localStorage.getItem(ME)||"{}");return {days:d.days||[],quiz:d.quiz||{},badges:d.badges||[],rounds:d.rounds||0}}catch(e){return {days:[],quiz:{},badges:[],rounds:0}}}
+function load(){try{const d=JSON.parse(localStorage.getItem(ME)||"{}");return {days:d.days||[],quiz:d.quiz||{},m:d.m||{},badges:d.badges||[],rounds:d.rounds||0}}catch(e){return {days:[],quiz:{},m:{},badges:[],rounds:0}}}
 let me=load();
 function save(){try{localStorage.setItem(ME,JSON.stringify(me))}catch(e){}}
 function lessonsProg(){try{return (JSON.parse(localStorage.getItem("masar_altaqadum_extended_2026_v6")||"{}").practice)||{}}catch(e){return {}}}
@@ -172,17 +184,17 @@ function lessonStats(idx){
   const pct=Math.round(q?skillPct*.75+(q.best/Q.length*100)*.25:skillPct);
   return {tried,mastered,n,quiz:q,pct:Math.min(100,pct)}
 }
-function xp(){let x=me.days.length*10;const p=lessonsProg();for(const k in p)x+=Math.round((p[k].best||0)/10)*2+(p[k].attempts||0)*2;for(const k in me.quiz)x+=(me.quiz[k].best||0)*5+(me.quiz[k].tries||0)*5;return x}
-function totalStars(){let s=0;for(const k in me.quiz)s+=me.quiz[k].stars||0;return s}
+function xp(){let x=me.days.length*10;const p=lessonsProg();for(const k in p)x+=Math.round((p[k].best||0)/10)*2+(p[k].attempts||0)*2;for(const k in me.quiz)x+=(me.quiz[k].best||0)*5+(me.quiz[k].tries||0)*5;x+=totalStars()*5;return x}
+function totalStars(){let s=0;for(const k in me.quiz)s+=me.quiz[k].stars||0;for(const i in (me.m||{}))for(const k in me.m[i])s+=me.m[i][k].stars||0;return s}
 
 const BADGES=[
  ["first","👋","أول دخول",()=>me.days.length>=1],
  ["explorer","🔭","المستكشف",()=>Object.keys(lessonsProg()).length>=1],
- ["quiz","🎯","أول تحدٍ",()=>Object.keys(me.quiz).length>=1],
- ["star3","🌟","ثلاث نجوم",()=>Object.values(me.quiz).some(q=>q.stars===3)],
+ ["quiz","🎯","أول مهمة",()=>Object.keys(me.m||{}).length>=1||Object.keys(me.quiz).length>=1],
+ ["star3","🌟","ثلاث نجوم",()=>totalStars()>=3],
  ["streak3","🔥","٣ أيام متتالية",()=>streak()>=3],
  ["persist","💪","المثابر",()=>me.rounds>=3],
- ["master","🏆","أتقن درسًا",()=>assigned().some(a=>lessonStats(a.idx).pct>=90)],
+ ["master","🏆","أنهى درسًا",()=>assigned().some(a=>a.idx>=0&&missionState(a.idx).next<0)],
  ["scientist","🧑‍🔬","عالِم صغير",()=>me.days.length>=7]
 ];
 function checkBadges(){for(const [id,ic,name,ok] of BADGES){if(!me.badges.includes(id)&&ok()){me.badges.push(id);save();setTimeout(()=>{toast(ic+" حصلت على وسام: "+name);if(id!=="first")confetti()},600)}}}
@@ -198,6 +210,11 @@ const openLessonPage=idx=>location.href="lessons.html?t="+encodeURIComponent(tok
 function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
 const esc=s=>String(s??"").replace(/[&<>"]/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[x]));
 
+/* ===== المهام القصيرة: كل مهمة = مهارتان تقريبًا • بطاقة قصيرة + سؤالان لكل مهارة ===== */
+function missionsOf(idx){const L=(typeof MISSION_DB!=="undefined"&&MISSION_DB[idx])||null;if(!L)return [];const n=L.s.length,out=[];for(let i=0;i<n;i+=2)out.push(i+1<n?[i,i+1]:[i]);return out}
+function missionTitle(idx,m){return MISSION_DB[idx].s[m[0]].t}
+function missionState(idx){const ms=missionsOf(idx),rec=(me.m||{})[idx]||{};const done=ms.map((_,k)=>rec[k]||null);const next=done.findIndex(x=>!x);return {ms,done,next}}
+
 function renderHome(){
   const A=assigned(),s=streak(),x=xp();
   $("sStreak").textContent=s+"🔥";$("sXp").textContent=x;$("sStars").textContent=totalStars()+"⭐";
@@ -207,35 +224,86 @@ function renderHome(){
   if(!A.length){list.append(el("section","card","<b>لم يحدد المعلم دروسك بعد.</b><p class='tip'>عد لاحقًا، ستظهر دروسك هنا فور تفعيلها.</p>"));$("mainCta").classList.add("hide");return}
   let total=0,next=null;
   for(const a of A){
-    const st=a.idx>=0?lessonStats(a.idx):{pct:0,tried:0,mastered:0,n:0,quiz:null};total+=st.pct;
-    const status=st.pct>=90?["ok","✅ متقن"]:st.pct>0||st.quiz?["go","⏳ قيد التعلم"]:["","🆕 جديد"];
+    const ms=a.idx>=0?missionState(a.idx):{ms:[],done:[],next:-1};
+    const doneN=ms.done.filter(Boolean).length,steps=ms.ms.length+(a.hasQuiz?1:0);
+    const quizDone=a.hasQuiz&&me.quiz[a.idx];
+    const pct=steps?Math.round((doneN+(quizDone?1:0))/steps*100):0;total+=pct;
     const c=el("section","card lesson");
-    c.innerHTML=`<span class="chip ${status[0]}">${status[1]}</span>
+    let path="";
+    ms.ms.forEach((m,k)=>{const d=ms.done[k],cur=k===ms.next;path+=`<button class="node ${d?"done":cur?"cur":"lock"}" data-m="${k}" ${!d&&!cur?"disabled":""}><b>${d?"⭐".repeat(d.stars)||"✓":cur?"▶":k+1}</b><span>${esc(missionTitle(a.idx,m))}</span></button>`});
+    if(a.hasQuiz){const cur=ms.next<0&&!quizDone;path+=`<button class="node ${quizDone?"done":cur?"cur":"lock"} boss" data-boss="1" ${!quizDone&&!cur?"disabled":""}><b>${quizDone?"🏆":"🎯"}</b><span>التحدي النهائي</span></button>`}
+    c.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><span class="chip ${pct>=100?"ok":pct?"go":""}">${pct>=100?"✅ أنجزت الدرس":pct?"⏳ "+pct+"%":"🆕 جديد"}</span><span class="tip" style="font-size:13px">${ms.ms.length} مهام • ٣ دقائق لكل مهمة</span></div>
       <h4>${a.idx>=0?ICONS[a.idx]:"📘"} ${esc(a.title)}</h4>
-      <div class="bar"><i style="width:${st.pct}%"></i></div>
-      <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--muted)"><span>التقدم ${st.pct}%</span><span>${st.n?`المهارات المتقنة ${st.mastered} من ${st.n}`:""}</span></div>
-      <div class="steps">
-        <div class="step ${st.tried?"done":""}"><b>📖</b>الشرح</div>
-        <div class="step ${st.tried?"done":""}"><b>🧫</b>التجربة</div>
-        <div class="step ${st.tried?"done":""}"><b>🧠</b>المهارات</div>
-        <div class="step ${st.quiz?"done":""}"><b>🎯</b>التحدي</div>
-      </div>`;
-    const row=el("div","row");
-    if(a.idx>=0){const b=el("button","cta",st.tried?"▶️ أكمل الدرس":"🧪 ابدأ الدرس");b.onclick=()=>openLessonPage(a.idx);row.append(b)}
-    if(a.hasQuiz){const q=el("button","cta gold",st.quiz?`🎯 التحدي السريع (${"⭐".repeat(st.quiz.stars)})`:"🎯 التحدي السريع • ٨ أسئلة");q.onclick=()=>startQuiz(a);row.append(q)}
-    c.append(row);list.append(c);
-    if(!next||st.pct<next.st.pct)next={a,st};
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="path">${path}</div>`;
+    c.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>startMission(a,+b.dataset.m));
+    const bb=c.querySelector("[data-boss]");if(bb)bb.onclick=()=>startQuiz(a);
+    if(a.idx>=0){const more=el("button","more","📚 الدرس الكامل (شرح مفصّل وتجربة) ←");more.onclick=()=>openLessonPage(a.idx);c.append(more)}
+    list.append(c);
+    if(!next||pct<next.pct)next={a,ms,pct,quizDone};
   }
   const avg=Math.round(total/A.length);
   $("ring").style.setProperty("--p",avg);$("ringTxt").textContent=avg+"%";
-  const cta=$("mainCta"),{a,st}=next;
-  if(!st.tried&&!st.quiz){$("heroTitle").textContent="ابدأ رحلتك العلمية 🚀";$("heroText").textContent="درس «"+a.title+"» بانتظارك: شرح وتجربة ومهارات.";cta.textContent="🧪 ابدأ درس "+a.title;cta.onclick=()=>a.idx>=0?openLessonPage(a.idx):startQuiz(a)}
-  else if(a.hasQuiz&&!st.quiz){$("heroTitle").textContent="أحسنت! بقي التحدي 🎯";$("heroText").textContent="اختبر نفسك في ٨ أسئلة سريعة واجمع النجوم.";cta.textContent="🎯 خذ التحدي السريع";cta.className="cta gold pulse";cta.onclick=()=>startQuiz(a)}
-  else if(st.pct<90){$("heroTitle").textContent="أنت تتقدم 💪";$("heroText").textContent="أكمل مهارات «"+a.title+"» للوصول إلى الإتقان.";cta.textContent="▶️ أكمل من حيث توقفت";cta.onclick=()=>a.idx>=0?openLessonPage(a.idx):startQuiz(a)}
-  else{$("heroTitle").textContent="رائع! أتقنت دروسك 🏆";$("heroText").textContent="حافظ على مستواك بإعادة التحدي وجمع ٣ نجوم.";cta.textContent="🔁 أعد التحدي";cta.onclick=()=>{const w=A.find(x=>x.hasQuiz);w?startQuiz(w):openLessonPage(a.idx)}}
+  const cta=$("mainCta"),{a,ms,quizDone}=next;cta.className="cta pulse";
+  if(ms.next>=0){const k=ms.next,m=ms.ms[k];
+    $("heroTitle").textContent=k===0?"ابدأ أول مهمة 🚀":"المهمة "+(k+1)+" بانتظارك 💪";
+    $("heroText").textContent="«"+missionTitle(a.idx,m)+"» • ٣ دقائق فقط";
+    cta.textContent="▶️ ابدأ المهمة "+(k+1)+" من "+ms.ms.length;cta.onclick=()=>startMission(a,k)}
+  else if(a.hasQuiz&&!quizDone){$("heroTitle").textContent="بقي التحدي النهائي 🎯";$("heroText").textContent="٨ أسئلة سريعة لتحصل على كأس الدرس 🏆";cta.textContent="🎯 خذ التحدي النهائي";cta.className="cta gold pulse";cta.onclick=()=>startQuiz(a)}
+  else{$("heroTitle").textContent="أنجزت دروسك! 🏆";$("heroText").textContent="أعد أي مهمة لتجمع ٣ نجوم ⭐⭐⭐";cta.textContent="🔁 حسّن نجومك";cta.onclick=()=>{const k=ms.done.findIndex(d=>d&&d.stars<3);k>=0?startMission(a,k):startQuiz(a)}}
   const b=$("badges");b.replaceChildren();
   for(const [id,ic,name] of BADGES)b.append(el("div","badge"+(me.badges.includes(id)?" on":""),"<b>"+ic+"</b>"+name));
   $("badgeCount").textContent=me.badges.length+" من "+BADGES.length;
+}
+
+let mz=null;
+function startMission(a,k){
+  const m=missionsOf(a.idx)[k],L=MISSION_DB[a.idx],steps=[];
+  for(const si of m){const sk=L.s[si];steps.push({t:"card",si});for(const q of shuffle(sk.q).slice(0,2))steps.push({t:"q",si,q,opts:shuffle(q[1].map((_,j)=>j))})}
+  mz={a,k,m,steps,i:0,ans:{},start:Date.now()};z=null;
+  $("home").classList.add("hide");$("quiz").classList.remove("hide");scrollTo({top:0});drawM();
+}
+function drawM(){
+  const box=$("quiz"),st=mz.steps[mz.i],L=MISSION_DB[mz.a.idx],sk=L.s[st.si],total=mz.steps.length;
+  let h=`<div class="qtop"><button class="x" id="mx" aria-label="خروج">✕</button><div class="bar"><i style="width:${mz.i/total*100}%"></i></div><b>${mz.i+1}/${total}</b></div>`;
+  if(st.t==="card"){
+    h+=`<div class="mcard"><div class="memo">💡</div><p class="qnum" style="text-align:center">فكرة سريعة</p><p class="qtext" style="text-align:center">${esc(sk.t)}</p>
+      <div class="mbox idea">${esc(sk.i)}</div>${sk.e?`<div class="mbox ex"><b>🔎 مثال:</b> ${esc(sk.e)}</div>`:""}${sk.w?`<div class="mbox warn"><b>⚠️ انتبه:</b> ${esc(sk.w)}</div>`:""}</div>`;
+    box.innerHTML=h;const n=el("button","cta","فهمت ✓ إلى السؤال ←");n.onclick=()=>{mz.i++;drawM()};box.append(n);
+  }else{
+    const q=st.q,a=mz.ans[mz.i];
+    h+=`<p class="qnum">✋ ${esc(sk.t)}</p><p class="qtext">${esc(q[0])}</p><div id="opts"></div><div id="fb"></div>`;box.innerHTML=h;
+    const o=$("opts");for(const j of st.opts){const b=el("button","opt",esc(q[1][j]));if(a!==undefined){b.disabled=true;if(j===q[2])b.classList.add("right");else if(j===a)b.classList.add("wrong")}else b.onclick=()=>{mz.ans[mz.i]=j;if(navigator.vibrate)navigator.vibrate(j===q[2]?30:[60,40,60]);drawM()};o.append(b)}
+    if(a!==undefined){const ok=a===q[2],fb=$("fb");fb.append(el("div","feedback "+(ok?"ok":"no"),ok?["👏 صحيح!","🎉 ممتاز!","✅ أحسنت!"][mz.i%3]:"💡 الإجابة الصحيحة: «"+esc(q[1][q[2]])+"»"));
+      const n=el("button","cta",mz.i===total-1?"🏁 أنهيت المهمة":"التالي ←");n.onclick=()=>{if(mz.i===total-1)finishMission();else{mz.i++;drawM()}};fb.append(n)}
+  }
+  $("mx").onclick=()=>{if(mz.i>0&&!confirm("الخروج من المهمة؟ ستبدأ من جديد لاحقًا."))return;mz=null;backHome()};
+}
+function finishMission(){
+  const {a,k,m,steps}=mz,secs=Math.min(36000,Math.round((Date.now()-mz.start)/1000));
+  const per={};steps.forEach((s,i)=>{if(s.t!=="q")return;per[s.si]=per[s.si]||{c:0,t:0};per[s.si].t++;if(mz.ans[i]===s.q[2])per[s.si].c++});
+  let c=0,t=0;for(const si in per){c+=per[si].c;t+=per[si].t}
+  const stars=c===t?3:c/t>=.5?2:1;
+  me.m=me.m||{};me.m[a.idx]=me.m[a.idx]||{};const old=me.m[a.idx][k];me.m[a.idx][k]={stars:Math.max(stars,old?old.stars:0)};me.rounds++;save();
+  /* حفظ التقدم أيضًا في سجل الدروس التفاعلية */
+  try{const KEY="masar_altaqadum_extended_2026_v6",d=JSON.parse(localStorage.getItem(KEY)||"{}");d.practice=d.practice||{};for(const si in per){const id=a.idx+"-"+si,p=Math.round(per[si].c/per[si].t*100),o=d.practice[id]||{best:0,attempts:0};d.practice[id]={best:Math.max(o.best,p),last:p,attempts:o.attempts+1,date:new Date().toISOString()}}d.completed=d.completed||{};localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}
+  const last=k===missionsOf(a.idx).length-1;
+  $("quiz").innerHTML=`<div class="result"><div class="stars">${[1,2,3].map(i=>`<span class="${i<=stars?"":"off"}">⭐</span>`).join("")}</div>
+    <p class="big">${c} <span style="font-size:24px">من</span> ${t}</p><p style="margin:0 0 6px;font-weight:800">${stars===3?"مهمة مثالية! 🧑‍🔬":stars===2?"عمل رائع 👏":"أحسنت المحاولة 💪 أعدها لتجمع نجومًا أكثر"}</p>
+    <p class="sync" id="sync">⏳ جارٍ إرسال نتيجتك إلى المعلم…</p><div class="row" id="rbtn"></div></div>`;
+  const r=$("rbtn"),ms=missionsOf(a.idx);
+  if(!last){const n=el("button","cta pulse","▶️ المهمة التالية ("+(k+2)+" من "+ms.length+")");n.onclick=()=>startMission(a,k+1);r.append(n)}
+  else if(a.hasQuiz){const n=el("button","cta gold pulse","🎯 التحدي النهائي");n.onclick=()=>startQuiz(a);r.append(n)}
+  if(stars<3){const again=el("button","cta alt","🔁 أعد المهمة");again.onclick=()=>startMission(a,k);r.append(again)}
+  const h=el("button","cta alt","🏠 العودة إلى دروسي");h.onclick=()=>{mz=null;backHome()};r.append(h);
+  if(stars>=2)confetti();
+  sendMission(a,per,secs);mz=null;checkBadges();
+}
+async function sendMission(a,per,secs){
+  const s=$("sync"),L=MISSION_DB[a.idx];
+  try{const rs=await Promise.all(Object.keys(per).map(si=>rpc("masar_student_submit",{p_token:token,p_lesson_key:a.l.key,p_skill_key:L.s[si].t,p_skill_title:L.s[si].t,p_assessment_kind:"تدريب مهارة",p_correct:per[si].c,p_total:per[si].t,p_seconds:secs})));
+    if(rs.some(r=>!r||r.ok===false))throw Error();if(s){s.className="sync ok";s.textContent="✓ وصلت نتيجتك إلى المعلم"}}
+  catch(e){if(s){s.className="sync bad";s.innerHTML="";s.append("✗ تعذر الإرسال. ");const b=el("button","chip","إعادة المحاولة");b.onclick=()=>{s.className="sync";s.textContent="⏳ إعادة الإرسال…";sendMission(a,per,secs)};s.append(b)}}
 }
 
 /* ===== التحدي السريع: سؤال واحد في كل شاشة ===== */
@@ -309,7 +377,7 @@ async function init(){
   if(isNewDay&&me.days.length>1)toast("🔥 سلسلة أيامك: "+streak()+" — استمر!");
   checkBadges();
 }
-addEventListener("pageshow",e=>{if(e.persisted&&!z&&lessons.length)renderHome()});
+addEventListener("pageshow",e=>{if(e.persisted&&!z&&!mz&&lessons.length)renderHome()});
 init().catch(e=>{$("loading").innerHTML="<div style='font-size:46px'>🔑</div><b>تعذر فتح البطاقة</b><p class='tip'>"+esc(e.message)+"</p>"});
 </script>
 </body>
