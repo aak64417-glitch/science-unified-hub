@@ -7,7 +7,12 @@ import {build} from 'esbuild';
 
 const VIDEO = path.resolve(process.argv[2] ?? 'out/atomic-number-lesson.mp4');
 const remotion = path.resolve('node_modules/.bin/remotion');
-const ff = (args) => execFileSync(remotion, ['ffmpeg', ...args], {maxBuffer: 1 << 28});
+// ffmpeg النظام إن وُجد (نسخة Remotion المضمّنة لا تدعم المخرجات الخام)
+const SYSTEM_FFMPEG = ['/usr/bin/ffmpeg', '/usr/local/bin/ffmpeg', '/opt/homebrew/bin/ffmpeg'].find(existsSync);
+const ff = (args) =>
+  SYSTEM_FFMPEG
+    ? execFileSync(SYSTEM_FFMPEG, args, {maxBuffer: 1 << 28})
+    : execFileSync(remotion, ['ffmpeg', ...args], {maxBuffer: 1 << 28});
 const probe = (args) => execFileSync(remotion, ['ffprobe', ...args]).toString();
 
 let passed = 0;
