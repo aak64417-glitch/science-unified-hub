@@ -68,6 +68,54 @@ window.addEventListener('load', function () {
     };
   };
 
+
+  // ===== تنظيف التكليفات المكررة (نفس الفصل والاسم والأسئلة) =====
+  function attemptsOf(id) { try { return (dashboardData.results || []).filter(function (r) { return String(r.taskId || '') === String(id); }).length; } catch (e) { return 0; } }
+  function duplicateGroups() {
+    var g = {};
+    allTasks().forEach(function (t) {
+      if (String(t.status || '') === 'ARCHIVED') return;
+      var k = String(t.className) + '¦' + String(t.title || '').trim() + '¦' + qkey(t.questionIds);
+      (g[k] = g[k] || []).push(t);
+    });
+    return Object.keys(g).map(function (k) { return g[k]; }).filter(function (a) { return a.length > 1; }).map(function (a) {
+      // يُبقى التكليف الذي عليه أكثر محاولات، ثم الأقدم
+      var sorted = a.slice().sort(function (x, y) { return attemptsOf(y.taskId) - attemptsOf(x.taskId) || allTasks().indexOf(y) - allTasks().indexOf(x); });
+      return { keep: sorted[0], drop: sorted.slice(1) };
+    });
+  }
+  window.removeDuplicateTasks = async function () {
+    if (!teacherKey()) return alert('أدخل مفتاح المعلم في أعلى الصفحة أولًا.');
+    var groups = duplicateGroups(); if (!groups.length) return alert('لا توجد تكليفات مكررة.');
+    var drop = []; groups.forEach(function (gr) { drop = drop.concat(gr.drop); });
+    var withRes = drop.filter(function (t) { return attemptsOf(t.taskId) > 0; });
+    var msg = 'سيُحذف ' + drop.length + ' تكليفًا مكررًا ويُبقى تكليف واحد لكل فصل:\n' +
+      groups.map(function (gr) { return '• الفصل ' + gr.keep.className + ' — «' + gr.keep.title + '»: حذف ' + gr.drop.length; }).join('\n') +
+      (withRes.length ? '\n\nتنبيه: ' + withRes.length + ' من النسخ المحذوفة عليها محاولات طلاب.' : '\n\nالنسخ المحذوفة ليس عليها أي محاولات طلاب.') + '\n\nمتابعة؟';
+    if (!confirm(msg)) return;
+    var ok = 0, fail = [];
+    for (var i = 0; i < drop.length; i++) {
+      notice('⏳ جارٍ حذف المكرر ' + (i + 1) + ' من ' + drop.length + '...');
+      try { await jsonp({ action: 'deleteTask', key: teacherKey(), taskId: drop[i].taskId }, 60000); ok++; tasks = tasks.filter(function (x) { return x !== drop[i]; }); }
+      catch (e) { fail.push(drop[i].className + ': ' + (e.message || e)); }
+    }
+    try { await refreshData(true); } catch (e) {}
+    try { renderTasks(); } catch (e) {}
+    notice('تم حذف ' + ok + ' تكليفًا مكررًا.', !!fail.length);
+    alert('تم حذف ' + ok + ' تكليفًا مكررًا.' + (fail.length ? '\nتعذر:\n' + fail.join('\n') : ''));
+  };
+  function dupStrip() {
+    var box = document.getElementById('tasksList'); if (!box) return;
+    var old = document.getElementById('ncDupStrip'); if (old) old.remove();
+    var groups = duplicateGroups(); if (!groups.length) return;
+    var n = 0; groups.forEach(function (gr) { n += gr.drop.length; });
+    var d = document.createElement('div'); d.id = 'ncDupStrip'; d.className = 'warning-box';
+    d.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px;font-weight:800';
+    d.innerHTML = '<span>⚠️ يوجد ' + n + ' تكليفًا مكررًا (نفس الفصل والاسم والأسئلة): ' + groups.map(function (gr) { return E(gr.keep.className) + ' «' + E(gr.keep.title) + '» ×' + (gr.drop.length + 1); }).join('، ') + '</span>' +
+      '<button class="btn-mini btn-hide" style="background:#d93025;color:#fff" onclick="removeDuplicateTasks()">🗑 حذف المكرر</button>';
+    box.insertAdjacentElement('beforebegin', d);
+  }
+
   // زر في كل بطاقة تكليف
   var origTasks = window.renderTasks;
   window.renderTasks = function () {
@@ -83,6 +131,7 @@ window.addEventListener('load', function () {
         b.insertAdjacentElement('afterend', c);
       });
     } catch (e) {}
+    try { dupStrip(); } catch (e) {}
     return r;
   };
 

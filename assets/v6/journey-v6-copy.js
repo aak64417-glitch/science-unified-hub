@@ -89,6 +89,40 @@
   }
   g.openTaskCopy = openCopy;
 
+
+  /* ========== تنظيف التكليفات المكررة (نفس الفصل والاسم والدروس والأسئلة) ========== */
+  const attemptsOf = id => (Array.isArray(results) ? results : []).filter(r => String(r.taskId) === String(id)).length;
+  function duplicateGroups() {
+    const g = {};
+    tasks.forEach(t => { const k = [normalizeClassName(t.className), String(t.title || '').trim(), norm(t.lessonIds || t.lesson), norm(t.questionSelections), String(t.mode || '')].join('¦'); (g[k] = g[k] || []).push(t); });
+    return Object.values(g).filter(a => a.length > 1).map(a => {
+      const s = a.slice().sort((x, y) => attemptsOf(y.id) - attemptsOf(x.id) || tasks.indexOf(y) - tasks.indexOf(x)); // الأكثر محاولات ثم الأقدم
+      return { keep: s[0], drop: s.slice(1) };
+    });
+  }
+  g.removeDuplicateTasks = async function () {
+    const groups = duplicateGroups(); if (!groups.length) { alert('لا توجد تكليفات مكررة.'); return; }
+    const drop = groups.flatMap(x => x.drop), withRes = drop.filter(t => attemptsOf(t.id) > 0);
+    if (!confirm(`سيُحذف ${drop.length} تكليفًا مكررًا ويُبقى تكليف واحد لكل فصل:\n` + groups.map(x => `• الفصل ${normalizeClassName(x.keep.className)} — «${x.keep.title}»: حذف ${x.drop.length}`).join('\n')
+      + (withRes.length ? `\n\nتنبيه: ${withRes.length} من النسخ المحذوفة عليها محاولات طلاب.` : '\n\nالنسخ المحذوفة ليس عليها أي محاولات طلاب.') + '\n\nمتابعة؟')) return;
+    let ok = 0; const fail = [];
+    for (const t of drop) {
+      try { await apiAction('deleteTask', { id: t.id }); tasks = tasks.filter(x => String(x.id) !== String(t.id)); ok++; }
+      catch (e) { fail.push(normalizeClassName(t.className) + ': ' + (e.message || e)); }
+    }
+    renderTasks(); stats(); try { updatePortfolioTasks(); saveTeacherCache(); } catch (e) {}
+    alert(`تم حذف ${ok} تكليفًا مكررًا.` + (fail.length ? `\nتعذر:\n${fail.join('\n')}` : ''));
+  };
+  function dupStrip() {
+    document.getElementById('v6cpDup')?.remove();
+    const groups = duplicateGroups(); if (!groups.length) return;
+    const n = groups.reduce((a, x) => a + x.drop.length, 0);
+    const d = document.createElement('div'); d.id = 'v6cpDup'; d.className = 'v6cp-dup';
+    d.innerHTML = `<b>⚠️ يوجد ${n} تكليفًا مكررًا (نفس الفصل والاسم والأسئلة): ${groups.map(x => `${E(normalizeClassName(x.keep.className))} «${E(x.keep.title)}» ×${x.drop.length + 1}`).join('، ')}</b><button class="smallbtn remove" id="v6cpDupBtn">🗑 حذف المكرر</button>`;
+    document.querySelector('#tasksTab .table-wrap')?.insertAdjacentElement('beforebegin', d);
+    d.querySelector('#v6cpDupBtn').onclick = g.removeDuplicateTasks;
+  }
+
   /* زر في كل صف من جدول التكليفات */
   const baseRender = g.renderTasks;
   g.renderTasks = function () {
@@ -103,6 +137,7 @@
         td.prepend(b, ' ');
       });
     } catch (e) { console.error(e); }
+    try { dupStrip(); } catch (e) { console.error(e); }
     return out;
   };
 
@@ -158,6 +193,7 @@
 .v6cp-extra{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:12px 14px;border-radius:14px;background:#EAF6F1;border:1.4px solid #A9D9C4;font-weight:700}
 .v6cp-extra label{display:flex;align-items:center;gap:6px;cursor:pointer}
 .v6cp-extra small{flex-basis:100%;color:#11593A;font-weight:600}
-.v6cp-btn{background:#F4B63F!important;color:#16324F!important}`;
+.v6cp-btn{background:#F4B63F!important;color:#16324F!important}
+.v6cp-dup{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:#FFF1F0;border:1.6px solid #F2A39B;color:#8B1E14}`;
   document.head.appendChild(st);
 })();
