@@ -18,7 +18,7 @@ header{background:linear-gradient(120deg,#0b2b57,#155493 65%,#0f8ba3);color:#fff
 header:after{content:"";position:absolute;left:-90px;top:-120px;width:300px;height:300px;border:60px solid #ffffff10;border-radius:50%}
 .top{max-width:760px;margin:auto;display:flex;align-items:center;gap:12px;position:relative;z-index:1}
 .avatar{width:54px;height:54px;border-radius:18px;background:#ffffff22;border:1px solid #ffffff55;display:grid;place-items:center;font-size:28px;flex-shrink:0}
-.top h1{margin:0;font-size:22px;font-weight:800;line-height:1.4}
+.top h1{margin:0;font-size:24px;font-weight:800;line-height:1.35;overflow-wrap:anywhere}
 .top p{margin:0;font-size:14px;color:#d3e6f8}
 .lvl{margin-inline-start:auto;text-align:center;background:#ffffff1c;border:1px solid #ffffff40;border-radius:14px;padding:4px 12px;font-size:13px}
 .lvl b{display:block;font-size:20px}
@@ -107,7 +107,7 @@ main{max-width:760px;margin:-52px auto 40px;padding:0 16px;position:relative;z-i
 <body>
 <header><div class="top">
   <div class="avatar">🧪</div>
-  <div><h1 id="hello">مسار التقدم</h1><p id="klass">مادة العلوم • استكشف • تعلّم • أتقن</p></div>
+  <div style="min-width:0"><p id="greet" style="font-size:15px;color:#d3e6f8">مسار التقدم</p><h1 id="hello">مادة العلوم</h1><p id="klass">مادة العلوم • استكشف • تعلّم • أتقن</p></div>
   <div class="lvl hide" id="lvlBox">المستوى<b id="lvl">1</b></div>
 </div></header>
 
@@ -366,9 +366,9 @@ async function init(){
   const d=await rpc("masar_student_home",{p_token:token});
   lessons=(d.lessons||[]).filter(l=>l&&l.enabled!==false&&l.active!==false);
   student=d;logLogin(lessons);
-  const first=String(d.name||"").trim().split(/\s+/)[0]||"";
+  const full=String(d.name||"").trim().replace(/\s+/g," ");
   const hr=new Date().getHours();
-  $("hello").textContent=(hr<12?"صباح الخير":"مساء الخير")+" يا "+first+" 👋";
+  $("greet").textContent=(hr<12?"صباح الخير":"مساء الخير")+" 👋 هذه منصتك الخاصة";$("hello").textContent=full||"طالب";document.title="مسار التقدم | "+(full||"مادة العلوم");
   $("klass").textContent="الفصل "+(d.class||"")+" • مادة العلوم";
   const isNewDay=!me.days.includes(today());
   if(isNewDay){me.days.push(today());me.days=me.days.slice(-120);save()}
