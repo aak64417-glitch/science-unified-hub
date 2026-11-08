@@ -4,12 +4,19 @@ window.addEventListener('load', function () {
   function E(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function allTasks() { try { return Array.isArray(tasks) ? tasks : []; } catch (e) { return []; } }
   function find(id) { return allTasks().find(function (t) { return String(t.taskId) === String(id); }); }
+  function qkey(ids) { return (ids || []).map(String).sort().join('|'); }
+  // يوجد في الفصل تكليف مطابق (نفس الاسم ونفس الأسئلة)؟
+  function identicalIn(src, c) { var k = qkey(src.questionIds), ti = String(src.title || '').trim(); return allTasks().some(function (x) { return String(x.className) === c && String(x.title || '').trim() === ti && qkey(x.questionIds) === k; }); }
+  var busy = false;
   function sameTitleIn(t, c) { return allTasks().some(function (x) { return x !== t && String(x.className) === c && String(x.title || '').trim() === String(t.title || '').trim(); }); }
 
   async function createCopies(src, classes, status) {
-    var ok = 0, fail = [];
+    var ok = 0, fail = [], seen = {}, skip = [];
     for (var i = 0; i < classes.length; i++) {
       var c = classes[i];
+      if (seen[c]) continue;
+      if (identicalIn(src, c)) { skip.push(c); continue; } // لا يُنشأ التكليف مرتين لنفس الفصل
+      seen[c] = 1;
       if (status) status('⏳ جاري إنشاء التكليف للفصل ' + c + ' (' + (i + 1) + ' من ' + classes.length + ')...');
       var d = {
         taskId: '', title: src.title, type: src.type || 'training', className: c,
@@ -22,7 +29,7 @@ window.addEventListener('load', function () {
     }
     try { await refreshData(true); } catch (e) {}
     try { renderTasks(); } catch (e) {}
-    return { ok: ok, fail: fail };
+    return { ok: ok, fail: fail, skip: skip };
   }
 
   // نافذة التكرار من بطاقة التكليف
@@ -49,12 +56,14 @@ window.addEventListener('load', function () {
     go.onclick = async function () {
       var chosen = [].slice.call(body.querySelectorAll('.nc-check:checked')).map(function (x) { return x.value; });
       if (!chosen.length) return alert('اختر فصلًا واحدًا على الأقل.');
-      go.disabled = true;
+      if (busy || go.disabled) return;
+      busy = true; go.disabled = true;
       var st = document.getElementById('ncStatus'); st.style.display = '';
-      var r = await createCopies(t, chosen, function (s) { st.textContent = s; });
+      var r;
+      try { r = await createCopies(t, chosen, function (s) { st.textContent = s; }); } finally { busy = false; }
       closeAppModal();
       notice('تم إنشاء التكليف لـ ' + r.ok + ' فصل بنفس الأسئلة.', !!r.fail.length);
-      alert('تم إنشاء التكليف لـ ' + r.ok + ' فصل بنفس الأسئلة.' + (r.fail.length ? '\nتعذر:\n' + r.fail.join('\n') : ''));
+      alert('تم إنشاء التكليف لـ ' + r.ok + ' فصل بنفس الأسئلة.' + (r.skip.length ? '\nلم يُكرَّر للفصول ' + r.skip.join('، ') + ' لأن التكليف نفسه موجود لها.' : '') + (r.fail.length ? '\nتعذر:\n' + r.fail.join('\n') : ''));
       try { goTo('assignments'); } catch (e) {}
     };
   };
@@ -107,6 +116,14 @@ window.addEventListener('load', function () {
 
   var origSave = window.saveTask;
   window.saveTask = async function (id) {
+    if (busy) return; // منع الحفظ المزدوج عند الضغط مرتين
+    busy = true;
+    var btn = document.querySelector('#appModalBody button[onclick^="saveTask"]');
+    if (btn) { btn.disabled = true; btn.dataset.t = btn.textContent; btn.textContent = '⏳ جارٍ الحفظ...'; }
+    try { return await saveImpl.apply(this, arguments); }
+    finally { busy = false; if (btn) { btn.disabled = false; btn.textContent = btn.dataset.t || 'حفظ التكليف'; } }
+  };
+  async function saveImpl(id) {
     var extra = id ? [] : [].slice.call(document.querySelectorAll('#ncExtra input:checked')).map(function (x) { return x.value; })
       .filter(function (c) { return c !== (document.getElementById('teClass') || {}).value; });
     if (!extra.length) return origSave.apply(this, arguments);
@@ -120,12 +137,13 @@ window.addEventListener('load', function () {
     var r = await origSave.apply(this, arguments);
     if (document.getElementById('appModal').classList.contains('show')) return r; // لم يُحفظ الأصل
     src.questionIds = [...taskSelection];
+    try { await refreshData(true); } catch (e) {}
     var c = await createCopies(src, extra);
     notice('تم حفظ التكليف وإنشاؤه أيضًا لـ ' + c.ok + ' فصل إضافي.', !!c.fail.length);
     alert('تم حفظ التكليف وإنشاؤه أيضًا لـ ' + c.ok + ' فصل إضافي بنفس الأسئلة.' + (c.fail.length ? '\nتعذر:\n' + c.fail.join('\n') : ''));
     try { goTo('assignments'); } catch (e) {}
     return r;
-  };
+  }
 
   try { window.renderTasks(); } catch (e) {}
 });

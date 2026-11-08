@@ -18,11 +18,20 @@
     };
   }
 
+  const norm = v => { try { const o = typeof v === 'string' ? JSON.parse(v || '{}') : (v || {}); return JSON.stringify(Object.keys(o).sort().map(k => [k, Array.isArray(o[k]) ? o[k].map(String).sort() : o[k]])); } catch (e) { return String(v || ''); } };
+  // يوجد في الفصل تكليف مطابق (نفس الاسم والدروس والأسئلة)؟
+  const identicalIn = (p, cls) => tasks.some(t => normalizeClassName(t.className) === cls && String(t.title || '').trim() === p.title
+    && norm(t.lessonIds || t.lesson) === norm(p.lessonIds) && norm(t.questionSelections) === norm(p.questionSelections));
+  let busy = false;
   async function createCopies(classList, status) {
     const base = payloadFromForm('');
-    let ok = 0, missing = false; const fail = [];
+    let ok = 0, missing = false; const fail = [], skip = [];
+    const seen = new Set();
     for (let i = 0; i < classList.length; i++) {
       const cls = classList[i];
+      if (seen.has(cls)) continue;
+      if (identicalIn(base, cls)) { skip.push(cls); continue; } // لا يُنشأ التكليف مرتين لنفس الفصل
+      seen.add(cls);
       if (status) status(`جاري إنشاء التكليف للفصل ${cls} (${i + 1} من ${classList.length})...`);
       try {
         const res = await apiAction('createTask', { ...base, className: cls });
@@ -32,7 +41,7 @@
     }
     if (missing) { try { await loadTeacher(); } catch (e) {} }
     renderTasks(); stats(); try { updatePortfolioTasks(); updateResultFilters(); saveTeacherCache(); } catch (e) {}
-    return { ok, fail };
+    return { ok, fail, skip };
   }
 
   /* ========== نافذة التكرار ========== */
@@ -65,15 +74,16 @@
     go.onclick = async () => {
       const chosen = [...m.querySelectorAll('.v6cp-check:checked')].map(c => c.value);
       if (!chosen.length) { alert('اختر فصلًا واحدًا على الأقل.'); return; }
-      go.disabled = true;
+      if (busy || go.disabled) return;
+      busy = true; go.disabled = true;
       // تعبئة النموذج من التكليف الأصلي لأخذ الأسئلة كما حُفظت، ثم إخفاؤه
       openTaskEditor(t); $('taskModal').classList.add('hidden'); window.__editingTaskId = '';
       try {
         const r = await createCopies(chosen, s => $('v6cpStatus').textContent = s);
         $('v6cpStatus').textContent = '';
         m.classList.add('hidden');
-        alert(`تم إنشاء التكليف لـ ${r.ok} فصل بنفس الأسئلة.` + (r.fail.length ? `\nتعذر:\n${r.fail.join('\n')}` : ''));
-      } finally { go.disabled = false; }
+        alert(`تم إنشاء التكليف لـ ${r.ok} فصل بنفس الأسئلة.` + (r.skip.length ? `\nلم يُكرَّر للفصول ${r.skip.join('، ')} لأن التكليف نفسه موجود لها.` : '') + (r.fail.length ? `\nتعذر:\n${r.fail.join('\n')}` : ''));
+      } finally { busy = false; go.disabled = false; }
     };
     m.classList.remove('hidden');
   }
@@ -123,6 +133,11 @@
 
   const baseCreate = g.createTask;
   g.createTask = async function () {
+    if (busy) return; // منع الحفظ المزدوج عند الضغط مرتين
+    busy = true;
+    try { return await createImpl.apply(this, arguments); } finally { busy = false; }
+  };
+  async function createImpl() {
     const editing = !!window.__editingTaskId;
     const extra = editing ? [] : [...document.querySelectorAll('#v6cpExtra input:checked')].map(c => c.value).filter(c => c !== $('taskClass').value);
     if (!extra.length) return baseCreate.apply(this, arguments);
@@ -132,7 +147,7 @@
     if (!$('taskModal').classList.contains('hidden')) { if (msg) alert(msg); return; } // لم يُحفظ الأصل
     const r = await createCopies(extra);
     alert(`${msg}\nوأُنشئ نفس التكليف لـ ${r.ok} فصل إضافي.` + (r.fail.length ? `\nتعذر:\n${r.fail.join('\n')}` : ''));
-  };
+  }
 
   const st = document.createElement('style');
   st.textContent = `.v6cp-card{max-width:560px}.v6cp-acts{display:flex;gap:8px;margin:6px 0 10px}
