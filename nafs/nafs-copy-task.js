@@ -87,12 +87,13 @@ window.addEventListener('load', function () {
   window.removeDuplicateTasks = async function () {
     if (!teacherKey()) return alert('أدخل مفتاح المعلم في أعلى الصفحة أولًا.');
     var groups = duplicateGroups(); if (!groups.length) return alert('لا توجد تكليفات مكررة.');
-    var drop = []; groups.forEach(function (gr) { drop = drop.concat(gr.drop); });
-    var withRes = drop.filter(function (t) { return attemptsOf(t.taskId) > 0; });
-    var msg = 'سيُحذف ' + drop.length + ' تكليفًا مكررًا ويُبقى تكليف واحد لكل فصل:\n' +
-      groups.map(function (gr) { return '• الفصل ' + gr.keep.className + ' — «' + gr.keep.title + '»: حذف ' + gr.drop.length; }).join('\n') +
-      (withRes.length ? '\n\nتنبيه: ' + withRes.length + ' من النسخ المحذوفة عليها محاولات طلاب.' : '\n\nالنسخ المحذوفة ليس عليها أي محاولات طلاب.') + '\n\nمتابعة؟';
-    if (!confirm(msg)) return;
+    var all = []; groups.forEach(function (gr) { all = all.concat(gr.drop); });
+    // حماية النتائج: لا يُحذف أي تكليف عليه محاولات طلاب
+    var drop = all.filter(function (t) { return attemptsOf(t.taskId) === 0; });
+    var kept = all.filter(function (t) { return attemptsOf(t.taskId) > 0; });
+    var keptMsg = kept.length ? '\n\nلن يُحذف ' + kept.length + ' تكليفًا مكررًا لأن عليه محاولات طلاب (حتى لا تضيع نتائجهم):\n' + kept.map(function (t) { return '• الفصل ' + t.className + ' — «' + t.title + '» (' + attemptsOf(t.taskId) + ' محاولة)'; }).join('\n') : '';
+    if (!drop.length) return alert('كل التكليفات المكررة عليها محاولات طلاب، فلم يُحذف شيء حفاظًا على النتائج.' + keptMsg);
+    if (!confirm('سيُحذف ' + drop.length + ' تكليفًا مكررًا ليس عليه أي محاولات طلاب:\n' + drop.map(function (t) { return '• الفصل ' + t.className + ' — «' + t.title + '»'; }).join('\n') + keptMsg + '\n\nمتابعة؟')) return;
     var ok = 0, fail = [];
     for (var i = 0; i < drop.length; i++) {
       notice('⏳ جارٍ حذف المكرر ' + (i + 1) + ' من ' + drop.length + '...');

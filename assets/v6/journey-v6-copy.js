@@ -102,9 +102,12 @@
   }
   g.removeDuplicateTasks = async function () {
     const groups = duplicateGroups(); if (!groups.length) { alert('لا توجد تكليفات مكررة.'); return; }
-    const drop = groups.flatMap(x => x.drop), withRes = drop.filter(t => attemptsOf(t.id) > 0);
-    if (!confirm(`سيُحذف ${drop.length} تكليفًا مكررًا ويُبقى تكليف واحد لكل فصل:\n` + groups.map(x => `• الفصل ${normalizeClassName(x.keep.className)} — «${x.keep.title}»: حذف ${x.drop.length}`).join('\n')
-      + (withRes.length ? `\n\nتنبيه: ${withRes.length} من النسخ المحذوفة عليها محاولات طلاب.` : '\n\nالنسخ المحذوفة ليس عليها أي محاولات طلاب.') + '\n\nمتابعة؟')) return;
+    const all = groups.flatMap(x => x.drop);
+    // حماية النتائج: لا يُحذف أي تكليف عليه محاولات طلاب
+    const drop = all.filter(t => attemptsOf(t.id) === 0), kept = all.filter(t => attemptsOf(t.id) > 0);
+    const keptMsg = kept.length ? `\n\nلن يُحذف ${kept.length} تكليفًا مكررًا لأن عليه محاولات طلاب (حتى لا تضيع نتائجهم):\n` + kept.map(t => `• الفصل ${normalizeClassName(t.className)} — «${t.title}» (${attemptsOf(t.id)} محاولة)`).join('\n') : '';
+    if (!drop.length) { alert('كل التكليفات المكررة عليها محاولات طلاب، فلم يُحذف شيء حفاظًا على النتائج.' + keptMsg); return; }
+    if (!confirm(`سيُحذف ${drop.length} تكليفًا مكررًا ليس عليه أي محاولات طلاب:\n` + drop.map(t => `• الفصل ${normalizeClassName(t.className)} — «${t.title}»`).join('\n') + keptMsg + '\n\nمتابعة؟')) return;
     let ok = 0; const fail = [];
     for (const t of drop) {
       try { await apiAction('deleteTask', { id: t.id }); tasks = tasks.filter(x => String(x.id) !== String(t.id)); ok++; }
