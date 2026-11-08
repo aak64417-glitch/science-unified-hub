@@ -75,6 +75,20 @@
     });
   }
 
+  /* تعديل بيانات تقرير (العنوان، الوصف، المصدر، نوع الأسماء) */
+  function updateReport(id, changes) {
+    return writeIndex(function (j) { j.reports.forEach(function (r) { if (r.id === id) for (var k in changes) r[k] = changes[k]; }); }, 'ملف الإنجاز: تعديل تقرير نافس');
+  }
+  /* تبديل ملف الشاهد: رفع الملف الجديد ثم تحديث الفهرس ثم حذف القديم */
+  function replaceReportFile(rec, ext, kind, base64) {
+    var file = 'nafs-reports/' + rec.id + '-' + Date.now().toString(36) + '.' + ext;
+    return putFile(file, base64, 'ملف الإنجاز: تبديل شاهد تقرير نافس — ' + rec.title).then(function () {
+      return writeIndex(function (j) { j.reports.forEach(function (r) { if (r.id === rec.id) { r.file = file; r.kind = kind; r.replaced = new Date().toISOString(); } }); }, 'ملف الإنجاز: تحديث فهرس تقارير نافس');
+    }).then(function () {
+      return (rec.file && rec.file !== file ? deleteFile(rec.file, 'ملف الإنجاز: حذف الشاهد القديم — ' + rec.title).catch(function () {}) : null);
+    }).then(function () { return { file: file, kind: kind }; });
+  }
+
   /* مجموعة عامة بفهرس مستقل (مثل مقاطع الفيديو) */
   function collection(indexPath, folder, label) {
     function rIndex() {
@@ -124,6 +138,6 @@
     return { readIndex: rIndex, add: add, remove: remove, update: update };
   }
 
-  window.PFStore = { token: token, setToken: setToken, readIndex: readIndex, addReport: addReport, removeReport: removeReport, b64utf8: b64utf8, collection: collection,
+  window.PFStore = { token: token, setToken: setToken, readIndex: readIndex, addReport: addReport, removeReport: removeReport, updateReport: updateReport, replaceReportFile: replaceReportFile, b64utf8: b64utf8, collection: collection,
     shared: collection('portfolio-1448/shared-reports/index.json', 'shared-reports', 'شاهد معروض للمدير') };
 })();

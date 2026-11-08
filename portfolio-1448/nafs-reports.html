@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>تقارير نافس | ملف الإنجاز 1448هـ</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
-<script src="gh-store.js"></script>
+<script src="gh-store.js"></script><script src="nafs-edit.js"></script>
 <style>
 :root{--navy:#071a40;--gold:#d4a73c;--ink:#14233f;--muted:#5d6b84;--p:#5a35c9;--green:#1b8a4b;--red:#c0392b}
 *{box-sizing:border-box}
@@ -101,7 +101,7 @@ function fmt(iso){try{return new Date(iso).toLocaleDateString('ar-SA-u-ca-islami
 var reports=[];
 function draw(){var el=$('list');
   if(!reports.length){el.innerHTML='<p class="note">لم يُضف أي تقرير بعد.</p>';return}
-  el.innerHTML=reports.slice().reverse().map(function(r){return '<div class="rep"><span class="ic">'+(ICON[r.kind]||'📄')+'</span><div class="tx"><b>'+esc(r.title)+'<span class="tag '+(r.source==='inside'?'in':'out')+'">'+(r.source==='inside'?'من داخل المنصة':'من خارج المنصة')+'</span>'+(r.names===true?'<span class="tag nm">بالأسماء</span>':r.names===false?'<span class="tag an">بدون أسماء</span>':'')+'</b><small>'+fmt(r.date)+(r.notes?' • '+esc(r.notes):'')+'</small></div><div class="acts"><a class="btn light" href="'+esc(r.file)+'" target="_blank" rel="noopener">فتح</a><button class="btn red" type="button" data-del="'+esc(r.id)+'">حذف</button></div></div>'}).join('');}
+  el.innerHTML=reports.slice().reverse().map(function(r){return '<div class="rep"><span class="ic">'+(ICON[r.kind]||'📄')+'</span><div class="tx"><b>'+esc(r.title)+'<span class="tag '+(r.source==='inside'?'in':'out')+'">'+(r.source==='inside'?'من داخل المنصة':'من خارج المنصة')+'</span>'+(r.names===true?'<span class="tag nm">بالأسماء</span>':r.names===false?'<span class="tag an">بدون أسماء</span>':'')+'</b><small>'+fmt(r.date)+(r.notes?' • '+esc(r.notes):'')+'</small></div><div class="acts"><a class="btn light" href="'+esc(r.file)+'" target="_blank" rel="noopener">فتح</a><button class="btn" type="button" data-edit="'+esc(r.id)+'">✎ تعديل</button><button class="btn red" type="button" data-del="'+esc(r.id)+'">حذف</button></div></div>'}).join('');}
 function load(){
   if(!PFStore.token()){$('setupBox').classList.remove('hidden');
     fetch('nafs-reports/index.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){reports=j.reports||[];draw()}).catch(function(){reports=[];draw()});return}
@@ -122,7 +122,8 @@ $('add').onclick=function(){
     .then(function(rec){reports.push(rec);draw();$('title').value='';$('notes').value='';$('file').value='';msg('تمت إضافة التقرير ✓ (يظهر للمدير خلال دقيقة إلى دقيقتين)',true)})
     .catch(function(e){msg(e.message)}).then(function(){$('add').disabled=false})};
   rd.readAsDataURL(f);};
-$('list').addEventListener('click',function(e){var b=e.target.closest('[data-del]');if(!b)return;
+$('list').addEventListener('click',function(e){var ed=e.target.closest('[data-edit]');if(ed){var re=reports.filter(function(x){return x.id===ed.dataset.edit})[0];if(re)PFNafsEdit.open(re,function(how){if(how==='deleted')reports=reports.filter(function(x){return x.id!==re.id});draw();msg(how==='deleted'?'تم حذف التقرير ✓':'تم حفظ التعديلات ✓',true)});return}
+  var b=e.target.closest('[data-del]');if(!b)return;
   var r=reports.filter(function(x){return x.id===b.dataset.del})[0];if(!r)return;
   if(!PFStore.token()){msg('احفظ رمز الوصول أولًا.');return}
   if(!confirm('حذف التقرير «'+r.title+'» من ملف الإنجاز؟'))return;
