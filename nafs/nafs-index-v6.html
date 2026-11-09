@@ -1331,5 +1331,101 @@ ensureQuestionBankReady().catch(e=>{
 })();
 </script>
 
+<script src="nafs-2026-figures.js?v=20261109-fig1"></script>
+<script>
+/* ===== نافس 2026: عرض الأسئلة بنمط رحلة العلوم (رسم/جدول/صورة توضيحية) + محاولتان في التدريب ===== */
+(function(){
+  'use strict';
+  const css=`.nf-media{padding:0!important;border:0!important;background:none!important}
+.nf-figure{margin:2px 0 10px;padding:10px;border-radius:16px;background:#fff;border:1.5px solid #d7e6f0;text-align:center}
+.nf-figure svg{display:block;width:100%;height:auto;max-height:260px;margin:0 auto}
+.nf-photo{margin:2px 0 10px;border-radius:16px;overflow:hidden;border:1.5px solid #d7e6f0;background:#fff}
+.nf-photo img{display:block;width:100%;max-height:240px;object-fit:cover}
+.nf-photo figcaption{padding:6px 12px;font-size:13px;font-weight:800;color:#0b6b6d;background:#eef8f8}
+.nf-table{border-collapse:collapse;margin:4px auto 10px;font-size:15px;font-weight:700}
+.nf-table th{background:#e9f4fb;color:#0b5c7a;padding:7px 12px;border:1px solid #cfe1ec}
+.nf-table td{padding:7px 12px;border:1px solid #cfe1ec;background:#fff;text-align:center}
+.nf-level{display:inline-flex;gap:3px;vertical-align:middle;margin-left:5px}.nf-level i{width:8px;height:8px;border-radius:50%;background:#d5dde7;display:inline-block}.nf-level i.on{background:#f0a92b}
+.option.nf-tried{opacity:.75;cursor:not-allowed}
+.nf-try{margin-top:12px;border-radius:15px;padding:12px 14px;font-weight:800;font-size:16px;line-height:1.8;background:#fff6e5;border:1px solid #f3d38d;color:#7a4b00;animation:nfShake .35s}
+.nf-dots{display:inline-flex;gap:5px;margin-inline-start:8px;vertical-align:middle}.nf-dots b{width:12px;height:12px;border-radius:50%;background:#23a86b;display:inline-block}.nf-dots b.used{background:#e75a69}
+@keyframes nfShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}`;
+  const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
+  const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const isNew=q=>!!q&&!q.legacy&&Number(q.questionNo)>=1001;
+  const cur=()=>state.questions[state.index];
+
+  function decorate(q){
+    if(!isNew(q))return;
+    const mb=$('mediaBox'),F=window.NAFS_2026_FIGURES||{},TI=window.NAFS_2026_TOPIC_IMG||{};
+    const f=F[q.id];let h='';
+    if(f){
+      h='<div class="nf-figure">'+f.svg+'</div>';
+      if(f.table&&Array.isArray(f.table.head))h+='<table class="nf-table"><thead><tr>'+f.table.head.map(x=>'<th>'+E(x)+'</th>').join('')+'</tr></thead><tbody>'+(f.table.rows||[]).map(r=>'<tr>'+r.map(c=>'<td>'+E(c)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+    }else if(TI[q.outcomeTitle]&&!(window.NAFS_2026_NO_PHOTO||[]).includes(q.id)){
+      const [file,cap]=TI[q.outcomeTitle];
+      h='<figure class="nf-photo"><img src="media-realistic/'+E(file)+'" alt="'+E(cap)+'" loading="eager" decoding="async" onerror="this.closest(\'figure\').remove()"><figcaption>🖼️ '+E(cap)+'</figcaption></figure>';
+    }
+    if(h){mb.className='question-media nf-media';mb.innerHTML=h;mb.classList.remove('hidden');}
+    const d=$('difficultyTag'),lv={'سهل':1,'متوسط':2,'صعب':3,'متقدم':3}[String(q.difficulty||'').trim()]||0;
+    if(d&&lv)d.innerHTML='<span class="nf-level">'+[1,2,3].map(i=>'<i class="'+(i<=lv?'on':'')+'"></i>').join('')+'</span> '+E(q.difficulty);
+  }
+
+  /* ---------- المحاولتان (التدريب والتكليفات التدريبية فقط؛ الاختبار يبقى محاولة واحدة) ---------- */
+  function tries(){if(state._nfStart!==state.startAt){state._nfStart=state.startAt;state.firstWrong={};}return state.firstWrong;}
+  function markTried(i){const b=document.querySelector(`.option[data-i="${i}"]`);if(b){b.classList.add('wrong','nf-tried');b.disabled=true;}}
+  function tryMsg(show){
+    let box=$('nfTry');
+    if(!show){if(box)box.remove();return}
+    if(!box){box=document.createElement('div');box.id='nfTry';box.className='nf-try';$('options').insertAdjacentElement('afterend',box);}
+    box.innerHTML='✗ إجابة غير صحيحة — لديك محاولة ثانية، فكّر مرة أخرى واختر إجابة أخرى. <span class="nf-dots"><b class="used"></b><b></b></span>';
+  }
+  const baseChoose=window.chooseOption,baseReveal=window.revealTraining,baseRender=window.renderQuestion,baseNext=window.nextAction,baseResult=window.renderResult;
+
+  window.chooseOption=function(i){
+    if(state.mode!=='training')return baseChoose(i);
+    if(state.submitting)return;
+    const q=cur();if(!q||state.answers[state.index]!==undefined)return;
+    const fw=tries();if(fw[state.index]===i)return;
+    if(i===q.correctIndex||fw[state.index]!==undefined){
+      tryMsg(false);
+      document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+      document.querySelector(`.option[data-i="${i}"]`)?.classList.add('selected');
+      state.answers[state.index]=i;window.revealTraining(q,i);return;
+    }
+    fw[state.index]=i;markTried(i);tryMsg(true);notice($('quizMsg'),'');
+  };
+  window.revealTraining=function(q,i){
+    baseReveal(q,i);
+    const fw=tries(),first=fw[state.index];
+    if(first===undefined)return;
+    markTried(first);
+    const ex=$('explainBox');
+    if(i===q.correctIndex)ex.textContent='إجابة صحيحة في المحاولة الثانية ✓ — '+q.explanation;
+    else ex.textContent='انتهت المحاولتان — الإجابة الصحيحة باللون الأخضر. '+q.explanation;
+  };
+  window.renderQuestion=function(){
+    tryMsg(false);
+    const r=baseRender.apply(this,arguments);
+    const q=cur();
+    try{decorate(q)}catch(e){console.warn('nafs 2026 figure',e)}
+    if(state.mode==='training'&&q&&state.answers[state.index]===undefined){const f=tries()[state.index];if(f!==undefined){markTried(f);tryMsg(true);}}
+    return r;
+  };
+  window.nextAction=function(){
+    if(state.mode==='training'&&state.answers[state.index]===undefined&&tries()[state.index]!==undefined)
+      return notice($('quizMsg'),'استخدم محاولتك الثانية واختر إجابة أخرى قبل الانتقال.');
+    return baseNext.apply(this,arguments);
+  };
+  window.renderResult=function(r,isTraining){
+    baseResult(r,isTraining);
+    if(!isTraining)return;
+    const fw=tries();let first=0,second=0;
+    state.questions.forEach((q,i)=>{if(state.answers[i]===q.correctIndex){if(fw[i]===undefined)first++;else second++;}});
+    if(second)$('resultText').textContent+=` (منها ${first} من المحاولة الأولى و${second} في المحاولة الثانية)`;
+  };
+})();
+</script>
+
 </body>
 </html>
