@@ -549,7 +549,7 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="config.js?v=20261002a"></script>
+<script src="config.js?v=20261109a"></script>
 <script src="visual-media.js?v=20261002-final"></script>
 <script>
 
@@ -557,7 +557,9 @@ const sections=[...document.querySelectorAll('.section')];
 const buttons=[...document.querySelectorAll('.nav button')];
 let bankBase=[], bankOverrides=[], tasks=[], dashboardData={students:[],results:[],sessions:[]};
 let taskSelection=new Set();
-const BANK_FILE='./بنك_نافس_علوم_ثالث_متوسط_720_سؤال_نهائي_بصري.json';
+const BANK_FILE='./بنك_نافس_2026_نواتج_التعلم_255_سؤال.json';
+// البنك القديم: يُحمّل في الخلفية فقط ليبقى عرض التكليفات والنتائج والتقارير السابقة صحيحًا، ولا يظهر في الاختيار
+const LEGACY_BANK_FILE='./بنك_نافس_علوم_ثالث_متوسط_720_سؤال_نهائي_بصري.json';
 const CLASSES=['1/3','2/3','3/3','4/3'];
 const ansMap={'أ':0,'ب':1,'ج':2,'د':3,'A':0,'B':1,'C':2,'D':3};
 
@@ -642,6 +644,9 @@ function normalizeBase(x,i){
     mediaKey:String(x['معرف الوسيط']||'').trim(),
     mediaEnabled:Boolean(x['وسيط مفعل']||x['مسار الوسيط']||x['معرف الوسيط']),
     type:String(x['نوع السؤال']||'اختيار من متعدد').trim(),
+    groupNo:Number(x['رقم المجموعة']||0),
+    groupName:String(x['اسم المجموعة']||'').trim(),
+    groupOrder:Number(x['ترتيب في المجموعة']||0),
     status:'ACTIVE',
     trainingEnabled:true,testEnabled:true,isBase:true
   }
@@ -657,10 +662,17 @@ async function loadBankNow(){
   const status=document.getElementById('bankLoadStatus');
   try{
     if(status)status.textContent='جاري التحميل...';
-    const r=await fetch(BANK_FILE+'?v=20261002a');
+    const r=await fetch(BANK_FILE+'?v=20261109a',{cache:'no-store'});
     if(!r.ok)throw new Error('HTTP '+r.status);
     const raw=await r.json();
-    bankBase=(Array.isArray(raw)?raw:[]).map(normalizeBase);
+    const fresh=(Array.isArray(raw)?raw:[]).map(normalizeBase);
+    let legacy=[];
+    try{
+      const lr=await fetch(LEGACY_BANK_FILE+'?v=20261002a');
+      if(lr.ok){const lraw=await lr.json();if(Array.isArray(lraw))legacy=lraw.map((x,i)=>({...normalizeBase(x,i),legacy:true}));}
+    }catch(e){console.warn('legacy bank',e)}
+    const newIds=new Set(fresh.map(q=>q.id));
+    bankBase=fresh.concat(legacy.filter(q=>!newIds.has(q.id)));
     if(status)status.textContent='متصل ✓';
     syncOutcomeOptions();renderBank();updateBankStats();
   }catch(e){
@@ -668,7 +680,9 @@ async function loadBankNow(){
     notice('تعذر تحميل بنك الأسئلة. تأكد أن ملف JSON موجود في مجلد nafs بجانب الصفحة. '+e.message,true);
   }
 }
-function mergedBank(){
+function mergedBank(){return mergedBankAll().filter(q=>!q.legacy)}
+window.mergedBankAll=mergedBankAll;
+function mergedBankAll(){
   const map=new Map(bankBase.map(q=>[q.id,{...q}]));
   const local=JSON.parse(localStorage.getItem('nafsQuestionOverridesLocal')||'[]');
   [...bankOverrides,...local].forEach(o=>{
@@ -743,7 +757,7 @@ function openModal(title,body){
 }
 function closeAppModal(){document.getElementById('appModal').classList.remove('show')}
 function previewQuestion(id){
-  const q=mergedBank().find(x=>x.id===id);if(!q)return;
+  const q=mergedBankAll().find(x=>x.id===id);if(!q)return;
   openModal('معاينة السؤال',`<div class="helper"><b>${esc(q.outcomeCode)}</b> — ${esc(q.outcomeTitle)}<br>${esc(q.cognitiveLevel)} • ${esc(q.difficulty)}</div>
   ${q.mediaKey&&window.NAFS_VISUAL_MEDIA?.[q.mediaKey]?`<div style="margin:12px 0;text-align:center">${window.NAFS_VISUAL_MEDIA[q.mediaKey]}</div>`:(q.mediaUrl?`<div style="margin:12px 0;text-align:center"><img src="${esc(q.mediaUrl)}" alt="${esc(q.mediaDescription||'وسيط السؤال')}" style="max-width:100%;max-height:440px;object-fit:contain;border-radius:16px;border:1px solid #d9e5f1;background:#fff"></div>`:'')}
   <h3>${esc(q.text)}</h3>
@@ -751,7 +765,7 @@ function previewQuestion(id){
   <div class="warning-box"><b>التفسير:</b> ${esc(q.explanation||'—')}</div>`);
 }
 function openQuestionEditor(id=''){
-  const q=id?mergedBank().find(x=>x.id===id):null;
+  const q=id?mergedBankAll().find(x=>x.id===id):null;
   const x=q||{id:'',domain:'علوم الأرض والفضاء',lesson:'تغيرات الأرض',outcomeCode:'',outcomeTitle:'',cognitiveLevel:'تطبيق',difficulty:'متوسط',text:'',options:['','','',''],correctIndex:0,explanation:'',mediaDescription:''};
   openModal(id?'تعديل السؤال':'إضافة سؤال جديد',`
     <div class="form-grid">
@@ -824,7 +838,7 @@ async function saveQuestionEditor(id){
 }
 async function hideQuestion(id){
   if(!confirm('إخفاء هذا السؤال من بنك المعلم؟'))return;
-  const q=mergedBank().find(x=>x.id===id);if(!q)return;
+  const q=mergedBankAll().find(x=>x.id===id);if(!q)return;
   localOverrideUpsert({...q,status:'DELETED'});
   if(teacherKey()){try{await jsonp({action:'deleteQuestion',key:teacherKey(),id},30000)}catch(e){}}
   renderBank();updateBankStats();
@@ -1000,6 +1014,7 @@ function openTaskEditor(task=null){
     <input id="tpSearch" placeholder="بحث" oninput="renderTaskPicker()">
   </div>
   <div class="task-toolbar">
+    <select id="tpGroup" onchange="applyTaskGroup(this.value)" style="min-width:230px;font-weight:700"><option value="">📦 مجموعة جاهزة (15 سؤالًا)…</option>${taskGroupOptions()}</select>
     <input id="tpSuggestCount" type="number" min="1" value="30" placeholder="عدد الأسئلة">
     <button class="primary" onclick="suggestTaskQuestions()">✨ اقتراح أسئلة</button>
     <button class="btn-mini btn-view" onclick="selectVisibleTask(true)">اختيار الظاهر</button>
@@ -1036,7 +1051,7 @@ function syncTaskOutcome(){
 }
 function currentTaskFiltered(){
   const domain=document.getElementById('tpDomain')?.value||'',unit=document.getElementById('tpUnit')?.value||'',outcome=document.getElementById('tpOutcome')?.value||'',level=document.getElementById('tpLevel')?.value||'',search=(document.getElementById('tpSearch')?.value||'').trim();
-  return taskQuestionPool().filter(q=>(!domain||q.domain===domain)&&(!unit||q.lesson===unit)&&(!outcome||q.outcomeCode===outcome)&&(!level||q.cognitiveLevel===level)&&(!search||[q.text,q.outcomeTitle,q.outcomeCode].join(' ').includes(search)));
+  const grp=taskGroupFilter();return taskQuestionPool().filter(q=>(!grp||q.groupNo===grp)&&(!domain||q.domain===domain)&&(!unit||q.lesson===unit)&&(!outcome||q.outcomeCode===outcome)&&(!level||q.cognitiveLevel===level)&&(!search||[q.text,q.outcomeTitle,q.outcomeCode].join(' ').includes(search)));
 }
 function renderTaskPicker(){
   const body=document.getElementById('taskPickerRows');if(!body)return;
@@ -1044,6 +1059,29 @@ function renderTaskPicker(){
   body.innerHTML=list.slice(0,400).map(q=>`<tr><td><input type="checkbox" ${taskSelection.has(q.id)?'checked':''} onchange="toggleTaskQuestion('${esc(q.id)}',this.checked)"></td><td>${esc(q.id)}</td><td>${esc(q.outcomeCode)}<br>${esc(q.outcomeTitle)}</td><td>${esc(q.cognitiveLevel)}</td><td style="min-width:420px">${esc(q.text)}</td></tr>`).join('');
   document.getElementById('taskSelectedCount').textContent=taskSelection.size;
 }
+function taskGroups(){
+  const m=new Map();
+  mergedBank().filter(q=>q.status!=='DELETED'&&q.groupNo).forEach(q=>{
+    const g=m.get(q.groupNo)||{no:q.groupNo,name:q.groupName||('المجموعة '+q.groupNo),ids:[]};
+    g.ids.push(q);m.set(q.groupNo,g);
+  });
+  return [...m.values()].sort((a,b)=>a.no-b.no).map(g=>({...g,ids:g.ids.sort((a,b)=>(a.groupOrder||0)-(b.groupOrder||0)).map(q=>q.id)}));
+}
+function taskGroupOptions(){
+  return taskGroups().map(g=>`<option value="${g.no}">${esc(g.name)} — ${g.ids.length} سؤالًا</option>`).join('');
+}
+function applyTaskGroup(v){
+  const g=taskGroups().find(x=>String(x.no)===String(v));
+  if(!g){if(typeof window.renderTaskPicker==='function')window.renderTaskPicker();return;}
+  ['tpDomain','tpUnit','tpOutcome','tpLevel','tpSearch'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  taskSelection=new Set(g.ids);
+  const t=document.getElementById('teTitle');
+  if(t&&!t.value.trim())t.value='تكليف نافس — '+g.name;
+  if(typeof window.syncTaskOutcome==='function')window.syncTaskOutcome();
+  if(typeof window.renderTaskPicker==='function')window.renderTaskPicker();
+  notice('تم اختيار '+g.ids.length+' سؤالًا من '+g.name+'. يمكنك التعديل ثم الحفظ.');
+}
+function taskGroupFilter(){return Number(document.getElementById('tpGroup')?.value||0)}
 function toggleTaskQuestion(id,on){on?taskSelection.add(id):taskSelection.delete(id);document.getElementById('taskSelectedCount').textContent=taskSelection.size}
 function selectVisibleTask(on){currentTaskFiltered().forEach(q=>on?taskSelection.add(q.id):taskSelection.delete(q.id));renderTaskPicker()}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -1217,7 +1255,7 @@ function svgBarChart(items,maxValue=100,suffix='%'){
   </svg>`;
 }
 function taskById(id){return (tasks||[]).find(t=>String(t.taskId||'')===String(id||''))||null}
-function questionMap(){return new Map(mergedBank().map(q=>[String(q.id||''),q]))}
+function questionMap(){return new Map(mergedBankAll().map(q=>[String(q.id||''),q]))}
 function resultQuestionEvidence(r){
   const qmap=questionMap();
   const out=[];
@@ -1686,7 +1724,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     const outcome=document.getElementById('tpOutcome')?.value||'';
     const level=document.getElementById('tpLevel')?.value||'';
     const search=(document.getElementById('tpSearch')?.value||'').trim();
+    const grp=taskGroupFilter();
     return taskQuestionPool().filter(q=>
+      (!grp||q.groupNo===grp) &&
       (!domain||q.domain===domain) &&
       unitMatches(q,unit) &&
       (!outcome||q.outcomeCode===outcome) &&
@@ -1726,7 +1766,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const oldOpenQuestionEditor=window.openQuestionEditor;
   if(typeof oldOpenQuestionEditor==='function'){
     window.openQuestionEditor=function(id=''){
-      const q=id?mergedBank().find(x=>x.id===id):null;
+      const q=id?mergedBankAll().find(x=>x.id===id):null;
       const preferred=q?.lesson||'';
       const r=oldOpenQuestionEditor.apply(this,arguments);
       setTimeout(function(){
@@ -1741,7 +1781,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   /* معاينة الوسيط: الصورة التي أضافها المعلم أولاً، ثم الرسم المضمّن المطابق لمعرف السؤال نفسه */
   window.previewQuestion=function(id){
-    const q=mergedBank().find(x=>x.id===id);if(!q)return;
+    const q=mergedBankAll().find(x=>x.id===id);if(!q)return;
     const exactInline=window.NAFS_VISUAL_MEDIA?.[q.id]||'';
     let media='';
     if(q.mediaUrl){
