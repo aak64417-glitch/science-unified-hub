@@ -111,7 +111,9 @@
       var hid = hidden[n] || [];
       var used = await new Promise(function (ok) { try { if (!d.objectStoreNames.contains("reports")) return ok([]); var q = d.transaction("reports", "readonly").objectStore("reports").getAll(); q.onsuccess = function () { ok(q.result.filter(function (r) { return Number(r.criterion) === Number(n) && r.subsection; }).map(function (r) { return r.subsection; })); }; q.onerror = function () { ok([]); }; } catch (e) { ok([]); } });
       var all = (STATIC[n] || []).concat(DEFAULTS[n - 1] || [], sections[n] || [], used);
-      return all.filter(function (v, i) { return all.indexOf(v) === i && hid.indexOf(v) < 0; });
+      var order = ((await metaGet(d, "sectionOrder")) || {})[n] || [];
+      var list = all.filter(function (v, i) { return all.indexOf(v) === i && hid.indexOf(v) < 0; });
+      return list.map(function (v, i) { var k = order.indexOf(v); return [v, k < 0 ? 10000 + i : k]; }).sort(function (a, b) { return a[1] - b[1]; }).map(function (p) { return p[0]; });
     } finally { d.close(); }
   }
   async function addTabletSection(n, name) {
