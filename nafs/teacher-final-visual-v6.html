@@ -1915,4 +1915,87 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 <script src="nafs-copy-task.js?v=20261108c"></script>
+<script src="nafs-2026-figures.js?v=20261109-fig1"></script>
+<script>
+/* ===== نافس 2026: مجموعات البنك (17 مجموعة × 15 سؤالًا) في بنك الأسئلة + معاينة الرسوم ===== */
+(function(){
+  'use strict';
+  const css=`.nf-groups{margin:0 0 16px;background:#fff;border:1px solid #e3eaf4;border-radius:22px;padding:16px}
+.nf-groups h3{margin:0 0 4px;font-size:19px}.nf-groups p{margin:0 0 12px;color:#5d6b82;font-weight:700}
+.nf-ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:10px}
+.nf-g{border-radius:16px;padding:12px;border:1px solid #dfe7f1;background:#f8fbff;display:flex;flex-direction:column;gap:6px}
+.nf-g b{font-size:15px}.nf-g small{color:#5d6b82;font-weight:700}
+.nf-g.earth{border-right:6px solid #e08a2e}.nf-g.life{border-right:6px solid #23a86b}.nf-g.chem{border-right:6px solid #7b5cc4}.nf-g.phys{border-right:6px solid #2b7bd0}
+.nf-g .row{display:flex;gap:6px;flex-wrap:wrap}.nf-g button{flex:1;font-size:13px;padding:7px 8px;border-radius:10px;border:0;cursor:pointer;font-weight:800;font-family:inherit}
+.nf-g .v{background:#e8f1fb;color:#174a7c}.nf-g .t{background:#1f9d6b;color:#fff}
+.nf-g.on{box-shadow:0 0 0 3px #f0a92b88;background:#fffaf0}
+.nf-pfig{margin:12px 0;padding:10px;border:1px solid #d7e6f0;border-radius:16px;background:#fff;text-align:center}.nf-pfig svg{width:100%;height:auto;max-height:300px}
+.nf-pfig img{max-width:100%;max-height:300px;border-radius:12px}.nf-ptab{border-collapse:collapse;margin:8px auto}.nf-ptab th,.nf-ptab td{border:1px solid #cfe1ec;padding:6px 10px}.nf-ptab th{background:#e9f4fb}`;
+  const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
+  const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const kind=n=>/تغيرات/.test(n)?'earth':/الأحياء/.test(n)?'life':/الكيمياء/.test(n)?'chem':'phys';
+  function groups(){try{return typeof taskGroups==='function'?taskGroups():[]}catch(e){return[]}}
+  function curGroup(){return Number(document.getElementById('bankGroup')?.value||0)}
+
+  function ensureUI(){
+    const gs=groups();if(!gs.length)return;
+    const sel0=document.getElementById('bankDomain');if(!sel0)return;
+    if(!document.getElementById('bankGroup')){
+      const s=document.createElement('select');s.id='bankGroup';s.style.fontWeight='800';
+      s.onchange=()=>window.renderBank();
+      sel0.parentElement.insertBefore(s,sel0);
+    }
+    const s=document.getElementById('bankGroup');
+    if(s.options.length!==gs.length+1){const v=s.value;s.innerHTML='<option value="">📦 كل المجموعات</option>'+gs.map(g=>`<option value="${g.no}">${E(g.name)} (${g.ids.length})</option>`).join('');s.value=v;}
+    let box=document.getElementById('nfGroups');
+    if(!box){
+      const dg=document.querySelector('#questions .domain-grid')||sel0.closest('section')?.querySelector('.domain-grid');
+      box=document.createElement('div');box.id='nfGroups';box.className='nf-groups';
+      (dg||sel0.parentElement).insertAdjacentElement(dg?'afterend':'beforebegin',box);
+    }
+    const g0=curGroup();
+    box.innerHTML=`<h3>📦 مجموعات بنك نافس 2026 — ${gs.length} مجموعة</h3><p>كل مجموعة ${gs[0].ids.length} سؤالًا مرتبة: تغيرات الأرض ← الأحياء ← الكيمياء ← الفيزياء. اضغط «عرض» لرؤية أسئلتها، أو «تكليف» لإنشاء تكليف بها مباشرة.</p><div class="nf-ggrid">`+
+      gs.map(g=>`<div class="nf-g ${kind(g.name)}${g.no===g0?' on':''}"><b>${E(g.name.split('·')[0].trim())}</b><small>${E((g.name.split('·')[1]||'').trim())} • ${g.ids.length} سؤالًا</small><div class="row"><button class="v" onclick="nfShowGroup(${g.no})">👁 عرض</button><button class="t" onclick="nfTaskGroup(${g.no})">📝 تكليف</button></div></div>`).join('')+'</div>';
+  }
+  window.nfShowGroup=function(no){
+    ['bankDomain','bankUnit','bankOutcome','bankLevel','bankSearch'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    const s=document.getElementById('bankGroup');if(s)s.value=String(no);
+    window.renderBank();document.querySelector('.bank-table-wrap')?.scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  window.nfTaskGroup=function(no){
+    try{goTo('assignments')}catch(e){}
+    openTaskEditor();
+    setTimeout(()=>{const s=document.getElementById('tpGroup');if(s){s.value=String(no);applyTaskGroup(String(no));}},60);
+  };
+  const baseFiltered=window.filteredBank;
+  window.filteredBank=function(){
+    let l=baseFiltered.apply(this,arguments);const g=curGroup();
+    if(g)l=l.filter(q=>q.groupNo===g);
+    return l.slice().sort((a,b)=>((a.groupNo||999)-(b.groupNo||999))||((a.groupOrder||0)-(b.groupOrder||0)));
+  };
+  const baseRender=window.renderBank;
+  window.renderBank=function(){
+    try{ensureUI()}catch(e){console.warn('nafs groups',e)}
+    const r=baseRender.apply(this,arguments);
+    document.querySelectorAll('#bankRows tr').forEach(tr=>{
+      const id=tr.cells[0]?.textContent.trim(),q=id&&mergedBankAll().find(x=>x.id===id);
+      if(q&&q.groupNo&&!tr.cells[0].querySelector('.nf-gt'))tr.cells[0].insertAdjacentHTML('beforeend',`<br><small class="nf-gt" style="color:#b26a00;font-weight:800">م${q.groupNo} • ${q.groupOrder||''}</small>`);
+    });
+    return r;
+  };
+  const basePreview=window.previewQuestion;
+  window.previewQuestion=function(id){
+    basePreview(id);
+    const q=mergedBankAll().find(x=>x.id===id);if(!q||q.legacy||q.mediaUrl)return;
+    const F=(window.NAFS_2026_FIGURES||{})[q.id],TI=(window.NAFS_2026_TOPIC_IMG||{})[q.outcomeTitle],no=(window.NAFS_2026_NO_PHOTO||[]).includes(q.id);
+    let h='';
+    if(F){h='<div class="nf-pfig">'+F.svg+(F.table?'<table class="nf-ptab"><tr>'+F.table.head.map(x=>'<th>'+E(x)+'</th>').join('')+'</tr>'+F.table.rows.map(r=>'<tr>'+r.map(c=>'<td>'+E(c)+'</td>').join('')+'</tr>').join('')+'</table>':'')+'</div>';}
+    else if(TI&&!no){h='<div class="nf-pfig"><img src="media-realistic/'+E(TI[0])+'" alt="'+E(TI[1])+'"><div style="font-weight:800;color:#0b6b6d;margin-top:6px">🖼️ '+E(TI[1])+'</div></div>';}
+    const helper=document.querySelector('#appModalBody .helper');
+    if(h&&helper)helper.insertAdjacentHTML('afterend',h);
+    if(helper&&q.groupName)helper.insertAdjacentHTML('beforeend','<br>📦 '+E(q.groupName)+' — السؤال '+(q.groupOrder||''));
+  };
+  try{window.renderBank()}catch(e){}
+})();
+</script>
 </body></html>
