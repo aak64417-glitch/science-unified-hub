@@ -56,7 +56,7 @@ footer{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(
 <select id="grade" aria-label="الصف"><option value="1">أول متوسط</option><option value="2">ثاني متوسط</option><option value="3">ثالث متوسط</option></select></header>
 <main>
 <div id="stage"><div id="frame"><canvas id="cv" width="1536" height="1024" aria-label="نبراس"></canvas><div id="dots"><i></i><i></i><i></i></div></div>
-<div id="status">اضغط الميكروفون واسألني</div></div>
+<div id="status">اضغط الميكروفون وتحدّث مع نبراس</div></div>
 <div id="chat"><div id="log"></div></div>
 </main>
 <footer>
@@ -67,7 +67,7 @@ footer{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(
 </footer>
 <div id="intro"><div class="box">
 <img class="ph" src="nb/teacher.jpg" alt="">
-<h2>مرحبًا بك 👋</h2><p>أنا نبراس، معلّم العلوم. اسألني بصوتك أو بالكتابة عن أي شيء في دروس العلوم.</p>
+<h2>مرحبًا بك 👋</h2><p>أنا نبراس، معلّم العلوم. تحدّث معي مباشرة كأنك في مكالمة، واسألني عن أي شيء في دروس العلوم.</p>
 <select id="grade0"><option value="1">الصف الأول المتوسط</option><option value="2">الصف الثاني المتوسط</option><option value="3">الصف الثالث المتوسط</option></select>
 <button id="go" class="btn">ابدأ الحديث مع نبراس</button></div></div>
 <script>
@@ -158,6 +158,71 @@ function ask(q){q=(q||'').trim();if(!q||busy)return;stopTalk();busy=true;add('us
   else{hist.pop();var msg='تعذّر الرد الآن، حاول مرة أخرى.';add('assistant',msg);setState('',msg)}})
  .catch(function(){busy=false;hist.pop();setState('','تحقق من الاتصال بالإنترنت ثم حاول مجددًا.')})}
 
+
+/* ===== المحادثة المباشرة (Gemini Live) ===== */
+var LIVE={model:'gemini-3.8-live',voice:'Charon',enabled:true};
+var GR={'1':'الصف الأول المتوسط','2':'الصف الثاني المتوسط','3':'الصف الثالث المتوسط'};
+function livePrompt(){var g=GR[$('#grade').value]||'المرحلة المتوسطة';
+ return 'أنت «نبراس»، معلّم علوم سعودي ودود وصبور، تتحدث صوتيًا مع طالب في '+g+' ضمن منهج وزارة التعليم في المملكة العربية السعودية. '+
+ 'تكلّم بالعربية الفصحى المبسّطة بنبرة دافئة ومشجّعة كمعلم حقيقي، وابدأ الرد فورًا دون مقدمات طويلة. '+
+ 'إجاباتك قصيرة: من جملتين إلى أربع جمل، ثم اسأل الطالب سؤالًا صغيرًا يتأكد به من فهمه. استخدم أمثلة من حياة الطالب اليومية في السعودية. '+
+ 'إذا طلب حل واجب أو اختبار كاملًا فأرشده خطوة خطوة ولا تعطه الإجابة مباشرة. إذا لم تكن متأكدًا من معلومة فقل ذلك بصراحة، ولا تخترع معلومات. '+
+ 'إذا خرج السؤال عن العلوم فأعده بلطف إلى الدراسة. لا تطلب أي معلومات شخصية، وتجنّب أي محتوى غير مناسب لعمره، '+
+ 'وإذا ذكر أنه في خطر أو متضايق جدًا فوجّهه بلطف للحديث مع والديه أو المرشد الطلابي. لا تدّعِ أنك إنسان؛ إذا سُئلت فأجب بصدق أنك معلم افتراضي.'}
+var L={ws:null,ready:false,on:false,stream:null,proc:null,srcNode:null,out:null,an:null,next:0,srcs:[],uB:null,mB:null,uT:'',mT:'',failed:false};
+function b64ToI16(b){var bin=atob(b),n=bin.length>>1,o=new Int16Array(n);for(var i=0;i<n;i++)o[i]=(bin.charCodeAt(2*i)|(bin.charCodeAt(2*i+1)<<8))<<16>>16;return o}
+function bufToB64(u8){var s='';for(var i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s)}
+function liveBubble(role,text){var key=role==='user'?'uB':'mB';
+ if(!L[key]){var d=document.createElement('div');d.className='m '+(role==='user'?'me':'him');
+  if(role!=='user'){var b=document.createElement('b');b.textContent='نبراس';d.appendChild(b)}
+  var t=document.createElement('span');d.appendChild(t);log.appendChild(d);L[key]=t}
+ L[key].textContent=text;log.scrollTop=log.scrollHeight}
+function liveSpeaking(){return L.srcs.length>0||(ac&&ac.currentTime<L.next+0.25)}
+function liveStopPlayback(){L.srcs.forEach(function(x){try{x.onended=null;x.stop()}catch(e){}});L.srcs=[];L.next=0;target=0}
+function livePlay(b64,mime){var rate=+(((mime||'').match(/rate=(\d+)/)||[])[1]||24000),i16=b64ToI16(b64);if(!i16.length)return;
+ var buf=ac.createBuffer(1,i16.length,rate),ch=buf.getChannelData(0);for(var i=0;i<i16.length;i++)ch[i]=i16[i]/32768;
+ var s=ac.createBufferSource();s.buffer=buf;s.connect(L.out);var t=Math.max(ac.currentTime+0.03,L.next);s.start(t);L.next=t+buf.duration;
+ L.srcs.push(s);s.onended=function(){L.srcs=L.srcs.filter(function(x){return x!==s});if(!L.srcs.length&&L.on)setState('listening','تحدّث… نبراس يسمعك')};
+ setState('speaking','نبراس يتحدث…')}
+(function liveMouth(){if(L.an&&L.srcs.length){var d=new Uint8Array(L.an.fftSize);L.an.getByteTimeDomainData(d);var s=0;for(var i=0;i<d.length;i++){var v=(d[i]-128)/128;s+=v*v}
+  var rms=Math.sqrt(s/d.length);target=rms<0.012?0:Math.min(DMAX,2+rms*120)}requestAnimationFrame(liveMouth)})();
+function liveMsg(raw){var m;try{m=JSON.parse(raw)}catch(e){return}
+ if(m.setupComplete){L.ready=true;setState('listening','تحدّث… نبراس يسمعك');mic.textContent='■';
+  try{L.ws.send(JSON.stringify({realtimeInput:{text:'الطالب انضم الآن. رحّب به بجملة قصيرة واسأله بماذا يحب أن يبدأ.'}}))}catch(e){}
+  return}
+ var c=m.serverContent;if(!c)return;
+ if(c.interrupted){liveStopPlayback()}
+ if(c.inputTranscription&&c.inputTranscription.text){if(L.mB){L.mB=null;L.mT=''}L.uT+=c.inputTranscription.text;liveBubble('user',L.uT)}
+ if(c.outputTranscription&&c.outputTranscription.text){if(L.uB){L.uB=null;L.uT=''}L.mT+=c.outputTranscription.text;liveBubble('assistant',L.mT)}
+ if(c.modelTurn&&c.modelTurn.parts)c.modelTurn.parts.forEach(function(p){var d=p.inlineData||p.inline_data;if(d&&d.data)livePlay(d.data,d.mimeType||d.mime_type)});
+ if(c.turnComplete){L.uB=null;L.uT='';L.mB=null;L.mT=''}}
+function liveStart(){if(L.on)return;L.on=true;L.ready=false;L.failed=false;stopTalk();unlock();
+ setState('thinking','جارٍ الاتصال بنبراس…');mic.classList.add('rec');
+ navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(function(st){
+  if(!L.on){st.getTracks().forEach(function(t){t.stop()});return}
+  L.stream=st;L.out=ac.createGain();L.an=ac.createAnalyser();L.an.fftSize=512;L.out.connect(L.an);L.an.connect(ac.destination);
+  var ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host+'/api/live');L.ws=ws;
+  ws.onopen=function(){ws.send(JSON.stringify({setup:{model:'models/'+LIVE.model,
+   generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:LIVE.voice}}}},
+   systemInstruction:{parts:[{text:livePrompt()}]},inputAudioTranscription:{},outputAudioTranscription:{}}}))};
+  ws.onmessage=function(e){if(typeof e.data==='string')liveMsg(e.data);else if(e.data&&e.data.text)e.data.text().then(liveMsg);else if(e.data instanceof ArrayBuffer)liveMsg(new TextDecoder().decode(e.data))};
+  ws.onclose=function(e){var wasReady=L.ready;liveEnd(true);
+   if(!wasReady){L.failed=true;LIVE.enabled=false;setState('','تعذّرت المحادثة المباشرة، سأعمل بالطريقة العادية: اضغط الميكروفون واسأل.');
+    try{console.log('live close',e.code,e.reason)}catch(_){}}
+   else setState('','انتهت المحادثة المباشرة. اضغط الميكروفون لبدء محادثة جديدة.')};
+  L.srcNode=ac.createMediaStreamSource(st);L.proc=ac.createScriptProcessor(4096,1,1);
+  var mute=ac.createGain();mute.gain.value=0;L.srcNode.connect(L.proc);L.proc.connect(mute);mute.connect(ac.destination);
+  L.proc.onaudioprocess=function(ev){if(!L.ready||!L.ws||L.ws.readyState!==1||liveSpeaking())return;
+   var f=ev.inputBuffer.getChannelData(0),r=ac.sampleRate/16000,n=Math.floor(f.length/r),o=new Int16Array(n);
+   for(var i=0;i<n;i++){var a=0,j0=Math.floor(i*r),j1=Math.min(f.length,Math.floor((i+1)*r));for(var j=j0;j<j1;j++)a+=f[j];var x=Math.max(-1,Math.min(1,a/Math.max(1,j1-j0)));o[i]=x<0?x*0x8000:x*0x7FFF}
+   try{L.ws.send(JSON.stringify({realtimeInput:{audio:{data:bufToB64(new Uint8Array(o.buffer)),mimeType:'audio/pcm;rate=16000'}}}))}catch(e){}};
+ }).catch(function(){L.on=false;mic.classList.remove('rec');setState('','اسمح باستخدام الميكروفون من إعدادات المتصفح.')})}
+function liveEnd(silent){if(!L.on&&!L.ws)return;L.on=false;L.ready=false;
+ try{if(L.proc){L.proc.onaudioprocess=null;L.proc.disconnect()}if(L.srcNode)L.srcNode.disconnect()}catch(e){}
+ if(L.stream)L.stream.getTracks().forEach(function(t){t.stop()});L.stream=null;
+ var ws=L.ws;L.ws=null;if(ws){ws.onclose=null;try{ws.close()}catch(e){}}
+ liveStopPlayback();mic.classList.remove('rec');mic.textContent='🎤';L.uB=null;L.mB=null;L.uT='';L.mT='';
+ if(!silent)setState('','اضغط الميكروفون لبدء المحادثة المباشرة')}
 /* ===== التسجيل الصوتي وتحويله إلى WAV 16kHz ===== */
 var rec=null,chunks=[],stream=null,autoStop=null;
 function wav(b0){var sr=16000,n=b0.length,b=new ArrayBuffer(44+n*2),v=new DataView(b);
@@ -181,13 +246,14 @@ function startRec(){stopTalk();if(!navigator.mediaDevices||!window.MediaRecorder
   rec.start();mic.classList.add('rec');mic.textContent='■';setState('listening','أنا أسمعك… اضغط مرة أخرى عند الانتهاء');
   clearTimeout(autoStop);autoStop=setTimeout(function(){if(rec&&rec.state==='recording')rec.stop()},20000)})
  .catch(function(){setState('','اسمح باستخدام الميكروفون من إعدادات المتصفح.')})}
-mic.onclick=function(){unlock();if(busy)return;if(rec&&rec.state==='recording'){clearTimeout(autoStop);rec.stop()}else startRec()};
-$('#send').onclick=function(){unlock();var t=$('#txt');ask(t.value);t.value=''};
+mic.onclick=function(){unlock();if(L.on){liveEnd();return}if(LIVE.enabled&&window.WebSocket&&ac){liveStart();return}if(busy)return;if(rec&&rec.state==='recording'){clearTimeout(autoStop);rec.stop()}else startRec()};
+$('#send').onclick=function(){unlock();var t=$('#txt'),v=t.value.trim();t.value='';if(!v)return;if(L.on&&L.ready){liveBubble('user',v);L.uB=null;try{L.ws.send(JSON.stringify({realtimeInput:{text:v}}))}catch(e){}return}ask(v)};
 $('#txt').onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();$('#send').onclick()}};
-$('#stop').onclick=stopTalk;
+$('#stop').onclick=function(){if(L.on){liveStopPlayback();return}stopTalk()};
 $('#grade').onchange=function(){try{localStorage.setItem('nb-grade',this.value)}catch(e){}};
 $('#go').onclick=function(){var g=$('#grade0').value;$('#grade').value=g;try{localStorage.setItem('nb-grade',g)}catch(e){}
  unlock();$('#intro').remove();pickVoice();
+ if(LIVE.enabled&&window.WebSocket&&ac&&navigator.mediaDevices){liveStart();return}
  var hi='أهلًا وسهلًا! أنا نبراس، معلّمك في مادة العلوم. اسألني عن أي درس أو تجربة أو مفهوم صعب، وسأشرحه لك ببساطة. بماذا تحب أن نبدأ؟';
  add('assistant',hi);hist.push({role:'assistant',content:hi});say(hi)};
 })();
