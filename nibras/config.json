@@ -1,0 +1,7 @@
+{
+  "chat_models": ["gemini-3.6-flash", "gemini-3.8-flash", "gemini-flash-latest", "gemini-2.5-flash"],
+  "tts_models": ["gemini-3.8-flash-tts", "gemini-3.8-flash-lite-tts", "gemini-3.1-flash-tts-preview"],
+  "voice": "Charon",
+  "thinking": { "thinkingLevel": "minimal" },
+  "max_tokens": 1024
+}
