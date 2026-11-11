@@ -19,6 +19,7 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
  box-shadow:0 0 0 3px #1d3550,0 10px 30px rgba(0,0,0,.45);transition:box-shadow .3s}
 #vid,#poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 #poster{transition:opacity .35s}#poster.hide{opacity:0}
+#sv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0a1622}
 .listening #frame{box-shadow:0 0 0 4px var(--red),0 0 28px rgba(239,71,111,.55)}
 .thinking #frame{box-shadow:0 0 0 4px var(--gold),0 0 24px rgba(255,200,87,.45)}
 .speaking #frame{box-shadow:0 0 0 4px var(--acc),0 0 28px rgba(46,196,182,.5)}
@@ -58,7 +59,7 @@ footer{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(
 <div class="sel"><select id="who" aria-label="الشخصية"><option value="nibras">د. نبراس</option><option value="newton">إسحاق نيوتن</option></select>
 <select id="grade" aria-label="الصف"><option value="1">أول متوسط</option><option value="2">ثاني متوسط</option><option value="3">ثالث متوسط</option></select></div></header>
 <main>
-<div id="stage"><div id="frame"><video id="vid" muted playsinline loop preload="auto"></video><img id="poster" alt=""><div id="dots"><i></i><i></i><i></i></div></div>
+<div id="stage"><div id="frame"><video id="vid" muted playsinline loop preload="auto"></video><img id="poster" alt=""><video id="sv" playsinline autoplay muted style="display:none"></video><audio id="sa" autoplay></audio><div id="dots"><i></i><i></i><i></i></div></div>
 <div id="status">اضغط الميكروفون وابدأ الحديث</div></div>
 <div id="chat"><div id="log"></div><div id="dbg" style="display:none;font-size:12px;color:#a9bdd6;padding:4px 16px;direction:rtl"></div></div>
 </main>
@@ -88,13 +89,13 @@ function add(role,text){var d=document.createElement('div');d.className='m '+(ro
 var SAFE='لا تطلب أي معلومات شخصية، وتجنّب أي محتوى غير مناسب لعمر الطالب، وإذا ذكر أنه في خطر أو متضايق جدًا فوجّهه بلطف للحديث مع والديه أو المرشد الطلابي. '+
  'إذا طلب حل واجب أو اختبار كاملًا فأرشده خطوة خطوة ولا تعطه الإجابة مباشرة. إذا لم تكن متأكدًا من معلومة فقل ذلك بصراحة، ولا تخترع معلومات. ';
 var CH={
- nibras:{name:'نبراس',title:'نبراس <span>معلّم العلوم</span>',vid:'nb/nibras.mp4',img:'nb/nibras.jpg',voice:'Charon',pre:'',
+ nibras:{name:'نبراس',title:'نبراس <span>معلّم العلوم</span>',vid:'nb/nibras.mp4',img:'nb/nibras.jpg',voice:'Charon',face:'',pre:'',
   prompt:function(g){return 'أنت «نبراس»، معلّم علوم سعودي ودود وصبور، تتحدث صوتيًا مع طالب في '+g+' ضمن منهج وزارة التعليم في المملكة العربية السعودية. '+
    'تكلّم بالعربية الفصحى المبسّطة بنبرة دافئة ومشجّعة كمعلم حقيقي، وابدأ الرد فورًا دون مقدمات طويلة. '+
    'إجاباتك قصيرة: من جملتين إلى أربع جمل، ثم اسأل الطالب سؤالًا صغيرًا يتأكد به من فهمه. استخدم أمثلة من حياة الطالب اليومية في السعودية. '+SAFE+
    'إذا خرج السؤال عن العلوم فأعده بلطف إلى الدراسة. لا تدّعِ أنك إنسان؛ إذا سُئلت فأجب بصدق أنك معلم افتراضي.'},
   hi:'أهلًا وسهلًا! أنا نبراس، معلّمك في مادة العلوم. اسألني عن أي درس أو تجربة أو مفهوم صعب، وسأشرحه لك ببساطة. بماذا تحب أن نبدأ؟'},
- newton:{name:'نيوتن',title:'إسحاق نيوتن <span>عالِم الفيزياء</span>',vid:'nb/newton.mp4',img:'nb/newton.jpg',voice:'Algenib',
+ newton:{name:'نيوتن',title:'إسحاق نيوتن <span>عالِم الفيزياء</span>',vid:'nb/newton.mp4',img:'nb/newton.jpg',voice:'Algenib',face:'',
   pre:'في كل ردودك تقمّص شخصية العالِم إسحاق نيوتن وتحدث بصيغة المتكلم عن تجاربه واكتشافاته: قوانين الحركة والجاذبية وتحليل الضوء بالمنشور والتلسكوب العاكس، بلغة مبسطة لطالب في المرحلة المتوسطة. لا تخترع اقتباسات أو أحداثًا، وإذا سُئلت فأوضح بصدق أنك شخصية افتراضية تمثّل نيوتن.',
   prompt:function(g){return 'أنت شخصية افتراضية تمثّل العالِم الإنجليزي إسحاق نيوتن (1643–1727)، تتحدث صوتيًا مع طالب في '+g+' في المملكة العربية السعودية. '+
    'تكلّم بالعربية الفصحى المبسّطة بصيغة المتكلم، بأسلوب عالِم حكيم متحمس يحكي للطالب عن تجاربه واكتشافاته: قوانين الحركة الثلاثة، والجاذبية الكونية، وتحليل الضوء الأبيض بالمنشور، والتلسكوب العاكس، واربطها بما يدرسه الطالب في منهج العلوم. '+
@@ -118,7 +119,7 @@ function pickVoice(){if(!hasTTS)return null;var vs=speechSynthesis.getVoices()||
  VO=ar.filter(function(v){return /maged|majed|tarik|hamed|naayf|male/i.test(v.name)})[0]||ar.filter(function(v){return /SA/i.test(v.lang)})[0]||ar[0]||null;return VO}
 if(hasTTS){pickVoice();try{speechSynthesis.onvoiceschanged=pickVoice}catch(e){}}
 var AC=window.AudioContext||window.webkitAudioContext,ac=null,src=null,an=null,buf8=null;
-function unlock(){try{if(!ac&&AC)ac=new AC();if(ac&&ac.state!=='running')ac.resume();var b=ac.createBuffer(1,1,22050),s=ac.createBufferSource();s.buffer=b;s.connect(ac.destination);s.start(0)}catch(e){}}
+function unlock(){try{var sa=$('#sa');if(sa&&!sa.dataset.u){sa.dataset.u=1;var pp=sa.play();if(pp&&pp.catch)pp.catch(function(){})}}catch(e){}try{if(!ac&&AC)ac=new AC();if(ac&&ac.state!=='running')ac.resume();var b=ac.createBuffer(1,1,22050),s=ac.createBufferSource();s.buffer=b;s.connect(ac.destination);s.start(0)}catch(e){}}
 function stopAudio(){try{if(src){src.onended=null;src.stop()}}catch(e){}src=null;target=0}
 function idle(){devTalk=false;target=0;setState('','اضغط الميكروفون واسألني')}
 function stopTalk(){tok++;stopAudio();try{speechSynthesis.cancel()}catch(e){}devTalk=false;target=0;if(!busy)setState('','اضغط الميكروفون واسألني')}
@@ -164,6 +165,28 @@ function ask(q){q=(q||'').trim();if(!q||busy)return;stopTalk();busy=true;add('us
  .catch(function(){busy=false;hist.pop();setState('','تحقق من الاتصال بالإنترنت ثم حاول مجددًا.')})}
 
 
+
+/* ===== Simli: وجه واقعي تتطابق شفاهه مع الصوت ===== */
+var S={on:false,cli:null,until:0,pend:[]};
+function simliStart(){if(!C.face)return Promise.resolve(false);
+ var face=C.face;lg('simli…');
+ return fetch('/api/simli-token?face='+encodeURIComponent(face)).then(function(r){return r.json()}).then(function(j){if(!j.token)throw new Error(j.error||'token');
+  return import('https://cdn.jsdelivr.net/npm/simli-client/+esm').then(function(mod){
+   var SC=mod.SimliClient||(mod.default&&mod.default.SimliClient)||mod.default,LL=mod.LogLevel||(mod.default&&mod.default.LogLevel)||{};
+   var cli=new SC(j.token,$('#sv'),$('#sa'),null,LL.ERROR!==undefined?LL.ERROR:LL.INFO);S.cli=cli;
+   try{cli.on&&cli.on('error',function(e){lg('simli✗ '+e);simliOff()})}catch(e){}
+   return Promise.race([cli.start(),new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'))},15000)})]).then(function(){
+    if(C.face!==face||!L.on){try{cli.stop()}catch(e){}return false}
+    S.on=true;S.until=0;$('#sv').style.display='block';poster.style.display='none';vid.style.display='none';lg('simli✓');
+    try{var a=$('#sa').play();if(a&&a.catch)a.catch(function(){})}catch(e){}
+    return true})})}).catch(function(e){lg('simli✗ '+(e&&e.message||e));simliOff();return false})}
+function simliOff(){var c=S.cli;S.on=false;S.cli=null;S.until=0;if(c){try{c.stop()}catch(e){}}
+ $('#sv').style.display='none';poster.style.display='';vid.style.display=''}
+function to16k(i16,rate){if(rate===16000)return i16;var r=rate/16000,n=Math.floor(i16.length/r),o=new Int16Array(n);
+ for(var i=0;i<n;i++){var p=i*r,j=Math.floor(p),f=p-j,a=i16[j],b=i16[Math.min(j+1,i16.length-1)];o[i]=a+(b-a)*f}return o}
+function simliSend(i16,rate){var pcm=to16k(i16,rate),u8=new Uint8Array(pcm.buffer);
+ for(var k=0;k<u8.length;k+=6000){try{S.cli.sendAudioData(u8.subarray(k,Math.min(u8.length,k+6000)))}catch(e){}}
+ var dur=pcm.length/16000,now=ac?ac.currentTime:0;S.until=Math.max(now+0.35,S.until)+dur;setState('speaking',C.name+' يتحدث…')}
 /* ===== المحادثة المباشرة (Gemini Live) ===== */
 var LIVE={model:'gemini-3.8-live',enabled:true};
 var GR={'1':'الصف الأول المتوسط','2':'الصف الثاني المتوسط','3':'الصف الثالث المتوسط'};
@@ -177,9 +200,10 @@ function liveBubble(role,text){var key=role==='user'?'uB':'mB';
   if(role!=='user'){var b=document.createElement('b');b.textContent=C.name;d.appendChild(b)}
   var t=document.createElement('span');d.appendChild(t);log.appendChild(d);L[key]=t}
  L[key].textContent=text;log.scrollTop=log.scrollHeight}
-function liveSpeaking(){return L.srcs.length>0||(ac&&ac.currentTime<L.next+0.25)}
-function liveStopPlayback(){L.srcs.forEach(function(x){try{x.onended=null;x.stop()}catch(e){}});L.srcs=[];L.next=0;target=0}
+function liveSpeaking(){return L.srcs.length>0||(ac&&ac.currentTime<L.next+0.25)||(S.on&&ac&&ac.currentTime<S.until)}
+function liveStopPlayback(){if(S.on&&S.cli){try{S.cli.ClearBuffer()}catch(e){}S.until=0}L.srcs.forEach(function(x){try{x.onended=null;x.stop()}catch(e){}});L.srcs=[];L.next=0;target=0}
 function livePlay(b64,mime){var rate=+(((mime||'').match(/rate=(\d+)/)||[])[1]||24000),i16=b64ToI16(b64);if(!i16.length)return;
+ if(S.on&&S.cli){simliSend(i16,rate);return}
  var buf=ac.createBuffer(1,i16.length,rate),ch=buf.getChannelData(0);for(var i=0;i<i16.length;i++)ch[i]=i16[i]/32768;
  var s=ac.createBufferSource();s.buffer=buf;s.connect(L.out);var t=Math.max(ac.currentTime+0.03,L.next);s.start(t);L.next=t+buf.duration;
  L.srcs.push(s);s.onended=function(){L.srcs=L.srcs.filter(function(x){return x!==s});if(!L.srcs.length&&L.on)setState('listening','تحدّث… '+C.name+' يسمعك')};
@@ -211,7 +235,7 @@ function liveStart(){if(L.on)return;L.on=true;L.ready=false;L.failed=false;stopT
    var f=ev.inputBuffer.getChannelData(0),r=ac.sampleRate/16000,n=Math.floor(f.length/r),o=new Int16Array(n);
    for(var i=0;i<n;i++){var a=0,j0=Math.floor(i*r),j1=Math.min(f.length,Math.floor((i+1)*r));for(var j=j0;j<j1;j++)a+=f[j];var x=Math.max(-1,Math.min(1,a/Math.max(1,j1-j0)));o[i]=x<0?x*0x8000:x*0x7FFF}
    try{L.ws.send(JSON.stringify({realtimeInput:{audio:{data:bufToB64(new Uint8Array(o.buffer)),mimeType:'audio/pcm;rate=16000'}}}))}catch(e){}};
-  liveConnect(0);
+  simliStart();liveConnect(0);
  }).catch(function(e){clearTimeout(LW);L.on=false;mic.classList.remove('rec');setState('','لم يُسمح باستخدام الميكروفون. افتح الرابط في متصفح Safari ثم اسمح بالميكروفون.')})}
 function liveConnect(n){if(!L.on)return;
  if(n>=TRY.length){var why=LOG.slice(-4).join(' | ');liveFail('تعذّر الاتصال المباشر ('+why+'). اكتب سؤالك أو اضغط الميكروفون للطريقة العادية.');return}
@@ -232,7 +256,7 @@ function liveEnd(silent){if(!L.on&&!L.ws)return;L.on=false;L.ready=false;
  try{if(L.proc){L.proc.onaudioprocess=null;L.proc.disconnect()}if(L.srcNode)L.srcNode.disconnect()}catch(e){}
  if(L.stream)L.stream.getTracks().forEach(function(t){t.stop()});L.stream=null;
  var ws=L.ws;L.ws=null;if(ws){ws.onclose=null;try{ws.close()}catch(e){}}
- liveStopPlayback();mic.classList.remove('rec');mic.textContent='🎤';L.uB=null;L.mB=null;L.uT='';L.mT='';
+ liveStopPlayback();simliOff();mic.classList.remove('rec');mic.textContent='🎤';L.uB=null;L.mB=null;L.uT='';L.mT='';
  if(!silent)setState('','اضغط الميكروفون لبدء المحادثة المباشرة')}
 /* ===== التسجيل الصوتي وتحويله إلى WAV 16kHz ===== */
 var rec=null,chunks=[],stream=null,autoStop=null;
@@ -276,6 +300,7 @@ loadChar(PICK);
 if(/debug=1/.test(location.search))$('#dbg').style.display='block';
 var sil=0,lastT=0,lvBuf=new Uint8Array(512);
 (function mon(t){var dt=lastT?t-lastT:16;lastT=t;
+ if(S.on){if(root.className==='speaking'&&ac&&ac.currentTime>S.until)setState('listening','تحدّث… '+C.name+' يسمعك');requestAnimationFrame(mon);return}
  var turn=!!(src||devTalk||L.srcs.length||(L.on&&ac&&ac.currentTime<L.next)),A=L.srcs.length&&L.an?L.an:(src&&an?an:null),lvl=0;
  if(A){A.getByteTimeDomainData(lvBuf);var s=0;for(var i=0;i<lvBuf.length;i++){var v=(lvBuf[i]-128)/128;s+=v*v}lvl=Math.sqrt(s/lvBuf.length)}else if(devTalk)lvl=1;
  if(turn&&lvl>0.02){sil=0;talk(true)}
