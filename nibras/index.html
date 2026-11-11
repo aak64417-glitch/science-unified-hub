@@ -29,6 +29,8 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 #dots i:nth-child(2){animation-delay:.15s}#dots i:nth-child(3){animation-delay:.3s}
 @keyframes dot{50%{opacity:.2;transform:translateY(-3px)}}
 .thinking #dots{display:flex}
+#tmr{position:absolute;top:10px;left:10px;display:none;background:rgba(10,22,34,.75);color:#f4f8ff;font-size:15px;padding:5px 10px;border-radius:12px;direction:ltr}
+#tmr.warn{background:rgba(239,71,111,.9)}
 #status{min-height:24px;margin:8px 0 2px;color:var(--mut);font-size:16px;text-align:center}
 #chat{flex:1;min-height:0;display:flex;flex-direction:column}
 #log{flex:1;overflow-y:auto;padding:8px 16px 12px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
@@ -60,7 +62,7 @@ footer{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(
 <div class="sel"><select id="who" aria-label="الشخصية"><option value="nibras">أ. ماتيو</option><option value="newton">البروفيسور جيرورايت</option></select>
 <select id="grade" aria-label="الصف"><option value="1">أول متوسط</option><option value="2">ثاني متوسط</option><option value="3">ثالث متوسط</option></select></div></header>
 <main>
-<div id="stage"><div id="frame"><video id="vid" muted playsinline loop preload="auto"></video><img id="poster" alt=""><video id="sv" playsinline autoplay muted style="display:none"></video><audio id="sa" autoplay></audio><div id="dots"><i></i><i></i><i></i></div></div>
+<div id="stage"><div id="frame"><video id="vid" muted playsinline loop preload="auto"></video><img id="poster" alt=""><video id="sv" playsinline autoplay muted style="display:none"></video><audio id="sa" autoplay></audio><div id="dots"><i></i><i></i><i></i></div><div id="tmr"></div></div>
 <div id="status">اضغط الميكروفون وابدأ الحديث</div></div>
 <div id="chat"><div id="log"></div><div id="dbg" style="display:none;font-size:12px;color:#a9bdd6;padding:4px 16px;direction:rtl"></div></div>
 </main>
@@ -210,15 +212,25 @@ function livePlay(b64,mime){var rate=+(((mime||'').match(/rate=(\d+)/)||[])[1]||
  L.srcs.push(s);s.onended=function(){L.srcs=L.srcs.filter(function(x){return x!==s});if(!L.srcs.length&&L.on)setState('listening','تحدّث… '+C.name+' يسمعك')};
  setState('speaking',C.name+' يتحدث…')}
 function liveMsg(raw){var m;try{m=JSON.parse(raw)}catch(e){return}
- if(m.setupComplete){clearTimeout(LW);L.ready=true;lg('جاهز✓');setState('listening','تحدّث… '+C.name+' يسمعك');mic.textContent='■';
+ if(m.setupComplete){clearTimeout(LW);L.ready=true;lg('جاهز✓');tmrStart();setState('listening','تحدّث… '+C.name+' يسمعك');mic.textContent='■';
   try{L.ws.send(JSON.stringify({realtimeInput:{text:'الطالب انضم الآن. رحّب به بجملة قصيرة واسأله بماذا يحب أن يبدأ.'}}))}catch(e){}
   return}
  var c=m.serverContent;if(!c)return;
  if(c.interrupted){liveStopPlayback()}
- if(c.inputTranscription&&c.inputTranscription.text){if(L.mB){L.mB=null;L.mT=''}L.uT+=c.inputTranscription.text;liveBubble('user',arOk(L.uT))}
+ if(c.inputTranscription&&c.inputTranscription.text){act();if(L.mB){L.mB=null;L.mT=''}L.uT+=c.inputTranscription.text;liveBubble('user',arOk(L.uT))}
  if(c.outputTranscription&&c.outputTranscription.text){if(L.uB){L.uB=null;L.uT=''}L.mT+=c.outputTranscription.text;liveBubble('assistant',L.mT)}
  if(c.modelTurn&&c.modelTurn.parts)c.modelTurn.parts.forEach(function(p){var d=p.inlineData||p.inline_data;if(d&&d.data)livePlay(d.data,d.mimeType||d.mime_type)});
  if(c.turnComplete){L.uB=null;L.uT='';L.mB=null;L.mT=''}}
+var IDLE=60,lastAct=0,sessT0=0,tmrI=null;
+function act(){lastAct=Date.now()}
+function fmt(t){t=Math.floor(t/1000);return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0')}
+function tmrStart(){sessT0=Date.now();act();var b=$('#tmr');b.style.display='block';clearInterval(tmrI);
+ tmrI=setInterval(function(){if(!L.on||!L.ready){return}
+  if(liveSpeaking())act();
+  var idle=(Date.now()-lastAct)/1000,left=Math.ceil(IDLE-idle);
+  b.textContent='⏱ '+fmt(Date.now()-sessT0)+(left<=10?'  • يُغلق خلال '+Math.max(left,0)+'ث':'');b.className=left<=10?'warn':'';
+  if(idle>=IDLE){liveEnd(true);setState('','أُنهيت المحادثة تلقائيًا بعد دقيقة من الصمت لتوفير الدقائق. اضغط الميكروفون للمتابعة.')}},500)}
+function tmrStop(){clearInterval(tmrI);tmrI=null;var b=$('#tmr');b.style.display='none';b.className=''}
 var LW=null,LOG=[],TRY=[{v:'v1beta',full:true},{v:'v1beta',full:false},{v:'v1alpha',full:true}];
 function lg(x){LOG.push(x);if(LOG.length>30)LOG.shift();var d=$('#dbg');if(d)d.textContent=LOG.join(' | ')}
 function liveFail(msg){clearTimeout(LW);liveEnd(true);LIVE.enabled=false;setState('',msg)}
@@ -232,7 +244,9 @@ function liveStart(){if(L.on)return;L.on=true;L.ready=false;L.failed=false;stopT
   L.out=ac.createGain();L.an=ac.createAnalyser();L.an.fftSize=512;L.out.connect(L.an);L.an.connect(ac.destination);
   L.srcNode=ac.createMediaStreamSource(st);L.proc=ac.createScriptProcessor(4096,1,1);
   var mute=ac.createGain();mute.gain.value=0;L.srcNode.connect(L.proc);L.proc.connect(mute);mute.connect(ac.destination);
-  L.proc.onaudioprocess=function(ev){if(!L.ready||!L.ws||L.ws.readyState!==1||liveSpeaking())return;
+  L.proc.onaudioprocess=function(ev){if(!L.ready||!L.ws||L.ws.readyState!==1)return;
+   var f0=ev.inputBuffer.getChannelData(0),e0=0;for(var q=0;q<f0.length;q+=8)e0+=f0[q]*f0[q];if(Math.sqrt(e0/(f0.length/8))>0.03)act();
+   if(liveSpeaking())return;
    var f=ev.inputBuffer.getChannelData(0),r=ac.sampleRate/16000,n=Math.floor(f.length/r),o=new Int16Array(n);
    for(var i=0;i<n;i++){var a=0,j0=Math.floor(i*r),j1=Math.min(f.length,Math.floor((i+1)*r));for(var j=j0;j<j1;j++)a+=f[j];var x=Math.max(-1,Math.min(1,a/Math.max(1,j1-j0)));o[i]=x<0?x*0x8000:x*0x7FFF}
    try{L.ws.send(JSON.stringify({realtimeInput:{audio:{data:bufToB64(new Uint8Array(o.buffer)),mimeType:'audio/pcm;rate=16000'}}}))}catch(e){}};
@@ -259,7 +273,7 @@ function liveEnd(silent){if(!L.on&&!L.ws)return;L.on=false;L.ready=false;
  try{if(L.proc){L.proc.onaudioprocess=null;L.proc.disconnect()}if(L.srcNode)L.srcNode.disconnect()}catch(e){}
  if(L.stream)L.stream.getTracks().forEach(function(t){t.stop()});L.stream=null;
  var ws=L.ws;L.ws=null;if(ws){ws.onclose=null;try{ws.close()}catch(e){}}
- liveStopPlayback();simliOff();mic.classList.remove('rec');mic.textContent='🎤';L.uB=null;L.mB=null;L.uT='';L.mT='';
+ tmrStop();liveStopPlayback();simliOff();mic.classList.remove('rec');mic.textContent='🎤';L.uB=null;L.mB=null;L.uT='';L.mT='';
  if(!silent)setState('','اضغط الميكروفون لبدء المحادثة المباشرة')}
 /* ===== التسجيل الصوتي وتحويله إلى WAV 16kHz ===== */
 var rec=null,chunks=[],stream=null,autoStop=null;
@@ -285,7 +299,7 @@ function startRec(){stopTalk();if(!navigator.mediaDevices||!window.MediaRecorder
   clearTimeout(autoStop);autoStop=setTimeout(function(){if(rec&&rec.state==='recording')rec.stop()},20000)})
  .catch(function(){setState('','اسمح باستخدام الميكروفون من إعدادات المتصفح.')})}
 mic.onclick=function(){unlock();if(L.on){liveEnd();return}if(LIVE.enabled&&window.WebSocket&&ac){liveStart();return}if(busy)return;if(rec&&rec.state==='recording'){clearTimeout(autoStop);rec.stop()}else startRec()};
-$('#send').onclick=function(){unlock();var t=$('#txt'),v=t.value.trim();t.value='';if(!v)return;if(L.on&&L.ready){liveBubble('user',v);L.uB=null;try{L.ws.send(JSON.stringify({realtimeInput:{text:v}}))}catch(e){}return}ask(v)};
+$('#send').onclick=function(){unlock();var t=$('#txt'),v=t.value.trim();t.value='';if(!v)return;if(L.on&&L.ready){act();liveBubble('user',v);L.uB=null;try{L.ws.send(JSON.stringify({realtimeInput:{text:v}}))}catch(e){}return}ask(v)};
 $('#txt').onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();$('#send').onclick()}};
 $('#stop').onclick=function(){if(L.on){liveStopPlayback();return}stopTalk()};
 $('#grade').onchange=function(){try{localStorage.setItem('nb-grade',this.value)}catch(e){}};
