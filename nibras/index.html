@@ -106,6 +106,28 @@ var CH={
    'إذا خرج السؤال عن العلوم فأعده بلطف إلى الفيزياء والعلوم. لا تدّعِ أنك إنسان؛ إذا سُئلت فأجب بصدق أنك شخصية افتراضية.'},
   hi:'مرحبًا يا مكتشف! أنا البروفيسور جيرورايت. أحب التجارب وقصص العلماء، مثل نيوتن والتفاحة الشهيرة. عن ماذا تحب أن نتحدث؟'}
 };
+/* الشخصيات الأساسية: تُستخدم تلقائيًا إذا انتهت دقائق Simli أو تعذّر */
+var ORIG={
+ nibras:{name:'نبراس',label:'د. نبراس',title:'نبراس <span>معلّم العلوم</span>',vid:'nb/nibras.mp4',img:'nb/nibras.jpg',voice:'Charon',face:'',
+  prompt:function(g){return 'أنت «نبراس»، معلّم علوم سعودي ودود وصبور، تتحدث صوتيًا مع طالب في '+g+' ضمن منهج وزارة التعليم في المملكة العربية السعودية. '+
+   'تكلّم بالعربية الفصحى المبسّطة بنبرة دافئة ومشجّعة كمعلم حقيقي، وابدأ الرد فورًا دون مقدمات طويلة. '+
+   'إجاباتك قصيرة: من جملتين إلى أربع جمل، ثم اسأل الطالب سؤالًا صغيرًا يتأكد به من فهمه. استخدم أمثلة من حياة الطالب اليومية في السعودية. '+SAFE+
+   'إذا خرج السؤال عن العلوم فأعده بلطف إلى الدراسة. لا تدّعِ أنك إنسان؛ إذا سُئلت فأجب بصدق أنك معلم افتراضي.'},
+  hi:'أهلًا وسهلًا! أنا نبراس، معلّمك في مادة العلوم. اسألني عن أي درس أو تجربة أو مفهوم صعب، وسأشرحه لك ببساطة. بماذا تحب أن نبدأ؟'},
+ newton:{name:'نيوتن',label:'إسحاق نيوتن',title:'إسحاق نيوتن <span>عالِم الفيزياء</span>',vid:'nb/newton.mp4',img:'nb/newton.jpg',voice:'Algenib',face:'',
+  prompt:function(g){return 'أنت شخصية افتراضية تمثّل العالِم الإنجليزي إسحاق نيوتن (1643–1727)، تتحدث صوتيًا مع طالب في '+g+' في المملكة العربية السعودية. '+
+   'تكلّم بالعربية الفصحى المبسّطة بصيغة المتكلم، بأسلوب عالِم حكيم متحمس يحكي للطالب عن تجاربه واكتشافاته: قوانين الحركة الثلاثة، والجاذبية الكونية، وتحليل الضوء الأبيض بالمنشور، والتلسكوب العاكس، واربطها بما يدرسه الطالب في منهج العلوم. '+
+   'التزم بالحقائق التاريخية الثابتة ولا تخترع اقتباسات أو أحداثًا. إذا ذكرت قصة التفاحة فوضّح أنها قصة رواها نيوتن لاحقًا عن بداية تفكيره في الجاذبية. '+
+   'إذا سُئلت عن علم أو اختراع جاء بعد عصرك فقل إن العلماء بعدك اكتشفوه، ثم اشرحه ببساطة. '+
+   'إجاباتك قصيرة: من جملتين إلى أربع جمل، ثم اسأل الطالب سؤالًا يثير تفكيره. '+SAFE+
+   'إذا خرج السؤال عن العلوم فأعده بلطف إلى الفيزياء والعلوم. إذا سُئلت هل أنت نيوتن الحقيقي فأجب بصدق أنك شخصية افتراضية تمثّله لأغراض التعليم.'},
+  hi:'مرحبًا بك يا صديقي! أنا إسحاق نيوتن، أو بالأحرى شخصية افتراضية تمثّله. أحب أن أحدثك عن الحركة والجاذبية والضوء. عن أيّها تحب أن نبدأ؟'}
+};
+var USING_ORIG=false;
+function useOrig(hours){if(!USING_ORIG){USING_ORIG=true;CH.nibras=ORIG.nibras;CH.newton=ORIG.newton;LIVE.noSimli=true;
+  ['nibras','newton'].forEach(function(k){var o=document.querySelector('#who option[value='+k+']');if(o)o.textContent=CH[k].label;
+   var c=document.querySelector('.who[data-c='+k+']');if(c){c.querySelector('img').src=CH[k].img;c.querySelector('span').textContent=CH[k].label}})}
+ if(hours){try{localStorage.setItem('nb-nosimli',String(Date.now()+hours*3600e3))}catch(e){}}}
 var C=CH.nibras,target=0,DMAX=6,devTalk=false;
 var vid=$('#vid'),poster=$('#poster'),vTalk=false,vOff=null,vUrl={};
 function loadChar(k){C=CH[k]||CH.nibras;$('#ttl').innerHTML=C.title;$('#who').value=k;document.title=C.name+' | العلوم';
@@ -172,7 +194,7 @@ function ask(q){q=(q||'').trim();if(!q||busy)return;stopTalk();busy=true;add('us
 var S={on:false,cli:null,until:0,pend:[]};
 function simliStart(){if(!C.face)return Promise.resolve(false);
  var face=C.face;lg('simli…');
- return fetch('/api/simli-token?face='+encodeURIComponent(face)).then(function(r){return r.json()}).then(function(j){if(!j.token)throw new Error(j.error||'token');
+ return fetch('/api/simli-token?face='+encodeURIComponent(face)).then(function(r){return r.json()}).then(function(j){if(!j.token){S.hard=(j.status>=400&&j.status<500);throw new Error((j.error||'token')+' '+(j.status||''))}if(!j.token)throw new Error(j.error||'token');
   return import('https://cdn.jsdelivr.net/npm/simli-client/+esm').then(function(mod){
    var SC=mod.SimliClient||(mod.default&&mod.default.SimliClient)||mod.default,LL=mod.LogLevel||(mod.default&&mod.default.LogLevel)||{};
    var cli=new SC(j.token,$('#sv'),$('#sa'),null,LL.ERROR!==undefined?LL.ERROR:LL.INFO);S.cli=cli;
@@ -251,7 +273,9 @@ function liveStart(){if(L.on)return;L.on=true;L.ready=false;L.failed=false;stopT
    for(var i=0;i<n;i++){var a=0,j0=Math.floor(i*r),j1=Math.min(f.length,Math.floor((i+1)*r));for(var j=j0;j<j1;j++)a+=f[j];var x=Math.max(-1,Math.min(1,a/Math.max(1,j1-j0)));o[i]=x<0?x*0x8000:x*0x7FFF}
    try{L.ws.send(JSON.stringify({realtimeInput:{audio:{data:bufToB64(new Uint8Array(o.buffer)),mimeType:'audio/pcm;rate=16000'}}}))}catch(e){}};
   if(C.face&&!LIVE.noSimli){setState('thinking','جارٍ تجهيز '+C.name+'…');$('#frame').classList.add('prep');
-   simliStart().then(function(){$('#frame').classList.remove('prep');if(L.on)liveConnect(0)})}
+   simliStart().then(function(ok){$('#frame').classList.remove('prep');
+    if(!ok&&L.on){var k=$('#who').value;useOrig(S.hard?6:0.2);loadChar(k);lg('رجوع للشخصيات الأساسية');}
+    if(L.on)liveConnect(0)})}
   else liveConnect(0);
  }).catch(function(e){clearTimeout(LW);L.on=false;mic.classList.remove('rec');setState('','لم يُسمح باستخدام الميكروفون. افتح الرابط في متصفح Safari ثم اسمح بالميكروفون.')})}
 function liveConnect(n){if(!L.on)return;
@@ -313,6 +337,7 @@ document.querySelectorAll('.who').forEach(function(btn){if(btn.dataset.c===PICK)
  btn.onclick=function(){PICK=btn.dataset.c;document.querySelectorAll('.who').forEach(function(x){x.classList.toggle('on',x===btn)});try{localStorage.setItem('nb-who',PICK)}catch(e){}}});
 $('#who').onchange=function(){var k=this.value;try{localStorage.setItem('nb-who',k)}catch(e){}var was=L.on;liveEnd(true);stopTalk();hist=[];log.innerHTML='';loadChar(k);
  setState('','اضغط الميكروفون وابدأ الحديث مع '+C.name);if(was&&LIVE.enabled)liveStart()};
+try{if(+localStorage.getItem('nb-nosimli')>Date.now())useOrig(0)}catch(e){}
 loadChar(PICK);
 if(/debug=1/.test(location.search))$('#dbg').style.display='block';
 var sil=0,lastT=0,lvBuf=new Uint8Array(512);
