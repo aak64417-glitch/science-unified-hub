@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ar" dir="rtl"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>نبراس | معلم العلوم</title>
+<title>معلّم العلوم الافتراضي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -17,7 +17,7 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 #stage{flex:none;display:flex;flex-direction:column;align-items:center;padding:0 16px}
 #frame{position:relative;width:min(100%,calc(34dvh*16/9));aspect-ratio:16/9;border-radius:22px;overflow:hidden;background:#0a1622;
  box-shadow:0 0 0 3px #1d3550,0 10px 30px rgba(0,0,0,.45);transition:box-shadow .3s}
-#vid,#poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#vid,#poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
 #poster{transition:opacity .35s}#poster.hide{opacity:0}
 #sv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0a1622}
 .prep #poster,.prep #vid{opacity:0!important}.prep #dots{display:flex}
@@ -52,12 +52,12 @@ footer{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(
 #intro{position:fixed;inset:0;background:rgba(5,12,22,.92);display:flex;align-items:center;justify-content:center;z-index:9;padding:16px}
 #intro .box{background:var(--card);border-radius:22px;padding:22px;max-width:420px;width:100%;text-align:center;border:1px solid #2b4a6b}
 .pick{display:flex;gap:12px;margin-bottom:14px}.who{flex:1;background:#0f2133;border:2px solid #2b4a6b;border-radius:16px;padding:8px;color:var(--ink);cursor:pointer}
-.who img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;display:block;margin-bottom:6px}.who.on{border-color:var(--gold);box-shadow:0 0 16px rgba(255,200,87,.35)}
+.who img{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:50% 25%;border-radius:10px;display:block;margin-bottom:6px}.who.on{border-color:var(--gold);box-shadow:0 0 16px rgba(255,200,87,.35)}
 #intro h2{margin:0 0 8px;font-size:26px}#intro p{color:var(--mut);line-height:1.8;margin:0 0 16px}
 #intro select{width:100%;margin-bottom:14px;padding:12px}#go{width:100%;font-size:20px;padding:14px}
 </style></head><body>
-<header><h1 id="ttl">نبراس <span>معلّم العلوم</span></h1>
-<div class="sel"><select id="who" aria-label="الشخصية"><option value="nibras">د. نبراس</option><option value="newton">إسحاق نيوتن</option></select>
+<header><h1 id="ttl">أ. ماتيو <span>معلّم العلوم</span></h1>
+<div class="sel"><select id="who" aria-label="الشخصية"><option value="nibras">أ. ماتيو</option><option value="newton">البروفيسور جيرورايت</option></select>
 <select id="grade" aria-label="الصف"><option value="1">أول متوسط</option><option value="2">ثاني متوسط</option><option value="3">ثالث متوسط</option></select></div></header>
 <main>
 <div id="stage"><div id="frame"><video id="vid" muted playsinline loop preload="auto"></video><img id="poster" alt=""><video id="sv" playsinline autoplay muted style="display:none"></video><audio id="sa" autoplay></audio><div id="dots"><i></i><i></i><i></i></div></div>
@@ -72,7 +72,7 @@ footer{flex:none;display:flex;gap:8px;align-items:center;padding:10px 12px calc(
 </footer>
 <div id="intro"><div class="box">
 <h2>مرحبًا بك 👋</h2><p>اختر من تريد أن تتحدث معه، وتحدّث معه مباشرة كأنك في مكالمة.</p>
-<div class="pick"><button class="who on" data-c="nibras"><img src="nb/nibras.jpg" alt=""><span>د. نبراس</span></button><button class="who" data-c="newton"><img src="nb/newton.jpg" alt=""><span>إسحاق نيوتن</span></button></div>
+<div class="pick"><button class="who on" data-c="nibras"><img src="https://mintcdn.com/simli/C8pXSe7OQG-XmRnX/images/trinity2/99767950-9d68-4783-a305-9118006d3363.jpg?fit=max&auto=format&n=C8pXSe7OQG-XmRnX&q=85&s=2f2c4d3ab2d0e93bfb3d65d86aa43648" alt=""><span>أ. ماتيو</span></button><button class="who" data-c="newton"><img src="https://mintcdn.com/simli/C8pXSe7OQG-XmRnX/images/trinity2/d9c96b08-b2ca-48ef-b458-5c4471d9fe09.jpg?fit=max&auto=format&n=C8pXSe7OQG-XmRnX&q=85&s=9c496977d12b6b57dd1e89cc90afdc91" alt=""><span>البروفيسور جيرورايت</span></button></div>
 <select id="grade0"><option value="1">الصف الأول المتوسط</option><option value="2">الصف الثاني المتوسط</option><option value="3">الصف الثالث المتوسط</option></select>
 <button id="go" class="btn">ابدأ الحديث</button></div></div>
 <script>
@@ -90,30 +90,29 @@ function add(role,text){var d=document.createElement('div');d.className='m '+(ro
 var SAFE='لا تطلب أي معلومات شخصية، وتجنّب أي محتوى غير مناسب لعمر الطالب، وإذا ذكر أنه في خطر أو متضايق جدًا فوجّهه بلطف للحديث مع والديه أو المرشد الطلابي. '+
  'إذا طلب حل واجب أو اختبار كاملًا فأرشده خطوة خطوة ولا تعطه الإجابة مباشرة. إذا لم تكن متأكدًا من معلومة فقل ذلك بصراحة، ولا تخترع معلومات. ';
 var CH={
- nibras:{name:'نبراس',title:'نبراس <span>معلّم العلوم</span>',vid:'nb/nibras.mp4',img:'nb/nibras.jpg',voice:'Charon',face:'99767950-9d68-4783-a305-9118006d3363',pre:'',
-  prompt:function(g){return 'أنت «نبراس»، معلّم علوم سعودي ودود وصبور، تتحدث صوتيًا مع طالب في '+g+' ضمن منهج وزارة التعليم في المملكة العربية السعودية. '+
+ nibras:{name:'ماتيو',title:'أ. ماتيو <span>معلّم العلوم</span>',vid:'',img:'https://mintcdn.com/simli/C8pXSe7OQG-XmRnX/images/trinity2/99767950-9d68-4783-a305-9118006d3363.jpg?fit=max&auto=format&n=C8pXSe7OQG-XmRnX&q=85&s=2f2c4d3ab2d0e93bfb3d65d86aa43648',voice:'Charon',face:'99767950-9d68-4783-a305-9118006d3363',
+  prompt:function(g){return 'أنت «ماتيو»، معلّم علوم افتراضي ودود وصبور، تتحدث صوتيًا مع طالب في '+g+' ضمن منهج وزارة التعليم في المملكة العربية السعودية. '+
    'تكلّم بالعربية الفصحى المبسّطة بنبرة دافئة ومشجّعة كمعلم حقيقي، وابدأ الرد فورًا دون مقدمات طويلة. '+
    'إجاباتك قصيرة: من جملتين إلى أربع جمل، ثم اسأل الطالب سؤالًا صغيرًا يتأكد به من فهمه. استخدم أمثلة من حياة الطالب اليومية في السعودية. '+SAFE+
-   'إذا خرج السؤال عن العلوم فأعده بلطف إلى الدراسة. لا تدّعِ أنك إنسان؛ إذا سُئلت فأجب بصدق أنك معلم افتراضي.'},
-  hi:'أهلًا وسهلًا! أنا نبراس، معلّمك في مادة العلوم. اسألني عن أي درس أو تجربة أو مفهوم صعب، وسأشرحه لك ببساطة. بماذا تحب أن نبدأ؟'},
- newton:{name:'نيوتن',title:'إسحاق نيوتن <span>عالِم الفيزياء</span>',vid:'nb/newton.mp4',img:'nb/newton.jpg',voice:'Algenib',face:'d9c96b08-b2ca-48ef-b458-5c4471d9fe09',
-  pre:'في كل ردودك تقمّص شخصية العالِم إسحاق نيوتن وتحدث بصيغة المتكلم عن تجاربه واكتشافاته: قوانين الحركة والجاذبية وتحليل الضوء بالمنشور والتلسكوب العاكس، بلغة مبسطة لطالب في المرحلة المتوسطة. لا تخترع اقتباسات أو أحداثًا، وإذا سُئلت فأوضح بصدق أنك شخصية افتراضية تمثّل نيوتن.',
-  prompt:function(g){return 'أنت شخصية افتراضية تمثّل العالِم الإنجليزي إسحاق نيوتن (1643–1727)، تتحدث صوتيًا مع طالب في '+g+' في المملكة العربية السعودية. '+
-   'تكلّم بالعربية الفصحى المبسّطة بصيغة المتكلم، بأسلوب عالِم حكيم متحمس يحكي للطالب عن تجاربه واكتشافاته: قوانين الحركة الثلاثة، والجاذبية الكونية، وتحليل الضوء الأبيض بالمنشور، والتلسكوب العاكس، واربطها بما يدرسه الطالب في منهج العلوم. '+
-   'التزم بالحقائق التاريخية الثابتة ولا تخترع اقتباسات أو أحداثًا. إذا ذكرت قصة التفاحة فوضّح أنها قصة رواها نيوتن لاحقًا عن بداية تفكيره في الجاذبية. '+
-   'إذا سُئلت عن علم أو اختراع جاء بعد عصرك فقل إن العلماء بعدك اكتشفوه، ثم اشرحه ببساطة. '+
-   'إجاباتك قصيرة: من جملتين إلى أربع جمل، ثم اسأل الطالب سؤالًا يثير تفكيره. '+SAFE+
-   'إذا خرج السؤال عن العلوم فأعده بلطف إلى الفيزياء والعلوم. إذا سُئلت هل أنت نيوتن الحقيقي فأجب بصدق أنك شخصية افتراضية تمثّله لأغراض التعليم.'},
-  hi:'مرحبًا بك يا صديقي! أنا إسحاق نيوتن، أو بالأحرى شخصية افتراضية تمثّله. أحب أن أحدثك عن الحركة والجاذبية والضوء. عن أيّها تحب أن نبدأ؟'}
+   'إذا خرج السؤال عن العلوم فأعده بلطف إلى الدراسة. لا تدّعِ أنك إنسان؛ إذا سُئلت فأجب بصدق أنك معلم افتراضي اسمه ماتيو.'},
+  hi:'أهلًا وسهلًا! أنا ماتيو، معلّمك في مادة العلوم. اسألني عن أي درس أو تجربة أو مفهوم صعب، وسأشرحه لك ببساطة. بماذا تحب أن نبدأ؟'},
+ newton:{name:'البروفيسور',title:'البروفيسور جيرورايت <span>عالِم الفيزياء</span>',vid:'',img:'https://mintcdn.com/simli/C8pXSe7OQG-XmRnX/images/trinity2/d9c96b08-b2ca-48ef-b458-5c4471d9fe09.jpg?fit=max&auto=format&n=C8pXSe7OQG-XmRnX&q=85&s=9c496977d12b6b57dd1e89cc90afdc91',voice:'Algenib',face:'d9c96b08-b2ca-48ef-b458-5c4471d9fe09',
+  prompt:function(g){return 'أنت «البروفيسور جيرورايت»، عالِم ومخترع افتراضي مرح ومتحمس للفيزياء والتجارب، تتحدث صوتيًا مع طالب في '+g+' في المملكة العربية السعودية. '+
+   'تكلّم بالعربية الفصحى المبسّطة بأسلوب بروفيسور يحب الاكتشاف، وتحب أن تحكي قصص العلماء الكبار مثل إسحاق نيوتن واكتشافاته في الحركة والجاذبية والضوء، وتربطها بما يدرسه الطالب في منهج العلوم. '+
+   'التزم بالحقائق العلمية والتاريخية الثابتة ولا تخترع اقتباسات أو أحداثًا لأي عالِم. '+
+   'إجاباتك قصيرة: من جملتين إلى أربع جمل، ثم اسأل الطالب سؤالًا يثير تفكيره أو اقترح عليه تجربة بسيطة آمنة. '+SAFE+
+   'إذا خرج السؤال عن العلوم فأعده بلطف إلى الفيزياء والعلوم. لا تدّعِ أنك إنسان؛ إذا سُئلت فأجب بصدق أنك شخصية افتراضية.'},
+  hi:'مرحبًا يا مكتشف! أنا البروفيسور جيرورايت. أحب التجارب وقصص العلماء، مثل نيوتن والتفاحة الشهيرة. عن ماذا تحب أن نتحدث؟'}
 };
 var C=CH.nibras,target=0,DMAX=6,devTalk=false;
 var vid=$('#vid'),poster=$('#poster'),vTalk=false,vOff=null,vUrl={};
 function loadChar(k){C=CH[k]||CH.nibras;$('#ttl').innerHTML=C.title;$('#who').value=k;document.title=C.name+' | العلوم';
  poster.src=C.snap||C.img;poster.classList.remove('hide');vTalk=false;try{vid.pause()}catch(e){}
  var set=function(u){if(C!==CH[k])return;vid.src=u;try{vid.load()}catch(e){}};
+ if(!C.vid){vid.removeAttribute('src');return}
  if(vUrl[k])set(vUrl[k]);else fetch(C.vid).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){vUrl[k]=URL.createObjectURL(b);set(vUrl[k])}).catch(function(){})}
 function vplay(){try{var p=vid.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
-function talk(on){if(on){clearTimeout(vOff);vOff=null;if(!vTalk){vTalk=true;poster.classList.add('hide')}if(vid.paused)vplay()}
+function talk(on){if(on&&!C.vid)return;if(on){clearTimeout(vOff);vOff=null;if(!vTalk){vTalk=true;poster.classList.add('hide')}if(vid.paused)vplay()}
  else if(vTalk&&!vOff){vOff=setTimeout(function(){vOff=null;vTalk=false;poster.classList.remove('hide');setTimeout(function(){if(!vTalk){try{vid.pause();vid.currentTime=0}catch(e){}}},380)},350)}}
 /* ===== الصوت ===== */
 function pickVoice(){if(!hasTTS)return null;var vs=speechSynthesis.getVoices()||[],ar=vs.filter(function(v){return /^ar/i.test(v.lang)});
