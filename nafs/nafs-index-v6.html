@@ -834,14 +834,14 @@ body{min-height:100vh}
         if(done) return;
         done=true;
         clearTimeout(timer);
-        try{ delete window[cb]; }catch(e){ window[cb]=undefined; }
+        window[cb]=function(){}; /* رد متأخر بعد انتهاء المهلة: يُتجاهل دون خطأ */
         try{ s.remove(); }catch(e){}
       }
 
       window[cb]=function(d){
         clean();
         if(d && d.ok===false){
-          reject(new Error(d.message||'رفض الخادم الطلب'));
+          const er=new Error(d.message||'رفض الخادم الطلب');er.server=true;reject(er);
         }else{
           resolve(d);
         }
@@ -870,13 +870,54 @@ body{min-height:100vh}
       document.head.appendChild(s);
     });
   }
+  /* ===== دخول الباركود: إعادة المحاولة تلقائيًا + حفظ هوية الطالب على الجهاز + توحيد صيغة الفصل ===== */
+  function nfNormClass(v){
+    const raw=String(v==null?'':v).trim();
+    const t=raw.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+    const n=(t.match(/\d+/g)||[]).map(Number);let sec=0;
+    if(n.length===2){if(n[1]===3&&n[0]>=1&&n[0]<=4)sec=n[0];else if(n[0]===3&&n[1]>=1&&n[1]<=4)sec=n[1];}
+    else if(n.length===1&&/ثالث/.test(t)&&n[0]>=1&&n[0]<=4)sec=n[0];
+    return sec?sec+'/3':raw;
+  }
+  const nfWait=ms=>new Promise(r=>setTimeout(r,ms));
+  async function studentInfoRobust(code){
+    const key='nafs_student_'+code;let cached=null;
+    try{cached=JSON.parse(localStorage.getItem(key)||'null')}catch(e){}
+    const fresh=async()=>{
+      const waits=[20000,30000,45000];let last;
+      for(let k=0;k<waits.length;k++){
+        try{
+          const d=await jsonp({action:'studentInfo',code:code},waits[k]);
+          if(d&&d.student){
+            d.student.className=nfNormClass(d.student.className);
+            try{localStorage.setItem(key,JSON.stringify({student:d.student,t:Date.now()}))}catch(e){}
+          }
+          return d;
+        }catch(e){
+          last=e;
+          if(e&&e.server){try{localStorage.removeItem(key)}catch(_){}throw e;}
+          if(k<waits.length-1){
+            if(!cached)try{notice($('identityMsg'),'الخادم مشغول الآن… جارٍ إعادة المحاولة ('+(k+2)+' من '+waits.length+')','success')}catch(_){}
+            await nfWait(1500+Math.random()*3000);
+          }
+        }
+      }
+      throw last;
+    };
+    if(cached&&cached.student&&cached.student.name&&THIRD_CLASSES.includes(nfNormClass(cached.student.className))){
+      cached.student.className=nfNormClass(cached.student.className);
+      fresh().catch(e=>console.warn('studentInfo refresh',e));
+      return {ok:true,student:cached.student,cached:true};
+    }
+    return fresh();
+  }
   async function server(fn,...args){
     if(fn==='getTrainingQuestions')return localTrainingQuestions(args[0],12);
     if(!HAS_API)return localServer(fn,args);
     if(fn==='getPublicConfig')return jsonp({action:'config'});
     if(fn==='getQuestionOverrides')return jsonp({action:'questionOverrides'});
     if(fn==='getStudentTasks')return jsonp({action:'studentTasks',studentCode:state.identity?.studentCode||''});
-    if(fn==='getStudentInfo')return jsonp({action:'studentInfo',code:args[0]||''});
+    if(fn==='getStudentInfo')return studentInfoRobust(args[0]||'');
     if(fn==='sessionStart')return jsonp({action:'sessionStart',data:JSON.stringify(args[0]||{})});
     if(fn==='sessionTouch')return jsonp({action:'sessionTouch',data:JSON.stringify(args[0]||{})});
     if(fn==='sessionFinish')return jsonp({action:'sessionFinish',data:JSON.stringify(args[0]||{})});
@@ -1149,7 +1190,11 @@ ensureQuestionBankReady().catch(e=>{
       $('heroStudentBadge').classList.add('hidden');
       $('barcodeRequired').classList.remove('hidden');
       $('modeGrid').classList.add('hidden');
-      notice($('identityMsg'),'تعذر الدخول: '+e.message);
+      notice($('identityMsg'),'تعذر الدخول: '+e.message+(e&&e.server?'':' — تأكد من اتصال الإنترنت ثم أعد المحاولة.'));
+      try{
+        const rb=document.createElement('button');rb.type='button';rb.className='btn btn-primary';rb.style.cssText='margin-top:10px;width:100%';
+        rb.textContent='🔄 إعادة المحاولة';rb.onclick=()=>location.reload();$('identityMsg').appendChild(rb);
+      }catch(_){}
     }finally{
       setLoading(false)
     }
@@ -1427,5 +1472,29 @@ ensureQuestionBankReady().catch(e=>{
 })();
 </script>
 
+<link rel="stylesheet" href="nafs-journey-skin.css?v=20261113a">
+<script>
+/* ===== نافس: هوية «رحلة العلوم» البصرية لشاشة السؤال ===== */
+(function(){
+  'use strict';
+  const quiz=document.getElementById('quiz');if(!quiz)return;
+  const panel=quiz.querySelector('.panel');
+  if(panel&&!quiz.querySelector('.jq-topbar')){
+    const bar=document.createElement('div');bar.className='jq-topbar';
+    bar.innerHTML='<div class="jq-logo">🧪</div><div><b>مدرسة أبي الدرداء المتوسطة</b><small>تدريب نافس · علوم الصف الثالث المتوسط</small></div><span class="jq-chip">منصة<br>الطالب</span>';
+    quiz.insertBefore(bar,panel);
+  }
+  function sync(){
+    const on=!quiz.classList.contains('hidden');
+    document.body.classList.toggle('jq',on);document.documentElement.classList.toggle('jq',on);
+  }
+  new MutationObserver(sync).observe(quiz,{attributes:true,attributeFilter:['class']});sync();
+  const ex=document.getElementById('explainBox');
+  if(ex)new MutationObserver(function(){
+    const ok=/^\s*(✓|✔)?\s*إجابة صحيحة/.test(ex.textContent||'');
+    if(ex.classList.contains('jq-no')===ok)ex.classList.toggle('jq-no',!ok);
+  }).observe(ex,{childList:true,characterData:true,subtree:true});
+})();
+</script>
 </body>
 </html>

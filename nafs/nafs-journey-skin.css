@@ -1,0 +1,82 @@
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:400;font-display:swap;src:url(../assets/v6/fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:400;font-display:swap;src:url(../assets/v6/fonts/ibm-plex-sans-arabic-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:500;font-display:swap;src:url(../assets/v6/fonts/ibm-plex-sans-arabic-arabic-500-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:500;font-display:swap;src:url(../assets/v6/fonts/ibm-plex-sans-arabic-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:600 900;font-display:swap;src:url(../assets/v6/fonts/ibm-plex-sans-arabic-arabic-700-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'IBM Plex Sans Arabic';font-weight:600 900;font-display:swap;src:url(../assets/v6/fonts/ibm-plex-sans-arabic-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Noto Kufi Arabic';font-weight:700;font-display:swap;src:url(../assets/v6/fonts/noto-kufi-arabic-arabic-700-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'Noto Kufi Arabic';font-weight:700;font-display:swap;src:url(../assets/v6/fonts/noto-kufi-arabic-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+2212}
+@font-face{font-family:'Noto Kufi Arabic';font-weight:800 900;font-display:swap;src:url(../assets/v6/fonts/noto-kufi-arabic-arabic-800-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'Noto Kufi Arabic';font-weight:800 900;font-display:swap;src:url(../assets/v6/fonts/noto-kufi-arabic-latin-800-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+2212}
+/* ===== نافس: شاشة السؤال بالهوية البصرية لمنصة «رحلة العلوم» (تُفعَّل بالصنف jq على body أثناء حل الأسئلة) ===== */
+body.jq{--jq-ink:#16324F;--jq-teal:#0F8B8D;--jq-teal2:#0B6F71;--jq-sun:#F4B63F;--jq-soft:#E3F4F3;--jq-line:#D3E2E8;--jq-bg:#EDF4F6;--jq-ok:#1E9E5A;--jq-no:#D1495B;--jq-muted:#5E7384;
+  background:var(--jq-bg)!important;background-image:none!important;color:var(--jq-ink)!important;
+  font-family:'IBM Plex Sans Arabic','Noto Kufi Arabic',Tahoma,Arial,sans-serif!important;line-height:1.6}
+html.jq{background:#EDF4F6!important}
+body.jq::before,body.jq::after{display:none!important}
+body.jq #quiz *{font-family:'IBM Plex Sans Arabic','Noto Kufi Arabic',Tahoma,Arial,sans-serif!important}
+/* الشريط العلوي الفيروزي */
+body.jq .jq-topbar{display:flex!important}
+.jq-topbar{display:none;align-items:center;gap:12px;background:#0F8B8D;color:#fff;border-radius:16px;padding:12px 14px;margin:0 0 14px}
+.jq-topbar .jq-logo{flex:none;width:46px;height:46px;border-radius:14px;background:#0B6F71;display:grid;place-items:center;font-size:24px}
+.jq-topbar b{display:block;font-family:'Noto Kufi Arabic','IBM Plex Sans Arabic',Tahoma,sans-serif;font-size:1.02rem;font-weight:800;line-height:1.5}
+.jq-topbar small{display:block;color:#D5F1F0;font-size:.78rem;font-weight:500}
+.jq-topbar .jq-chip{margin-inline-start:auto;flex:none;background:#fff;color:#0B6F71;border-radius:999px;padding:7px 12px;font-size:.78rem;font-weight:700;text-align:center;line-height:1.35}
+body.jq #quiz .nafs-inline-brand{display:none!important}
+/* البطاقة */
+body.jq #quiz .panel{background:#fff!important;background-image:none!important;border:1.4px solid var(--jq-line)!important;box-shadow:0 2px 14px rgba(22,50,79,.07)!important;border-radius:16px!important;padding:17px!important;backdrop-filter:none!important}
+/* التقدم */
+body.jq #quiz .quiz-head{margin-bottom:12px!important;gap:12px!important}
+body.jq #quiz .progress-meta{color:var(--jq-muted)!important;font-size:.86rem!important;font-weight:500!important}
+body.jq #quiz .progress-meta span{color:var(--jq-muted)!important;font-weight:500!important}
+body.jq #quiz .track{background:#E1EBEF!important;border:0!important;height:10px!important;border-radius:999px!important}
+body.jq #quiz .fill{background:var(--jq-teal)!important;background-image:none!important}
+body.jq #quiz .timer{background:#fff!important;background-image:none!important;border:1.4px solid var(--jq-line)!important;color:var(--jq-ink)!important;border-radius:15px!important;box-shadow:none!important}
+body.jq #quiz .timer *{color:var(--jq-ink)!important}
+/* بطاقة السؤال */
+body.jq #quiz .question-card{background:#fff!important;border:1.4px solid var(--jq-line)!important;border-radius:16px!important;padding:18px!important;box-shadow:none!important}
+body.jq #quiz .q-tags{display:flex!important;justify-content:space-between!important;gap:8px!important;flex-wrap:wrap!important;margin-bottom:10px!important}
+body.jq #quiz .q-tag{background:var(--jq-soft)!important;color:var(--jq-teal2)!important;border:0!important;font-weight:700!important;font-size:.78rem!important;padding:6px 9px!important;border-radius:999px!important}
+body.jq #quiz .q-tag:empty{display:none!important}
+body.jq #quiz .nf-level i{width:7px!important;height:7px!important;background:#C9D9E0!important}
+body.jq #quiz .nf-level i.on{background:var(--jq-teal)!important}
+body.jq #quiz .q-text{font-family:'Noto Kufi Arabic','IBM Plex Sans Arabic',Tahoma,sans-serif!important;color:var(--jq-ink)!important;font-size:1.18rem!important;line-height:1.8!important;font-weight:800!important;margin:0 0 14px!important}
+/* الرسم والجدول */
+body.jq #quiz .question-media{margin:4px 0 14px!important}
+body.jq #quiz .nf-figure,body.jq #quiz .nf-photo,body.jq #quiz .question-media:not(.nf-media){padding:12px!important;border-radius:14px!important;background:#fff!important;border:1.4px solid var(--jq-line)!important;text-align:center!important;margin:4px 0 14px!important;box-shadow:none!important}
+body.jq #quiz .nf-photo{padding:0!important}
+body.jq #quiz .nf-figure svg{max-width:100%!important;height:auto!important;max-height:280px!important}
+body.jq #quiz .nf-photo figcaption{background:var(--jq-soft)!important;color:var(--jq-teal2)!important;font-weight:700!important}
+body.jq #quiz .nf-table{border-collapse:collapse!important;margin:4px auto 14px!important;font-size:.95rem!important;font-weight:500!important}
+body.jq #quiz .nf-table th{background:var(--jq-soft)!important;color:var(--jq-teal2)!important;padding:7px 12px!important;border:1px solid var(--jq-line)!important}
+body.jq #quiz .nf-table td{padding:7px 12px!important;border:1px solid var(--jq-line)!important;background:#fff!important;color:var(--jq-ink)!important}
+/* الخيارات */
+body.jq #quiz .options{display:grid!important;gap:10px!important}
+body.jq #quiz .option{background:#F7FBFC!important;background-image:none!important;color:var(--jq-ink)!important;border:1.4px solid #E1EBEF!important;font-weight:600!important;font-size:1rem!important;display:flex!important;align-items:center!important;gap:10px!important;border-radius:12px!important;padding:11px 12px!important;line-height:1.6!important;box-shadow:none!important;transform:none!important;text-align:right!important}
+body.jq #quiz .option span{color:inherit!important;font-size:inherit!important;font-weight:inherit!important}
+body.jq #quiz .option:hover{border-color:var(--jq-teal)!important;background:#F7FBFC!important}
+body.jq #quiz .option .letter{flex:none!important;width:30px!important;height:30px!important;border-radius:8px!important;background:var(--jq-ink)!important;color:#fff!important;display:grid!important;place-items:center!important;font-weight:700!important;font-size:.95rem!important;border:0!important;box-shadow:none!important}
+body.jq #quiz .option.selected{background:#E7F5F5!important;border-color:var(--jq-teal)!important;box-shadow:none!important}
+body.jq #quiz .option.selected .letter{background:var(--jq-teal)!important}
+body.jq #quiz .option.correct{background:#E3F6EB!important;border-color:var(--jq-ok)!important;color:var(--jq-ink)!important}
+body.jq #quiz .option.correct .letter{background:var(--jq-ok)!important}
+body.jq #quiz .option.wrong{background:#FDECEE!important;border-color:var(--jq-no)!important;color:var(--jq-ink)!important}
+body.jq #quiz .option.wrong .letter{background:var(--jq-no)!important}
+body.jq #quiz .option.nf-tried{opacity:1!important}
+/* التغذية الراجعة */
+body.jq #quiz .explain{padding:13px 14px!important;border-radius:14px!important;margin-top:13px!important;line-height:1.7!important;font-size:.98rem!important;font-weight:500!important;background:#EAF6F1!important;border:1px solid #B4DEC9!important;border-inline-start:4px solid var(--jq-ok)!important;color:#11593A!important}
+body.jq #quiz .explain.jq-no{background:#FFF4F5!important;border:1px solid #F0C3CA!important;border-inline-start:4px solid var(--jq-no)!important;color:#6E1F2A!important}
+body.jq #quiz .explain.jq-hint{background:#FFF8E6!important;border:1px solid #F1D48A!important;border-inline-start:4px solid var(--jq-sun)!important;color:#6B4A00!important}
+body.jq #quiz .nf-try{border-radius:14px!important;padding:13px 14px!important;font-weight:600!important;font-size:.98rem!important;line-height:1.7!important;background:#FFF8E6!important;border:1px solid #F1D48A!important;border-inline-start:4px solid var(--jq-sun)!important;color:#6B4A00!important}
+/* الأزرار */
+body.jq #quiz .quiz-actions{display:flex!important;justify-content:space-between!important;gap:10px!important;margin-top:14px!important}
+body.jq #quiz .quiz-actions .btn{flex:1!important;padding:12px 16px!important;border-radius:12px!important;font-weight:700!important;font-size:1rem!important;box-shadow:none!important;background-image:none!important;transform:none!important}
+body.jq #quiz .btn-primary{background:var(--jq-teal)!important;color:#fff!important;border:0!important}
+body.jq #quiz .btn-primary:hover{background:var(--jq-teal2)!important}
+body.jq #quiz .btn-ghost{background:#fff!important;color:var(--jq-ink)!important;border:1.4px solid var(--jq-line)!important}
+body.jq #quiz .btn:disabled{opacity:.55!important}
+@media(max-width:520px){body.jq #quiz .panel{padding:14px!important}body.jq #quiz .question-card{padding:14px!important}body.jq #quiz .q-text{font-size:1.08rem!important}body.jq #quiz .quiz-actions{flex-direction:column-reverse!important}}
+body.jq #quiz #mediaBox.explain{padding:12px!important;border-radius:14px!important;background:#fff!important;border:1.4px solid var(--jq-line)!important;border-inline-start:1.4px solid var(--jq-line)!important;color:var(--jq-ink)!important;text-align:center!important;margin:4px 0 14px!important}
+body.jq #quiz #mediaBox img{max-width:100%!important;height:auto!important;border-radius:10px!important}
+body.jq .shell>header.topbar{display:none!important}
+body.jq .shell>.footer{color:#7990a8!important;font-size:.8rem!important;font-weight:500!important}
