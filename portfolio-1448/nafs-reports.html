@@ -77,9 +77,9 @@ ol{margin:6px 0 0;padding-inline-start:22px;line-height:2}
     </div>
     <label for="notes">وصف مختصر (اختياري)</label>
     <textarea id="notes" rows="2" maxlength="400"></textarea>
-    <label for="file">ملف التقرير (PDF أو صورة أو صفحة HTML)</label>
-    <input id="file" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.html,.htm">
-    <p class="note" style="margin-top:6px">الحد الأقصى 20 ميجابايت. يصل التقرير لصفحة المدير خلال دقيقة إلى دقيقتين.</p>
+    <label for="file">ملفات التقرير (PDF أو صورة أو صفحة HTML) — يمكنك اختيار أكثر من ملف دفعة واحدة</label>
+    <input id="file" type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.webp,.html,.htm">
+    <p class="note" style="margin-top:6px">الحد الأقصى 20 ميجابايت للملف الواحد. عند اختيار عدة ملفات: إن كتبت عنوانًا يُرقَّم لكل ملف (العنوان 1، العنوان 2…)، وإن تركته فارغًا يصبح اسم كل ملف عنوانًا له. يصل التقرير لصفحة المدير خلال دقيقة إلى دقيقتين.</p>
     <p style="margin:12px 0 0"><button class="btn p" type="button" id="add">📤 إضافة التقرير إلى ملف الإنجاز</button></p>
     <div class="msg" id="msg"></div>
   </section>
@@ -107,21 +107,30 @@ function load(){
     fetch('nafs-reports/index.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){reports=j.reports||[];draw()}).catch(function(){reports=[];draw()});return}
   PFStore.readIndex().then(function(x){reports=x.data.reports;draw()}).catch(function(e){$('list').innerHTML='<p class="note">'+esc(e.message)+'</p>'});}
 $('saveTok').onclick=function(){var v=$('tok').value.trim();if(!/^(github_pat_|ghp_)/.test(v)){alert('الرمز يجب أن يبدأ بـ github_pat_');return}PFStore.setToken(v);$('tok').value='';$('setupBox').classList.add('hidden');load()};
-$('add').onclick=function(){
+$('file').onchange=function(){var n=$('file').files.length;$('add').textContent=n>1?'📤 إضافة '+n+' تقارير إلى ملف الإنجاز':'📤 إضافة التقرير إلى ملف الإنجاز'};
+function readB64(f){return new Promise(function(ok,no){var rd=new FileReader();rd.onerror=function(){no(new Error('تعذر قراءة الملف '+f.name))};rd.onload=function(){ok(String(rd.result).split(',')[1]||'')};rd.readAsDataURL(f)})}
+$('add').onclick=async function(){
   if(!PFStore.token()){msg('احفظ رمز الوصول أولًا.');$('setupBox').classList.remove('hidden');return}
-  var title=$('title').value.trim(),f=$('file').files[0];
-  if(!title){msg('اكتب عنوان التقرير.');return}
-  if(!f){msg('اختر ملف التقرير.');return}
-  var ext=(f.name.split('.').pop()||'').toLowerCase();if(!KIND[ext]){msg('نوع الملف غير مدعوم. استخدم PDF أو صورة أو HTML.');return}
-  if(f.size>20*1024*1024){msg('حجم الملف أكبر من 20 ميجابايت.');return}
-  var src=document.querySelector('input[name=src]:checked').value;
-  $('add').disabled=true;msg('جارٍ رفع التقرير…',true);
-  var rd=new FileReader();rd.onerror=function(){msg('تعذر قراءة الملف.');$('add').disabled=false};
-  rd.onload=function(){var b64=String(rd.result).split(',')[1]||'';
-    PFStore.addReport({title:title,source:src,kind:KIND[ext],names:document.querySelector('input[name=nm]:checked').value==='1',notes:$('notes').value.trim()},ext==='htm'?'html':ext,b64)
-    .then(function(rec){reports.push(rec);draw();$('title').value='';$('notes').value='';$('file').value='';msg('تمت إضافة التقرير ✓ (يظهر للمدير خلال دقيقة إلى دقيقتين)',true)})
-    .catch(function(e){msg(e.message)}).then(function(){$('add').disabled=false})};
-  rd.readAsDataURL(f);};
+  var title=$('title').value.trim(),files=Array.prototype.slice.call($('file').files);
+  if(!files.length){msg('اختر ملفًا واحدًا أو أكثر.');return}
+  if(files.length===1&&!title){msg('اكتب عنوان التقرير.');return}
+  var bad=files.filter(function(f){return !KIND[(f.name.split('.').pop()||'').toLowerCase()]});
+  if(bad.length){msg('نوع ملف غير مدعوم: '+bad.map(function(f){return f.name}).join('، ')+'. استخدم PDF أو صورة أو HTML.');return}
+  var big=files.filter(function(f){return f.size>20*1024*1024});
+  if(big.length){msg('هذه الملفات أكبر من 20 ميجابايت: '+big.map(function(f){return f.name}).join('، '));return}
+  var src=document.querySelector('input[name=src]:checked').value,names=document.querySelector('input[name=nm]:checked').value==='1',notes=$('notes').value.trim();
+  $('add').disabled=true;var ok=0,failed=[];
+  for(var k=0;k<files.length;k++){
+    var f=files[k],ext=(f.name.split('.').pop()||'').toLowerCase();
+    var t=files.length===1?title:(title?title+' '+(k+1):f.name.replace(/\.[^.]+$/,''));
+    msg('جارٍ رفع التقرير '+(k+1)+' من '+files.length+'…',true);
+    try{var b64=await readB64(f);var rec=await PFStore.addReport({title:t,source:src,kind:KIND[ext],names:names,notes:notes},ext==='htm'?'html':ext,b64);reports.push(rec);ok++;draw();if(k<files.length-1)await new Promise(function(r){setTimeout(r,1200)})}
+    catch(e){failed.push(f.name+' ('+e.message+')')}
+  }
+  $('add').disabled=false;
+  if(ok){$('title').value='';$('notes').value='';$('file').value='';$('file').onchange()}
+  msg((ok?'تمت إضافة '+(ok===1?'التقرير':ok+' تقارير')+' ✓ (تظهر للمدير خلال دقيقة إلى دقيقتين)':'')+(failed.length?' ✗ تعذر رفع: '+failed.join('، '):''),!failed.length);
+};
 $('list').addEventListener('click',function(e){var ed=e.target.closest('[data-edit]');if(ed){var re=reports.filter(function(x){return x.id===ed.dataset.edit})[0];if(re)PFNafsEdit.open(re,function(how){if(how==='deleted')reports=reports.filter(function(x){return x.id!==re.id});draw();msg(how==='deleted'?'تم حذف التقرير ✓':'تم حفظ التعديلات ✓',true)});return}
   var b=e.target.closest('[data-del]');if(!b)return;
   var r=reports.filter(function(x){return x.id===b.dataset.del})[0];if(!r)return;
