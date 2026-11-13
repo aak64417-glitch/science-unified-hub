@@ -40,6 +40,7 @@ input,select,textarea{width:100%;padding:12px 14px;border-radius:13px;border:1.5
 .warn{background:#fff8e6;border:1.5px solid var(--gold);border-radius:14px;padding:12px 14px;line-height:1.9}
 ol{margin:6px 0 0;padding-inline-start:22px;line-height:2}
 .hidden{display:none!important}
+#fileRows{margin-top:10px;display:grid;gap:8px}.frow{display:grid;grid-template-columns:1fr 150px;gap:8px;align-items:center;padding:10px;border:1.5px solid #e3e8f2;border-radius:14px;background:#fbfcff}.frow .fn{font-weight:800;color:var(--navy);word-break:break-all}.frow .ft{grid-column:1/-1;font-size:14px;color:var(--p);font-weight:800}.frow select{padding:9px 10px}
 </style>
 </head>
 <body>
@@ -79,7 +80,8 @@ ol{margin:6px 0 0;padding-inline-start:22px;line-height:2}
     <textarea id="notes" rows="2" maxlength="400"></textarea>
     <label for="file">ملفات التقرير (PDF أو صورة أو صفحة HTML) — يمكنك اختيار أكثر من ملف دفعة واحدة</label>
     <input id="file" type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.webp,.html,.htm">
-    <p class="note" style="margin-top:6px">الحد الأقصى 20 ميجابايت للملف الواحد. عند اختيار عدة ملفات: إن كتبت عنوانًا يُرقَّم لكل ملف (العنوان 1، العنوان 2…)، وإن تركته فارغًا يصبح اسم كل ملف عنوانًا له. يصل التقرير لصفحة المدير خلال دقيقة إلى دقيقتين.</p>
+    <div id="fileRows" class="hidden"></div>
+    <p class="note" style="margin-top:6px">الحد الأقصى 20 ميجابايت للملف الواحد. عند اختيار عدة ملفات (مثل تقارير تكليف واحد لكل الفصول): اكتب اسم التكليف في العنوان، ثم حدّد فصل كل ملف، فيصبح العنوان مثلًا «التكليف الثاني — الفصل ١/٣». يصل التقرير لصفحة المدير خلال دقيقة إلى دقيقتين.</p>
     <p style="margin:12px 0 0"><button class="btn p" type="button" id="add">📤 إضافة التقرير إلى ملف الإنجاز</button></p>
     <div class="msg" id="msg"></div>
   </section>
@@ -107,7 +109,19 @@ function load(){
     fetch('nafs-reports/index.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){reports=j.reports||[];draw()}).catch(function(){reports=[];draw()});return}
   PFStore.readIndex().then(function(x){reports=x.data.reports;draw()}).catch(function(e){$('list').innerHTML='<p class="note">'+esc(e.message)+'</p>'});}
 $('saveTok').onclick=function(){var v=$('tok').value.trim();if(!/^(github_pat_|ghp_)/.test(v)){alert('الرمز يجب أن يبدأ بـ github_pat_');return}PFStore.setToken(v);$('tok').value='';$('setupBox').classList.add('hidden');load()};
-$('file').onchange=function(){var n=$('file').files.length;$('add').textContent=n>1?'📤 إضافة '+n+' تقارير إلى ملف الإنجاز':'📤 إضافة التقرير إلى ملف الإنجاز'};
+var CLASSES=['١/٣','٢/٣','٣/٣','٤/٣'];
+function rowTitle(base,cls,f){base=base||f.name.replace(/\.[^.]+$/,'');return cls?base+' — الفصل '+cls:base}
+function drawRows(){var files=Array.prototype.slice.call($('file').files),box=$('fileRows');
+  if(files.length<2){box.classList.add('hidden');box.innerHTML='';return}
+  var keep=Array.prototype.map.call(box.querySelectorAll('select'),function(x){return x.value});
+  box.classList.remove('hidden');
+  box.innerHTML='<p class="note" style="margin:0">اختر فصل كل ملف (رُتّبت تلقائيًا ١/٣ ثم ٢/٣ …)، ويُضاف الفصل إلى العنوان:</p>'+files.map(function(f,k){var v=keep[k]!=null?keep[k]:(CLASSES[k]||'');
+    return '<div class="frow"><span class="fn">📄 '+esc(f.name)+'</span><select data-k="'+k+'"><option value="">بدون فصل</option>'+CLASSES.map(function(c){return '<option'+(c===v?' selected':'')+'>'+c+'</option>'}).join('')+'</select><span class="ft" data-t="'+k+'"></span></div>'}).join('');
+  updTitles()}
+function updTitles(){var files=$('file').files,base=$('title').value.trim();
+  Array.prototype.forEach.call($('fileRows').querySelectorAll('[data-t]'),function(el){var k=+el.dataset.t,sel=$('fileRows').querySelector('select[data-k="'+k+'"]');el.textContent='العنوان: '+rowTitle(base,sel?sel.value:'',files[k])})}
+$('fileRows').addEventListener('change',updTitles);$('title').addEventListener('input',updTitles);
+$('file').onchange=function(){var n=$('file').files.length;$('add').textContent=n>1?'📤 إضافة '+n+' تقارير إلى ملف الإنجاز':'📤 إضافة التقرير إلى ملف الإنجاز';drawRows()};
 function readB64(f){return new Promise(function(ok,no){var rd=new FileReader();rd.onerror=function(){no(new Error('تعذر قراءة الملف '+f.name))};rd.onload=function(){ok(String(rd.result).split(',')[1]||'')};rd.readAsDataURL(f)})}
 $('add').onclick=async function(){
   if(!PFStore.token()){msg('احفظ رمز الوصول أولًا.');$('setupBox').classList.remove('hidden');return}
@@ -122,7 +136,7 @@ $('add').onclick=async function(){
   $('add').disabled=true;var ok=0,failed=[];
   for(var k=0;k<files.length;k++){
     var f=files[k],ext=(f.name.split('.').pop()||'').toLowerCase();
-    var t=files.length===1?title:(title?title+' '+(k+1):f.name.replace(/\.[^.]+$/,''));
+    var sel=$('fileRows').querySelector('select[data-k="'+k+'"]'),t=files.length===1?title:rowTitle(title,sel?sel.value:'',f);
     msg('جارٍ رفع التقرير '+(k+1)+' من '+files.length+'…',true);
     try{var b64=await readB64(f);var rec=await PFStore.addReport({title:t,source:src,kind:KIND[ext],names:names,notes:notes},ext==='htm'?'html':ext,b64);reports.push(rec);ok++;draw();if(k<files.length-1)await new Promise(function(r){setTimeout(r,1200)})}
     catch(e){failed.push(f.name+' ('+e.message+')')}
