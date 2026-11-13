@@ -217,6 +217,7 @@ function renderPortfolioReport(){const d=reportData();const weak=d.perLesson.fil
  <h2>الشواهد الرقمية</h2><div class="rp-ev">مرات دخول الطلاب المسجلة: <b>${logins.filter(r=>d.pool.some(p=>p.id===r.student_id)).length}</b> &nbsp;•&nbsp; عدد محاولات التدريب المسجلة: <b>${d.attempts}</b> &nbsp;•&nbsp; إجمالي زمن التدريب: <b>${fmtMin(d.secs)}</b> &nbsp;•&nbsp; الدروس المفعّلة: <b>${d.perLesson.filter(l=>l.assigned).length}</b> من 14<br>يُسجَّل تاريخ وساعة دخول كل طالب، وتُسجَّل كل محاولة تدريب رقميًا بتاريخها ووقت بدئها وانتهائها وزمنها ونتيجتها، ويصل للمعلم أثر كل مهارة فور انتهاء الطالب منها.</div>
  ${strong.length?`<h2>جوانب القوة والاحتياج</h2><div class="rp-2"><div class="rp-box good"><b>أعلى الدروس إتقانًا</b><ul>${strong.map(l=>`<li>${l.t} — ${l.acc}%</li>`).join("")}</ul></div><div class="rp-box need"><b>دروس تحتاج تعزيزًا</b><ul>${weak.map(l=>`<li>${l.t} — ${l.acc}%</li>`).join("")}</ul></div></div>`:""}
  <h2>التوصيات</h2><ul>${d.bands["0"]?`<li>متابعة ${d.bands["0"]} طالب لم يبدأوا التدريب بعد، والتواصل مع أولياء أمورهم عبر بطاقة الباركود.</li>`:""}${weak.length?`<li>تكثيف التدريب الصفي والتجربة الافتراضية في: ${weak.map(l=>l.t).join("، ")}.</li>`:""}<li>إنهاء الخطة العلاجية للطالب الذي يتقن مهارات دروسه المكلّفة، وتكليف من لم يتقن بدروس إضافية.</li><li>عرض التجارب الافتراضية في الحصة لدعم الطلاب قبل التدريب الفردي.</li></ul>
+ ${recsHtml(false)}
  <p class="rp-note">التقرير لا يتضمن أسماء الطلاب؛ جميع الأرقام مجمّعة ومحسوبة آليًا من سجل نتائج المنصة حتى تاريخ إصداره.</p>
  <div class="rp-sign"><div>معلم المادة<br><b>علي طاهر البقاشي</b></div><div>المرشد الطلابي<br><b>مانع المعيدي</b></div><div>مدير المدرسة<br><b>فوزي محمد الهلال</b></div></div></div>`;$("reportWrap").dataset.kind="portfolio"}
 async function reportPdf(){const st=$("rpStatus");st.textContent="جارٍ إنشاء PDF…";try{if(typeof html2canvas==="undefined"||!window.jspdf)throw Error("تعذر تحميل أداة PDF؛ تحقق من الإنترنت.");const el=$("reportDoc").firstElementChild,c=await html2canvas(el,{scale:1.7,backgroundColor:"#ffffff",useCORS:true}),{jsPDF}=window.jspdf,pdf=new jsPDF("p","mm","a4"),m=8,w=210-m*2,h=c.height*w/c.width,ph=297-m*2,img=c.toDataURL("image/jpeg",.92);let y=0;while(y<h){pdf.addImage(img,"JPEG",m,m-y,w,h);y+=ph;if(y<h)pdf.addPage()}pdf.save(($("reportWrap").dataset.kind==="portfolio"?"ملف-إنجاز-الخطة-العلاجية-مسار-التقدم":"تقرير-تقدم-الطلاب-مسار-التقدم")+".pdf");st.textContent="✓ تم تنزيل ملف PDF"}catch(e){st.textContent=e.message}}
@@ -249,6 +250,7 @@ function counselHtml(withNames,copy){const c=counselData(),today=new Date().toLo
  <h2>المشاركة في كل فصل</h2>${classT}
  ${nonT}
  <h2>الإجراءات المقترحة</h2><ul>${c.cnt.none?`<li>تواصل المرشد الطلابي مع أولياء أمور ${c.cnt.none} طالبًا لم يدخلوا المنصة، والتأكد من وصول بطاقة الباركود إليهم.</li>`:""}${c.cnt.visit?`<li>متابعة ${c.cnt.visit} طالبًا دخلوا المنصة ولم يتدربوا، وتوجيههم لإكمال أول مهمة (٣ دقائق).</li>`:""}${c.lowP.length?`<li>تحفيز الطلاب ذوي المشاركة المحدودة وتخصيص وقت صفي قصير للتدريب.</li>`:""}${c.nonP.length?`<li>متابعة وكيل شؤون الطلاب لحضور الطلاب غير المشاركين وانضباطهم، وتوجيههم لاستخدام المنصة بالتنسيق مع المرشد الطلابي.</li>`:""}<li>إعادة قياس المشاركة بعد أسبوع من الإحالة وتوثيق أثر المتابعة.</li></ul>
+ ${recsHtml(withNames)}
  <p class="rp-note">التصنيف: «لم يدخل المنصة» لا دخول ولا تدريب • «دخل ولم يتدرب» دخل ببطاقته دون أي محاولة تدريب • الاستفادة = نسبة المهارات المتقنة (80% فأكثر) من مهارات الدروس المكلّفة. الأرقام محسوبة آليًا من سجل المنصة حتى ${escR(today)}.</p>
  <div class="rp-sign"><div>معلم المادة<br><b>علي طاهر البقاشي</b></div><div>المرشد الطلابي<br><b>مانع المعيدي</b></div><div>وكيل شؤون الطلاب<br><b>………………………</b></div><div>مدير المدرسة<br><b>فوزي محمد الهلال</b></div></div></div>`}
 const COPIES=["نسخة المرشد الطلابي","نسخة وكيل شؤون الطلاب"];
@@ -272,6 +274,25 @@ $("rpAddPf").onclick=async()=>{const st=$("rpStatus"),k=$("reportWrap").dataset.
   st.textContent="✓ أُضيف التقرير إلى ملف الإنجاز (المعيار ٥) — يظهر خلال دقيقة أو دقيقتين"}
  catch(e){st.textContent="✗ "+(e.message||"تعذر الرفع")+(e.status===401||e.status===403?" — حدّث رمز الوصول من لوحة تحكم ملف الإنجاز":"");if(e.status===401)PFStore.setToken("")}
  finally{box.remove()}};
+
+/* ===== توصيات ومقترحات معلم المادة (تُكتب مرة وتُحفظ على الجهاز، وتظهر في التقرير) ===== */
+const RECK="masar_teacher_recs_v1";
+const REC_IDEAS=["تخصيص ١٠ دقائق أسبوعيًا في الحصة لتدريب الطلاب على المنصة.","التواصل مع أولياء أمور الطلاب غير المشاركين لتفعيل الدخول من المنزل.","تكريم الطلاب المتقنين في الإذاعة أو لوحة الشرف لتحفيز زملائهم.","إشراك الطلاب المتقنين أقرانًا مساعدين لزملائهم غير المشاركين.","توفير جهاز في مركز مصادر التعلم للطلاب الذين لا يملكون جهازًا.","إعادة قياس المشاركة بعد أسبوعين وتعديل الخطة العلاجية حسب النتائج."];
+const getRecs=()=>{try{return localStorage.getItem(RECK)||""}catch(e){return ""}};
+function recsHtml(blankIfEmpty){const L=getRecs().split("\n").map(x=>x.trim()).filter(Boolean);if(!L.length&&!blankIfEmpty)return "";
+ return `<h2>📝 توصيات ومقترحات معلم المادة</h2>`+(L.length?`<ul>${L.map(x=>`<li>${escR(x.replace(/^[-•*\d.)\s]+/,""))}</li>`).join("")}</ul>`:`<div style="line-height:2.6;color:#adb5bd">${"…".repeat(90)}<br>${"…".repeat(90)}<br>${"…".repeat(90)}</div>`)}
+(function(){const tools=document.querySelector(".rp-tools");const btn=document.createElement("button");btn.id="rpRecs";btn.type="button";btn.className="hide";btn.style.background="#0b7285";btn.textContent="📝 توصيات المعلم";tools.insertBefore(btn,$("rpClose"));
+ const box=document.createElement("div");box.id="rpRecBox";box.className="hide";box.style.cssText="background:#fff;border:2px solid #0b7285;border-radius:14px;padding:12px;margin:8px 0";
+ box.innerHTML='<b style="font-size:17px">📝 توصيات ومقترحات معلم المادة</b><p class="hint" style="margin:4px 0 8px">اكتب كل توصية في سطر، أو اضغط اقتراحًا لإضافته. تُحفظ على هذا الجهاز وتظهر في التقرير. لا تكتب أسماء طلاب هنا؛ لأن التوصيات تظهر أيضًا في نسخة ملف الإنجاز.</p><div id="rpIdeas" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div><textarea id="rpRecTxt" rows="6" style="width:100%;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid #cbd5e1"></textarea><div class="row" style="margin-top:8px"><button id="rpRecSave" type="button">✓ حفظ وإظهار في التقرير</button><button id="rpRecClear" type="button" class="secondary">مسح التوصيات</button></div>';
+ tools.parentNode.insertBefore(box,$("reportDoc"));
+ $("rpIdeas").innerHTML=REC_IDEAS.map((x,i)=>`<button type="button" data-idea="${i}" class="secondary" style="font-size:14px;padding:6px 10px;margin:0">＋ ${escR(x)}</button>`).join("");
+ const rerender=()=>{const k=$("reportWrap").dataset.kind;if(k==="counselor")renderCounselReport();else if(k==="portfolio")renderPortfolioReport()};
+ btn.onclick=()=>{box.classList.toggle("hide");$("rpRecTxt").value=getRecs();if(!box.classList.contains("hide"))$("rpRecTxt").focus()};
+ $("rpIdeas").onclick=e=>{const b=e.target.closest("[data-idea]");if(!b)return;const t=$("rpRecTxt"),x=REC_IDEAS[+b.dataset.idea];if(t.value.includes(x))return;t.value=(t.value.trim()?t.value.trim()+"\n":"")+x};
+ $("rpRecSave").onclick=()=>{try{localStorage.setItem(RECK,$("rpRecTxt").value.trim())}catch(e){}rerender();box.classList.add("hide");$("rpStatus").textContent="✓ أُضيفت توصيات المعلم إلى التقرير"};
+ $("rpRecClear").onclick=()=>{if(!confirm("مسح جميع التوصيات؟"))return;$("rpRecTxt").value="";try{localStorage.removeItem(RECK)}catch(e){}rerender()};
+ new MutationObserver(()=>{const k=$("reportWrap").dataset.kind,ok=k==="portfolio"||k==="counselor";btn.classList.toggle("hide",!ok);if(!ok)box.classList.add("hide")}).observe($("reportWrap"),{attributes:true,attributeFilter:["data-kind"]});
+})();
 
 const _renderT=render;render=function(){_renderT();if(!$("reportWrap").classList.contains("hide"))$("rpClass").onchange()};
 </script></html>
