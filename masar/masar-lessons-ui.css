@@ -1,0 +1,176 @@
+/* ===== مسار التقدم — ملف الدروس: الهوية الجديدة «الدرب» + تنقل أسهل بين المحطات ===== */
+:root{
+  --mz-bg:#F5F0E6;--mz-card:#FFFDF8;--mz-ink:#1F2A27;--mz-muted:#66736D;--mz-line:#E4DBC9;
+  --mz-pine:#0F5B4F;--mz-pine2:#0A4239;--mz-mint:#DFF0E8;--mz-sun:#EE6C2B;--mz-sun2:#D4551A;--mz-sun-soft:#FDE9DB;
+  --mz-maize:#F4C04A;--mz-maize-soft:#FFF4D6;--mz-bar:58px;
+  --mz-font:'Readex Pro',Tajawal,Tahoma,Arial,sans-serif;--mz-display:'Changa','Readex Pro',Tajawal,Tahoma,sans-serif;
+  /* إعادة توجيه متغيرات الملف القائمة إلى ألوان الهوية */
+  --navy:#0A4239;--blue:#0F5B4F;--blue2:#16715F;--cyan:#2E8B6F;--gold:#F4C04A;--ink:#1F2A27;--ink2:#3F4D47;--muted:#66736D;
+  --sky:#EEF5EF;--bg:#F5F0E6;--border:#E4DBC9;--line:#E4DBC9;--card:#FFFDF8;--brand:#0F5B4F;--brand2:#2E8B6F;--accent:#F4C04A;
+  --sh:0 1px 2px rgba(31,42,39,.05),0 10px 28px rgba(31,42,39,.07);
+}
+html{background:var(--mz-bg)}
+body{font-family:var(--mz-font)!important;font-weight:500;font-size:16.5px;color:var(--mz-ink)!important;background:var(--mz-bg)!important;
+  background-image:radial-gradient(rgba(15,91,79,.07) 1.2px,transparent 1.3px)!important;background-size:22px 22px!important}
+button,input,select,textarea{font-family:var(--mz-font)!important}
+h1,h2,h3,.question,.tc-title,.labtitle{font-family:var(--mz-display)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--mz-maize)!important;outline-offset:2px}
+
+/* ---------- الشريط العلوي المضغوط الثابت ---------- */
+body>header{position:sticky!important;top:0;z-index:60;background:var(--mz-pine2)!important;background-image:none!important;border-radius:0!important;box-shadow:0 6px 20px rgba(10,66,57,.22)!important;overflow:visible!important}
+body>header:before,body>header:after{display:none!important}
+body>header .inner{display:flex;align-items:center;gap:14px;padding:7px 18px!important;min-height:var(--mz-bar)}
+.branding{gap:11px!important;min-width:0}
+.atom{width:42px!important;height:42px!important;border-radius:13px!important;background:var(--mz-maize)!important;border:0!important;box-shadow:none!important;animation:none!important}
+.atom svg{width:27px;height:27px}
+.branding h1{font-size:19px!important;font-weight:700!important;line-height:1.45!important;white-space:nowrap}
+.branding h1 span{display:none}
+.branding p{font-size:12px!important;color:#BFE0D5!important;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topnav{margin:0 auto 0 0!important;margin-inline-start:auto!important;margin-inline-end:0!important;gap:6px!important;flex-wrap:nowrap!important}
+.topnav button{min-height:40px!important;padding:6px 15px!important;border-radius:999px!important;background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.22)!important;color:#fff!important;font-weight:600!important;font-size:14.5px;display:flex;align-items:center;gap:7px;transition:background .15s}
+.topnav button:hover{background:rgba(255,255,255,.2)!important}
+.topnav button.active{background:var(--mz-maize)!important;border-color:var(--mz-maize)!important;color:var(--mz-ink)!important;box-shadow:none!important}
+.topnav button i{font-style:normal;font-size:16px}
+
+/* ---------- حركة الانتقال بين الصفحات والمحطات ---------- */
+.mz-enter{animation:mzIn .3s ease both}
+.mz-enter-tab{animation:mzTab .26s ease both}
+@keyframes mzIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes mzTab{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* ---------- عناصر عامة ---------- */
+.shell{padding-top:4px}
+.notice{background:var(--mz-maize-soft)!important;border:1px solid #EBD79E!important;border-inline-start:5px solid var(--mz-maize)!important;border-right-width:1px;color:#5E4708!important;border-radius:14px!important;box-shadow:none!important;font-size:14px!important;font-weight:500;margin:16px 0!important}
+.panel,.bookpanel,.card,.h-hero-text,.x-head,.x-card,.tc-card,.qb-card,.mini{background:var(--mz-card)!important;border-color:var(--mz-line)!important}
+.panel,.bookpanel,.card{border-radius:20px!important}
+.btn{background:var(--mz-pine)!important;background-image:none!important;box-shadow:none!important;border-radius:13px!important;font-weight:700!important;min-height:46px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(15,91,79,.22)!important}
+.btn.secondary{background:#EFE7D8!important;color:var(--mz-ink)!important}
+.btn.green{background:#2E8B6F!important}
+.btn.outline{background:#fff!important;color:var(--mz-pine)!important;border:1.5px solid var(--mz-line)!important}
+.chip,.h-eyebrow{background:var(--mz-mint)!important;color:var(--mz-pine)!important;font-weight:700}
+.chip.amber{background:var(--mz-maize-soft)!important;color:#7A5A06!important}
+.pbar{background:#EDE5D4!important}
+.number,.h-path b{background:var(--mz-pine)!important;color:#fff!important}
+.sec-title h2{font-size:25px!important;font-weight:700}
+.small{color:var(--mz-muted)!important}
+.footer{color:var(--mz-muted)!important}
+.option{background:#fff!important;border-color:var(--mz-line)!important;color:var(--mz-ink)!important;font-weight:600!important;border-radius:14px!important}
+.option.chosen{background:var(--mz-mint)!important;border-color:var(--mz-pine)!important}
+.option.correct{background:#E0F5E9!important;border-color:#1E9E5A!important}
+.option.wrong{background:#FDECEE!important;border-color:#D1495B!important}
+.skillbuttons button{border-color:var(--mz-line)!important;color:var(--mz-ink)!important;border-radius:999px!important;font-weight:600!important;background:#fff!important}
+.skillbuttons button.active{background:var(--mz-ink)!important;color:#fff!important;border-color:var(--mz-ink)!important}
+.concept{background:#EEF5EF!important;border-right-color:var(--mz-pine)!important}
+.key{background:var(--mz-maize-soft)!important;border-color:#EBD79E!important;border-right-color:var(--mz-maize)!important}
+.tbl th{background:#F1EADC!important;color:#4B5953!important}
+.qb-category.active,.exam-filters-v6 button.active,.labbtn.active{background:var(--mz-pine)!important;border-color:var(--mz-pine)!important;color:#fff!important}
+.exam-choice-v6 b{background:var(--mz-pine2)!important}
+.metric{background:var(--mz-pine2)!important}
+
+/* ---------- الرئيسية ---------- */
+.h-hero{margin:18px 0 16px!important}
+.h-hero-text{border-radius:24px!important;box-shadow:var(--sh)!important}
+.h-hero-text:before{display:none!important}
+.h-hero h2{font-weight:700!important;font-size:33px!important}
+.h-hero h2 em{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:var(--mz-sun)!important}
+.h-path span{background:#fff!important;border-color:var(--mz-line)!important;color:var(--mz-ink)!important;font-weight:600!important}
+.h-stat{border-radius:20px!important;box-shadow:var(--sh)!important}
+.h-stat strong{font-family:var(--mz-display);font-weight:700!important}
+.h-stat:nth-child(1){background:var(--mz-pine)!important}
+.h-stat:nth-child(2){background:#7A5AA6!important}
+.h-stat:nth-child(3){background:#2E8B6F!important}
+.h-stat:nth-child(4){background:var(--mz-sun)!important}
+.h-filter button{background:#fff!important;border-color:var(--mz-line)!important;color:var(--mz-ink)!important;font-weight:600!important}
+.h-filter button.active{background:var(--c)!important;border-color:var(--c)!important;color:#fff!important}
+.h-card{border-radius:20px!important;box-shadow:var(--sh)!important;background:var(--mz-card)!important}
+.h-card:hover{transform:translateY(-4px)!important;box-shadow:0 18px 38px rgba(31,42,39,.14)!important}
+.h-card-top{background:linear-gradient(135deg,var(--c),var(--mz-pine2))!important}
+.h-badge{background:var(--mz-card)!important}
+.h-card h3{font-weight:700!important}
+.h-card .btn{background:var(--c)!important}
+.m-ban{background:var(--mz-pine)!important;background-image:none!important;border-radius:18px!important}
+.m-ban.m-err{background:#A8341F!important}
+
+/* ---------- داخل الدرس: شريط الموقع ---------- */
+.mz-crumb{display:flex;align-items:center;gap:8px;margin:14px 0 10px;flex-wrap:wrap}
+.mz-crumb button{display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:6px 14px;border-radius:999px;border:1.5px solid var(--mz-line);background:var(--mz-card);color:var(--mz-ink);font-weight:600;font-size:14.5px;transition:border-color .15s,background .15s}
+.mz-crumb button:hover{border-color:var(--mz-pine)}
+.mz-crumb button:disabled{opacity:.4;cursor:default}
+.mz-crumb .mz-back{background:var(--mz-ink);color:#fff;border-color:var(--mz-ink)}
+.mz-crumb .mz-pos{margin-inline-start:auto;font-size:13.5px;color:var(--mz-muted);font-weight:600}
+.hero-lesson{background:linear-gradient(120deg,var(--mz-pine2),var(--c))!important;border-radius:22px!important;box-shadow:var(--sh)!important;margin-top:0!important;padding:20px 24px!important}
+.hero-lesson h2{font-weight:700!important;font-size:28px!important}
+.hero-lesson img{height:104px!important;width:80px!important}
+
+/* ---------- المحطات الخمس: درب مرقّم يظهر كاملًا دون تمرير أفقي ---------- */
+.tabs.mz-steps{position:sticky;top:calc(var(--mz-bar) + 6px);z-index:40;display:grid!important;grid-template-columns:repeat(5,1fr);gap:0!important;overflow:visible!important;
+  background:var(--mz-card)!important;border:1px solid var(--mz-line)!important;border-radius:20px!important;padding:10px 6px 8px!important;margin:12px 0 14px!important;box-shadow:var(--sh)!important}
+.mz-steps button{position:relative;display:flex!important;flex-direction:column;align-items:center;gap:4px;min-width:0!important;min-height:0!important;padding:0 2px!important;border:0!important;background:transparent!important;color:var(--mz-muted)!important;font-weight:600!important;font-size:13.5px;white-space:nowrap;box-shadow:none!important}
+.mz-steps button:before{content:'';position:absolute;top:19px;inset-inline-start:-50%;width:100%;height:4px;background:#EDE5D4;border-radius:4px;z-index:0}
+.mz-steps button:first-child:before{display:none}
+.mz-steps button.passed:before,.mz-steps button.active:before{background:var(--mz-pine)}
+.mz-steps button i{position:relative;z-index:1;font-style:normal;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:19px;background:#fff;border:3px solid #EDE5D4;transition:transform .18s,background .18s,border-color .18s}
+.mz-steps button.passed i{border-color:var(--mz-pine);background:var(--mz-mint)}
+.mz-steps button.active i{border-color:var(--mz-sun);background:var(--mz-sun);transform:scale(1.14);box-shadow:0 6px 14px rgba(238,108,43,.35)}
+.mz-steps button.active{color:var(--mz-ink)!important;font-weight:700!important}
+.mz-steps button:hover i{border-color:var(--mz-pine)}
+.mz-steps button span{overflow:hidden;text-overflow:ellipsis;max-width:100%}
+
+/* ---------- أسفل الدرس: المحطة السابقة / التالية ---------- */
+.mz-pager{display:flex;gap:10px;margin:18px 0 6px;align-items:stretch}
+.mz-pager button{min-height:54px;border-radius:16px;font-weight:700;font-size:16.5px;border:0;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 18px;transition:transform .12s,box-shadow .12s}
+.mz-pager .mz-prev{flex:0 0 auto;background:#EFE7D8;color:var(--mz-ink)}
+.mz-pager .mz-next{flex:1;background:var(--mz-sun);color:#fff;box-shadow:0 8px 18px rgba(238,108,43,.28)}
+.mz-pager .mz-next:hover{transform:translateY(-1px);background:var(--mz-sun2)}
+.mz-pager .mz-next small{font-weight:500;opacity:.9;font-size:13px}
+.tc-next{background:var(--mz-pine)!important;background-image:none!important}
+.tc-prev{background:#EFE7D8!important;color:var(--mz-ink)!important}
+.tc-dots i.on{background:var(--mz-pine)!important}
+.tc-hook{background:var(--mz-mint)!important;color:var(--mz-pine2)!important}
+.tc-kicker{color:var(--mz-sun)!important}
+
+/* ---------- الجوال ---------- */
+@media(max-width:760px){
+  :root{--mz-bar:52px}
+  body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+  body>header .inner{padding:5px 12px!important}
+  .branding p{display:none}
+  .atom{width:38px!important;height:38px!important}
+  .branding h1{font-size:17.5px!important}
+  /* التنقل الرئيس يصبح شريطًا سفليًا */
+  .topnav{position:fixed;bottom:0;inset-inline:0;z-index:70;margin:0!important;gap:4px!important;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:var(--mz-card);border-top:1px solid var(--mz-line);box-shadow:0 -8px 24px rgba(31,42,39,.1)}
+  .topnav button{flex:1!important;flex-direction:column;gap:1px!important;min-height:52px!important;padding:4px!important;border-radius:14px!important;background:transparent!important;border:0!important;color:var(--mz-muted)!important;font-size:12.5px!important}
+  .topnav button i{font-size:20px}
+  .topnav button.active{background:var(--mz-mint)!important;color:var(--mz-pine)!important}
+  /* داخل الدرس: الشريط السفلي يصبح «السابقة / التالية» */
+  body.in-lesson .topnav{display:none!important}
+  body.in-lesson .mz-pager{position:fixed;bottom:0;inset-inline:0;z-index:70;margin:0;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:var(--mz-card);border-top:1px solid var(--mz-line);box-shadow:0 -8px 24px rgba(31,42,39,.12)}
+  body.in-lesson .mz-pager button{min-height:50px;font-size:15.5px}
+  .mz-crumb{margin:10px 0 8px}
+  .mz-crumb button{min-height:40px;padding:5px 12px;font-size:13.5px}
+  .mz-crumb .mz-pos{flex-basis:auto}
+  .hero-lesson{padding:14px 16px!important;grid-template-columns:1fr 58px!important}
+  .hero-lesson h2{font-size:22px!important;margin:2px 0!important}
+  .hero-lesson p{font-size:14px;line-height:1.7}
+  .hero-lesson img{height:76px!important;width:58px!important}
+  .tabs.mz-steps{padding:8px 2px 6px!important;border-radius:16px!important;margin:10px 0 12px!important}
+  .mz-steps button{font-size:11.5px}
+  .mz-steps button i{width:34px;height:34px;font-size:16px}
+  .mz-steps button:before{top:16px}
+  .h-hero h2{font-size:26px!important}
+  .sec-title h2{font-size:22px!important}
+}
+@media print{body>header,.mz-crumb,.mz-pager,.topnav{display:none!important}body{background:#fff!important;padding:0!important}}
+/* رأس التجربة: كان عنوانه أبيض على خلفية بيضاء */
+.x-head{color:var(--mz-ink)!important;border-radius:22px!important;overflow:hidden}
+.x-head:before,.x-head:after{display:none!important}
+.x-head h2{color:var(--mz-ink)!important;font-weight:700!important}
+@media(max-width:760px){
+  .mz-crumb{flex-wrap:nowrap}
+  .mz-crumb .mz-arrow span{display:none}
+  .mz-crumb .mz-arrow{width:42px;padding:0;justify-content:center;font-size:17px}
+  .mz-crumb .mz-pos{margin-inline:auto 4px;white-space:nowrap}
+}
+body:not([data-mz-page="home"]) .notice{display:none!important}
