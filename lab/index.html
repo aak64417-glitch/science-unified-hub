@@ -580,6 +580,9 @@ const EXPS=[
   {id:'half',t:'نموذج عمر النصف',st:'mid',gs:['3'],s:'chem',i:'atom',gr:'ثالث متوسط',ls:'النواة'},
   {id:'elem',t:'الفلزات واللافلزات وأشباه الفلزات',st:'mid',gs:['3'],s:'chem',i:'bolt',gr:'ثالث متوسط',ls:'العناصر الممثلة'},
   {id:'circ',t:'الدوائر الكهربائية البسيطة',st:'mid',gs:['3'],s:'phys',i:'bolt',gr:'ثالث متوسط',ls:'الدوائر الكهربائية'},
+  {id:'elec',t:'التحليل الكهربائي للماء',st:'mid',gs:['3','sec'],s:'chem',i:'bolt',gr:'ثالث متوسط · ثانوي',d3:true},
+  {id:'gasp',t:'تحضير الغازات والكشف عنها',st:'mid',gs:['3','sec'],s:'chem',i:'flask',gr:'ثالث متوسط · ثانوي',d3:true},
+  {id:'flame',t:'الكشف باللهب',st:'mid',gs:['3','sec'],s:'chem',i:'spark',gr:'ثالث متوسط · ثانوي',d3:true},
   {id:'cellm',t:'الخلية تحت المجهر',st:'mid',gs:['1','2','3'],s:'bio',i:'cell'},
   {id:'titr',t:'المعايرة بين حمض وقاعدة',st:'sec',gs:['sec'],s:'chem',i:'drop'},
   {id:'rate',t:'العوامل المؤثرة في سرعة التفاعل',st:'sec',gs:['sec'],s:'chem',i:'temp'},
@@ -601,7 +604,7 @@ function renderLib(){
     <article class="card s-${e.s} ${e.ready?'ready':'locked'}" ${e.ready?`tabindex="0" role="button" data-open="${e.id}"`:''}>
       <div class="thumb"><div class="ph">${svg(ICONS[e.i])}</div><img src="card-${e.id}.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="chip ${e.ready?'ready':'soon'}">${e.ready?'✓ متاح':'قيد البناء'}</span></div>
       <div class="row"><h3>${e.t}</h3><div class="ico">${svg(ICONS[e.i])}</div></div>
-      <div class="meta"><span class="chip">${SUBJ[e.s]}</span><span class="chip">${e.gr||STAGE[e.st]}</span>${e.ls?`<span class="chip">درس: ${e.ls}</span>`:''}</div>
+      <div class="meta">${e.d3?'<span class="chip" style="background:var(--ink);color:var(--bg)">3D</span>':''}<span class="chip">${SUBJ[e.s]}</span><span class="chip">${e.gr||STAGE[e.st]}</span>${e.ls?`<span class="chip">درس: ${e.ls}</span>`:''}</div>
       <div class="go"><span>${e.ready?'تشغيل التجربة':'ستتوفر قريباً'}</span><span>${e.ready?'←':''}</span></div>
     </article>`).join(''):'<div class="empty">لا توجد تجارب تطابق البحث.</div>';
 }
@@ -1051,7 +1054,7 @@ function makeRoom(o={}){roomTex();const W=o.w||15.4,g=new THREE.Group();
     if(t===1||t===3){const liq=new THREE.Mesh(new THREE.CylinderGeometry(r*0.9,r*0.9,h*0.55,18),new THREE.MeshStandardMaterial({color:[0x9ec9e6,0xd9c86a,0xc4e3c0][k%3],transparent:true,opacity:.6}));liq.position.y=h*0.3;b.add(liq);}
     b.position.set(x,shelfY+0.04,-1.72+(k%2)*0.08);b.traverse(m=>{if(m.isMesh&&!m.material.transparent)m.castShadow=true;});g.add(b);x+=r*2+0.14+(k%7===6?0.6:0);k++;}
   // poster
-  const pst=new THREE.Mesh(new THREE.PlaneGeometry(2.6,1.62),new THREE.MeshStandardMaterial({map:ROOM_TEX.poster,roughness:.7}));pst.position.set(W*0.36,4.6,-1.99);
+  const pst=new THREE.Mesh(new THREE.PlaneGeometry(2.6,1.62),new THREE.MeshStandardMaterial({map:ROOM_TEX.poster,roughness:.7}));pst.position.set(W*0.36,4.6,-1.975);
   const frame=new THREE.Mesh(new THREE.BoxGeometry(2.72,1.74,0.04),new THREE.MeshStandardMaterial({color:0x2f3438,roughness:.5}));frame.position.set(W*0.36,4.6,-2.0);g.add(frame,pst);
   // faucet + gas tap at back right
   const fx=W/2-0.7;const fm=M.steel;const base=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.09,0.12,16),fm);base.position.set(fx,0.18,-1.75);
@@ -4252,6 +4255,7 @@ EXPS.forEach(e=>{if(EXP_MODS[e.id])e.ready=true;});renderLib();
 
 if(location.hash.length>1)openExp(location.hash.slice(1));
 </script>
+<script src="lab3d-pro.js"></script>
 
 <script>
 (function(){
