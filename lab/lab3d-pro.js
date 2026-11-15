@@ -122,13 +122,13 @@ function Flame(o={}){const s=o.s||1,g=new THREE.Group();
     const me=new THREE.Mesh(new THREE.LatheGeometry(flameProf(R*s,H*s),36),m);me.renderOrder=9;me.frustumCulled=false;me.userData.op=op;g.add(me);return me;};
   const bOut=mk(.11,.66,0x3b55ff,0x6f8fff,.42,.012,.5),bIn=mk(.06,.25,0x2f7bff,0x9fdcff,.85,.004,.7),
         lum=mk(.125,1.1,0xff9a1f,0x4a63ff,.8,.05,.18),lumC=mk(.07,.75,0xffd34d,0xffe9a0,.6,.04,.5),
-        salt=mk(.15,.9,0xffffff,0xffffff,1.05,.022,.35),saltC=mk(.09,.55,0xffffff,0xffffff,.55,.015,.4);
+        salt=mk(.2,1.15,0xffffff,0xffffff,1.6,.025,.3),saltC=mk(.12,.75,0xffffff,0xffffff,1.1,.018,.4);
   const glowM=new THREE.SpriteMaterial({map:P3.glowTex(),color:0xffffff,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false});
   const glow=new THREE.Sprite(glowM);glow.scale.setScalar(1.2*s);glow.position.y=.36*s;glow.renderOrder=10;g.add(glow);
   const light=new THREE.PointLight(0xffaa66,0,5*s,2);light.position.y=.4*s;g.add(light);
   const NS=46,sp=new Float32Array(NS*3),sd=[];for(let i=0;i<NS;i++)sd.push({y:Math.random(),x:(Math.random()-.5)*.14,z:(Math.random()-.5)*.14,v:.5+Math.random()*.8});
   const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
-  const sm=new THREE.PointsMaterial({size:.045*s,map:P3.glowTex(),color:0xffffff,transparent:true,opacity:0,depthWrite:false});
+  const sm=new THREE.PointsMaterial({size:.07*s,map:P3.glowTex(),color:0xffffff,transparent:true,opacity:0,depthWrite:false});
   const pts=new THREE.Points(sg,sm);pts.frustumCulled=false;pts.renderOrder=10;g.add(pts);
   const S={on:false,air:1,salt:0xffffff,saltK:0,lumK:1,boost:1,wB:0,wL:0,wS:0,lightK:1};
   let last=performance.now();const cB=new THREE.Color(),cL=new THREE.Color(),cS=new THREE.Color(),cT=new THREE.Color();
@@ -137,9 +137,9 @@ function Flame(o={}){const s=o.s||1,g=new THREE.Group();
     const tb=S.on?S.air:0,tl=S.on?(1-S.air):0,ts=S.on?S.saltK:0;
     S.wB+=(tb-S.wB)*k;S.wL+=(tl-S.wL)*k;S.wS+=(ts-S.wS)*Math.min(1,dt*9);
     const set=(me,w)=>{const u=me.material.uniforms;u.uOp.value=me.userData.op*w*S.boost;u.uTime.value=t;me.visible=w>.01;};
-    set(bOut,S.wB*(1-.85*S.wS));set(bIn,S.wB);set(lum,S.wL*S.lumK);set(lumC,S.wL*S.lumK);set(salt,S.wS);set(saltC,S.wS);
-    salt.material.uniforms.uCol.value.set(S.salt);salt.material.uniforms.uCore.value.set(S.salt).lerp(_w,.12);
-    saltC.material.uniforms.uCol.value.set(S.salt);saltC.material.uniforms.uCore.value.set(S.salt).lerp(_w,.3);
+    set(bOut,S.wB*(1-S.wS));set(bIn,S.wB*(1-.6*S.wS));set(lum,S.wL*S.lumK);set(lumC,S.wL*S.lumK);set(salt,S.wS);set(saltC,S.wS);
+    salt.material.uniforms.uCol.value.set(S.salt);salt.material.uniforms.uCore.value.set(S.salt);
+    saltC.material.uniforms.uCol.value.set(S.salt);saltC.material.uniforms.uCore.value.set(S.salt).lerp(_w,.15);
     cB.copy(blueC).multiplyScalar(S.wB*.35);cL.copy(lumCol).multiplyScalar(S.wL*S.lumK);cS.copy($lc(S.salt)).multiplyScalar(S.wS*1.2);
     cT.copy(cB).add(cL).add(cS);const tot=Math.max(cT.r,cT.g,cT.b);
     if(tot>.001){glowM.color.copy(cT).multiplyScalar(1/tot);light.color.copy(glowM.color);}
@@ -761,7 +761,7 @@ const SB={};SALTS.forEach(s=>SB[s.id]=s);
 const S={lit:false,air:.15,cobalt:false,busy:false,loop:'new',rec:{},recCob:{},unk:SALTS[Math.floor(Math.random()*SALTS.length)].id,unkSeen:null,unkAns:'',unkOk:null,airTold:false,last:null};
 P3.dbg.flame=S;const NAMES=['إشعال الموقد','ضبط اللهب الأزرق','تنظيف السلك','الكشف عن الأملاح'];
 const sec=P3.section('flame',{title:'الكشف باللهب',grade:'ثالث متوسط · ثانوي',lesson:'الكشف عن العناصر',
-  hud:`<div class="p3-m warm"><small>لون اللهب الملاحظ</small><b class="flC" style="font-family:var(--f-body);font-size:1.02rem">—</b></div>`,
+  hud:`<div class="p3-m warm" style="min-width:170px"><small>لون اللهب الملاحظ</small><b class="flC" style="font-family:var(--f-body);font-size:1.05rem">—</b></div>`,
   side:`<div class="p3-box"><h4 class="p3-h">لوحة التحكم</h4>
     <div class="p3-acts"><button class="p3-b pri" data-a="lit">🔥 أشعل الموقد</button><label class="p3-rng">فتحة الهواء<input type="range" min="0" max="100" value="15" class="flAir" aria-label="فتحة الهواء"></label></div>
     <div class="p3-acts"><button class="p3-b" data-a="clean">🧪 نظّف السلك بالحمض</button><button class="p3-b" data-a="cob">🔷 الزجاج الأزرق</button></div>
@@ -793,6 +793,11 @@ const hole2=hole.clone();hole2.position.set(0,0,-.084);hole2.rotation.y=Math.PI;
 const barb=new THREE.Mesh(new THREE.CylinderGeometry(.025,.03,.22,12),G.brass);barb.rotation.z=Math.PI/2;barb.position.set(.2,.14,0);
 const mouth=new THREE.Mesh(new THREE.TorusGeometry(.065,.01,8,24),M.steel);mouth.rotation.x=Math.PI/2;mouth.position.y=BY;
 BG.add(bbase,bcone,btube,collar,barb,mouth);castAll(BG);L.add(BG);
+// dark matte screen behind the burner (flame tests are viewed against a dark background)
+const scr=new THREE.Group();{const p=new THREE.Mesh(RBox(1.9,1.9,.05,.03),KIT.mat(0x0d1114,{roughness:.95}));p.position.y=1.95;
+  const f1=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,1.0,10),M.steel);f1.position.set(-.8,.5,0);const f2=f1.clone();f2.position.x=.8;
+  const ft=new THREE.Mesh(RBox(1.9,.05,.3,.01),KIT.mat(0x2d3a40));ft.position.y=.025;scr.add(p,f1,f2,ft);castAll(scr);}
+scr.position.set(BX,0,BZ-.75);L.add(scr);
 const flame=Flame({s:1.35});flame.g.position.set(BX,BY,BZ);flame.S.air=S.air;L.add(flame.g);
 // gas tap + hose
 const GT=new THREE.Group();GT.position.set(1.7,0,-1.3);
@@ -822,6 +827,9 @@ const Q_WORK=P3.qFrom(.55,.5,.67),Q_REST=P3.qFrom(.1,-1,.06);
 const HOLD=V(-.95,.2,1.0);const REST=HOLD.clone().sub(V(0,1.08,0).applyQuaternion(Q_REST));
 LP.position.copy(REST);LP.quaternion.copy(Q_REST);
 const FE=V(BX+.12,BY+.42,BZ+.05);
+const CAM_F=V(BX,BY+1.15,BZ+3.7),TGT_F=V(BX,BY+.65,BZ);
+async function focus(on){const c=L.controls,p0=L.camera.position.clone(),t0=c.target.clone();
+  const p1=on?CAM_F:L.camHome,t1=on?TGT_F:L.tgt;await L.tw(700,k=>{const e=ease(k);L.camera.position.copy(lerpV(p0,p1,e));c.target.copy(lerpV(t0,t1,e));});}
 async function moveLoop(p,q,d){const p0=LP.position.clone(),q0=LP.quaternion.clone();await L.tw(d,k=>{const e=ease(k);LP.position.copy(lerpV(p0,p,e));LP.quaternion.copy(q0).slerp(q,e);});}
 /* ---------- sample dishes ---------- */
 const DZ=1.6,DX=[-2.45,-1.75,-1.05,-.35,.35,1.05,1.75,2.45];
@@ -864,20 +872,20 @@ async function clean(){if(S.busy)return;if(!S.lit){toast('أشعل الموقد 
 async function test(id){if(S.busy)return;if(!S.lit){toast('أشعل الموقد أولًا.');return;}S.busy=true;sync();
   const real=id==='x'?SB[S.unk]:SB[id],d=dishes[id];
   await moveLoop(V(d.x,.75,DZ),Q_WORK,700);await moveLoop(V(d.x,.085,DZ),Q_WORK,330);
-  blob.material.color.copy($lc(real.pw));blob.visible=true;await sleep(160);await moveLoop(V(d.x,.85,DZ),Q_WORK,330);await moveLoop(FE,Q_WORK,800);
+  blob.material.color.copy($lc(real.pw));blob.visible=true;await sleep(160);await moveLoop(V(d.x,.85,DZ),Q_WORK,330);await Promise.all([moveLoop(FE,Q_WORK,800),focus(true)]);
   const prev=S.loop,cont=prev!=='clean'&&prev!==id;let ph=null,pid=null;
   if(cont){const p=prev==='new'?SB.na:SB[prev==='x'?S.unk:prev];if(p.id!==real.id){ph=p.col;pid=p.id;}}
   const disp=shown(real.col,real.id,ph,pid);const lumi=S.air<.6;
   flame.S.salt=disp;flame.S.saltK=lumi?.3:1;hot.material.opacity=.9;
-  flC.innerHTML=lumi?'غير واضح':`<span class="p3-sw" style="background:${hex6(disp)}"></span>${S.cobalt?'عبر الزجاج الأزرق':''}`;
+  flC.innerHTML=lumi?'غير واضح (لهب مضيء)':`<span class="p3-sw" style="background:${hex6(disp)};width:22px;height:22px;vertical-align:-6px"></span>${pid?'لون مختلط':S.cobalt?'عبر الزجاج الأزرق':id==='x'?'لاحظ اللون':real.cn}`;
   setTimeout(()=>{blob.visible=false;},1200);
-  await sleep(3400);flame.S.saltK=0;hot.material.opacity=0;
+  await sleep(4200);flame.S.saltK=0;hot.material.opacity=0;
   if(lumi)S.last='اللهب المضيء يحجب لون العيّنة؛ افتح فتحة الهواء ثم كرّر.';
   else if(pid)S.last='اللون غير دقيق لأن السلك ملوّث بعيّنة سابقة. نظّفه بالحمض ثم كرّر.';
   else{if(id==='x'){S.unkSeen=disp;S.last='لاحظ لون لهب العيّنة X وحدّد الأيون في دفتر المختبر.';}
     else{if(S.cobalt){S.recCob[id]=disp;S.last=`${real.f} عبر الزجاج الأزرق: ${id==='na'?'يختفي اللون الأصفر تقريبًا':'لاحظ اللون'}`;}else{S.rec[id]=true;S.last=`${real.f}: لون اللهب ${real.cn}`;}}}
   toast(S.last);S.loop=id;
-  await moveLoop(REST,Q_REST,900);S.busy=false;flC.textContent='—';sync();render();renderNB();}
+  await Promise.all([moveLoop(REST,Q_REST,900),focus(false)]);S.busy=false;flC.textContent='—';sync();render();renderNB();}
 async function cobalt(){if(S.busy)return;S.cobalt=!S.cobalt;const a=S.cobalt?CB_OFF:CB_ON,b=S.cobalt?CB_ON:CB_OFF;const p0=a.p.clone();
   await L.tw(700,k=>{const e=ease(k);CB.position.copy(lerpV(p0,b.p,e));CB.rotation.y=a.r+(b.r-a.r)*e;});
   toast(S.cobalt?'الزجاج الأزرق أمام اللهب: يحجب لون الصوديوم الأصفر.':'أُبعد الزجاج الأزرق.');sync();}
