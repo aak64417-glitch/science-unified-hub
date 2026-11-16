@@ -2050,16 +2050,19 @@ TB.forEach(tb=>setRust(tb.k,0));sync();render();renderNB();
    ١٧) الذائبية والمحاليل المشبعة وفوق المشبعة (المخاليط والمحاليل)
    ١٨) الكاشف الطبيعي والتعادل (المحاليل الحمضية والقاعدية)
    ===================================================================== */
+const VIV=(c,op=.93)=>new THREE.MeshStandardMaterial({color:$lc(c),emissive:$lc(c),emissiveIntensity:.18,roughness:.22,transparent:true,opacity:op,depthWrite:false});
+const vset=(m,h)=>{m.color.copy($lc(h));if(m.emissive)m.emissive.copy(m.color);};
+function vivTube(t){t.g.traverse(x=>{if(x.isMesh&&x.material===G.glassT)x.material=G.glass;if(x.isMesh&&x.material===t.lm){x.material=VIV(0xd6ecf5,.6);t.lm=x.material;}});return t;}
 function Beaker(r=.34,h=.62,o={}){const g=new THREE.Group();
   const gl=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,40,1,true),G.glass);gl.position.y=h/2;gl.renderOrder=3;
   const bt=new THREE.Mesh(new THREE.CircleGeometry(r,40),G.glassS);bt.rotation.x=-Math.PI/2;bt.position.y=.004;
   const lip=new THREE.Mesh(new THREE.TorusGeometry(r+.004,.012,8,40),G.glassS);lip.rotation.x=Math.PI/2;lip.position.y=h;
-  const lm=G.water(o.col||0xbfe2f0,o.op||.5);const liq=new THREE.Mesh(new THREE.CylinderGeometry(r*.95,r*.95,1,36),lm);liq.renderOrder=1;liq.visible=false;
+  const lm=VIV(o.col||0x6fb8e0,o.op||.9);const liq=new THREE.Mesh(new THREE.CylinderGeometry(r*.95,r*.95,1,36),lm);liq.renderOrder=1;liq.visible=false;
   g.add(gl,bt,lip,liq);
   for(let i=1;i<=4;i++){const t=new THREE.Mesh(new THREE.BoxGeometry(.06,.006,.004),KIT.mat(0x5d6d73));t.position.set(r*.55,h*i/5,r*.84);g.add(t);}
   const set=lv=>{liq.visible=lv>.003;liq.scale.y=Math.max(.001,lv);liq.position.y=lv/2+.006;};
   return {g,lm,set,r,h,liq};}
-function Drops(L,n=26,col=0x8fd0ee,size=.018){const im=new THREE.InstancedMesh(new THREE.SphereGeometry(size,8,6),G.water(col,.85),n);im.count=0;im.frustumCulled=false;L.add(im);
+function Drops(L,n=26,col=0x8fd0ee,size=.018){const im=new THREE.InstancedMesh(new THREE.SphereGeometry(size,8,6),VIV(col,.95),n);im.count=0;im.frustumCulled=false;L.add(im);
   const d=new THREE.Object3D();let on=false,src=V(0,0,0),dst=0,t0=0;
   P3.loop(L,(dt,s)=>{if(!on){im.count=0;return;}im.count=n;for(let i=0;i<n;i++){const p=((s-t0)*1.6+i/n)%1;d.position.set(src.x+Math.sin(i*7)*.02,src.y-(src.y-dst)*p,src.z+Math.cos(i*5)*.02);d.scale.set(1,1.5,1);d.updateMatrix();im.setMatrixAt(i,d.matrix);}im.instanceMatrix.needsUpdate=true;});
   return {start:(p,y)=>{src=p.clone();dst=y;on=true;t0=performance.now()/1000;},stop:()=>{on=false;}};}
@@ -2113,7 +2116,7 @@ function hState(k,w){return k==='a'?[1-Math.min(1,w/3.3),Math.min(1,Math.max(0,(
 // إبريق الري
 const can=new THREE.Group();{const b=new THREE.Mesh(new THREE.CylinderGeometry(.16,.18,.3,24),KIT.phys(0x2f8f6b));b.position.y=.15;const sp=new THREE.Mesh(new THREE.CylinderGeometry(.018,.03,.42,10),KIT.phys(0x2f8f6b));sp.rotation.z=-1.0;sp.position.set(.28,.22,0);
   const hd=new THREE.Mesh(new THREE.TorusGeometry(.1,.018,8,20,Math.PI),KIT.phys(0x2f8f6b));hd.position.set(-.1,.3,0);hd.rotation.z=.6;can.add(b,sp,hd);castAll(can);}
-const CAN_HOME=V(2.4,0,.6);can.position.copy(CAN_HOME);L.add(can);const drops=Drops(L,22);
+const CAN_HOME=V(2.4,0,.6);can.position.copy(CAN_HOME);L.add(can);const drops=Drops(L,22,0x3f9fe0,.022);
 async function water(i){const o=P[PL[i].k];await L.arc(can,V(o.x-.55,.95,.35),700,1.4);await L.tw(250,k=>can.rotation.z=-.7*k);drops.start(V(o.x-.18,1.05,.35),.46);
   o.soil.material.color.copy($lc(0x2e2016));await sleep(650);drops.stop();await L.tw(250,k=>can.rotation.z=-.7*(1-k));}
 async function setW(i){if(S.busy||S.set[i])return;S.busy=true;sync();await water(i);await L.arc(can,CAN_HOME,600,1.4);S.set[i]=1;S.busy=false;P3.click();
@@ -2256,13 +2259,13 @@ const toast=m=>L.toast(m);
 const hp=new THREE.Group();{const b=new THREE.Mesh(RBox(.95,.16,.8,.04),KIT.mat(0xe9ecee,{roughness:.4}));b.position.y=.08;const p=new THREE.Mesh(new THREE.CylinderGeometry(.36,.36,.02,32),KIT.mat(0x30363c,{metalness:.5}));p.position.y=.17;
   const k=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.04,16),KIT.mat(0x1f2933));k.rotation.x=Math.PI/2;k.position.set(.3,.08,.41);hp.add(b,p,k);hp.userData.p=p;castAll(hp);}
 hp.position.set(0,0,.4);L.add(hp);
-const BK=Beaker(.32,.6);BK.g.position.set(0,.18,.4);BK.set(.3);L.add(BK.g);
+const BK=Beaker(.32,.6,{op:.55});BK.g.position.set(0,.18,.4);BK.set(.3);L.add(BK.g);
 const card=P3.card([{t:'100 جم ماء',s:64}],.5,.16);card.position.set(0,.06,1.05);card.rotation.x=-.9;L.add(card);
 const th=new THREE.Group();{const t=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.9,10),G.glassS);t.position.y=.45;const r=new THREE.Mesh(new THREE.CylinderGeometry(.006,.006,1,8),KIT.mat(0xd62d20));th.userData.r=r;const bl=new THREE.Mesh(new THREE.SphereGeometry(.02,12,8),KIT.mat(0xd62d20));bl.position.y=.02;th.add(t,r,bl);}
 th.position.set(.15,.2,.35);th.rotation.z=-.12;L.add(th);
 const setTh=T=>{const h=.15+.6*T/100;th.userData.r.scale.y=h;th.userData.r.position.y=h/2;};
-const pile=new THREE.Mesh(new THREE.ConeGeometry(.2,.1,24),KIT.mat(0xfbfbf7,{roughness:.9}));pile.position.set(0,.24,.4);pile.visible=false;L.add(pile);
-const CR=new THREE.InstancedMesh(new THREE.BoxGeometry(.03,.03,.03),KIT.phys(0xffffff,{roughness:.15,transparent:true,opacity:.9}),40);CR.count=0;CR.position.set(0,.18,.4);L.add(CR);
+const pile=new THREE.Mesh(new THREE.ConeGeometry(.2,.1,24),KIT.mat(0xfbfbf7,{roughness:.9}));pile.position.set(0,.24,.4);pile.visible=false;pile.renderOrder=2;L.add(pile);
+const CR=new THREE.InstancedMesh(new THREE.BoxGeometry(.03,.03,.03),KIT.phys(0xffffff,{roughness:.15,transparent:true,opacity:.9}),40);CR.count=0;CR.renderOrder=2;CR.position.set(0,.18,.4);L.add(CR);
 const spoon=new THREE.Group();{const h=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.5,8),M.steel);h.rotation.z=Math.PI/2;h.position.x=.25;const b=new THREE.Mesh(new THREE.SphereGeometry(.06,16,10,0,Math.PI*2,Math.PI/2,Math.PI/2),M.steel);const s=new THREE.Mesh(new THREE.SphereGeometry(.05,12,8),KIT.mat(0xffffff,{roughness:.9}));s.scale.y=.4;s.position.y=-.01;spoon.add(h,b,s);spoon.userData.s=s;castAll(spoon);}
 const SP_HOME=V(-1.1,.3,.7);spoon.position.copy(SP_HOME);L.add(spoon);
 const jar=new THREE.Group();{const j=new THREE.Mesh(new THREE.CylinderGeometry(.18,.18,.36,24),KIT.phys(0xf5f5f0,{transparent:true,opacity:.6}));j.position.y=.18;const s=new THREE.Mesh(new THREE.CylinderGeometry(.17,.17,.28,24),KIT.mat(0xffffff,{roughness:.95}));s.position.y=.14;const l=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.05,24),KIT.mat(0x2f6fb2));l.position.y=.38;jar.add(j,s,l);castAll(jar);}
@@ -2271,7 +2274,7 @@ function state(){const cap=sol(S.temp);const dis=S.seed?S.added-S.cry:(S.sup&&S.
   const st=S.added===0?'غير مشبع':(S.sup&&S.cool&&!S.seed&&S.added>cap+1)?'فوق مشبع':(und>.5||Math.abs(dis-cap)<1)?'مشبع':'غير مشبع';return {cap,dis,und,st};}
 function hud(){const s=state();sec.$('.slT').textContent=Math.round(S.temp)+' °C';sec.$('.slA').textContent=S.added+' g';sec.$('.slD').textContent=Math.round(s.dis)+' g';sec.$('.slS').textContent=s.st;
   pile.visible=s.und>.5&&!S.seed;if(pile.visible){const k=Math.sqrt(s.und/50);pile.scale.set(k,k,k);pile.position.y=.19+.05*k;}
-  setCol(BK.lm,mixHex(0xbfe2f0,0xf3f1e6,Math.min(1,s.dis/300)));setTh(S.temp);
+  vset(BK.lm,mixHex(0x3f9bd8,0xc99a3e,Math.min(1,s.dis/300)));setTh(S.temp);
   sec.$('.slChart').innerHTML=KIT.chart({w:330,h:200,xl:'درجة الحرارة (°س)',yl:'جم/100 جم ماء',xmin:0,xmax:100,ymin:0,ymax:500,series:[{c:'var(--brand)',name:'منحنى الذائبية',pts:CURVE},{c:'#e0473c',name:'محلولك',pts:[[S.temp,Math.round(s.dis)]],dots:true}]});}
 function rec(lbl){const s=state();S.rows.push([lbl,String(Math.round(S.temp)),String(S.added),String(Math.round(s.dis)),s.st]);renderNB();}
 async function add(){if(S.busy||S.added>=250||S.heat)return;S.busy=true;sync();await L.arc(spoon,V(-1.25,.55,.35),500,.7);spoon.userData.s.visible=true;await L.arc(spoon,V(-.12,.95,.4),700,1.1);
@@ -2323,34 +2326,34 @@ const sec=P3.section('cab8',{title:'الكاشف الطبيعي (الملفوف 
   report:()=>({title:'الكاشف الطبيعي والتعادل',grade:'ثاني متوسط',lesson:'المحاليل الحمضية والمحاليل القاعدية',cols:['المحلول','لون الكاشف','التصنيف'],
     rows:SOLS.map((s,i)=>[s.n,S.drops[i]?CABC[s.c][1].replace(/^/,''):'',S.drops[i]?(s.c<3?'حمضي':s.c>3?'قاعدي':'متعادل'):'']),note:'رتّب المحاليل من الأشد حمضية إلى الأشد قاعدية.'})
 });
-const L=new Lab(sec,{target:V(.1,.55,.45),dist:a=>Math.max(4.2,7.0/a),exposure:.95});buildRoom(L);
+const L=new Lab(sec,{target:V(-.2,.55,.45),dist:a=>Math.max(4.3,7.1/a),exposure:.95});buildRoom(L);
 const toast=m=>L.toast(m);
 const rack=new THREE.Group();{const t=new THREE.Mesh(RBox(3.0,.06,.36,.02),KIT.wood(0x9b6a3c));t.position.y=.62;const b=new THREE.Mesh(RBox(3.0,.06,.36,.02),KIT.wood(0x9b6a3c));b.position.y=.03;rack.add(t,b);[-1.47,1.47].forEach(x=>{const s=new THREE.Mesh(RBox(.06,.62,.36,.01),KIT.wood(0x8a5a32));s.position.set(x,.33,0);rack.add(s);});castAll(rack);}
 rack.position.set(-.8,0,.25);L.add(rack);
-const TT=SOLS.map((s,i)=>{const x=-2.1+i*.43,t=TestTube(.12,.95);t.g.position.set(x,.14,.25);t.seg(0,.45);setCol(t.lm,s.n==='الصابون'?0xeef0ff:0xe6f3f8);t.lm.opacity=.5;L.add(t.g);
+const TT=SOLS.map((s,i)=>{const x=-2.1+i*.43,t=vivTube(TestTube(.12,.95));t.g.position.set(x,.14,.25);t.seg(0,.45);vset(t.lm,s.n==='الصابون'?0xe9ecf7:0xd6ecf5);t.lm.opacity=.6;L.add(t.g);
   const c=P3.card([{t:s.n,s:s.n.length>10?62:80}],.42,.17);c.position.set(x,.05,.62);c.rotation.x=-.95;L.add(c);L.onTap(t.g,()=>tapTube(i));return {t,x};});
 const dropper=new THREE.Group();{const g=new THREE.Mesh(new THREE.CylinderGeometry(.02,.012,.3,12),G.glassS);g.position.y=.15;const b=new THREE.Mesh(new THREE.SphereGeometry(.045,14,10),KIT.mat(0x2b2b2b));b.position.y=.33;b.scale.y=1.4;dropper.add(g,b);castAll(dropper);}
 const DR_HOME=V(-2.6,.6,.95);dropper.position.copy(DR_HOME);L.add(dropper);
 const bottle=Beaker(.12,.3,{col:0x5b2a86,op:.85});bottle.set(.22);bottle.g.position.set(-2.6,0,.95);L.add(bottle.g);const bc=P3.card([{t:'عصير الملفوف',s:50}],.42,.12);bc.position.set(-2.6,.05,1.2);bc.rotation.x=-.9;L.add(bc);
 const drops=Drops(L,12,0x6b2fa0,.014);
 // التعادل
-const NB=Beaker(.3,.55);NB.g.position.set(1.75,0,.45);NB.set(.18);setCol(NB.lm,CABC[0][0]);NB.lm.opacity=.7;L.add(NB.g);
+const NB=Beaker(.3,.55);NB.g.position.set(1.75,0,.45);NB.set(.18);vset(NB.lm,CABC[0][0]);L.add(NB.g);
 const nc=P3.card([{t:'20 mL HCl + كاشف',s:44}],.6,.14);nc.position.set(1.75,.05,.95);nc.rotation.x=-.9;L.add(nc);
 const ST=KIT.stand(2.2);ST.position.set(2.35,0,.15);L.add(ST);
 const bur=new THREE.Group();{const t=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,1.1,16,1,true),G.glass);t.position.y=.55;t.renderOrder=3;const tip=new THREE.Mesh(new THREE.ConeGeometry(.04,.12,16),G.glassS);tip.rotation.x=Math.PI;tip.position.y=-.06;
-  const lm=G.water(0xd8eef8,.6);const lq=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,1,14),lm);bur.userData.lq=lq;const v=new THREE.Mesh(new THREE.BoxGeometry(.1,.03,.03),KIT.mat(0x1f6feb));v.position.y=.02;bur.add(t,tip,lq,v);}
+  const lm=VIV(0xb9dcef,.85);const lq=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,1,14),lm);bur.userData.lq=lq;const v=new THREE.Mesh(new THREE.BoxGeometry(.1,.03,.03),KIT.mat(0x1f6feb));v.position.y=.02;bur.add(t,tip,lq,v);}
 bur.position.set(1.75,1.0,.45);L.add(bur);const setBur=()=>{const f=1-S.vb/50;bur.userData.lq.scale.y=f;bur.userData.lq.position.y=.05+f/2;};setBur();
 const bl=P3.card([{t:'NaOH 0.1 mol/L',s:48,mono:true}],.5,.12);bl.position.set(1.75,2.25,.45);L.add(bl);
 const meter=KIT.lcd(.5,.2);meter.m.position.set(1.05,.45,.75);meter.m.rotation.y=.35;L.add(meter.m);meter.set('pH 1.0');
 async function tapTube(i){if(S.busy||S.drops[i])return;S.busy=true;const o=TT[i];await L.arc(dropper,V(-2.6,.5,.95),400,.9);await L.arc(dropper,V(o.x,1.2,.25),700,1.3);drops.start(V(o.x,1.18,.25),.6);
-  const c0=new THREE.Color(o.t.lm.color),c1=$lc(CABC[SOLS[i].c][0]);await L.tw(900,k=>{o.t.lm.color.copy(c0).lerp(c1,k);o.t.lm.opacity=.5+.35*k;});drops.stop();await L.arc(dropper,DR_HOME,500,1.3);
+  const c0=new THREE.Color(o.t.lm.color),c1=$lc(CABC[SOLS[i].c][0]);await L.tw(900,k=>{o.t.lm.color.copy(c0).lerp(c1,k);o.t.lm.emissive.copy(o.t.lm.color);o.t.lm.opacity=.6+.36*k;});drops.stop();await L.arc(dropper,DR_HOME,500,1.3);
   S.drops[i]=1;S.busy=false;P3.click();if(S.drops.every(Boolean))toast('أُضيف الكاشف إلى المحاليل السبعة. رتّبها الآن مستعينًا بجدول الألوان.');sync();render();renderNB();}
 function pick(i){if(S.busy||!S.drops.every(Boolean)||S.picked.length>=7)return;if(ORDER[S.picked.length]===i){S.picked.push(i);P3.click();if(S.picked.length===7){P3.good();toast('ترتيب صحيح! الماء المقطر الأقرب إلى التعادل، والأمونيا الأقوى قاعدية.');}}else toast('ليس هذا دوره؛ قارن لون الأنبوب بجدول الألوان.');sync();render();}
 async function addB(v){if(S.busy||S.picked.length<7||S.neut)return;if(S.vb+v>20.001){toast('ستتجاوز نقطة التعادل! أضف كمية أصغر.');return;}S.busy=true;sync();drops.start(V(1.75,.92,.45),.25);const v0=S.vb,v1=Math.round((S.vb+v)*10)/10;
-  const c0=new THREE.Color(NB.lm.color);await L.tw(600+v*120,k=>{S.vb=v0+(v1-v0)*k;setBur();NB.set(.18+.12*S.vb/20);const p=pH(S.vb);sec.$('.cbV').textContent=S.vb.toFixed(1)+' mL';sec.$('.cbP').textContent=p.toFixed(1);meter.set('pH '+p.toFixed(1));NB.lm.color.copy(c0).lerp($lc(CABC[byPH(p)][0]),k);});
+  const c0=new THREE.Color(NB.lm.color);await L.tw(600+v*120,k=>{S.vb=v0+(v1-v0)*k;setBur();NB.set(.18+.12*S.vb/20);const p=pH(S.vb);sec.$('.cbV').textContent=S.vb.toFixed(1)+' mL';sec.$('.cbP').textContent=p.toFixed(1);meter.set('pH '+p.toFixed(1));NB.lm.color.copy(c0).lerp($lc(CABC[byPH(p)][0]),k);NB.lm.emissive.copy(NB.lm.color);});
   drops.stop();S.vb=v1;S.pts.push([v1,+pH(v1).toFixed(2)]);if(Math.abs(v1-20)<1e-6){S.neut=true;P3.good();toast('pH = 7: تعادل الحمض مع القاعدة فتكوّن ملح وماء.');}S.busy=false;sync();render();renderNB();}
-function rz(){if(S.busy)return;S.vb=0;S.neut=false;S.pts=[[0,1]];setBur();NB.set(.18);setCol(NB.lm,CABC[0][0]);sec.$('.cbV').textContent='0.0 mL';sec.$('.cbP').textContent='1.0';meter.set('pH 1.0');sync();render();renderNB();}
-function reset(){if(S.busy)return;S.drops=SOLS.map(()=>0);S.picked=[];TT.forEach((o,i)=>{setCol(o.t.lm,SOLS[i].n==='الصابون'?0xeef0ff:0xe6f3f8);o.t.lm.opacity=.5;});rz();toast('أُعيدت التجربة.');}
+function rz(){if(S.busy)return;S.vb=0;S.neut=false;S.pts=[[0,1]];setBur();NB.set(.18);vset(NB.lm,CABC[0][0]);sec.$('.cbV').textContent='0.0 mL';sec.$('.cbP').textContent='1.0';meter.set('pH 1.0');sync();render();renderNB();}
+function reset(){if(S.busy)return;S.drops=SOLS.map(()=>0);S.picked=[];TT.forEach((o,i)=>{vset(o.t.lm,SOLS[i].n==='الصابون'?0xe9ecf7:0xd6ecf5);o.t.lm.opacity=.6;});rz();toast('أُعيدت التجربة.');}
 function stepIdx(){if(!S.drops.every(Boolean))return 0;if(S.picked.length<7)return 1;return 2;}
 function render(){const k=stepIdx();let title,html;
   if(k===0){title='أضف الكاشف الطبيعي';html=`<p class="p3-txt">في الأنابيب سبعة محاليل منزلية. اضغط على كل أنبوب لتضيف إليه 10 قطرات من عصير الملفوف البنفسجي، ولاحظ اللون (${S.drops.filter(Boolean).length} / 7).</p>`;}
