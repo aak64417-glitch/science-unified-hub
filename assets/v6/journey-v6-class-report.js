@@ -477,9 +477,79 @@
       a.download = `${mode === 'one' ? 'ملف-الإنجاز-' : ''}تقرير-الفصل-${String(f.cls).replace('/', '-')}-${new Date().toISOString().slice(0, 10)}.html`;
       document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
     };
+    let im = document.getElementById('v6crImage');
+    if (!im) { im = document.createElement('button'); im.id = 'v6crImage'; im.className = 'btn'; bar.appendChild(im); }
+    im.classList.toggle('hidden', mode === 'one'); im.disabled = false; im.textContent = '📷 لوحة التميز كصورة (واتساب)';
+    im.onclick = () => shareReportImage(f, mode, im);
     // إخفاء الزر عند فتح تقارير أخرى
     const close = document.getElementById('closeReport');
-    if (close && !close.dataset.v6cr) { close.dataset.v6cr = '1'; close.addEventListener('click', () => { b.classList.add('hidden'); document.getElementById('v6crSwitch')?.classList.add('hidden'); $('reportPaper').classList.remove('v6cr-paper', 'v6cr-paper-one'); }); }
+    if (close && !close.dataset.v6cr) { close.dataset.v6cr = '1'; close.addEventListener('click', () => { b.classList.add('hidden'); document.getElementById('v6crImage')?.classList.add('hidden'); document.getElementById('v6crSwitch')?.classList.add('hidden'); $('reportPaper').classList.remove('v6cr-paper', 'v6cr-paper-one'); }); }
+  }
+
+  /* ---------------- تصدير التقرير صورةً ومشاركته (واتساب) ---------------- */
+  let h2cP = null;
+  function loadH2C() {
+    if (g.html2canvas) return Promise.resolve();
+    return h2cP || (h2cP = new Promise((ok, no) => {
+      const sc = document.createElement('script');
+      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      sc.onload = ok; sc.onerror = () => { h2cP = null; no(new Error('تعذر تحميل أداة الصور. تحقق من الإنترنت.')); };
+      document.head.appendChild(sc);
+    }));
+  }
+  async function shareReportImage(f, mode, btn) {
+    const card = document.querySelector('#reportPaper .v6cr-card.honor');
+    if (!card) { alert('لا توجد لوحة تميز في هذا التقرير.'); return; }
+    const label = btn.textContent; btn.disabled = true; btn.textContent = 'جارٍ تجهيز الصورة…';
+    let box = null;
+    try {
+      await loadH2C();
+      if (document.fonts?.ready) await document.fonts.ready;
+      // بطاقة مستقلة بعرض ثابت خارج الشاشة: لوحة التميز فقط بخط كبير يناسب شاشة الجوال
+      const c = card.cloneNode(true);
+      c.querySelector('h3')?.remove();
+      // html2canvas لا يرسم ترقيم القوائم العربية بشكل صحيح، فنحوّلها إلى صفوف مرقّمة يدويًا
+      c.querySelectorAll('ol').forEach(ol => {
+        const items = [...ol.children];
+        const list = document.createElement('div');
+        list.className = 'v6cr-hs-list' + (items.length > 8 ? ' two' : '');
+        if (items.length > 8) list.style.gridTemplateRows = `repeat(${Math.ceil(items.length / 2)}, auto)`;
+        items.forEach((li, i) => {
+          const b = li.querySelector('b'); const score = b ? b.outerHTML : ''; b?.remove();
+          const row = document.createElement('div'); row.className = 'v6cr-hs-row';
+          row.innerHTML = `<span class="v6cr-hs-n">${i + 1}</span><span class="v6cr-hs-name">${E(li.textContent.trim())}</span>${score}`;
+          list.appendChild(row);
+        });
+        ol.replaceWith(list);
+      });
+      const day = new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' });
+      box = document.createElement('div');
+      box.className = 'report-paper v6cr-paper v6cr-honor-shot';
+      box.style.cssText = 'position:absolute;left:-12000px;top:0;width:760px;max-width:none;margin:0;padding:0;box-sizing:border-box;background:#fff;border-radius:0';
+      box.innerHTML = `<div class="v6cr-hs-head"><div class="v6cr-hs-medal">🏅</div><h2>لوحة التميز</h2><p>علوم • الفصل <bdi>${E(f.cls)}</bdi> • ${E(T.school)}</p></div>
+        <div class="v6cr-hs-body"></div>
+        <div class="v6cr-hs-foot"><span>معلم المادة: ${E(T.teacher)}</span><span>${E(day)}</span></div>`;
+      box.querySelector('.v6cr-hs-body').appendChild(c);
+      document.body.appendChild(box);
+      const w = box.scrollWidth, h = box.scrollHeight;
+      const scale = Math.max(1, Math.min(2.5, Math.sqrt(15e6 / (w * h))));
+      const canvas = await g.html2canvas(box, { scale, backgroundColor: '#ffffff', useCORS: true, logging: false, width: w, height: h, windowWidth: 1100 });
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+      if (!blob) throw new Error('تعذر إنشاء الصورة.');
+      const name = `لوحة-التميز-${String(f.cls).replace('/', '-')}-${new Date().toISOString().slice(0, 10)}.png`;
+      const file = new File([blob], name, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file], title: `لوحة التميز — الفصل ${f.cls}` }); return; }
+        catch (e) { if (e && e.name === 'AbortError') return; }
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    } catch (e) {
+      alert(e.message || 'تعذر حفظ لوحة التميز كصورة.');
+    } finally {
+      box?.remove(); btn.disabled = false; btn.textContent = label;
+    }
   }
 
   /* ---------------- فتح التقرير مباشرة (من جدول الروابط الذكية) ---------------- */
