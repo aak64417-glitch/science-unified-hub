@@ -219,7 +219,7 @@ P3.section=(id,cfg)=>{
       <div class="toast"></div></div>
   </div>
   <div data-p="learn" hidden><div class="info">${cfg.learn}</div><div class="panel"><h3>اختبر نفسك <span class="score"></span></h3><div class="quiz"></div></div></div>
-  <div data-p="report" hidden>${reportShell()}</div>`;
+  <div data-p="report" hidden><div class="p3-acts" style="justify-content:center;margin:4px 0 12px"><a class="p3-b pri" href="sheet-${id}.html?print=1" target="_blank" rel="noopener" style="text-decoration:none">🖨 ورقة تقرير الطالب للطباعة</a><a class="p3-b" href="sheet-${id}.html" target="_blank" rel="noopener" style="text-decoration:none">👁 معاينة الورقة</a></div>${reportShell()}</div>`;
   document.querySelector('main').appendChild(sec);
   sec.$=q=>sec.querySelector(q);sec.$$=q=>[...sec.querySelectorAll(q)];
   sec.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
@@ -863,14 +863,16 @@ function setAir(v){S.air=v;flame.S.air=v;collar.rotation.y=v*Math.PI*.9;
 async function lit(){if(S.busy)return;S.lit=!S.lit;const a0=gtl.rotation.x,a1=S.lit?-1.4:0;await L.tw(250,k=>gtl.rotation.x=a0+(a1-a0)*ease(k));
   if(S.lit){P3.spark();setTimeout(()=>{flame.S.on=true;P3.whoosh();},180);toast(S.air<.6?'اشتعل الموقد بلهب أصفر مضيء. افتح فتحة الهواء للحصول على لهب أزرق.':'اشتعل الموقد بلهب أزرق.');}
   else flame.S.on=false;sync();render();}
-async function clean(){if(S.busy)return;if(!S.lit){toast('أشعل الموقد أولًا.');return;}S.busy=true;sync();
+async function clean(){if(S.busy)return;if(!S.lit){toast('أشعل الموقد أولًا.');return;}S.busy=true;sync();await doClean();
+  await moveLoop(REST,Q_REST,850);S.busy=false;toast('السلك نظيف: لم يعد يلوّن اللهب.');sync();render();}
+async function doClean(){
   await moveLoop(V(KX,.95,KZ),Q_WORK,700);await moveLoop(V(KX,.22,KZ),Q_WORK,350);await sleep(250);await moveLoop(V(KX,.95,KZ),Q_WORK,350);await moveLoop(FE,Q_WORK,750);
   hot.material.opacity=.9;const prev=S.loop;
   if(prev!=='clean'){const p=prev==='new'?SB.na:SB[prev==='x'?S.unk:prev];flame.S.salt=shown(p.col,p.id);flame.S.saltK=.55;await sleep(700);flame.S.saltK=0;}
-  await sleep(900);hot.material.opacity=0;S.loop='clean';blob.visible=false;
-  await moveLoop(REST,Q_REST,850);S.busy=false;toast('السلك نظيف: لم يعد يلوّن اللهب.');sync();render();}
+  await sleep(900);hot.material.opacity=0;S.loop='clean';blob.visible=false;}
 async function test(id){if(S.busy)return;if(!S.lit){toast('أشعل الموقد أولًا.');return;}S.busy=true;sync();
   const real=id==='x'?SB[S.unk]:SB[id],d=dishes[id];
+  if(S.loop!=='clean'){toast('يُنظَّف السلك بالحمض أولًا حتى لا تختلط الألوان…');await doClean();}
   await moveLoop(V(d.x,.75,DZ),Q_WORK,700);await moveLoop(V(d.x,.085,DZ),Q_WORK,330);
   blob.material.color.copy($lc(real.pw));blob.visible=true;await sleep(160);await moveLoop(V(d.x,.85,DZ),Q_WORK,330);await Promise.all([moveLoop(FE,Q_WORK,800),focus(true)]);
   const prev=S.loop,cont=prev!=='clean'&&prev!==id;let ph=null,pid=null;
@@ -900,7 +902,7 @@ function render(){const k=stepIdx();let title,html;
   if(k===0){title='أشعل موقد بنزن';html=`<p class="p3-txt">اضغط «أشعل الموقد» أو اضغط على الموقد في المشهد. فتحة الهواء شبه مغلقة الآن.</p>`;}
   else if(k===1){title='اضبط اللهب';html=`<p class="p3-txt">اللهب <b>أصفر مضيء</b> لأن فتحة الهواء مغلقة. حرّك منزلق <b>فتحة الهواء</b> حتى يصبح اللهب <b>أزرق غير مضيء</b>.</p>`;}
   else if(k===2){title='نظّف السلك';html=`<p class="p3-txt">اغمس سلك النيكروم في <b>حمض الهيدروكلوريك</b> ثم سخّنه في اللهب حتى لا يلوّنه. كرّر التنظيف قبل كل عيّنة.</p>`;}
-  else{title='اكشف عن الأملاح';html=`<p class="p3-txt">اختر ملحًا من اللوحة أو اضغط على طبقه. ${S.loop==='clean'?'السلك نظيف وجاهز.':'<b>نظّف السلك أولًا</b> وإلا تختلط الألوان.'} سجّلت ${Object.keys(S.rec).length} من ${SALTS.length}.</p>${S.last?`<p class="p3-ok">${S.last}</p>`:''}`;}
+  else{title='اكشف عن الأملاح';html=`<p class="p3-txt">اختر ملحًا من اللوحة أو اضغط على طبقه. ${S.loop==='clean'?'السلك نظيف وجاهز.':'يُنظَّف السلك تلقائيًا قبل كل عيّنة.'} سجّلت ${Object.keys(S.rec).length} من ${SALTS.length}.</p>${S.last?`<p class="p3-ok">${S.last}</p>`:''}`;}
   sec.steps(NAMES,k,title,html);}
 function renderNB(){let h=`<table class="p3-t"><thead><tr><th>الملح</th><th>الأيون</th><th>لون اللهب</th><th>عبر الأزرق</th></tr></thead><tbody>`+
   SALTS.map(s=>`<tr><td class="n">${s.f}</td><td>${s.ion}</td><td>${S.rec[s.id]?sw(s.col,s.cn):'—'}</td><td>${S.recCob[s.id]!=null?sw(S.recCob[s.id],s.id==='na'?'لا يُرى':''):'—'}</td></tr>`).join('')+
@@ -1191,51 +1193,58 @@ const sec=P3.section('ruth',{title:'تجربة رذرفورد: صفيحة الذ
   report:()=>({title:'تجربة رذرفورد: صفيحة الذهب',grade:'ثالث متوسط',lesson:'نماذج الذرة',cols:['الإطلاق','نفذت','انحرفت','ارتدّت','نسبة النافذة'],
     rows:S.runs.length?S.runs.map((r,i)=>[(r.real?'صفيحة الذهب':'نموذج طومسون')+` (${i+1})`,String(r.a),String(r.b),String(r.c),(r.a/N*100).toFixed(1)+'%']):[['','','','','']],note:'ماذا تستنتج عن تركيب الذرة؟'})
 });
-const L=new Lab(sec,{target:V(0,1.05,.3),dist:a=>Math.max(4.6,7.6/a),exposure:.85});buildRoom(L);
+const L=new Lab(sec,{target:V(.3,.9,.3),dist:a=>Math.max(3.5,5.9/a),exposure:.85});buildRoom(L);
 const toast=m=>L.toast(m);
-/* ---------- vacuum chamber ---------- */
-const CX=.3,CY=1.05,CZ=.2,R=1.25;const CH=new THREE.Group();CH.position.set(CX,0,CZ);
-const base=new THREE.Mesh(new THREE.CylinderGeometry(1.55,1.62,.18,64),KIT.mat(0x232a30,{metalness:.5,roughness:.35}));base.position.y=.09;
-const bell=new THREE.Mesh(new THREE.SphereGeometry(1.55,48,24,0,Math.PI*2,0,Math.PI/2),new THREE.MeshPhysicalMaterial({color:0xdfeff4,roughness:.04,transparent:true,opacity:.12,clearcoat:1,side:THREE.DoubleSide,depthWrite:false}));bell.position.y=.18;bell.scale.y=1.05;bell.renderOrder=3;bell.material.userData.keepEnv=1;
-// fluorescent ZnS screen (ring, open towards the camera)
-const scrM=new THREE.MeshStandardMaterial({color:0x163028,emissive:0x0a2a1a,roughness:.6,side:THREE.DoubleSide});
-const scr=new THREE.Mesh(new THREE.CylinderGeometry(R,R,.5,96,1,true,Math.PI*.18,Math.PI*1.64),scrM);scr.position.y=CY;
-const foilF=new THREE.Mesh(RBox(.05,.6,.5,.01),KIT.mat(0x3a3f44,{metalness:.6}));foilF.position.set(0,CY,0);
-const foil=new THREE.Mesh(new THREE.PlaneGeometry(.34,.38),KIT.mat(0xffcf4a,{metalness:1,roughness:.18,side:THREE.DoubleSide,emissive:0x3a2a00}));foil.rotation.y=Math.PI/2;foil.position.set(.028,CY,0);
-const post=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,CY-.18,10),M.steel);post.position.set(0,(CY+.18)/2-.15,0);
-// lead source box with slit
+/* ---------- vacuum chamber (dark box, open towards the viewer) ---------- */
+const CX=.3,CY=.95,CZ=.1,R=1.2;const CH=new THREE.Group();CH.position.set(CX,0,CZ);
+const dark=KIT.mat(0x0b1216,{roughness:.95});
+const box=new THREE.Group();[[0,CY,-1.45,3.4,1.9,.05],[0,.04,0,3.4,.08,2.9],[-1.7,CY,0,.05,1.9,2.9],[1.7,CY,0,.05,1.9,2.9],[0,CY+.95,0,3.4,.05,2.9]].forEach(([x,y,z,w,h,d])=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),dark);m.position.set(x,y,z);box.add(m);});
+const rim=new THREE.Mesh(new THREE.BoxGeometry(3.5,.06,.06),KIT.mat(0x2d3a40,{metalness:.5}));rim.position.set(0,CY+.95,1.45);box.add(rim);
+const inLight=new THREE.PointLight(0x9fd8ff,.6,4,2);inLight.position.set(0,CY+.8,.6);box.add(inLight);
+// fluorescent ZnS screen (ring, opening faces the viewer)
+const scrM=new THREE.MeshStandardMaterial({color:0x1b4a36,emissive:0x0c3a24,roughness:.7,side:THREE.DoubleSide});
+const scr=new THREE.Mesh(new THREE.CylinderGeometry(R,R,.55,96,1,true,Math.PI*.2,Math.PI*1.6),scrM);scr.position.y=CY;
+const foilF=new THREE.Mesh(RBox(.05,.55,.45,.01),KIT.mat(0x3a3f44,{metalness:.6}));foilF.position.set(0,CY,0);
+const foil=new THREE.Mesh(new THREE.PlaneGeometry(.36,.42),new THREE.MeshStandardMaterial({color:0xffcf4a,metalness:.9,roughness:.2,side:THREE.DoubleSide,emissive:0x8a6000,emissiveIntensity:.6}));foil.rotation.y=Math.PI/2;foil.position.set(.028,CY,0);
+const post=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,CY-.3,10),M.steel);post.position.set(0,(CY-.3)/2+.08,0);
 const src=new THREE.Group();const lead=new THREE.Mesh(RBox(.42,.36,.36,.03),KIT.mat(0x55606a,{metalness:.4,roughness:.5}));src.add(lead);
-const slit=new THREE.Mesh(new THREE.BoxGeometry(.02,.04,.04),new THREE.MeshBasicMaterial({color:0xff7a4d}));slit.position.x=.215;src.add(slit);
+const slit=new THREE.Mesh(new THREE.BoxGeometry(.02,.05,.05),new THREE.MeshBasicMaterial({color:0xff7a4d}));slit.position.x=.215;src.add(slit);
 const rad=P3.card([{t:'☢ مصدر ألفا',s:54}],.34,.12,{bg:'#ffd84a',bd:'#222',ink:'#222'});rad.position.set(0,.03,.182);src.add(rad);
-src.position.set(-1.0,CY,0);const srcPost=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,CY-.36,10),M.steel);srcPost.position.set(-1.0,(CY-.18+.18)/2,0);
-CH.add(base,scr,foilF,foil,post,src,srcPost,bell);castAll(base);L.add(CH);
-L.label('مصدر جسيمات ألفا',V(CX-1.0,CY+.38,CZ),'small');L.label('صفيحة ذهب رقيقة',V(CX,CY+.42,CZ),'small');L.label('شاشة كبريتيد الخارصين تومض عند الاصطدام',V(CX,CY+.5,CZ-1.25),'small');
-/* ---------- particles + flashes ---------- */
-const NV=140;const pm=new THREE.MeshBasicMaterial({color:0xff7a4d});const ip=new THREE.InstancedMesh(new THREE.SphereGeometry(.018,8,6),pm,NV);ip.count=0;ip.frustumCulled=false;CH.add(ip);
+src.position.set(-.95,CY,0);const srcPost=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,CY-.25,10),M.steel);srcPost.position.set(-.95,(CY-.25)/2+.08,0);
+CH.add(box,scr,foilF,foil,post,src,srcPost);L.add(CH);
+L.label('مصدر جسيمات ألفا',V(CX-.95,CY+.36,CZ),'small');L.label('صفيحة ذهب رقيقة',V(CX,CY+.4,CZ),'small');L.label('شاشة كبريتيد الخارصين: تومض عند كل اصطدام',V(CX,CY+.45,CZ-1.2),'small');
+/* ---------- particles, tracks + flashes ---------- */
+const NV=160;const pm=new THREE.MeshBasicMaterial({color:0xffa060});const ip=new THREE.InstancedMesh(new THREE.SphereGeometry(.03,10,8),pm,NV);ip.count=0;ip.frustumCulled=false;CH.add(ip);
+const trkG=new THREE.BufferGeometry(),trkP=new Float32Array(NV*6),trkC=new Float32Array(NV*6);trkG.setAttribute('position',new THREE.BufferAttribute(trkP,3));trkG.setAttribute('color',new THREE.BufferAttribute(trkC,3));
+const trk=new THREE.LineSegments(trkG,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false}));trk.frustumCulled=false;CH.add(trk);trkG.setDrawRange(0,0);
 const flashes=[];const fm=new THREE.SpriteMaterial({map:P3.glowTex(),color:$lc(0x7dffb0),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false});
-for(let i=0;i<70;i++){const s=new THREE.Sprite(fm.clone());s.visible=false;s.scale.setScalar(.12);s.renderOrder=11;CH.add(s);flashes.push({s,t:-9});}
+for(let i=0;i<90;i++){const s=new THREE.Sprite(fm.clone());s.visible=false;s.scale.setScalar(.2);s.renderOrder=11;CH.add(s);flashes.push({s,t:-9});}
 let fi=0;function flash(p,col){const f=flashes[fi++%flashes.length];f.s.position.copy(p);f.s.material.color.copy($lc(col));f.s.visible=true;f.t=performance.now();}
-const beam=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.8,8),new THREE.MeshBasicMaterial({color:0xff7a4d,transparent:true,opacity:0,depthWrite:false}));beam.rotation.z=Math.PI/2;beam.position.set(-.4,CY,0);CH.add(beam);
-const dum=new THREE.Object3D();let live=[];
-P3.loop(L,(dt,t,now)=>{flashes.forEach(f=>{if(!f.s.visible)return;const a=(now-f.t)/700;if(a>1){f.s.visible=false;return;}f.s.material.opacity=1-a;f.s.scale.setScalar(.1+.08*(1-a));});
+const beam=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.7,8),new THREE.MeshBasicMaterial({color:0xff7a4d,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));beam.rotation.z=Math.PI/2;beam.position.set(-.38,CY,0);CH.add(beam);
+const dum=new THREE.Object3D();let trkFade=0;
+P3.loop(L,(dt,t,now)=>{flashes.forEach(f=>{if(!f.s.visible)return;const a=(now-f.t)/900;if(a>1){f.s.visible=false;return;}f.s.material.opacity=1-a;f.s.scale.setScalar(.16+.12*(1-a));});
+  if(trkFade>0){trkFade-=dt;trk.material.opacity=Math.min(.9,trkFade);if(trkFade<=0)trkG.setDrawRange(0,0);}
   if(S.zoom&&!molBox.hidden)drawZoom(dt);});
-/* direction of a scattered particle (theta from +x, random azimuth limited so it lands on the ring) */
-function dirOf(th){const az=(Math.random()-.5)*.5;return V(Math.cos(th),Math.sin(th)*Math.sin(az)*.3,-Math.sin(th)*Math.cos(az)).normalize();}
+function dirOf(th){const az=(Math.random()-.5)*.6;return V(Math.cos(th),Math.sin(th)*Math.sin(az)*.25,-Math.sin(th)*Math.cos(az)).normalize();}
+const COL=th=>th>Math.PI/2?0xff6a6a:th>10*D?0xffd27a:0x7dffb0;
 async function fire(real){if(S.busy)return;if(!S.pred){toast('سجّل توقّعك أولًا وفق نموذج طومسون.');return;}S.busy=true;sync();
   const th=[...Array(N)].map(()=>angle(real)),cnt={a:0,b:0,c:0};
-  const vis=th.map((t,i)=>({t,i,s:Math.random()*.8,d:dirOf(t),y0:(Math.random()-.5)*.03,z0:(Math.random()-.5)*.03})).filter((o,i)=>o.t>.17||i%5===0).slice(0,NV);
-  const shown=new Set();beam.material.opacity=.35;P3.noise(4.2,.05,1200,.4);
-  const el={a:sec.$('.ruA'),b:sec.$('.ruB'),c:sec.$('.ruC')};
-  await L.tw(4500,k=>{let n=0;vis.forEach((o,j)=>{const u=(k-o.s)/.12;if(u<0)return;let p;
-      if(u<1)p=V(-.8+.8*u,CY+o.y0,o.z0);else{const v=(u-1)*.55;if(v>=1){if(!shown.has(j)){shown.add(j);const hp=o.d.clone().multiplyScalar(R).add(V(0,CY,0));flash(hp,o.t>Math.PI/2?0xff8a8a:o.t>10*D?0xffd27a:0x7dffb0);}return;}
-        p=o.d.clone().multiplyScalar(R*v).add(V(0,CY+o.y0,o.z0));}
+  const vis=th.map((t,i)=>({t,i,s:Math.random()*.85,d:dirOf(t),y0:(Math.random()-.5)*.03,z0:(Math.random()-.5)*.03})).filter((o,i)=>o.t>.17||i%6===0).slice(0,NV);
+  const shown=new Set();beam.material.opacity=.45;trkFade=0;trk.material.opacity=.9;P3.noise(5.8,.05,1200,.4);
+  const el={a:sec.$('.ruA'),b:sec.$('.ruB'),c:sec.$('.ruC')};const c3=new THREE.Color();
+  await L.tw(6000,k=>{let n=0,tn=0;vis.forEach((o,j)=>{const u=(k-o.s)/.09;if(u<0)return;let p;
+      if(u<1)p=V(-.74+.74*u,CY+o.y0,o.z0);else{const v=(u-1)*.5;const end=o.d.clone().multiplyScalar(R*Math.min(1,v)).add(V(0,CY+o.y0,o.z0));
+        if(o.t>10*D){trkP.set([0,CY,0,end.x,end.y,end.z],tn*6);c3.copy($lc(COL(o.t)));trkC.set([c3.r,c3.g,c3.b,c3.r,c3.g,c3.b],tn*6);tn++;}
+        if(v>=1){if(!shown.has(j)){shown.add(j);flash(o.d.clone().multiplyScalar(R).add(V(0,CY,0)),COL(o.t));}return;}p=end;}
       dum.position.copy(p);dum.updateMatrix();ip.setMatrixAt(n++,dum.matrix);});ip.count=n;ip.instanceMatrix.needsUpdate=true;
+    trkG.setDrawRange(0,tn*2);trkG.attributes.position.needsUpdate=true;trkG.attributes.color.needsUpdate=true;
     const m=Math.round(N*k);let a=0,b=0,c=0;for(let i=0;i<m;i++){const d=th[i]/D;if(d<10)a++;else if(d<=90)b++;else c++;}el.a.textContent=a;el.b.textContent=b;el.c.textContent=c;
-    if(Math.random()<.35){const t=Math.random()*.15;flash(V(Math.cos(t)*R,CY+(Math.random()-.5)*.1,-Math.sin(t)*R),0x7dffb0);}});
-  ip.count=0;beam.material.opacity=0;th.forEach(t=>{const d=t/D;if(d<10)cnt.a++;else if(d<=90)cnt.b++;else cnt.c++;});
+    if(Math.random()<.45){const t=Math.random()*.15;flash(V(Math.cos(t)*R,CY+(Math.random()-.5)*.12,-Math.sin(t)*R),0x7dffb0);}});
+  ip.count=0;beam.material.opacity=0;trkFade=6;th.forEach(t=>{const d=t/D;if(d<10)cnt.a++;else if(d<=90)cnt.b++;else cnt.c++;});
   el.a.textContent=cnt.a;el.b.textContent=cnt.b;el.c.textContent=cnt.c;
   S.runs.push({real,...cnt});S.last={real,...cnt};S.busy=false;P3.click();
-  toast(real?`نفذت ${(cnt.a/N*100).toFixed(1)}% من الجسيمات، وارتدّ ${cnt.c} فقط من ${N}.`:'وفق نموذج طومسون: نفذت الجسيمات كلها تقريبًا.');sync();render();renderNB();}
+  toast(real?`نفذت ${(cnt.a/N*100).toFixed(1)}% من الجسيمات، وانحرف ${cnt.b}، وارتدّ ${cnt.c} فقط من ${N}. الخطوط الملوّنة مسارات المنحرفة والمرتدة.`:'وفق نموذج طومسون: نفذت الجسيمات كلها تقريبًا دون انحراف.');
+  if(real&&!S.zoom){S.zoom=true;molBox.hidden=false;}sync();render();renderNB();}
 /* ---------- zoomed atomic view (2D canvas) ---------- */
 const molBox=sec.$('.p3-mol'),cv=molBox.querySelector('canvas'),cx=cv.getContext('2d');const W=cv.width,H=cv.height;let zp=[],zacc=0;
 const nuc=[];for(let r=0;r<3;r++)for(let c=0;c<4;c++)nuc.push({x:150+c*110+(r%2)*55,y:90+r*105});
@@ -1249,7 +1258,7 @@ function drawZoom(dt){cx.fillStyle='#0b2230';cx.fillRect(0,0,W,H);
   cx.fillStyle='rgba(0,0,0,.4)';cx.fillRect(0,H-46,W,46);cx.fillStyle='#fff';cx.font='700 22px "IBM Plex Sans Arabic",sans-serif';cx.direction='rtl';cx.textAlign='center';
   cx.fillText('معظم الذرة فراغ… والنواة الموجبة تصدّ ما يقترب منها',W/2,H-16);}
 /* ---------- UI ---------- */
-function stepIdx(){if(!S.pred)return 0;if(!S.runs.some(r=>!r.real))return 1;if(!S.runs.some(r=>r.real))return 2;return 3;}
+function stepIdx(){if(!S.pred)return 0;if(S.runs.some(r=>r.real))return 3;if(!S.runs.length)return 1;return 2;}
 function render(){const k=stepIdx();let title,html;
   if(k===0){title='توقّع النتيجة';html=`<p class="p3-txt">قبل الإطلاق: ماذا يتوقع نموذج طومسون (الكعكة بالزبيب) لجسيمات ألفا الموجبة عند إطلاقها على صفيحة ذهب رقيقة؟</p>`;}
   else if(k===1){title='جرّب نموذج طومسون';html=`<p class="p3-txt">${S.pred==='pass'?'توقّعك يوافق نموذج طومسون.':'نموذج طومسون يتوقع أن تنفذ الجسيمات كلها تقريبًا.'} اضغط «وفق نموذج طومسون» وراقب الشاشة والعدّادات.</p>`;}
@@ -1910,7 +1919,7 @@ function addTrail(x,z){if(trail.length>90)return;const m=new THREE.Mesh(new THRE
 /* ---------- sim ---------- */
 const R={on:false,t:0,x:0,z:0,dx:1,dz:0,m:null,lastTr:0,size:1};
 P3.loop(L,(dt,t,now)=>{kf.tick(now);bub.update(dt,t);
-  trail.forEach(m=>{m.userData.t+=dt;const k=Math.min(1,m.userData.t/2.2);m.scale.setScalar(.03+.2*k);m.material.opacity=S.php?.32*Math.min(1,m.userData.t*2):0;});
+  trail.forEach(m=>{m.userData.t+=dt;const k=Math.min(1,m.userData.t/2.2);m.scale.setScalar(.03+.2*k);m.material.opacity=S.php?.5*Math.min(1,m.userData.t*2):0;});
   if(!R.on)return;const m=MET[R.m];R.t+=dt;const life=1-R.t/m.dur;const o=m.melt&&R.t>.4?ball:piece;
   if(m.melt&&R.t>.4&&piece.visible){piece.visible=false;ball.visible=true;}
   const sp=m.v*(.6+.4*Math.sin(t*7));R.dx+=(Math.random()-.5)*dt*8;R.dz+=(Math.random()-.5)*dt*8;const l=Math.hypot(R.dx,R.dz)||1;R.dx/=l;R.dz/=l;
