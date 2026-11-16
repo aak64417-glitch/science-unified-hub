@@ -302,6 +302,7 @@
     const ranked = part.slice().sort((a, b) => b.avg - a.avg || b.done - a.done);
     const honor = part.filter(s => s.avg >= 80).sort((a, b) => pct(b.avg) - pct(a.avg) || b.done - a.done || String(a.name).localeCompare(String(b.name), 'ar'));
     const remedial = ranked.filter(s => s.avg < 60 || Object.values(s.best).some(v => v < 60)).reverse();
+    g.__v6crShot = { cls: f.cls, list: honor.filter(s => pct(s.avg) >= 97).map(s => ({ name: s.name, avg: pct(s.avg) })) };
     const improvers = part.filter(s => s.improve > 0).sort((a, b) => b.improve - a.improve).slice(0, 5);
     const times = rows.map(r => +new Date(resultTime(r))).filter(Number.isFinite);
     const range = f.from || f.to ? `${f.from ? fmtDate(f.from) : 'البداية'} – ${f.to ? fmtDate(f.to) : 'اليوم'}` : (times.length ? `${fmtDate(Math.min(...times))} – ${fmtDate(Math.max(...times))}` : '');
@@ -377,7 +378,7 @@
         : weakFreq.size ? `<section class="v6cr-sec"><h2>المفاهيم التي تحتاج تعزيزًا</h2><ul class="v6cr-chips">${[...weakFreq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([w, n]) => `<li>${E(w)} <b>${n}</b></li>`).join('')}</ul></section>` : ''}
 
       <section class="v6cr-grid two">
-        <div class="v6cr-card honor"><h3>🏅 لوحة التميز</h3>${honor.length ? `<ol${honor.length > 8 ? ' class="v6cr-cols"' : ''}>${honor.map(s => `<li>${E(s.name)} <b>${pct(s.avg)}%</b></li>`).join('')}</ol>` : '<p class="v6cr-muted">لم يصل أحد إلى 80% بعد.</p>'}
+        <div class="v6cr-card honor"><h3>🏅 لوحة التميز</h3><button type="button" class="v6cr-shot-btn" data-v6cr-shot="1">📷 صورة المتميزين (97% فأكثر) للواتساب</button>${honor.length ? `<ol${honor.length > 8 ? ' class="v6cr-cols"' : ''}>${honor.map(s => `<li>${E(s.name)} <b>${pct(s.avg)}%</b></li>`).join('')}</ol>` : '<p class="v6cr-muted">لم يصل أحد إلى 80% بعد.</p>'}
           ${improvers.length ? `<h4>الأكثر تحسنًا</h4><ol>${improvers.map(s => `<li>${E(s.name)} <b><bdi dir="ltr">+${pct(s.improve)}</bdi></b></li>`).join('')}</ol>` : ''}</div>
         <div class="v6cr-card remedial"><h3>🩺 المستهدفون بالخطة العلاجية</h3>${remedial.length ? `<ol>${remedial.map(s => { const w = Object.entries(s.best).sort((a, b) => a[1] - b[1])[0]; const gt = groups.find(x => x.key === w?.[0]); return `<li>${E(s.name)} <b>${pct(s.avg)}%</b><small>${gt ? 'الأضعف: ' + E(gt.title) + ' (' + pct(w[1]) + '%)' : ''}</small></li>`; }).join('')}</ol>` : '<p class="v6cr-muted">لا يوجد طلاب دون 60%.</p>'}
           <h4>غير المشاركين: ${absent.length}</h4>${!hide && absent.length ? `<p class="v6cr-absent-list">${absent.map(s => E(s.name)).join('، ')}</p>` : ''}</div>
@@ -479,8 +480,8 @@
     };
     let im = document.getElementById('v6crImage');
     if (!im) { im = document.createElement('button'); im.id = 'v6crImage'; im.className = 'btn'; bar.appendChild(im); }
-    im.classList.toggle('hidden', mode === 'one'); im.disabled = false; im.textContent = '📷 لوحة التميز كصورة (واتساب)';
-    im.onclick = () => shareReportImage(f, mode, im);
+    im.classList.toggle('hidden', mode === 'one'); im.disabled = false; im.textContent = '📷 صورة المتميزين للواتساب';
+    im.onclick = () => shareReportImage(im);
     // إخفاء الزر عند فتح تقارير أخرى
     const close = document.getElementById('closeReport');
     if (close && !close.dataset.v6cr) { close.dataset.v6cr = '1'; close.addEventListener('click', () => { b.classList.add('hidden'); document.getElementById('v6crImage')?.classList.add('hidden'); document.getElementById('v6crSwitch')?.classList.add('hidden'); $('reportPaper').classList.remove('v6cr-paper', 'v6cr-paper-one'); }); }
@@ -497,49 +498,38 @@
       document.head.appendChild(sc);
     }));
   }
-  async function shareReportImage(f, mode, btn) {
-    const card = document.querySelector('#reportPaper .v6cr-card.honor');
-    if (!card) { alert('لا توجد لوحة تميز في هذا التقرير.'); return; }
+  const SHOT_TOP = ['نفخر بكم يا نجوم العلوم 🌟', 'عقول مبدعة… وإنجاز يستحق الفخر', 'تميّزكم اليوم بداية لعلماء الغد', 'بالعلم نرتقي… وأنتم القدوة'];
+  const SHOT_BOTTOM = ['استمروا في التألق، فالقمة تليق بكم ✨', 'إنجازكم ثمرة اجتهادكم… واصلوا المسير 🚀', 'كل سؤال تجيبونه خطوة نحو حلم أكبر 🔬', 'المتميزون لا يتوقفون… إلى الأمام دائمًا 💪'];
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  document.addEventListener('click', e => { const t = e.target.closest?.('[data-v6cr-shot]'); if (t) { e.preventDefault(); shareReportImage(t); } });
+
+  async function shareReportImage(btn) {
+    const d = g.__v6crShot;
+    if (!d || !d.list.length) { alert('لا يوجد طلاب بنسبة 97% فأكثر في هذا التقرير.'); return; }
     const label = btn.textContent; btn.disabled = true; btn.textContent = 'جارٍ تجهيز الصورة…';
     let box = null;
     try {
       await loadH2C();
       if (document.fonts?.ready) await document.fonts.ready;
-      // بطاقة مستقلة بعرض ثابت خارج الشاشة: لوحة التميز فقط بخط كبير يناسب شاشة الجوال
-      const c = card.cloneNode(true);
-      c.querySelector('h3')?.remove();
-      // html2canvas لا يرسم ترقيم القوائم العربية بشكل صحيح، فنحوّلها إلى صفوف مرقّمة يدويًا
-      c.querySelectorAll('ol').forEach(ol => {
-        const items = [...ol.children];
-        const list = document.createElement('div');
-        list.className = 'v6cr-hs-list' + (items.length > 8 ? ' two' : '');
-        if (items.length > 8) list.style.gridTemplateRows = `repeat(${Math.ceil(items.length / 2)}, auto)`;
-        items.forEach((li, i) => {
-          const b = li.querySelector('b'); const score = b ? b.outerHTML : ''; b?.remove();
-          const row = document.createElement('div'); row.className = 'v6cr-hs-row';
-          row.innerHTML = `<span class="v6cr-hs-n">${i + 1}</span><span class="v6cr-hs-name">${E(li.textContent.trim())}</span>${score}`;
-          list.appendChild(row);
-        });
-        ol.replaceWith(list);
-      });
-      const day = new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' });
+      const two = d.list.length > 8;
+      const rows = d.list.map((s, i) => `<div class="v6cr-hs-row"><span class="v6cr-hs-n">${i + 1}</span><span class="v6cr-hs-name">${E(s.name)}</span><b>${s.avg}%</b></div>`).join('');
       box = document.createElement('div');
-      box.className = 'report-paper v6cr-paper v6cr-honor-shot';
-      box.style.cssText = 'position:absolute;left:-12000px;top:0;width:760px;max-width:none;margin:0;padding:0;box-sizing:border-box;background:#fff;border-radius:0';
-      box.innerHTML = `<div class="v6cr-hs-head"><div class="v6cr-hs-medal">🏅</div><h2>لوحة التميز</h2><p>علوم • الفصل <bdi>${E(f.cls)}</bdi> • ${E(T.school)}</p></div>
-        <div class="v6cr-hs-body"></div>
-        <div class="v6cr-hs-foot"><span>معلم المادة: ${E(T.teacher)}</span><span>${E(day)}</span></div>`;
-      box.querySelector('.v6cr-hs-body').appendChild(c);
+      box.className = 'v6cr-honor-shot';
+      box.style.cssText = 'position:absolute;left:-12000px;top:0;width:760px;box-sizing:border-box;background:#fff';
+      box.innerHTML = `<div class="v6cr-hs-head"><div class="v6cr-hs-medal">🏅</div><h2>لوحة التميز</h2><p>علوم • الفصل <bdi>${E(d.cls)}</bdi></p><div class="v6cr-hs-quote">${E(pick(SHOT_TOP))}</div></div>
+        <div class="v6cr-hs-body"><div class="v6cr-hs-card"><div class="v6cr-hs-title">⭐ المتميزون بنسبة 97% فأكثر ⭐</div>
+          <div class="v6cr-hs-list${two ? ' two' : ''}"${two ? ` style="grid-template-rows:repeat(${Math.ceil(d.list.length / 2)},auto)"` : ''}>${rows}</div></div></div>
+        <div class="v6cr-hs-foot">${E(pick(SHOT_BOTTOM))}</div>`;
       document.body.appendChild(box);
       const w = box.scrollWidth, h = box.scrollHeight;
       const scale = Math.max(1, Math.min(2.5, Math.sqrt(15e6 / (w * h))));
       const canvas = await g.html2canvas(box, { scale, backgroundColor: '#ffffff', useCORS: true, logging: false, width: w, height: h, windowWidth: 1100 });
       const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
       if (!blob) throw new Error('تعذر إنشاء الصورة.');
-      const name = `لوحة-التميز-${String(f.cls).replace('/', '-')}-${new Date().toISOString().slice(0, 10)}.png`;
+      const name = `لوحة-التميز-${String(d.cls).replace('/', '-')}-${new Date().toISOString().slice(0, 10)}.png`;
       const file = new File([blob], name, { type: 'image/png' });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        try { await navigator.share({ files: [file], title: `لوحة التميز — الفصل ${f.cls}` }); return; }
+        try { await navigator.share({ files: [file], title: `لوحة التميز — الفصل ${d.cls}` }); return; }
         catch (e) { if (e && e.name === 'AbortError') return; }
       }
       const a = document.createElement('a');
