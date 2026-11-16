@@ -1599,7 +1599,7 @@ function render(){const k=stepIdx();let title,html;
 function renderNB(){sec.$('.p3-nb').innerHTML=`<table class="p3-t"><thead><tr><th>#</th><th>من</th><th>العملية</th><th>إلى</th></tr></thead><tbody>`+
   (S.path.length?S.path.map((p,i)=>`<tr><td class="n">${i+1}</td><td>${R[p.a].n}</td><td>${PR[p.p].n}</td><td><b>${R[p.b].n}</b></td></tr>`).join(''):'<tr><td colspan="4" class="muted">سيظهر هنا مسار العيّنة في دورة الصخور.</td></tr>')+'</tbody></table>';}
 function sync(){sec.$$('button[data-p]').forEach(x=>{x.disabled=S.busy;x.classList.toggle('done',PR[x.dataset.p].from.includes(S.st));});sec.$('[data-a="reset"]').disabled=S.busy;}
-sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;if(x.dataset.p)apply(x.dataset.p);else if(x.dataset.a==='reset')reset();});
+S._tap=tapTube;sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;if(x.dataset.p)apply(x.dataset.p);else if(x.dataset.a==='reset')reset();});
 show('ignC');sync();render();renderNB();
 };
 
@@ -2043,7 +2043,331 @@ sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button'
   if(a==='put')put();else if(a==='d1')days(1);else if(a==='d3')days(3);else if(a==='rec')record();else if(a==='reset')reset();});
 TB.forEach(tb=>setRust(tb.k,0));sync();render();renderNB();
 };
+/* =====================================================================
+   تجارب الصف الثاني المتوسط (الفصل الدراسي الأول) — 3D
+   ١٥) تأثير عدد مرات الري في نمو النبات (طبيعة العلم)
+   ١٦) استكشاف موقع أثري والتنقيب عنه (طبيعة العلم)
+   ١٧) الذائبية والمحاليل المشبعة وفوق المشبعة (المخاليط والمحاليل)
+   ١٨) الكاشف الطبيعي والتعادل (المحاليل الحمضية والقاعدية)
+   ===================================================================== */
+function Beaker(r=.34,h=.62,o={}){const g=new THREE.Group();
+  const gl=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,40,1,true),G.glass);gl.position.y=h/2;gl.renderOrder=3;
+  const bt=new THREE.Mesh(new THREE.CircleGeometry(r,40),G.glassS);bt.rotation.x=-Math.PI/2;bt.position.y=.004;
+  const lip=new THREE.Mesh(new THREE.TorusGeometry(r+.004,.012,8,40),G.glassS);lip.rotation.x=Math.PI/2;lip.position.y=h;
+  const lm=G.water(o.col||0xbfe2f0,o.op||.5);const liq=new THREE.Mesh(new THREE.CylinderGeometry(r*.95,r*.95,1,36),lm);liq.renderOrder=1;liq.visible=false;
+  g.add(gl,bt,lip,liq);
+  for(let i=1;i<=4;i++){const t=new THREE.Mesh(new THREE.BoxGeometry(.06,.006,.004),KIT.mat(0x5d6d73));t.position.set(r*.55,h*i/5,r*.84);g.add(t);}
+  const set=lv=>{liq.visible=lv>.003;liq.scale.y=Math.max(.001,lv);liq.position.y=lv/2+.006;};
+  return {g,lm,set,r,h,liq};}
+function Drops(L,n=26,col=0x8fd0ee,size=.018){const im=new THREE.InstancedMesh(new THREE.SphereGeometry(size,8,6),G.water(col,.85),n);im.count=0;im.frustumCulled=false;L.add(im);
+  const d=new THREE.Object3D();let on=false,src=V(0,0,0),dst=0,t0=0;
+  P3.loop(L,(dt,s)=>{if(!on){im.count=0;return;}im.count=n;for(let i=0;i<n;i++){const p=((s-t0)*1.6+i/n)%1;d.position.set(src.x+Math.sin(i*7)*.02,src.y-(src.y-dst)*p,src.z+Math.cos(i*5)*.02);d.scale.set(1,1.5,1);d.updateMatrix();im.setMatrixAt(i,d.matrix);}im.instanceMatrix.needsUpdate=true;});
+  return {start:(p,y)=>{src=p.clone();dst=y;on=true;t0=performance.now()/1000;},stop:()=>{on=false;}};}
+
+/* ---------- ١٥) الري ونمو النبات ---------- */
+const PLNT={};EXP_MODS.plnt8=PLNT;
+PLNT.init=function(){gm();
+const H={a:[10.5,10.7,9.2,5.1],b:[10.3,11.2,12.0,12.4],c:[10.8,12.6,14.6,15.5]};
+const PL=[{k:'a',n:'أ',w:'مرة واحدة عند بدء التجربة'},{k:'b',n:'ب',w:'يوميًّا'},{k:'c',n:'ج',w:'مرة واحدة أسبوعيًّا'}];
+const CONS=['نوع النبات','حجم النبات','نوع التربة','كمية التربة','مقدار الإضاءة'];
+const S={set:[0,0,0],kept:[],wk:0,rows:[],busy:false,vars:{},ok:false};P3.dbg.plnt8=S;
+const NAMES=['حدّد جدول الري','ثبّت العوامل الأخرى','نفّذ التجربة شهرًا','حدّد المتغيرات'];
+const VOPT={ind:'عدد مرات الري',dep:'طول النبات وحالة أوراقه',con:'نوع النبات والتربة والإضاءة'};
+const sec=P3.section('plnt8',{title:'تأثير عدد مرات الري في نمو النبات',grade:'ثاني متوسط',lesson:'حل المشكلات بطريقة علمية',
+  hud:`<div class="p3-row"><div class="p3-m warm"><small>الأسبوع</small><b class="plW">0 / 4</b></div></div>`,
+  side:`<div class="p3-box"><h4 class="p3-h">لوحة التحكم</h4>
+    <div class="p3-acts"><span class="p3-lab">الري</span>${PL.map((p,i)=>`<button class="p3-b" data-w="${i}">💧 ${p.n}: ${p.w}</button>`).join('')}</div>
+    <div class="p3-acts"><span class="p3-lab">الثوابت</span>${CONS.map((c,i)=>`<button class="p3-b" data-k="${i}">🔒 ${c}</button>`).join('')}</div>
+    <div class="p3-acts"><span class="p3-lab">الزمن</span><button class="p3-b pri" data-a="wk">📅 نفّذ أسبوعًا وقِس الأطوال</button></div>
+    <div class="p3-acts"><button class="p3-b" data-a="reset">↺ إعادة التجربة</button></div></div>`,
+  learn:`<div class="panel"><h3>السؤال</h3><p>هل تنمو النبتة أفضل عند ريّها مرة واحدة كل أسبوع؟</p></div>
+    <div class="panel"><h3>التجربة المضبوطة</h3><p><b>المتغير المستقل:</b> العامل الذي نغيّره عمدًا = عدد مرات الري.</p><p><b>المتغير التابع:</b> ما نقيسه = طول النبات ولون أوراقه وعدد الأوراق الساقطة.</p><p><b>الثوابت:</b> عوامل تبقى كما هي: نوع النبات وحجمه، ونوع التربة وكميتها، ومقدار الإضاءة.</p></div>
+    <div class="panel"><h3>النتيجة (الجدول 1 في الكتاب)</h3><p>النبات (أ) ذبلت أوراقه وقلّ طوله، و(ب) ذبلت معظم أوراقه، و(ج) نما جيدًا: المناسب لهذا النبات أن يُروى مرة واحدة كل أسبوع.</p></div>`,
+  quiz:[{q:'المتغير المستقل في التجربة هو:',o:['طول النبات','عدد مرات الري','نوع التربة'],a:1},{q:'المتغير التابع هو:',o:['طول النبات وحالة أوراقه','مقدار الإضاءة','نوع النبات'],a:0},
+    {q:'لماذا نثبّت نوع التربة وكميتها؟',o:['لنختبر متغيرًا واحدًا فقط','لتسريع النمو','لأنها لا تؤثر أبدًا'],a:0},{q:'أي نبات نما أفضل؟',o:['المروي مرة واحدة','المروي يوميًّا','المروي أسبوعيًّا'],a:2}],
+  report:()=>({title:'تأثير عدد مرات الري في نمو النبات',grade:'ثاني متوسط',lesson:'حل المشكلات بطريقة علمية',cols:['الأسبوع','طول النبات أ (سم)','طول النبات ب (سم)','طول النبات ج (سم)'],
+    rows:[1,2,3,4].map(w=>{const r=S.rows[w-1];return r?[String(w),r[0],r[1],r[2]]:[String(w),'','',''];}),note:'أي النباتات نما أفضل؟ وما المتغير المستقل والتابع والثوابت؟'})
+});
+const L=new Lab(sec,{target:V(0,.75,.4),dist:a=>Math.max(4.4,7.2/a),exposure:.95});buildRoom(L);
+const toast=m=>L.toast(m);const SC=.06;
+const terr=KIT.mat(0xb8643a,{roughness:.85}),soilM=KIT.mat(0x4a3424,{roughness:1}),stemM=KIT.mat(0x4f7d2a,{roughness:.7});
+const P={};
+PL.forEach((pl,i)=>{const x=-1.3+i*1.3,g=new THREE.Group();g.position.set(x,0,.35);
+  const pot=new THREE.Mesh(new THREE.CylinderGeometry(.3,.22,.42,32),terr);pot.position.y=.21;const rim=new THREE.Mesh(new THREE.CylinderGeometry(.33,.33,.07,32),terr);rim.position.y=.41;
+  const soil=new THREE.Mesh(new THREE.CylinderGeometry(.29,.29,.02,32),soilM.clone());soil.position.y=.43;
+  const stem=new THREE.Mesh(new THREE.CylinderGeometry(.016,.022,1,8),stemM);
+  const leaves=[];for(let j=0;j<8;j++){const pv=new THREE.Group();const lm=KIT.mat(0x3f9b3a,{roughness:.55,side:THREE.DoubleSide});const lf=new THREE.Mesh(new THREE.SphereGeometry(.1,14,8),lm);lf.scale.set(1,.18,.48);lf.position.x=.1;pv.add(lf);
+    pv.rotation.y=j*2.4;pv.userData={f:.25+.72*(j/7),side:j%2?1:-1,lm};leaves.push(pv);g.add(pv);}
+  const fall=[];for(let j=0;j<6;j++){const m=new THREE.Mesh(new THREE.SphereGeometry(.07,10,6),KIT.mat(0x9a7b5c,{roughness:.9}));m.scale.set(1,.12,.5);m.position.set(-.45+j*.12*Math.cos(j),.012,.35+(j%3)*.1);m.rotation.y=j;m.visible=false;g.add(m);fall.push(m);}
+  g.add(pot,rim,soil,stem);castAll(g);L.add(g);
+  // المسطرة
+  const rt=canvasTex(64,512,c=>{c.fillStyle='#f6e7b4';c.fillRect(0,0,64,512);c.fillStyle='#3b2f1e';c.font='600 20px "IBM Plex Mono",monospace';for(let k=0;k<=20;k++){const y=512-k*512/20;c.fillRect(0,y-1,k%5?18:34,2);if(k%5===0&&k)c.fillText(String(k),36,y+7);}});
+  const ruler=new THREE.Mesh(new THREE.BoxGeometry(.07,20*SC,.015),[KIT.mat(0xe7d39a),KIT.mat(0xe7d39a),KIT.mat(0xe7d39a),KIT.mat(0xe7d39a),new THREE.MeshStandardMaterial({map:rt,roughness:.7}),KIT.mat(0xe7d39a)]);
+  ruler.position.set(x+.42,.44+10*SC,.35);castAll(ruler);L.add(ruler);
+  const card=P3.card([{t:'النبات ('+pl.n+')',s:60},{t:pl.w,s:40}],.9,.26);card.position.set(x,.06,1.05);card.rotation.x=-.95;L.add(card);
+  P[pl.k]={g,stem,leaves,fall,soil,x,h:10,hl:1,wl:0};});
+function setPlant(k,h,health,wilt){const o=P[k],Hs=h*SC;o.stem.scale.y=Hs;o.stem.position.y=.44+Hs/2;
+  o.leaves.forEach(pv=>{const u=pv.userData;pv.position.y=.44+Hs*u.f;pv.rotation.z=u.side*(.35+wilt*1.05);pv.rotation.x=wilt*.4*u.side;
+    u.lm.color.copy($lc(0x3f9b3a)).lerp($lc(0xb59a52),1-health);pv.scale.setScalar(.8+.4*u.f*(health*.5+.5));});}
+function hState(k,w){return k==='a'?[1-Math.min(1,w/3.3),Math.min(1,Math.max(0,(w-1.3)/2.2))]:k==='b'?[1-Math.min(.62,w*.16),Math.min(.35,w*.09)]:[1,0];}
+// إبريق الري
+const can=new THREE.Group();{const b=new THREE.Mesh(new THREE.CylinderGeometry(.16,.18,.3,24),KIT.phys(0x2f8f6b));b.position.y=.15;const sp=new THREE.Mesh(new THREE.CylinderGeometry(.018,.03,.42,10),KIT.phys(0x2f8f6b));sp.rotation.z=-1.0;sp.position.set(.28,.22,0);
+  const hd=new THREE.Mesh(new THREE.TorusGeometry(.1,.018,8,20,Math.PI),KIT.phys(0x2f8f6b));hd.position.set(-.1,.3,0);hd.rotation.z=.6;can.add(b,sp,hd);castAll(can);}
+const CAN_HOME=V(2.4,0,.6);can.position.copy(CAN_HOME);L.add(can);const drops=Drops(L,22);
+async function water(i){const o=P[PL[i].k];await L.arc(can,V(o.x-.55,.95,.35),700,1.4);await L.tw(250,k=>can.rotation.z=-.7*k);drops.start(V(o.x-.18,1.05,.35),.46);
+  o.soil.material.color.copy($lc(0x2e2016));await sleep(650);drops.stop();await L.tw(250,k=>can.rotation.z=-.7*(1-k));}
+async function setW(i){if(S.busy||S.set[i])return;S.busy=true;sync();await water(i);await L.arc(can,CAN_HOME,600,1.4);S.set[i]=1;S.busy=false;P3.click();
+  if(S.set.every(Boolean))toast('حُدّد جدول ري كل نبات: هذا هو المتغير المستقل.');sync();render();}
+function keep(i){if(S.busy||!S.set.every(Boolean))return;if(!S.kept.includes(i))S.kept.push(i);P3.click();if(S.kept.length===CONS.length)toast('ثُبّتت العوامل الخمسة: نختبر الآن متغيرًا واحدًا فقط.');sync();render();}
+async function week(){if(S.busy||S.kept.length<CONS.length||S.wk>=4)return;S.busy=true;sync();const w0=S.wk,w1=w0+1;
+  const who=w0===0?[0,1,2]:[1,2];for(const i of who){await water(i);}await L.arc(can,CAN_HOME,500,1.4);
+  await L.tw(1600,k=>{PL.forEach(pl=>{const h0=w0?H[pl.k][w0-1]:10,h1=H[pl.k][w0];const [he,wi]=hState(pl.k,w0+k);setPlant(pl.k,h0+(h1-h0)*k,he,wi);});sec.$('.plW').textContent=(w0+k).toFixed(1)+' / 4';});
+  S.wk=w1;sec.$('.plW').textContent=w1+' / 4';PL.forEach(pl=>{const o=P[pl.k];const nf=pl.k==='a'?Math.floor(Math.max(0,w1-1)*1.4):pl.k==='b'?Math.floor(w1*.7):0;o.fall.forEach((m,j)=>m.visible=j<nf);});
+  S.rows.push([H.a[w0].toFixed(1),H.b[w0].toFixed(1),H.c[w0].toFixed(1)]);P3.good();toast(`الأسبوع ${w1}: قِيست الأطوال بالمسطرة وسُجّلت في الدفتر.`);S.busy=false;sync();render();renderNB();}
+function reset(){if(S.busy)return;Object.assign(S,{set:[0,0,0],kept:[],wk:0,rows:[],vars:{},ok:false});PL.forEach(pl=>{setPlant(pl.k,10,1,0);P[pl.k].fall.forEach(m=>m.visible=false);P[pl.k].soil.material.color.copy($lc(0x4a3424));});sec.$('.plW').textContent='0 / 4';sync();render();renderNB();toast('أُعيدت التجربة.');}
+function stepIdx(){if(!S.set.every(Boolean))return 0;if(S.kept.length<CONS.length)return 1;if(S.wk<4)return 2;return 3;}
+function render(){const k=stepIdx();let title,html;
+  if(k===0){title='حدّد جدول الري';html=`<p class="p3-txt">ثلاثة أصص متماثلة فيها النوع نفسه من النبات. حدّد طريقة ري كل نبات من لوحة التحكم: هذا هو <b>المتغير المستقل</b>.</p>`;}
+  else if(k===1){title='ثبّت العوامل الأخرى';html=`<p class="p3-txt">حتى نختبر متغيرًا واحدًا فقط، يجب أن تبقى العوامل الأخرى متساوية: اضغط على كل عامل لتثبيته (${S.kept.length} / ${CONS.length}).</p>`;}
+  else if(k===2){title='نفّذ التجربة شهرًا كاملًا';html=`<p class="p3-txt">في كل أسبوع يُروى كل نبات حسب جدوله، ثم يُقاس طوله بالمسطرة (<b>المتغير التابع</b>). لاحظ لون الأوراق والأوراق الساقطة.</p>`;}
+  else if(!S.ok){title='حدّد المتغيرات';html=`<table class="p3-t"><tbody>${[['ind','المتغير المستقل'],['dep','المتغير التابع'],['con','الثوابت']].map(([id,lab])=>`<tr><td>${lab}</td><td>${KIT.sel(id,'v',VOPT,S.vars[id]||'',lab)}</td></tr>`).join('')}</tbody></table><div class="p3-acts"><button class="p3-b pri" data-a="chk">تحقق</button></div>`;}
+  else{title='الاستنتاج';html=`<p class="p3-ok">النبات (أ) ذبل وقلّ طوله، و(ب) ذبلت معظم أوراقه، و(ج) نما جيدًا وأوراقه نضرة: المناسب لهذا النبات – في هذه الظروف – أن يُروى <b>مرة واحدة كل أسبوع</b>.</p>`;}
+  sec.steps(NAMES,k,title,html);
+  sec.$$('.p3-card select').forEach(s=>s.onchange=()=>S.vars[s.dataset.id]=s.value);
+  const c=sec.$('.p3-card [data-a="chk"]');if(c)c.onclick=()=>{if(S.vars.ind==='ind'&&S.vars.dep==='dep'&&S.vars.con==='con'){S.ok=true;P3.good();render();}else toast('راجع: ما الذي غيّرناه عمدًا؟ وما الذي قسناه؟ وما الذي أبقيناه متساويًا؟');};}
+function renderNB(){sec.$('.p3-nb').innerHTML=`<table class="p3-t"><thead><tr><th>الأسبوع</th><th>أ (سم)</th><th>ب (سم)</th><th>ج (سم)</th></tr></thead><tbody>${[1,2,3,4].map(w=>{const r=S.rows[w-1];return `<tr><td>${w}</td>${r?r.map(v=>`<td>${v}</td>`).join(''):'<td>—</td><td>—</td><td>—</td>'}</tr>`;}).join('')}</tbody></table>`;}
+function sync(){const b=S.busy;sec.$$('[data-w]').forEach(x=>{const i=+x.dataset.w;x.disabled=b||S.set[i];x.classList.toggle('done',!!S.set[i]);});
+  sec.$$('[data-k]').forEach(x=>{const i=+x.dataset.k;x.disabled=b||!S.set.every(Boolean)||S.kept.includes(i);x.classList.toggle('done',S.kept.includes(i));});
+  const w=sec.$('[data-a="wk"]');w.disabled=b||S.kept.length<CONS.length||S.wk>=4;sec.$('[data-a="reset"]').disabled=b;}
+sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;if(x.dataset.w)setW(+x.dataset.w);else if(x.dataset.k)keep(+x.dataset.k);else if(x.dataset.a==='wk')week();else if(x.dataset.a==='reset')reset();});
+PL.forEach(pl=>setPlant(pl.k,10,1,0));sync();render();renderNB();
+};
+
+/* ---------- ١٦) التنقيب عن الآثار ---------- */
+const DIG={};EXP_MODS.dig8=DIG;
+DIG.init=function(){gm();
+const COLS=7,ROWS=4,CW=.42,ROWN=['أ','ب','ج','د'];
+const ART=[{c:1,r:1,k:'pot',n:'إناء فخاري'},{c:5,r:2,k:'bone',n:'عظام'},{c:6,r:0,k:'axe',n:'أداة حجرية'},{c:3,r:3,k:'ring',n:'حُلي'}];
+const S={ph:0,scan:0,stakes:[],dug:{},photo:false,moved:false,busy:false};P3.dbg.dig8=S;
+const NAMES=['الكشف بالرادار','رسم الخريطة','التنقيب البطيء','التصوير والتوثيق','النقل إلى المختبر'];
+const sec=P3.section('dig8',{title:'استكشاف موقع أثري والتنقيب عنه',grade:'ثاني متوسط',lesson:'أسلوب العلم',
+  hud:`<div class="p3-row"><div class="p3-m warm"><small>القطع المكتشفة</small><b class="dgN">0 / 4</b></div></div>`,
+  side:`<div class="p3-box"><h4 class="p3-h">لوحة التحكم</h4>
+    <div class="p3-acts"><button class="p3-b pri" data-a="scan">📡 مرّر الرادار على الصف التالي</button></div>
+    <div class="p3-acts"><span class="p3-lab">الخريطة</span><span class="p3-txt" style="font-size:.8rem">اضغط على كل إشارة حمراء في الموقع لتثبيت وتد مرقّم.</span></div>
+    <div class="p3-acts"><span class="p3-lab">التنقيب</span><span class="p3-txt" style="font-size:.8rem">اضغط على المربع الموتّد ثلاث مرات (ثلاث طبقات).</span></div>
+    <div class="p3-acts"><button class="p3-b" data-a="photo">📷 صوّر القطع في مواقعها</button><button class="p3-b" data-a="move">🧺 رقّمها وانقلها إلى المختبر</button></div>
+    <div class="p3-acts"><button class="p3-b" data-a="reset">↺ إعادة التجربة</button></div></div>`,
+  learn:`<div class="panel"><h3>مراحل استكشاف الموقع الأثري</h3><p><b>١. المسح بالرادار:</b> يكشف ما في باطن الأرض دون حفر.</p><p><b>٢. رسم الخريطة:</b> تُقسَّم المنطقة بشبكة، ويُسجَّل الموقع الدقيق لكل قطعة قبل نقلها.</p><p><b>٣. التنقيب البطيء:</b> بالفرشاة والأدوات الدقيقة حتى لا تتلف القطع.</p><p><b>٤. التصوير:</b> يوثّق موقع القطعة واتجاهها.</p><p><b>٥. العمل المختبري:</b> تنظيف القطع وتحليلها كيميائيًّا لتقدير أعمارها.</p></div>`,
+  quiz:[{q:'لماذا يُرسم موقع كل قطعة على خريطة قبل نقلها؟',o:['لحفظ معلومات موقعها بعد التنقيب','لزيادة وزنها','لتلوينها'],a:0},{q:'ما فائدة الرادار؟',o:['الكشف عمّا في باطن الأرض دون حفر','تنظيف القطع','تقدير العمر'],a:0},
+    {q:'لماذا يكون التنقيب بطيئًا بالفرشاة؟',o:['حتى لا تتلف القطع','لأنه أسهل','لإخفاء القطع'],a:0},{q:'أين تُقدَّر أعمار القطع؟',o:['في المختبر بالتحاليل الكيميائية','في الموقع بالعين','بالرادار'],a:0}],
+  report:()=>({title:'استكشاف موقع أثري والتنقيب عنه',grade:'ثاني متوسط',lesson:'أسلوب العلم',cols:['رقم الوتد','القطعة','الموقع (العمود/الصف)','الحالة'],
+    rows:S.stakes.length?S.stakes.map((a,i)=>[String(i+1),S.dug[a.c+'_'+a.r]>=3?a.n:'لم تُكتشف بعد',`العمود ${a.c+1} / الصف ${ROWN[a.r]}`,S.moved?'نُقلت إلى المختبر':S.photo?'صُوّرت في موقعها':S.dug[a.c+'_'+a.r]>=3?'مكشوفة':'تحت التربة']):[['1','','','']],note:'لماذا سجّلنا موقع كل قطعة قبل نقلها؟'})
+});
+const L=new Lab(sec,{target:V(0,.2,.45),dist:a=>Math.max(3.4,5.6/a),exposure:1});buildRoom(L);
+{const hi=()=>{const d=L.distFn(L.camera.aspect||1.5);L.camHome.set(0,.2+d*.78,.45+d*.66);};const _rs=L.resize.bind(L);L.resize=function(){_rs();hi();};let done=0;P3.loop(L,()=>{if(!done&&L.camSet){hi();L.camera.position.copy(L.camHome);done=1;}});}
+const toast=m=>L.toast(m);
+const BOX=new THREE.Group();BOX.position.set(0,0,.35);L.add(BOX);
+const W=COLS*CW,D=ROWS*CW;const wood=KIT.wood(0x8a5a32);
+[[0,-D/2-.04,W+.16,.08],[0,D/2+.04,W+.16,.08]].forEach(([x,z,w,d])=>{const m=new THREE.Mesh(RBox(w,.34,d,.02),wood);m.position.set(x,.17,z);BOX.add(m);});
+[[-W/2-.04,0],[W/2+.04,0]].forEach(([x,z])=>{const m=new THREE.Mesh(RBox(.08,.34,D,.02),wood);m.position.set(x,.17,z);BOX.add(m);});
+const base=new THREE.Mesh(new THREE.BoxGeometry(W,.04,D),KIT.mat(0x3a2818,{roughness:1}));base.position.y=.02;BOX.add(base);
+const sandT=noiseTex(256,256,'#b98a52',.22,6000,[1,1]);
+const cellX=c=>-W/2+CW*(c+.5),cellZ=r=>-D/2+CW*(r+.5);
+const CELL={};for(let c=0;c<COLS;c++)for(let r=0;r<ROWS;r++){const m=new THREE.Mesh(new THREE.BoxGeometry(CW-.004,1,CW-.004),new THREE.MeshStandardMaterial({map:sandT,color:0xc98f55,roughness:1}));
+  m.position.set(cellX(c),.04+.13,cellZ(r));m.scale.y=.26;m.receiveShadow=true;BOX.add(m);CELL[c+'_'+r]=m;L.onTap(m,()=>tapCell(c,r));}
+const strM=KIT.mat(0xf3efe2,{roughness:.8});for(let c=0;c<=COLS;c++){const s=new THREE.Mesh(new THREE.BoxGeometry(.008,.008,D),strM);s.position.set(-W/2+c*CW,.33,0);BOX.add(s);}
+for(let r=0;r<=ROWS;r++){const s=new THREE.Mesh(new THREE.BoxGeometry(W,.008,.008),strM);s.position.set(0,.33,-D/2+r*CW);BOX.add(s);}
+for(let c=0;c<COLS;c++){const t=P3.card([{t:String(c+1),s:230,mono:true}],.2,.15);t.position.set(cellX(c),.36,-D/2-.16);t.rotation.x=-.6;BOX.add(t);}
+for(let r=0;r<ROWS;r++){const t=P3.card([{t:ROWN[r],s:230}],.18,.15);t.position.set(W/2+.18,.36,cellZ(r));t.rotation.x=-.6;BOX.add(t);}
+// القطع الأثرية
+function makeArt(k){const g=new THREE.Group();
+  if(k==='pot'){const pts=[];for(let i=0;i<=10;i++){const t=i/10;pts.push(new THREE.Vector2(.05+.07*Math.sin(t*Math.PI)+.02*t,t*.16));}const m=new THREE.Mesh(new THREE.LatheGeometry(pts,24),KIT.mat(0xa4532e,{roughness:.85,side:THREE.DoubleSide}));g.add(m);}
+  else if(k==='bone'){const m=KIT.mat(0xece2c6,{roughness:.8});const sh=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.26,10),m);sh.rotation.z=Math.PI/2;g.add(sh);[-.13,.13].forEach(x=>[-.02,.02].forEach(z=>{const b=new THREE.Mesh(new THREE.SphereGeometry(.03,10,8),m);b.position.set(x,0,z);g.add(b);}));g.position.y=.03;}
+  else if(k==='axe'){const m=new THREE.Mesh(new THREE.ConeGeometry(.07,.2,5),KIT.mat(0x6b6f72,{roughness:.9}));m.rotation.z=Math.PI/2;m.scale.set(1,1,.45);g.add(m);g.position.y=.035;}
+  else{const m=new THREE.Mesh(new THREE.TorusGeometry(.05,.013,10,28),KIT.mat(0xd4a838,{metalness:.9,roughness:.25}));m.rotation.x=Math.PI/2;g.add(m);g.position.y=.015;}
+  castAll(g);return g;}
+const AR=ART.map(a=>{const g=makeArt(a.k);g.scale.multiplyScalar(1.5);const o=new THREE.Group();o.add(g);o.position.set(cellX(a.c),.045,cellZ(a.r));BOX.add(o);return {a,o};});
+// الرادار والإشارات والأوتاد
+const radar=new THREE.Group();{const b=new THREE.Mesh(RBox(.5,.08,.3,.03),KIT.phys(0xf2c230));const sc=new THREE.Mesh(new THREE.PlaneGeometry(.3,.16),new THREE.MeshBasicMaterial({color:0x0c3b2a}));sc.rotation.x=-Math.PI/2;sc.position.set(0,.042,0);
+  const h=new THREE.Mesh(new THREE.CylinderGeometry(.015,.015,.8,8),M.steel);h.rotation.z=.5;h.position.set(-.3,.35,0);radar.add(b,sc,h);castAll(radar);}
+radar.position.set(-W/2-.45,.42,.35);L.add(radar);
+const sig={};ART.forEach(a=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.05,16,12),new THREE.MeshBasicMaterial({color:0xff3b30}));m.position.set(cellX(a.c),.42,cellZ(a.r));m.visible=false;BOX.add(m);sig[a.c+'_'+a.r]=m;L.onTap(m,()=>tapCell(a.c,a.r));});
+P3.loop(L,(dt,s)=>{Object.values(sig).forEach(m=>{if(m.visible)m.scale.setScalar(1+.25*Math.sin(s*6));});});
+function stake(a,num){const g=new THREE.Group();const p=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.42,8),KIT.wood(0xb08050));p.position.y=.21;const fl=P3.card([{t:String(num),s:90,mono:true}],.11,.09,{bd:'#b91c1c'});fl.position.set(.06,.38,0);g.add(p,fl);castAll(g);
+  g.position.set(cellX(a.c)-CW/2+.04,.04,cellZ(a.r)-CW/2+.04);BOX.add(g);return g;}
+const tray=new THREE.Group();{const t=new THREE.Mesh(RBox(1.0,.06,.55,.02),KIT.mat(0xf2f0ea));t.position.y=.03;tray.add(t);castAll(tray);}tray.position.set(2.45,0,.6);L.add(tray);
+const trayCard=P3.card([{t:'إلى المختبر',s:70}],.6,.16);trayCard.position.set(2.45,.07,1.0);trayCard.rotation.x=-.9;L.add(trayCard);
+async function scan(){if(S.busy||S.scan>=ROWS)return;S.busy=true;sync();const r=S.scan,z=.35+cellZ(r);
+  await L.move(radar,V(-W/2-.2,.42,z),500);await L.move(radar,V(W/2+.2,.42,z),1600);
+  ART.filter(a=>a.r===r).forEach(a=>{sig[a.c+'_'+a.r].visible=true;P3.tone(880,.08,'sine',.06);});
+  S.scan++;if(S.scan>=ROWS){await L.move(radar,V(-W/2-.45,.42,.35),600);S.ph=1;toast('اكتمل المسح: أربع إشارات حمراء. ثبّت وتدًا مرقّمًا عند كل إشارة.');}S.busy=false;sync();render();}
+async function tapCell(c,r){if(S.busy)return;const key=c+'_'+r,a=ART.find(x=>x.c===c&&x.r===r);
+  if(S.ph===1){if(!a||!sig[key].visible){toast('ثبّت الأوتاد عند الإشارات الحمراء فقط.');return;}sig[key].visible=false;S.stakes.push(a);stake(a,S.stakes.length);P3.click();toast(`الوتد ${S.stakes.length}: العمود ${c+1} / الصف ${ROWN[r]} — سُجّل في الخريطة.`);
+    if(S.stakes.length===ART.length){S.ph=2;toast('رُسمت الخريطة. نقّب الآن ببطء في المربعات الموتّدة.');}sync();render();renderNB();return;}
+  if(S.ph===2){if(!a){toast('نقّب في المربعات الموتّدة فقط حتى لا تتلف الموقع.');return;}const d=S.dug[key]||0;if(d>=3)return;S.busy=true;const m=CELL[key],s0=m.scale.y,s1=.26-.08*(d+1);
+    P3.noise(.25,.25,1800,.6);await L.tw(450,k=>{m.scale.y=s0+(s1-s0)*k;m.position.y=.04+m.scale.y/2;});S.dug[key]=d+1;
+    if(d+1>=3){m.visible=false;toast(`ظهرت القطعة: ${a.n}`);P3.good();}S.busy=false;const n=ART.filter(x=>(S.dug[x.c+'_'+x.r]||0)>=3).length;sec.$('.dgN').textContent=n+' / 4';
+    if(n===ART.length){S.ph=3;toast('كُشفت القطع الأربع دون أن تتلف. صوّرها في مواقعها قبل نقلها.');}sync();render();renderNB();}}
+async function photo(){if(S.busy||S.ph!==3)return;S.busy=true;sync();const fl=new THREE.PointLight(0xffffff,0,10);fl.position.set(0,2.2,1.4);L.scene.add(fl);
+  for(let i=0;i<ART.length;i++){P3.noise(.08,.5,3000,1);await L.tw(220,k=>fl.intensity=6*Math.sin(Math.PI*k));await sleep(150);}L.scene.remove(fl);S.photo=true;S.ph=4;S.busy=false;toast('وُثّق موقع كل قطعة واتجاهها بالصور.');sync();render();renderNB();}
+async function move(){if(S.busy||S.ph!==4)return;S.busy=true;sync();for(let i=0;i<AR.length;i++){const {o}=AR[i];const wp=new THREE.Vector3();o.getWorldPosition(wp);BOX.remove(o);o.position.copy(wp);L.scene.add(o);
+  await L.arc(o,V(2.1+(i%2)*.4,.07,.45+Math.floor(i/2)*.28),900,1.2);}S.moved=true;S.ph=5;S.busy=false;P3.good();toast('رُقّمت القطع ونُقلت إلى المختبر لتنظيفها وتحليلها كيميائيًّا وتقدير أعمارها.');sync();render();renderNB();}
+function reset(){location.hash='dig8';location.reload();}
+function stepIdx(){return Math.min(S.ph,4);}
+function render(){const k=stepIdx();let title,html;
+  if(S.ph===0){title='الكشف بالرادار قبل الحفر';html=`<p class="p3-txt">قُسّم الموقع بشبكة من الخيوط (٧ أعمدة × ٤ صفوف). مرّر جهاز الرادار على الصفوف واحدًا بعد الآخر (${S.scan} / ${ROWS})، وراقب الإشارات.</p>`;}
+  else if(S.ph===1){title='ارسم خريطة الموقع';html=`<p class="p3-txt">اضغط على كل إشارة حمراء لتثبيت وتد مرقّم، ويُسجَّل موقعها الدقيق (العمود والصف) في الدفتر قبل أي حفر (${S.stakes.length} / ${ART.length}).</p>`;}
+  else if(S.ph===2){title='نقّب ببطء بالفرشاة';html=`<p class="p3-txt">اضغط على كل مربع موتّد ثلاث مرات لإزالة ثلاث طبقات من التربة بهدوء، حتى تنكشف القطعة دون أن تتلف.</p>`;}
+  else if(S.ph===3){title='صوّر القطع في مواقعها';html=`<p class="p3-txt">قبل نقل أي قطعة، صوّرها لتوثيق موقعها واتجاهها.</p>`;}
+  else if(S.ph===4){title='رقّم القطع وانقلها';html=`<p class="p3-txt">رقّم القطع ثم انقلها بحرص إلى المختبر لتنظيفها وإجراء التحاليل الكيميائية لتقدير أعمارها.</p>`;}
+  else{title='الاستنتاج';html=`<p class="p3-ok">كشف <b>الرادار</b> مواقع القطع دون حفر، و<b>الخريطة</b> سجّلت الموقع الدقيق لكل قطعة، و<b>التنقيب البطيء</b> حافظ عليها، و<b>التصوير</b> وثّق موقعها واتجاهها، ثم يقدّر <b>العمل المختبري</b> أعمارها. العمل الميداني والمختبري كلاهما مهم.</p>`;}
+  sec.steps(NAMES,k,title,html);}
+function renderNB(){sec.$('.p3-nb').innerHTML=`<table class="p3-t"><thead><tr><th>الوتد</th><th>الموقع</th><th>القطعة</th><th>الحالة</th></tr></thead><tbody>${S.stakes.length?S.stakes.map((a,i)=>{const d=S.dug[a.c+'_'+a.r]||0;return `<tr><td>${i+1}</td><td>ع${a.c+1} / ${ROWN[a.r]}</td><td>${d>=3?a.n:'—'}</td><td>${S.moved?'في المختبر':S.photo?'مصوّرة':d>=3?'مكشوفة':d?'طبقة '+d+' / 3':'تحت التربة'}</td></tr>`;}).join(''):'<tr><td colspan="4">—</td></tr>'}</tbody></table>`;}
+function sync(){const b=S.busy;sec.$('[data-a="scan"]').disabled=b||S.scan>=ROWS;sec.$('[data-a="scan"]').classList.toggle('done',S.scan>=ROWS);sec.$('[data-a="photo"]').disabled=b||S.ph!==3;sec.$('[data-a="move"]').disabled=b||S.ph!==4;sec.$('[data-a="reset"]').disabled=b;}
+S._tap=tapCell;sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;const a=x.dataset.a;if(a==='scan')scan();else if(a==='photo')photo();else if(a==='move')move();else if(a==='reset')reset();});
+sync();render();renderNB();
+};
+
+/* ---------- ١٧) الذائبية والمحاليل المشبعة ---------- */
+const SOL8={};EXP_MODS.sol8=SOL8;
+SOL8.init=function(){gm();
+const CURVE=[[0,179],[20,200],[25,204],[40,238],[60,287],[80,362],[100,487]];
+const sol=T=>{for(let i=1;i<CURVE.length;i++)if(T<=CURVE[i][0]){const a=CURVE[i-1],b=CURVE[i];return a[1]+(b[1]-a[1])*(T-a[0])/(b[0]-a[0]);}return 487;};
+const S={added:0,temp:25,heat:0,cool:0,sup:0,seed:0,cry:0,busy:false,rows:[]};P3.dbg.sol8=S;
+const NAMES=['أضف السكر حتى الإشباع','سخّن المحلول','برّد ببطء','أسقط بلورة'];
+const sec=P3.section('sol8',{title:'الذائبية: محلول مشبع وغير مشبع وفوق مشبع',grade:'ثاني متوسط',lesson:'المحاليل والذائبية',
+  hud:`<div class="p3-row"><div class="p3-m warm"><small>درجة الحرارة</small><b class="slT">25 °C</b></div><div class="p3-m"><small>السكر المضاف</small><b class="slA">0 g</b></div><div class="p3-m"><small>الذائب</small><b class="slD">0 g</b></div><div class="p3-m warm"><small>الحالة</small><b class="slS">غير مشبع</b></div></div>`,
+  side:`<div class="p3-box"><h4 class="p3-h">لوحة التحكم</h4>
+    <div class="p3-acts"><span class="p3-lab">السكر</span><button class="p3-b pri" data-a="add">🥄 أضف ملعقة (50 g)</button></div>
+    <div class="p3-acts"><span class="p3-lab">الحرارة</span><button class="p3-b" data-a="heat">🔥 سخّن إلى 60 °C</button><button class="p3-b" data-a="cool">❄ برّد ببطء</button></div>
+    <div class="p3-acts"><span class="p3-lab">البلورة</span><button class="p3-b" data-a="seed">💎 أسقط بلورة سكر</button></div>
+    <div class="p3-acts"><button class="p3-b" data-a="reset">↺ إعادة التجربة</button></div></div>
+    <div class="p3-box"><h4 class="p3-h">منحنى ذائبية السكر</h4><div class="slChart"></div></div>`,
+  learn:`<div class="panel"><h3>الذائبية</h3><p>كمية المادة التي يمكن إذابتها في 100 جرام من المذيب عند درجة حرارة معينة. يذوب 204 جرامات من السكر في 100 جرام ماء عند 25°س.</p></div>
+    <div class="panel"><h3>أنواع المحاليل</h3><p><b>غير المشبع:</b> يستطيع إذابة المزيد من المذاب.</p><p><b>المشبع:</b> يحتوي على كل ما يمكن إذابته في الظروف المتاحة.</p><p><b>فوق المشبع:</b> عند تبريد محلول مشبع ببطء تبقى كمية مذابة تزيد على حد الإشباع لبعض الوقت، وتتبلور عند إسقاط بلورة صغيرة (التبلور عملية فيزيائية).</p></div>`,
+  quiz:[{q:'كم جرامًا من السكر يذوب في 100 جم ماء عند 25°س؟',o:['50','204','487'],a:1},{q:'ماذا يحدث لذائبية السكر عند التسخين؟',o:['تزداد','تقل','لا تتغير'],a:0},
+    {q:'محلول فيه 150 جم سكر في 100 جم ماء عند 25°س هو:',o:['مشبع','غير مشبع','فوق مشبع'],a:1},{q:'عملية ترسّب المذاب في صورة بلورات تسمى:',o:['التبلور','الترسيب الكيميائي','التبخر'],a:0}],
+  report:()=>({title:'الذائبية والمحاليل المشبعة',grade:'ثاني متوسط',lesson:'المحاليل والذائبية',cols:['المرحلة','درجة الحرارة (°س)','السكر المضاف (جم)','الذائب (جم)','نوع المحلول'],
+    rows:S.rows.length?S.rows:[['','','','','']],note:'كيف تؤثر درجة الحرارة في ذائبية السكر؟'})
+});
+const L=new Lab(sec,{target:V(-.3,.5,.45),dist:a=>Math.max(3.0,4.9/a),exposure:.95});buildRoom(L);
+const toast=m=>L.toast(m);
+const hp=new THREE.Group();{const b=new THREE.Mesh(RBox(.95,.16,.8,.04),KIT.mat(0xe9ecee,{roughness:.4}));b.position.y=.08;const p=new THREE.Mesh(new THREE.CylinderGeometry(.36,.36,.02,32),KIT.mat(0x30363c,{metalness:.5}));p.position.y=.17;
+  const k=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.04,16),KIT.mat(0x1f2933));k.rotation.x=Math.PI/2;k.position.set(.3,.08,.41);hp.add(b,p,k);hp.userData.p=p;castAll(hp);}
+hp.position.set(0,0,.4);L.add(hp);
+const BK=Beaker(.32,.6);BK.g.position.set(0,.18,.4);BK.set(.3);L.add(BK.g);
+const card=P3.card([{t:'100 جم ماء',s:64}],.5,.16);card.position.set(0,.06,1.05);card.rotation.x=-.9;L.add(card);
+const th=new THREE.Group();{const t=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.9,10),G.glassS);t.position.y=.45;const r=new THREE.Mesh(new THREE.CylinderGeometry(.006,.006,1,8),KIT.mat(0xd62d20));th.userData.r=r;const bl=new THREE.Mesh(new THREE.SphereGeometry(.02,12,8),KIT.mat(0xd62d20));bl.position.y=.02;th.add(t,r,bl);}
+th.position.set(.15,.2,.35);th.rotation.z=-.12;L.add(th);
+const setTh=T=>{const h=.15+.6*T/100;th.userData.r.scale.y=h;th.userData.r.position.y=h/2;};
+const pile=new THREE.Mesh(new THREE.ConeGeometry(.2,.1,24),KIT.mat(0xfbfbf7,{roughness:.9}));pile.position.set(0,.24,.4);pile.visible=false;L.add(pile);
+const CR=new THREE.InstancedMesh(new THREE.BoxGeometry(.03,.03,.03),KIT.phys(0xffffff,{roughness:.15,transparent:true,opacity:.9}),40);CR.count=0;CR.position.set(0,.18,.4);L.add(CR);
+const spoon=new THREE.Group();{const h=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.5,8),M.steel);h.rotation.z=Math.PI/2;h.position.x=.25;const b=new THREE.Mesh(new THREE.SphereGeometry(.06,16,10,0,Math.PI*2,Math.PI/2,Math.PI/2),M.steel);const s=new THREE.Mesh(new THREE.SphereGeometry(.05,12,8),KIT.mat(0xffffff,{roughness:.9}));s.scale.y=.4;s.position.y=-.01;spoon.add(h,b,s);spoon.userData.s=s;castAll(spoon);}
+const SP_HOME=V(-1.1,.3,.7);spoon.position.copy(SP_HOME);L.add(spoon);
+const jar=new THREE.Group();{const j=new THREE.Mesh(new THREE.CylinderGeometry(.18,.18,.36,24),KIT.phys(0xf5f5f0,{transparent:true,opacity:.6}));j.position.y=.18;const s=new THREE.Mesh(new THREE.CylinderGeometry(.17,.17,.28,24),KIT.mat(0xffffff,{roughness:.95}));s.position.y=.14;const l=new THREE.Mesh(new THREE.CylinderGeometry(.19,.19,.05,24),KIT.mat(0x2f6fb2));l.position.y=.38;jar.add(j,s,l);castAll(jar);}
+jar.position.set(-1.25,0,.35);L.add(jar);const jc=P3.card([{t:'سكر',s:70}],.3,.12);jc.position.set(-1.25,.2,.54);L.add(jc);
+function state(){const cap=sol(S.temp);const dis=S.seed?S.added-S.cry:(S.sup&&S.cool?S.added:Math.min(S.added,cap));const und=S.added-dis;
+  const st=S.added===0?'غير مشبع':(S.sup&&S.cool&&!S.seed&&S.added>cap+1)?'فوق مشبع':(und>.5||Math.abs(dis-cap)<1)?'مشبع':'غير مشبع';return {cap,dis,und,st};}
+function hud(){const s=state();sec.$('.slT').textContent=Math.round(S.temp)+' °C';sec.$('.slA').textContent=S.added+' g';sec.$('.slD').textContent=Math.round(s.dis)+' g';sec.$('.slS').textContent=s.st;
+  pile.visible=s.und>.5&&!S.seed;if(pile.visible){const k=Math.sqrt(s.und/50);pile.scale.set(k,k,k);pile.position.y=.19+.05*k;}
+  setCol(BK.lm,mixHex(0xbfe2f0,0xf3f1e6,Math.min(1,s.dis/300)));setTh(S.temp);
+  sec.$('.slChart').innerHTML=KIT.chart({w:330,h:200,xl:'درجة الحرارة (°س)',yl:'جم/100 جم ماء',xmin:0,xmax:100,ymin:0,ymax:500,series:[{c:'var(--brand)',name:'منحنى الذائبية',pts:CURVE},{c:'#e0473c',name:'محلولك',pts:[[S.temp,Math.round(s.dis)]],dots:true}]});}
+function rec(lbl){const s=state();S.rows.push([lbl,String(Math.round(S.temp)),String(S.added),String(Math.round(s.dis)),s.st]);renderNB();}
+async function add(){if(S.busy||S.added>=250||S.heat)return;S.busy=true;sync();await L.arc(spoon,V(-1.25,.55,.35),500,.7);spoon.userData.s.visible=true;await L.arc(spoon,V(-.12,.95,.4),700,1.1);
+  await L.tw(300,k=>spoon.rotation.x=-1.6*k);spoon.userData.s.visible=false;S.added+=50;await L.tw(700,k=>{});hud();await L.tw(300,k=>spoon.rotation.x=-1.6*(1-k));await L.arc(spoon,SP_HOME,500,1.1);
+  const s=state();S.busy=false;toast(s.und>.5?`بقي ${Math.round(s.und)} g لم يذب في القعر: المحلول مشبع.`:`ذاب السكر كله (${S.added} g).`);if(s.und>.5&&!S.rows.length)rec('عند 25°س');sync();render();}
+async function heat(){if(S.busy||state().und<.5||S.heat)return;S.busy=true;S.heat=1;sync();hp.userData.p.material.emissive=$lc(0xff4d00);hp.userData.p.material.emissiveIntensity=.6;
+  await L.tw(3000,k=>{S.temp=25+35*k;hud();});S.sup=1;hp.userData.p.material.emissiveIntensity=0;rec('بعد التسخين');S.busy=false;toast('عند 60°س زادت الذائبية إلى نحو 287 g فذاب السكر كله: المحلول غير مشبع.');sync();render();}
+async function cool(){if(S.busy||!S.sup||S.cool)return;S.busy=true;S.cool=1;sync();await L.tw(3600,k=>{S.temp=60-35*k;hud();});rec('بعد التبريد البطيء');S.busy=false;toast('برد المحلول إلى 25°س ولم يترسب شيء: فيه 250 g والحد 204 g فقط.');sync();render();}
+async function seed(){if(S.busy||!S.cool||S.seed)return;S.busy=true;S.seed=1;sync();const d=new THREE.Object3D();
+  await L.tw(3000,k=>{S.cry=46*k;const n=Math.floor(40*k);CR.count=n;for(let i=0;i<n;i++){const a=i*2.4,r=.04+(i%6)*.035;d.position.set(Math.cos(a)*r,.03+(i%4)*.025,Math.sin(a)*r);d.rotation.set(i,i*2,i);d.scale.setScalar(.6+.8*k);d.updateMatrix();CR.setMatrixAt(i,d.matrix);}CR.instanceMatrix.needsUpdate=true;hud();});
+  rec('بعد إسقاط البلورة');P3.good();S.busy=false;toast('تبلور الزائد (46 g) على البلورة: عاد المحلول مشبعًا.');sync();render();}
+function reset(){if(S.busy)return;Object.assign(S,{added:0,temp:25,heat:0,cool:0,sup:0,seed:0,cry:0,rows:[]});CR.count=0;hud();sync();render();renderNB();toast('أُعيدت التجربة.');}
+function stepIdx(){if(state().und<.5&&!S.sup)return 0;if(!S.sup)return 1;if(!S.cool)return 2;return 3;}
+function render(){const k=stepIdx();let title,html;
+  if(k===0){title='أضف السكر حتى الإشباع';html=`<p class="p3-txt">في الكأس 100 جم ماء عند 25°س. أضف السكر ملعقة بعد ملعقة (الملعقة = 50 جم) حتى يبقى سكر لا يذوب في القعر.</p>`;}
+  else if(k===1){title='المحلول مشبع… سخّنه';html=`<p class="p3-txt">بقي سكر في القعر؛ فالمحلول <b>مشبع</b> عند 25°س. سخّن المحلول إلى 60°س ولاحظ.</p>`;}
+  else if(k===2){title='برّد ببطء دون تحريك';html=`<p class="p3-txt">ذاب السكر كله؛ المحلول <b>غير مشبع</b> عند 60°س. برّده ببطء إلى 25°س.</p>`;}
+  else if(!S.seed){title='المحلول فوق مشبع';html=`<p class="p3-txt">فيه 250 جم مذابة والحد عند 25°س هو 204 جم فقط. أسقط بلورة سكر صغيرة ولاحظ.</p>`;}
+  else{title='الاستنتاج';html=`<p class="p3-ok">تزداد ذائبية السكر بارتفاع درجة الحرارة. المحلول <b>المشبع</b> فيه كل ما يمكن إذابته، و<b>فوق المشبع</b> فيه أكثر من حد الإشباع مؤقتًا، ويتبلور الزائد عند إسقاط بلورة (<b>التبلور</b> عملية فيزيائية).</p>`;}
+  sec.steps(NAMES,k,title,html);}
+function renderNB(){sec.$('.p3-nb').innerHTML=`<table class="p3-t"><thead><tr><th>المرحلة</th><th>°س</th><th>المضاف</th><th>الذائب</th><th>المحلول</th></tr></thead><tbody>${S.rows.length?S.rows.map(r=>`<tr>${r.map(v=>`<td>${v}</td>`).join('')}</tr>`).join(''):'<tr><td colspan="5">—</td></tr>'}</tbody></table>`;}
+function sync(){const b=S.busy,s=state();sec.$('[data-a="add"]').disabled=b||S.added>=250||S.heat;sec.$('[data-a="heat"]').disabled=b||s.und<.5||S.heat;sec.$('[data-a="cool"]').disabled=b||!S.sup||S.cool;sec.$('[data-a="seed"]').disabled=b||!S.cool||S.seed;sec.$('[data-a="reset"]').disabled=b;}
+sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;const a=x.dataset.a;if(a==='add')add();else if(a==='heat')heat();else if(a==='cool')cool();else if(a==='seed')seed();else if(a==='reset')reset();});
+hud();sync();render();renderNB();
+};
+
+/* ---------- ١٨) الكاشف الطبيعي (الملفوف البنفسجي) والتعادل ---------- */
+const CAB8={};EXP_MODS.cab8=CAB8;
+CAB8.init=function(){gm();
+const CABC=[[0xe11d2e,'حمض قوي'],[0xbe123c,'حمض متوسط القوة'],[0xb0178f,'حمض ضعيف'],[0x5b5fb0,'متعادل'],[0x0e9f8e,'قاعدة ضعيفة'],[0x16a34a,'قاعدة متوسطة القوة'],[0xead20a,'قاعدة قوية']];
+const SOLS=[{n:'حمض الهيدروكلوريك',c:0},{n:'الأمونيا',c:6},{n:'الخل',c:1},{n:'الماء المقطر',c:3},{n:'الصابون',c:5},{n:'شراب غازي',c:2},{n:'صودا الخبز',c:4}];
+const ORDER=SOLS.map((s,i)=>i).sort((a,b)=>SOLS[a].c-SOLS[b].c);
+const byPH=p=>p<2.5?0:p<4.5?1:p<6.5?2:p<=7.5?3:p<9.5?4:p<11.5?5:6;
+const S={drops:SOLS.map(()=>0),picked:[],vb:0,neut:false,busy:false,pts:[[0,1]]};P3.dbg.cab8=S;
+const NAMES=['أضف الكاشف','رتّب المحاليل','عادل الحمض بالقاعدة'];
+const pH=vb=>{const na=20*.1,nb=vb*.1,v=20+vb;if(Math.abs(na-nb)<1e-9)return 7;return na>nb?-Math.log10((na-nb)/v):14+Math.log10((nb-na)/v);};
+const sec=P3.section('cab8',{title:'الكاشف الطبيعي (الملفوف البنفسجي) والتعادل',grade:'ثاني متوسط',lesson:'المحاليل الحمضية والمحاليل القاعدية',
+  hud:`<div class="p3-row"><div class="p3-m"><small>NaOH المضاف</small><b class="cbV">0.0 mL</b></div><div class="p3-m warm"><small>pH الكأس</small><b class="cbP">1.0</b></div></div>`,
+  side:`<div class="p3-box"><h4 class="p3-h">لوحة التحكم</h4>
+    <div class="p3-acts"><span class="p3-txt" style="font-size:.8rem">① اضغط على كل أنبوب لإضافة 10 قطرات من عصير الملفوف.</span></div>
+    <div class="p3-acts cbOrd"></div>
+    <div class="p3-acts"><span class="p3-lab">السحاحة</span><button class="p3-b" data-v="5">+5 mL</button><button class="p3-b" data-v="1">+1 mL</button><button class="p3-b" data-v="0.5">+0.5 mL</button><button class="p3-b" data-a="rz">↺ أعد الكأس</button></div>
+    <div class="p3-acts"><button class="p3-b" data-a="reset">↺ إعادة التجربة</button></div></div>
+    <div class="p3-box"><h4 class="p3-h">جدول ألوان الكاشف</h4><div>${CABC.map(c=>`<div style="display:flex;gap:6px;align-items:center;font-size:.8rem;font-weight:700"><span class="p3-sw" style="background:${hex6(c[0])}"></span>${c[1]}</div>`).join('')}</div></div>`,
+  learn:`<div class="panel"><h3>الكواشف</h3><p>مركّبات تتغير ألوانها بحسب الرقم الهيدروجيني pH للمحلول. عصير الملفوف البنفسجي كاشف طبيعي: أحمر في الأحماض القوية، بنفسجي مزرق في المتعادل، أخضر ثم أصفر في القواعد.</p></div>
+    <div class="panel"><h3>التعادل</h3><p>تفاعل حمض مع قاعدة ينتج ملحًا وماءً: تتحد أيونات الهيدرونيوم مع أيونات الهيدروكسيد بأعداد متساوية فيصبح pH = 7.</p><p class="p3-eq">H₃O⁺ + OH⁻ → 2H₂O</p></div>`,
+  quiz:[{q:'لون عصير الملفوف في الحمض القوي:',o:['أحمر','أخضر','أصفر'],a:0},{q:'أي المحاليل التالية الأقرب إلى التعادل؟',o:['الخل','الماء المقطر','الأمونيا'],a:1},
+    {q:'نواتج تفاعل التعادل:',o:['ملح وماء','حمض وماء','غاز الهيدروجين'],a:0},{q:'كم مل من NaOH (0.1 مول/لتر) يعادل 20 مل من HCl بالتركيز نفسه؟',o:['10 مل','20 مل','40 مل'],a:1}],
+  report:()=>({title:'الكاشف الطبيعي والتعادل',grade:'ثاني متوسط',lesson:'المحاليل الحمضية والمحاليل القاعدية',cols:['المحلول','لون الكاشف','التصنيف'],
+    rows:SOLS.map((s,i)=>[s.n,S.drops[i]?CABC[s.c][1].replace(/^/,''):'',S.drops[i]?(s.c<3?'حمضي':s.c>3?'قاعدي':'متعادل'):'']),note:'رتّب المحاليل من الأشد حمضية إلى الأشد قاعدية.'})
+});
+const L=new Lab(sec,{target:V(.1,.55,.45),dist:a=>Math.max(4.2,7.0/a),exposure:.95});buildRoom(L);
+const toast=m=>L.toast(m);
+const rack=new THREE.Group();{const t=new THREE.Mesh(RBox(3.0,.06,.36,.02),KIT.wood(0x9b6a3c));t.position.y=.62;const b=new THREE.Mesh(RBox(3.0,.06,.36,.02),KIT.wood(0x9b6a3c));b.position.y=.03;rack.add(t,b);[-1.47,1.47].forEach(x=>{const s=new THREE.Mesh(RBox(.06,.62,.36,.01),KIT.wood(0x8a5a32));s.position.set(x,.33,0);rack.add(s);});castAll(rack);}
+rack.position.set(-.8,0,.25);L.add(rack);
+const TT=SOLS.map((s,i)=>{const x=-2.1+i*.43,t=TestTube(.12,.95);t.g.position.set(x,.14,.25);t.seg(0,.45);setCol(t.lm,s.n==='الصابون'?0xeef0ff:0xe6f3f8);t.lm.opacity=.5;L.add(t.g);
+  const c=P3.card([{t:s.n,s:s.n.length>10?62:80}],.42,.17);c.position.set(x,.05,.62);c.rotation.x=-.95;L.add(c);L.onTap(t.g,()=>tapTube(i));return {t,x};});
+const dropper=new THREE.Group();{const g=new THREE.Mesh(new THREE.CylinderGeometry(.02,.012,.3,12),G.glassS);g.position.y=.15;const b=new THREE.Mesh(new THREE.SphereGeometry(.045,14,10),KIT.mat(0x2b2b2b));b.position.y=.33;b.scale.y=1.4;dropper.add(g,b);castAll(dropper);}
+const DR_HOME=V(-2.6,.6,.95);dropper.position.copy(DR_HOME);L.add(dropper);
+const bottle=Beaker(.12,.3,{col:0x5b2a86,op:.85});bottle.set(.22);bottle.g.position.set(-2.6,0,.95);L.add(bottle.g);const bc=P3.card([{t:'عصير الملفوف',s:50}],.42,.12);bc.position.set(-2.6,.05,1.2);bc.rotation.x=-.9;L.add(bc);
+const drops=Drops(L,12,0x6b2fa0,.014);
+// التعادل
+const NB=Beaker(.3,.55);NB.g.position.set(1.75,0,.45);NB.set(.18);setCol(NB.lm,CABC[0][0]);NB.lm.opacity=.7;L.add(NB.g);
+const nc=P3.card([{t:'20 mL HCl + كاشف',s:44}],.6,.14);nc.position.set(1.75,.05,.95);nc.rotation.x=-.9;L.add(nc);
+const ST=KIT.stand(2.2);ST.position.set(2.35,0,.15);L.add(ST);
+const bur=new THREE.Group();{const t=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,1.1,16,1,true),G.glass);t.position.y=.55;t.renderOrder=3;const tip=new THREE.Mesh(new THREE.ConeGeometry(.04,.12,16),G.glassS);tip.rotation.x=Math.PI;tip.position.y=-.06;
+  const lm=G.water(0xd8eef8,.6);const lq=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,1,14),lm);bur.userData.lq=lq;const v=new THREE.Mesh(new THREE.BoxGeometry(.1,.03,.03),KIT.mat(0x1f6feb));v.position.y=.02;bur.add(t,tip,lq,v);}
+bur.position.set(1.75,1.0,.45);L.add(bur);const setBur=()=>{const f=1-S.vb/50;bur.userData.lq.scale.y=f;bur.userData.lq.position.y=.05+f/2;};setBur();
+const bl=P3.card([{t:'NaOH 0.1 mol/L',s:48,mono:true}],.5,.12);bl.position.set(1.75,2.25,.45);L.add(bl);
+const meter=KIT.lcd(.5,.2);meter.m.position.set(1.05,.45,.75);meter.m.rotation.y=.35;L.add(meter.m);meter.set('pH 1.0');
+async function tapTube(i){if(S.busy||S.drops[i])return;S.busy=true;const o=TT[i];await L.arc(dropper,V(-2.6,.5,.95),400,.9);await L.arc(dropper,V(o.x,1.2,.25),700,1.3);drops.start(V(o.x,1.18,.25),.6);
+  const c0=new THREE.Color(o.t.lm.color),c1=$lc(CABC[SOLS[i].c][0]);await L.tw(900,k=>{o.t.lm.color.copy(c0).lerp(c1,k);o.t.lm.opacity=.5+.35*k;});drops.stop();await L.arc(dropper,DR_HOME,500,1.3);
+  S.drops[i]=1;S.busy=false;P3.click();if(S.drops.every(Boolean))toast('أُضيف الكاشف إلى المحاليل السبعة. رتّبها الآن مستعينًا بجدول الألوان.');sync();render();renderNB();}
+function pick(i){if(S.busy||!S.drops.every(Boolean)||S.picked.length>=7)return;if(ORDER[S.picked.length]===i){S.picked.push(i);P3.click();if(S.picked.length===7){P3.good();toast('ترتيب صحيح! الماء المقطر الأقرب إلى التعادل، والأمونيا الأقوى قاعدية.');}}else toast('ليس هذا دوره؛ قارن لون الأنبوب بجدول الألوان.');sync();render();}
+async function addB(v){if(S.busy||S.picked.length<7||S.neut)return;if(S.vb+v>20.001){toast('ستتجاوز نقطة التعادل! أضف كمية أصغر.');return;}S.busy=true;sync();drops.start(V(1.75,.92,.45),.25);const v0=S.vb,v1=Math.round((S.vb+v)*10)/10;
+  const c0=new THREE.Color(NB.lm.color);await L.tw(600+v*120,k=>{S.vb=v0+(v1-v0)*k;setBur();NB.set(.18+.12*S.vb/20);const p=pH(S.vb);sec.$('.cbV').textContent=S.vb.toFixed(1)+' mL';sec.$('.cbP').textContent=p.toFixed(1);meter.set('pH '+p.toFixed(1));NB.lm.color.copy(c0).lerp($lc(CABC[byPH(p)][0]),k);});
+  drops.stop();S.vb=v1;S.pts.push([v1,+pH(v1).toFixed(2)]);if(Math.abs(v1-20)<1e-6){S.neut=true;P3.good();toast('pH = 7: تعادل الحمض مع القاعدة فتكوّن ملح وماء.');}S.busy=false;sync();render();renderNB();}
+function rz(){if(S.busy)return;S.vb=0;S.neut=false;S.pts=[[0,1]];setBur();NB.set(.18);setCol(NB.lm,CABC[0][0]);sec.$('.cbV').textContent='0.0 mL';sec.$('.cbP').textContent='1.0';meter.set('pH 1.0');sync();render();renderNB();}
+function reset(){if(S.busy)return;S.drops=SOLS.map(()=>0);S.picked=[];TT.forEach((o,i)=>{setCol(o.t.lm,SOLS[i].n==='الصابون'?0xeef0ff:0xe6f3f8);o.t.lm.opacity=.5;});rz();toast('أُعيدت التجربة.');}
+function stepIdx(){if(!S.drops.every(Boolean))return 0;if(S.picked.length<7)return 1;return 2;}
+function render(){const k=stepIdx();let title,html;
+  if(k===0){title='أضف الكاشف الطبيعي';html=`<p class="p3-txt">في الأنابيب سبعة محاليل منزلية. اضغط على كل أنبوب لتضيف إليه 10 قطرات من عصير الملفوف البنفسجي، ولاحظ اللون (${S.drops.filter(Boolean).length} / 7).</p>`;}
+  else if(k===1){title='رتّب المحاليل';html=`<p class="p3-txt">اضغط على أسماء المحاليل في لوحة التحكم بالترتيب من <b>الأشد حمضية</b> إلى <b>الأشد قاعدية</b> (${S.picked.length} / 7).</p>`;}
+  else if(!S.neut){title='عادل الحمض بالقاعدة';html=`<p class="p3-txt">في الكأس 20 mL من حمض الهيدروكلوريك (0.1 mol/L) مع الكاشف (أحمر). أضف هيدروكسيد الصوديوم بالتركيز نفسه من السحاحة حتى يصبح pH = 7 (بنفسجي مزرق).</p>`;}
+  else{title='الاستنتاج';html=`<p class="p3-ok">الترتيب: حمض الهيدروكلوريك ← الخل ← الشراب الغازي ← الماء المقطر ← صودا الخبز ← الصابون ← الأمونيا. وعند إضافة 20 mL من القاعدة تساوت أيونات H₃O⁺ وOH⁻ فأصبح pH = 7: <b>تعادل</b> ينتج ملحًا وماءً.</p>`;}
+  sec.steps(NAMES,k,title,html);
+  sec.$('.cbOrd').innerHTML=k===1?SOLS.map((s,i)=>`<button class="p3-b ${S.picked.includes(i)?'done':''}" data-p="${i}" ${S.picked.includes(i)?'disabled':''}>${S.picked.includes(i)?(S.picked.indexOf(i)+1)+'. ':''}${s.n}</button>`).join(''):(S.picked.length===7?`<span class="p3-txt" style="font-size:.8rem">✓ ${S.picked.map(i=>SOLS[i].n).join(' ← ')}</span>`:'');}
+function renderNB(){let h=`<table class="p3-t"><thead><tr><th>المحلول</th><th>اللون</th><th>التصنيف</th></tr></thead><tbody>${SOLS.map((s,i)=>`<tr><td>${s.n}</td><td>${S.drops[i]?`<span class="p3-sw" style="background:${hex6(CABC[s.c][0])}"></span>`:'—'}</td><td>${S.drops[i]?CABC[s.c][1]:'—'}</td></tr>`).join('')}</tbody></table>`;
+  if(S.pts.length>1)h+=KIT.chart({w:330,h:190,xl:'حجم NaOH (mL)',yl:'pH',xmin:0,xmax:20,ymin:0,ymax:14,series:[{c:'var(--brand)',name:'pH',pts:S.pts}]});sec.$('.p3-nb').innerHTML=h;}
+function sync(){const b=S.busy,ok=S.picked.length===7;sec.$$('[data-v]').forEach(x=>x.disabled=b||!ok||S.neut);sec.$('[data-a="rz"]').disabled=b||!ok;sec.$('[data-a="reset"]').disabled=b;}
+S._tap=tapTube;sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;if(x.dataset.p)pick(+x.dataset.p);else if(x.dataset.v)addB(+x.dataset.v);else if(x.dataset.a==='rz')rz();else if(x.dataset.a==='reset')reset();});
+sync();render();renderNB();
+};
+
+
 /* ---------- register in the library ---------- */
-const D3=['elec','gasp','flame','minr','weat','ruth','half','elem','rock','plate','crt','rad','alk','rust'];
+const D3=['elec','gasp','flame','minr','weat','ruth','half','elem','rock','plate','crt','rad','alk','rust','plnt8','dig8','sol8','cab8'];
 EXPS.forEach(e=>{if(EXP_MODS[e.id])e.ready=true;if(D3.includes(e.id))e.d3=true;});renderLib();
 })();
