@@ -1259,7 +1259,7 @@ function render(){const k=stepIdx();let title,html;
 function renderNB(){let h=`<table class="p3-t"><thead><tr><th>الإطلاق</th><th>نفذت</th><th>انحرفت</th><th>ارتدّت</th></tr></thead><tbody>`+
   (S.runs.length?S.runs.map(r=>`<tr><td>${r.real?'صفيحة الذهب':'نموذج طومسون'}</td><td class="n">${r.a}</td><td class="n">${r.b}</td><td class="n">${r.c}</td></tr>`).join(''):`<tr><td colspan="4" class="muted">ستظهر هنا نتائج كل إطلاق (${N} جسيم).</td></tr>`)+'</tbody></table>';
   sec.$('.p3-nb').innerHTML=h;}
-function sync(){const b=S.busy;sec.$$('[data-p]').forEach(x=>{x.setAttribute('aria-pressed',x.dataset.p===S.pred);x.disabled=b;});sec.$$('[data-m]').forEach(x=>x.disabled=b||!S.pred);
+function sync(){const b=S.busy;sec.$$('button[data-p]').forEach(x=>{x.setAttribute('aria-pressed',x.dataset.p===S.pred);x.disabled=b;});sec.$$('[data-m]').forEach(x=>x.disabled=b||!S.pred);
   sec.$('[data-a="zoom"]').setAttribute('aria-pressed',S.zoom);sec.$('[data-a="reset"]').disabled=b;}
 sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;const d=x.dataset;
   if(d.p){S.pred=d.p;P3.click();toast(d.p==='pass'?'صحيح: هذا ما يتوقعه نموذج طومسون. لنجرّب!':'نموذج طومسون يتوقع أن تنفذ الجسيمات كلها تقريبًا؛ لنجرّب ونرَ.');sync();render();}
@@ -1491,7 +1491,550 @@ sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button'
 L.onTap(lensG,()=>test('lus'));L.onTap(CT,()=>test('cond'));L.onTap(AN,()=>test('mal'));
 sync();render();renderNB();
 };
+
+/* =====================================================================
+   ٩) دورة الصخور — 3D (أول متوسط · أنواع الصخور)
+   ===================================================================== */
+const ROCK={};EXP_MODS.rock=ROCK;
+ROCK.init=function(){gm();
+const R={ignC:{n:'صخر ناري جوفي (جرانيت)',t:'ناري'},ignF:{n:'صخر ناري سطحي (بازلت)',t:'ناري'},sed:{n:'رسوبيات (فتات صخري)',t:'—'},
+  sedR:{n:'صخر رسوبي (حجر رملي)',t:'رسوبي'},metaG:{n:'صخر متحوّل (نَيس)',t:'متحوّل'},metaQ:{n:'صخر متحوّل (كوارتزيت)',t:'متحوّل'},magma:{n:'صهارة (ماجما)',t:'—'}};
+const PR={weather:{n:'التجوية والتعرية',from:['ignC','ignF','sedR','metaG','metaQ']},compact:{n:'الترسيب والضغط والتماسك',from:['sed']},
+  heat:{n:'الحرارة والضغط',from:['ignC','ignF','sedR']},melt:{n:'الانصهار',from:['ignC','ignF','sedR','metaG','metaQ','sed']},
+  slow:{n:'التبريد البطيء في باطن الأرض',from:['magma']},fast:{n:'التبريد السريع على سطح الأرض',from:['magma']}};
+const WHY={weather:'التجوية تفتّت الصخور الصلبة فقط.',compact:'الضغط والتماسك يحوّلان الرسوبيات (الفتات) إلى صخر رسوبي؛ فتّت الصخر أولًا بالتجوية.',heat:'الحرارة والضغط دون انصهار تحوّل الصخور النارية والرسوبية إلى متحوّلة.',melt:'',slow:'التبريد يحدث للصهارة فقط؛ صهر الصخر أولًا.',fast:'التبريد يحدث للصهارة فقط؛ صهر الصخر أولًا.'};
+const TASKS=[{n:'حوّل الجرانيت إلى صخر رسوبي',ok:s=>s==='sedR'},{n:'كوّن صخرًا متحوّلًا',ok:s=>s==='metaG'||s==='metaQ'},{n:'كوّن صخرًا ناريًا سطحيًا',ok:s=>s==='ignF'}];
+const S={st:'ignC',busy:false,path:[],done:{}};P3.dbg.rock=S;
+const NAMES=['لاحظ العيّنة','طبّق عملية','تتبّع الدورة','أكمل المهام'];
+const sec=P3.section('rock',{title:'دورة الصخور',grade:'أول متوسط',lesson:'أنواع الصخور',
+  hud:`<div class="p3-m warm" style="min-width:220px"><small>العيّنة الآن</small><b class="rkN" style="font-family:var(--f-body);font-size:1.02rem">—</b></div>`,
+  side:`<div class="p3-box"><h4 class="p3-h">العمليات</h4>
+    <div class="p3-acts">${Object.entries(PR).map(([k,v])=>`<button class="p3-b" data-p="${k}">${v.n}</button>`).join('')}</div>
+    <div class="p3-acts"><button class="p3-b" data-a="reset">↺ ابدأ من الجرانيت</button></div></div>`,
+  learn:`<div class="panel"><h3>أنواع الصخور</h3><p><b>النارية:</b> تتكوّن من تبريد الصهارة؛ <b>الجوفية</b> (مثل الجرانيت) تبرد ببطء فتكبر بلوراتها، و<b>السطحية</b> (مثل البازلت) تبرد بسرعة فتصغر بلوراتها.</p>
+      <p><b>الرسوبية:</b> تتكوّن من تراكم الرسوبيات ثم ضغطها وتماسكها، وتظهر فيها طبقات.</p><p><b>المتحوّلة:</b> تتكوّن عندما تتعرض الصخور لحرارة وضغط شديدين دون أن تنصهر، فتتغير بلوراتها وقد تظهر فيها أشرطة.</p></div>
+    <div class="panel"><h3>دورة الصخور</h3><p>سلسلة العمليات التي تتحول فيها الصخور من نوع إلى آخر عبر الزمن، ولا تسير في اتجاه واحد ثابت؛ فقد يتحول أي صخر إلى صخر من نوع آخر.</p></div>`,
+  quiz:[{q:'الصخر الذي يتكوّن من تبريد الصهارة ببطء في باطن الأرض:',o:['البازلت','الجرانيت','الحجر الرملي'],a:1},{q:'العملية التي تحوّل الرسوبيات إلى صخر رسوبي:',o:['الانصهار','الضغط والتماسك','التبريد السريع'],a:1},
+        {q:'يتكوّن الصخر المتحوّل بفعل:',o:['الحرارة والضغط دون انصهار','التجوية والتعرية','تبريد اللابة'],a:0},{q:'بلورات الصخور النارية السطحية:',o:['كبيرة','صغيرة','غير موجودة دائمًا'],a:1}],
+  report:()=>({title:'دورة الصخور',grade:'أول متوسط',lesson:'أنواع الصخور',cols:['من','العملية','إلى'],rows:S.path.length?S.path.map(p=>[R[p.a].n,PR[p.p].n,R[p.b].n]):[['','','']],note:'ارسم دورة الصخور بالأسهم مستعينًا بالمسار الذي سلكته.'})
+});
+const L=new Lab(sec,{target:V(0,.6,.45),dist:a=>Math.max(4,6.6/a),exposure:.95});buildRoom(L);
+const toast=m=>L.toast(m);
+/* ---------- procedural rock textures ---------- */
+const T={};const rnd=Math.random;
+T.ignC=canvasTex(512,512,c=>{c.fillStyle='#d9c6bd';c.fillRect(0,0,512,512);for(let i=0;i<900;i++){c.fillStyle=['#f4eee9','#b98a7a','#2b2b2e','#e7d9cf','#8f6a5e'][i%5];const s=6+rnd()*20;c.save();c.translate(rnd()*512,rnd()*512);c.rotate(rnd()*3);c.fillRect(-s/2,-s/3,s,s*.7);c.restore();}});
+T.ignF=canvasTex(512,512,c=>{c.fillStyle='#3a3c40';c.fillRect(0,0,512,512);for(let i=0;i<4000;i++){c.fillStyle=rnd()<.5?'#2c2e31':'#4a4d52';c.fillRect(rnd()*512,rnd()*512,2,2);}for(let i=0;i<70;i++){c.fillStyle='#1c1d1f';c.beginPath();c.arc(rnd()*512,rnd()*512,2+rnd()*6,0,7);c.fill();}});
+T.sedR=canvasTex(512,512,c=>{const cols=['#d8b98a','#c9a46f','#e2c79d','#b88f5c','#d1ad7b'];let y=0;while(y<512){const h=20+rnd()*45;c.fillStyle=cols[Math.floor(rnd()*cols.length)];c.fillRect(0,y,512,h);y+=h;}
+  for(let i=0;i<5000;i++){c.fillStyle=`rgba(${rnd()<.5?'90,60,30':'255,240,210'},.35)`;c.fillRect(rnd()*512,rnd()*512,2,2);}});
+T.metaG=canvasTex(512,512,c=>{c.fillStyle='#cfc7bd';c.fillRect(0,0,512,512);for(let b=0;b<16;b++){c.strokeStyle=b%2?'#2e2c2b':'#f2ece4';c.lineWidth=8+rnd()*14;c.beginPath();for(let x=0;x<=512;x+=16){const y=b*34+Math.sin(x/60+b)*14;x?c.lineTo(x,y):c.moveTo(x,y);}c.stroke();}});
+T.metaQ=canvasTex(512,512,c=>{c.fillStyle='#e9ddd0';c.fillRect(0,0,512,512);for(let i=0;i<1400;i++){c.fillStyle=['#f6efe7','#d9c3ad','#efe2d4'][i%3];c.beginPath();c.arc(rnd()*512,rnd()*512,4+rnd()*8,0,7);c.fill();}});
+T.magma=canvasTex(512,512,c=>{const g=c.createRadialGradient(256,256,30,256,256,360);g.addColorStop(0,'#fff1a8');g.addColorStop(.4,'#ff9a1f');g.addColorStop(1,'#c2330e');c.fillStyle=g;c.fillRect(0,0,512,512);
+  c.strokeStyle='rgba(60,10,0,.55)';c.lineWidth=5;for(let i=0;i<26;i++){c.beginPath();let x=rnd()*512,y=rnd()*512;c.moveTo(x,y);for(let j=0;j<5;j++){x+=(rnd()-.5)*90;y+=(rnd()-.5)*90;c.lineTo(x,y);}c.stroke();}});
+/* ---------- bench: pedestal + sample ---------- */
+const P0=V(0,.32,.35);
+const ped=new THREE.Mesh(new THREE.CylinderGeometry(.75,.85,.3,48),KIT.mat(0x3a4148,{metalness:.3,roughness:.5}));ped.position.set(P0.x,.15,P0.z);ped.castShadow=true;L.add(ped);
+const mat=new THREE.MeshStandardMaterial({map:T.ignC,roughness:.85,emissive:0x000000});
+const block=new THREE.Mesh(RBox(.9,.55,.65,.08),mat);block.position.set(P0.x,P0.y+.275,P0.z);block.castShadow=true;L.add(block);
+const blobGeo=jitterS(new THREE.SphereGeometry(.42,40,24),.12);function jitterS(g,a){const p=g.attributes.position,v=new THREE.Vector3();for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i);const k=1+Math.sin(v.x*9)*Math.cos(v.z*7)*a*.5+Math.sin(v.y*11)*a*.3;v.multiplyScalar(k);p.setXYZ(i,v.x,v.y,v.z);}g.computeVertexNormals();return g;}
+const blob=new THREE.Mesh(blobGeo,new THREE.MeshStandardMaterial({map:T.magma,emissiveMap:T.magma,emissive:0xffffff,emissiveIntensity:1.1,roughness:.6}));blob.scale.y=.6;blob.position.set(P0.x,P0.y+.24,P0.z);blob.visible=false;L.add(blob);
+const glow=new THREE.PointLight(0xff7a2a,0,4,2);glow.position.set(P0.x,P0.y+.8,P0.z);L.scene.add(glow);
+// sediments: instanced grains
+const NG=260,grains=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(.035,0),KIT.mat(0xc9a46f,{roughness:.95}),NG);grains.count=0;grains.castShadow=true;L.add(grains);
+const gpos=[...Array(NG)].map((_,i)=>{const a=rnd()*6.28,r=Math.sqrt(rnd())*.42;const h=(.42-r)*.55*rnd();return V(P0.x+Math.cos(a)*r,P0.y+.03+h,P0.z+Math.sin(a)*r);});
+const gcol=[0xd8b98a,0xb88f5c,0x8f6a5e,0xe2c79d,0x6d6e72];const dm=new THREE.Object3D();
+
+function setGrains(n,lift=0){grains.count=n;for(let i=0;i<n;i++){const p=gpos[i];dm.position.set(p.x,p.y+lift*(1+(i%5)*.3),p.z);dm.rotation.set(i,i*2,i);dm.scale.setScalar(.7+(i%4)*.2);dm.updateMatrix();grains.setMatrixAt(i,dm.matrix);}grains.instanceMatrix.needsUpdate=true;if(grains.instanceColor)grains.instanceColor.needsUpdate=true;}
+// process machines
+const press=new THREE.Group();{const pl=new THREE.Mesh(RBox(1.1,.12,.85,.03),KIT.mat(0x5d6875,{metalness:.7,roughness:.3}));const rod=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,1.2,14),M.steel);rod.position.y=.66;press.add(pl,rod);castAll(press);}
+press.position.set(P0.x,2.6,P0.z);press.visible=false;L.add(press);
+const jaws=[-1,1].map(s=>{const j=new THREE.Mesh(RBox(.14,.75,.85,.03),KIT.mat(0x7a2e1e,{metalness:.5,roughness:.4,emissive:0x000000}));j.position.set(P0.x+s*1.3,P0.y+.38,P0.z);j.visible=false;j.castShadow=true;L.add(j);return j;});
+const rainG=new THREE.BufferGeometry(),rainN=160,rainP=new Float32Array(rainN*3);rainG.setAttribute('position',new THREE.BufferAttribute(rainP,3));
+const rain=new THREE.Points(rainG,new THREE.PointsMaterial({color:$lc(0x6fb2ff),size:.04,transparent:true,opacity:.85,depthWrite:false}));rain.visible=false;rain.frustumCulled=false;L.scene.add(rain);
+const nameEl=sec.$('.rkN');L.label('منصة العيّنة',V(P0.x,.05,P0.z+.9),'small');
+/* cycle diagram card on the wall */
+const cyc=P3.card([{t:'دورة الصخور',s:60},{t:'ناري ⇄ رسوبي ⇄ متحوّل',s:46}],1.6,.5,{bd:'#e0703f'});cyc.position.set(0,1.75,-1.96);L.add(cyc);
+/* ---------- show a state ---------- */
+function show(st){block.visible=['ignC','ignF','sedR','metaG','metaQ'].includes(st);blob.visible=st==='magma';
+  if(block.visible){mat.map=T[st];mat.needsUpdate=true;block.scale.set(st.startsWith('meta')?.85:1,st.startsWith('meta')?1.12:st==='ignF'?.8:1,1);block.position.y=P0.y+.275*block.scale.y;}
+  setGrains(st==='sed'?NG:0);glow.intensity=st==='magma'?2.2:0;nameEl.textContent=R[st].n;}
+P3.loop(L,(dt,t)=>{if(blob.visible){blob.rotation.y+=dt*.3;blob.material.emissiveIntensity=1+.15*Math.sin(t*3);glow.intensity=S.st==='magma'?2+.4*Math.sin(t*4):glow.intensity;}
+  if(rain.visible){for(let i=0;i<rainN;i++){rainP[i*3+1]-=dt*3;if(rainP[i*3+1]<P0.y){rainP[i*3]=P0.x+(rnd()-.5)*1.4;rainP[i*3+1]=P0.y+1.6+rnd()*.6;rainP[i*3+2]=P0.z+(rnd()-.5)*1;}}rainG.attributes.position.needsUpdate=true;}});
+/* ---------- processes ---------- */
+async function apply(p){if(S.busy)return;const a=S.st;if(!PR[p].from.includes(a)){toast(WHY[p]||'لا يمكن تطبيق هذه العملية على هذه العيّنة.');try{L2.bad();}catch(e){}return;}
+  S.busy=true;sync();let b;
+  if(p==='weather'){rain.visible=true;for(let i=0;i<rainN;i++){rainP[i*3]=P0.x+(rnd()-.5)*1.4;rainP[i*3+1]=P0.y+rnd()*2;rainP[i*3+2]=P0.z+(rnd()-.5);}P3.noise(2.2,.12,800,.5);
+    await L.tw(1600,k=>{block.scale.multiplyScalar(1-.004);mat.roughness=1;});block.visible=false;setGrains(NG,.6);
+    await L.tw(900,k=>setGrains(NG,.6*(1-ease(k))));rain.visible=false;b='sed';}
+  else if(p==='compact'){press.visible=true;await L.tw(800,k=>press.position.y=2.6-(2.6-(P0.y+.62))*ease(k));P3.tone(110,.3,'sawtooth',.05);
+    await L.tw(900,k=>setGrains(NG,-.02*k));b='sedR';show(b);block.scale.y=.01;await L.tw(700,k=>{block.scale.y=Math.max(.01,k);block.position.y=P0.y+.275*block.scale.y;});
+    await L.tw(700,k=>press.position.y=(P0.y+.62)+(2.6-P0.y-.62)*ease(k));press.visible=false;}
+  else if(p==='heat'){jaws.forEach(j=>j.visible=true);await L.tw(800,(k)=>jaws.forEach((j,i)=>j.position.x=P0.x+(i?1:-1)*(1.3-.73*ease(k))));
+    await L.tw(1400,k=>{jaws.forEach(j=>j.material.emissive.copy($lc(0xff3a0a)).multiplyScalar(.6*k));mat.emissive.copy($lc(0x7a1a00)).multiplyScalar(.5*Math.sin(Math.PI*k));block.scale.x=1-.15*k;});
+    b=a==='sedR'?'metaQ':'metaG';show(b);mat.emissive.setHex(0);await L.tw(700,k=>jaws.forEach((j,i)=>{j.position.x=P0.x+(i?1:-1)*(.57+.73*ease(k));j.material.emissive.multiplyScalar(.9);}));jaws.forEach(j=>j.visible=false);}
+  else if(p==='melt'){if(a==='sed')setGrains(0);await L.tw(1400,k=>{mat.emissive.copy($lc(0xff6a1a)).multiplyScalar(k);glow.intensity=2*k;block.scale.y=Math.max(.3,1-.6*k);block.position.y=P0.y+.275*block.scale.y;});
+    mat.emissive.setHex(0);b='magma';show(b);blob.scale.set(.3,.2,.3);await L.tw(600,k=>blob.scale.set(.3+.7*k,.2+.4*k,.3+.7*k));P3.whoosh();}
+  else{const fast=p==='fast';b=fast?'ignF':'ignC';await L.tw(fast?900:2600,k=>{blob.material.emissiveIntensity=1.1*(1-k);glow.intensity=2*(1-k);if(fast){blob.scale.set(1+.4*k,.6-.25*k,1+.4*k);}});
+    show(b);block.scale.y*=.01;await L.tw(500,k=>{block.scale.y=(b==='ignF'?.8:1)*Math.max(.01,k);block.position.y=P0.y+.275*block.scale.y;});blob.material.emissiveIntensity=1.1;}
+  S.st=b;S.path.push({a,p,b});TASKS.forEach((t,i)=>{if(!S.done[i]&&t.ok(b)&&(i!==0||S.path.some(x=>x.a==='ignC')||true)){S.done[i]=true;P3.good();toast('✓ أنجزت المهمة: '+t.n);}});
+  if(!TASKS.some((t,i)=>S.done[i]&&t.ok(b)))toast(`${PR[p].n}: ${R[a].n} ← ${R[b].n}`);
+  S.busy=false;sync();render();renderNB();}
+function reset(){if(S.busy)return;S.st='ignC';S.path=[];S.done={};mat.emissive.setHex(0);show('ignC');sync();render();renderNB();toast('عيّنة جرانيت جديدة.');}
+/* ---------- UI ---------- */
+function stepIdx(){if(!S.path.length)return 0;if(S.path.length<3)return 1;if(Object.keys(S.done).length<TASKS.length)return 2;return 3;}
+function render(){const k=stepIdx();let title,html;
+  if(k===0){title='عيّنة جرانيت';html=`<p class="p3-txt">أمامك صخر ناري جوفي (جرانيت) بلوراته كبيرة. اختر عملية من لوحة العمليات وتتبّع كيف يتحول الصخر.</p>`;}
+  else if(k<3){title='تتبّع دورة الصخور';html=`<p class="p3-txt">العيّنة الآن: <b>${R[S.st].n}</b>. جرّب عمليات أخرى، فبعضها لا يصلح لكل صخر.</p>`;}
+  else{title='أحسنت!';html=`<p class="p3-ok">أنجزت المهام الثلاث. أي صخر يمكن أن يتحول إلى نوع آخر عبر دورة الصخور.</p>`;}
+  html+=`<div style="margin-top:8px">${TASKS.map((t,i)=>`<div class="p3-txt" style="font-size:.84rem">${S.done[i]?'✅':'⬜'} ${t.n}</div>`).join('')}</div>`;
+  sec.steps(NAMES,k,title,html);}
+function renderNB(){sec.$('.p3-nb').innerHTML=`<table class="p3-t"><thead><tr><th>#</th><th>من</th><th>العملية</th><th>إلى</th></tr></thead><tbody>`+
+  (S.path.length?S.path.map((p,i)=>`<tr><td class="n">${i+1}</td><td>${R[p.a].n}</td><td>${PR[p.p].n}</td><td><b>${R[p.b].n}</b></td></tr>`).join(''):'<tr><td colspan="4" class="muted">سيظهر هنا مسار العيّنة في دورة الصخور.</td></tr>')+'</tbody></table>';}
+function sync(){sec.$$('button[data-p]').forEach(x=>{x.disabled=S.busy;x.classList.toggle('done',PR[x.dataset.p].from.includes(S.st));});sec.$('[data-a="reset"]').disabled=S.busy;}
+sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;if(x.dataset.p)apply(x.dataset.p);else if(x.dataset.a==='reset')reset();});
+show('ignC');sync();render();renderNB();
+};
+
+/* =====================================================================
+   ١٠) تيارات الحمل وحركة الصفائح — 3D (أول متوسط · صفائح الأرض المتحركة)
+   ===================================================================== */
+const PLATE={};EXP_MODS.plate=PLATE;
+PLATE.init=function(){gm();
+const S={mode:'center',on:false,heat:0,shift:0,obs:{},busy:false};P3.dbg.plate=S;
+const MODES={center:{n:'مصدر الحرارة في المنتصف',mv:'تتباعد الصفيحتان',bd:'حدود متباعدة',ex:'تتكوّن حيود وسط المحيط وقشرة جديدة (اتساع قاع المحيط)'},
+  ends:{n:'مصدر الحرارة عند الطرفين',mv:'تتقارب الصفيحتان',bd:'حدود متقاربة',ex:'تغوص صفيحة تحت الأخرى أو تتصادمان فتتكوّن الجبال'}};
+const NAMES=['اختر موقع التسخين','شغّل السخان','راقب تيارات الحمل','حدّد نوع الحدود'];
+const sec=P3.section('plate',{title:'تيارات الحمل وحركة الصفائح',grade:'أول متوسط',lesson:'صفائح الأرض المتحركة',
+  hud:`<div class="p3-row"><div class="p3-m warm"><small>المنطقة الساخنة</small><b class="plH">25 °C</b></div><div class="p3-m" style="color:#8ac7ff"><small>المنطقة الباردة</small><b class="plC">25 °C</b></div><div class="p3-m"><small>إزاحة الصفائح</small><b class="plD">0.0 cm</b></div></div>`,
+  side:`<div class="p3-box"><h4 class="p3-h">لوحة التحكم</h4>
+    <div class="p3-acts"><span class="p3-lab">التسخين</span><button class="p3-b" data-m="center">🔥 في المنتصف</button><button class="p3-b" data-m="ends">🔥 عند الطرفين</button></div>
+    <div class="p3-acts"><button class="p3-b pri" data-a="on">⏻ شغّل السخان</button><button class="p3-b" data-a="reset">↺ إعادة</button></div></div>`,
+  learn:`<div class="panel"><h3>تيارات الحمل في الستار</h3><p>تسخين المادة من أسفل يقلّل كثافتها فترتفع، ثم تبرد عند السطح فتزداد كثافتها وتهبط؛ فتتكوّن دورة تسمى <b>تيار الحمل</b>. يعتقد العلماء أن تيارات الحمل في الستار هي التي تحرّك الصفائح الأرضية فوقها.</p></div>
+    <div class="panel"><h3>حدود الصفائح</h3><p><b>المتباعدة:</b> تبتعد الصفيحتان فتصعد الصهارة وتتكوّن قشرة جديدة.</p><p><b>المتقاربة:</b> تقترب الصفيحتان فتغوص إحداهما تحت الأخرى أو تتصادمان وتتكوّن الجبال.</p><p><b>التحويلية:</b> تنزلق الصفيحتان أفقيًا إحداهما بجانب الأخرى.</p></div>`,
+  quiz:[{q:'المادة الساخنة في تيار الحمل:',o:['ترتفع لأن كثافتها أقل','تهبط لأن كثافتها أكبر','لا تتحرك'],a:0},{q:'عند ابتعاد صفيحتين تتكوّن حدود:',o:['متقاربة','متباعدة','تحويلية'],a:1},
+        {q:'ما الذي يُعتقد أنه يحرّك الصفائح الأرضية؟',o:['تيارات الحمل في الستار','الرياح','المد والجزر'],a:0},{q:'تتكوّن الجبال غالبًا عند الحدود:',o:['المتباعدة','المتقاربة','لا شيء مما سبق'],a:1}],
+  report:()=>({title:'تيارات الحمل وحركة الصفائح',grade:'أول متوسط',lesson:'صفائح الأرض المتحركة',cols:['موقع التسخين','حركة الصفيحتين','نوع الحدود'],
+    rows:Object.keys(MODES).map(k=>[MODES[k].n,S.obs[k]?MODES[k].mv:'',S.obs[k]?MODES[k].bd:'']),note:'فسّر كيف تحرّك تيارات الحمل الصفائح.'})
+});
+const L=new Lab(sec,{target:V(0,.85,.4),dist:a=>Math.max(4.4,7.4/a),exposure:.95});buildRoom(L);
+const toast=m=>L.toast(m);
+/* ---------- tank ---------- */
+const W=3.0,HT=1.1,D=.9,Y0=.42,TZ=.3;const tank=new THREE.Group();tank.position.set(0,0,TZ);
+const tg=new THREE.MeshPhysicalMaterial({color:0xeef7f9,roughness:.05,transparent:true,opacity:.18,clearcoat:1,side:THREE.DoubleSide,depthWrite:false});tg.userData.keepEnv=1;
+[[W,HT,0,0,D/2],[W,HT,0,0,-D/2],[D,HT,Math.PI/2,W/2,0],[D,HT,Math.PI/2,-W/2,0]].forEach(([w,h,r,x,z])=>{const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),tg);p.rotation.y=r;p.position.set(x,Y0+h/2,z);p.renderOrder=3;tank.add(p);});
+const flr=new THREE.Mesh(new THREE.BoxGeometry(W,.03,D),KIT.mat(0x2b3036));flr.position.y=Y0;tank.add(flr);
+const liqM=G.water(0xd98a3a,.42);const liq=new THREE.Mesh(new THREE.BoxGeometry(W-.03,.9,D-.03),liqM);liq.position.y=Y0+.47;liq.renderOrder=1;tank.add(liq);
+// stand legs + heaters
+[[-1.35,-.35],[1.35,-.35],[-1.35,.35],[1.35,.35]].forEach(([x,z])=>{const l=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,Y0,10),M.steel);l.position.set(x,Y0/2,z);tank.add(l);});
+function heater(x){const g=new THREE.Group();const b=new THREE.Mesh(new THREE.CylinderGeometry(.16,.2,.18,24),KIT.mat(0x2f363c,{metalness:.5}));b.position.y=.09;const c=new THREE.Mesh(new THREE.TorusGeometry(.1,.02,8,24),KIT.mat(0x5a2a10,{emissive:0x000000}));c.rotation.x=Math.PI/2;c.position.y=.2;
+  const gl=new THREE.PointLight(0xff5a1a,0,1.5,2);gl.position.y=.3;g.add(b,c,gl);g.position.set(x,0,0);g.userData={coil:c,gl};return g;}
+const H={center:[heater(0)],ends:[heater(-1.15),heater(1.15)]};H.center.concat(H.ends).forEach(h=>tank.add(h));
+castAll(flr);L.add(tank);
+/* ---------- plates on the surface ---------- */
+const SY=Y0+.92+.05;
+const pm=new THREE.MeshStandardMaterial({map:canvasTex(256,128,c=>{c.fillStyle='#6b7a4a';c.fillRect(0,0,256,128);for(let i=0;i<400;i++){c.fillStyle=['#7f8f58','#5a6a3c','#8a7a52'][i%3];c.fillRect(Math.random()*256,Math.random()*128,6,4);}}),roughness:.9});
+const PL=[-1,1].map(s=>{const p=new THREE.Mesh(RBox(1.38,.1,.8,.03),pm);p.position.set(s*.72,SY,TZ);p.castShadow=true;L.add(p);return p;});
+const ridge=new THREE.Mesh(new THREE.BoxGeometry(.05,.08,.78),new THREE.MeshStandardMaterial({color:0xff6a1a,emissive:0xff4a00,emissiveIntensity:1}));ridge.position.set(0,SY-.04,TZ);ridge.scale.x=.01;L.add(ridge);
+const mts=new THREE.Group();for(let i=0;i<5;i++){const m=new THREE.Mesh(new THREE.ConeGeometry(.12,.3,6),KIT.mat(0x8a7a62,{flatShading:true}));m.position.set(.05,0,-.3+i*.15);m.scale.y=.01;mts.add(m);}mts.position.set(0,SY+.05,TZ);L.add(mts);
+L.label('ستار (مائع ساخن)',V(-1.75,Y0+.45,TZ),'small');L.label('صفيحة',V(-.72,SY+.18,TZ),'small');L.label('صفيحة',V(.72,SY+.18,TZ),'small');
+/* ---------- convection tracers ---------- */
+const NP=320,ip=new THREE.InstancedMesh(new THREE.SphereGeometry(.022,8,6),new THREE.MeshBasicMaterial({color:0xffffff}),NP);ip.frustumCulled=false;ip.count=NP;L.add(ip);
+const tr=[...Array(NP)].map((_,i)=>({cell:i%2?1:-1,s:Math.random(),r:.6+Math.random()*.4}));const dum=new THREE.Object3D(),cc=new THREE.Color();
+const cHot=$lc(0xff3a1a),cWarm=$lc(0xffa040),cCold=$lc(0x3a7bff);
+// rectangular loop in one cell (x from inner a to outer b), y from bottom to top; returns pos & temperature
+function loop(s,cell,r,mode){const inner=mode==='center'?0:1.4*cell,outer=mode==='center'?1.4*cell:0;const cx=(inner+outer)/2,hw=Math.abs(outer-inner)/2*r,yb=Y0+.12,yt=Y0+.12+.72*r+ (1-r)*.08,ym=(yb+yt)/2,hh=(yt-yb)/2;
+  const dir=Math.sign(outer-inner)||1;const P=2*(2*hw+2*hh);let d=s*P;let x,y,T;
+  if(d<2*hh){x=cx-dir*hw;y=yb+d;T=1;}else if((d-=2*hh)<2*hw){x=cx-dir*hw+dir*d;y=yt;T=.6-.4*(d/(2*hw));}else if((d-=2*hw)<2*hh){x=cx+dir*hw;y=yt-d;T=.1;}else{d-=2*hh;x=cx+dir*hw-dir*d;y=yb;T=.1+.5*(d/(2*hw));}
+  return {x,y,T};}
+function placeTr(){tr.forEach((p,i)=>{const q=loop(p.s,p.cell,p.r,S.mode);dum.position.set(q.x,q.y,TZ+(((i*37)%100)/100-.5)*.6);dum.updateMatrix();ip.setMatrixAt(i,dum.matrix);
+  if(S.heat<.05)cc.copy(cWarm).multiplyScalar(.6);else if(q.T>.6)cc.copy(cWarm).lerp(cHot,(q.T-.6)/.4);else cc.copy(cCold).lerp(cWarm,q.T/.6);ip.setColorAt(i,cc);});ip.instanceMatrix.needsUpdate=true;ip.instanceColor.needsUpdate=true;}
+placeTr();
+P3.loop(L,(dt,t)=>{const tgt=S.on?1:0;S.heat+=(tgt-S.heat)*Math.min(1,dt*.6);
+  H[S.mode].forEach(h=>{h.userData.coil.material.emissive.copy($lc(0xff4a10)).multiplyScalar(S.heat);h.userData.gl.intensity=S.heat*1.5;});
+  if(S.heat>.02){tr.forEach(p=>{p.s=(p.s+dt*.07*S.heat/p.r)%1;});
+    S.shift=Math.min(.32,S.shift+dt*.04*S.heat);const sh=S.shift,c=S.mode==='center';
+    PL[0].position.x=-.72-(c?sh:-sh);PL[1].position.x=.72+(c?sh:-sh*.0)-(c?0:0);
+    if(c){ridge.scale.x=Math.max(.01,sh*2*20);ridge.position.y=SY-.06+Math.min(.04,sh*.15);PL[1].position.x=.72+sh;PL[1].rotation.z=0;}
+    else{PL[0].position.x=-.72+sh;const sub=Math.max(0,sh-.03);PL[1].position.x=.72-Math.min(sh,.06)+0;PL[1].rotation.z=0;PL[0].rotation.z=-sub*.5;PL[0].position.y=SY-sub*.25;
+      mts.children.forEach((m,i)=>{m.scale.y=Math.min(1,sub*4*(.6+.2*(i%3)));});mts.position.x=PL[1].position.x-.69+.05;}
+    if(S.shift>.12&&!S.obs[S.mode]){S.obs[S.mode]=true;P3.good();toast(`${MODES[S.mode].mv} ← ${MODES[S.mode].bd}`);render();renderNB();}}
+  placeTr();
+  sec.$('.plH').textContent=Math.round(25+S.heat*45)+' °C';sec.$('.plC').textContent=Math.round(25+S.heat*12)+' °C';sec.$('.plD').textContent=(S.shift*10).toFixed(1)+' cm';});
+function setMode(m){if(S.mode===m)return;S.mode=m;S.on=false;S.heat=0;resetPlates();P3.click();sync();render();}
+function resetPlates(){S.shift=0;PL[0].position.set(-.72,SY,TZ);PL[1].position.set(.72,SY,TZ);PL.forEach(p=>p.rotation.set(0,0,0));ridge.scale.x=.01;mts.children.forEach(m=>m.scale.y=.01);
+  H.center.concat(H.ends).forEach(h=>{h.userData.coil.material.emissive.setHex(0);h.userData.gl.intensity=0;});}
+/* ---------- UI ---------- */
+function stepIdx(){if(!S.on&&!S.obs[S.mode]&&S.heat<.05)return Object.keys(S.obs).length?1:0;if(!S.obs[S.mode])return 2;return 3;}
+function render(){const k=stepIdx(),m=MODES[S.mode];let title,html;
+  if(k<=1){title=m.n;html=`<p class="p3-txt">الخزان فيه سائل كثيف يمثّل الستار، وتطفو فوقه صفيحتان. شغّل السخان وتابع حركة الجسيمات الملوّنة: <b style="color:#d9452e">الأحمر ساخن</b> و<b style="color:#2f6fd0">الأزرق بارد</b>.</p>`;}
+  else if(k===2){title='راقب تيارات الحمل';html=`<p class="p3-txt">المادة الساخنة ترتفع فوق السخان، وتتحرك أفقيًا تحت الصفائح، ثم تبرد وتهبط. لاحظ اتجاه حركة الصفيحتين.</p>`;}
+  else{title=m.bd;html=`<p class="p3-ok">${m.mv}: ${m.ex}.</p><p class="p3-txt">${Object.keys(S.obs).length<2?'جرّب الآن موقع التسخين الآخر وقارن.':'قارنت النوعين. الحدود التحويلية تنزلق فيها الصفائح أفقيًا جنبًا إلى جنب.'}</p>`;}
+  sec.steps(NAMES,k,title,html);}
+function renderNB(){sec.$('.p3-nb').innerHTML=`<table class="p3-t"><thead><tr><th>موقع التسخين</th><th>حركة الصفيحتين</th><th>نوع الحدود</th></tr></thead><tbody>`+
+  Object.entries(MODES).map(([k,m])=>`<tr><td>${m.n}</td><td>${S.obs[k]?m.mv:'—'}</td><td>${S.obs[k]?`<b>${m.bd}</b>`:'—'}</td></tr>`).join('')+'</tbody></table>';}
+function sync(){sec.$$('[data-m]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.m===S.mode));const o=sec.$('[data-a="on"]');o.setAttribute('aria-pressed',S.on);o.textContent=S.on?'⏻ أطفئ السخان':'⏻ شغّل السخان';}
+sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x)return;const d=x.dataset;
+  if(d.m)setMode(d.m);else if(d.a==='on'){S.on=!S.on;P3.click();if(S.on&&S.shift>=.32){resetPlates();}sync();render();}
+  else if(d.a==='reset'){S.on=false;S.heat=0;S.obs={};resetPlates();sync();render();renderNB();}});
+L.onTap(tank,()=>{S.on=!S.on;sync();render();});
+sync();render();renderNB();
+};
+
+/* =====================================================================
+   ١١) أنبوب الأشعة المهبطية — 3D (ثالث متوسط · نماذج الذرة)
+   ===================================================================== */
+const CRT={};EXP_MODS.crt=CRT;
+CRT.init=function(){gm();
+const S={on:false,plates:0,mag:0,obs:{},busy:false};P3.dbg.crt=S;// plates: 0 off, 1 top+, -1 top−; mag: 0 none, 1 N toward viewer, -1 S toward viewer
+const NAMES=['شغّل الأنبوب','الألواح المشحونة','المغناطيس','الاستنتاج'];
+const sec=P3.section('crt',{title:'أنبوب الأشعة المهبطية',grade:'ثالث متوسط',lesson:'نماذج الذرة',
+  hud:`<div class="p3-m warm" style="min-width:200px"><small>اتجاه انحراف الشعاع</small><b class="crD" style="font-family:var(--f-body);font-size:1.02rem">—</b></div>`,
+  side:`<div class="p3-box"><h4 class="p3-h">لوحة التحكم</h4>
+    <div class="p3-acts"><span class="p3-lab">الجهد</span><button class="p3-b pri" data-a="on">⚡ شغّل الجهد العالي</button></div>
+    <div class="p3-acts"><span class="p3-lab">الألواح</span><button class="p3-b" data-p="0">بلا شحنة</button><button class="p3-b" data-p="1">العلوي (+) السفلي (−)</button><button class="p3-b" data-p="-1">العلوي (−) السفلي (+)</button></div>
+    <div class="p3-acts"><span class="p3-lab">المغناطيس</span><button class="p3-b" data-g="0">بعيد</button><button class="p3-b" data-g="1">القطب الشمالي نحو الأنبوب</button><button class="p3-b" data-g="-1">القطب الجنوبي نحو الأنبوب</button></div></div>`,
+  learn:`<div class="panel"><h3>تجربة طومسون</h3><p>عند تطبيق جهد عالٍ بين قطبين في أنبوب مفرّغ من الهواء، تنطلق من المهبط (القطب السالب) أشعة تسير في خطوط مستقيمة وتجعل الشاشة تتوهج.</p>
+      <p>انحرفت الأشعة نحو اللوح <b>الموجب</b> وابتعدت عن السالب، وانحرفت بالمغناطيس؛ فاستنتج طومسون أنها جسيمات <b>سالبة الشحنة</b> سُمّيت <b>الإلكترونات</b>، وأنها موجودة في ذرات كل العناصر.</p></div>
+    <div class="panel"><h3>نموذج طومسون</h3><p>الذرة كرة موجبة الشحنة تنتشر فيها الإلكترونات السالبة (نموذج الكعكة بالزبيب).</p></div>`,
+  quiz:[{q:'انحرفت أشعة المهبط نحو اللوح الموجب، فهي:',o:['موجبة الشحنة','سالبة الشحنة','متعادلة'],a:1},{q:'سُمّيت جسيمات أشعة المهبط:',o:['البروتونات','النيوترونات','الإلكترونات'],a:2},
+        {q:'تنطلق أشعة المهبط من:',o:['المصعد (+)','المهبط (−)','الشاشة'],a:1},{q:'العالم الذي اكتشف الإلكترون بهذه التجربة:',o:['طومسون','رذرفورد','دالتون'],a:0}],
+  report:()=>({title:'أنبوب الأشعة المهبطية',grade:'ثالث متوسط',lesson:'نماذج الذرة',cols:['الحالة','ملاحظة الشعاع'],rows:Object.entries(S.obs).map(([k,v])=>[k,v]),note:'ما شحنة جسيمات أشعة المهبط؟ وما الدليل؟'})
+});
+const L=new Lab(sec,{target:V(-.25,.95,.5),dist:a=>Math.max(4,6.6/a),exposure:.9});buildRoom(L);
+const toast=m=>L.toast(m),crD=sec.$('.crD');
+/* ---------- tube ---------- */
+const TY=1.05,TZ=.3,X0=-1.35,XS=1.35;const T=new THREE.Group();T.position.set(0,TY,TZ);
+const gl=new THREE.MeshPhysicalMaterial({color:0xeef8fa,roughness:.04,transparent:true,opacity:.16,clearcoat:1,side:THREE.DoubleSide,depthWrite:false});gl.userData.keepEnv=1;gl.envMapIntensity=1.6;
+const neck=new THREE.Mesh(new THREE.CylinderGeometry(.2,.2,1.6,40,1,true),gl);neck.rotation.z=Math.PI/2;neck.position.x=-.55;neck.renderOrder=3;
+const flare=new THREE.Mesh(new THREE.CylinderGeometry(.52,.2,.9,48,1,true),gl);flare.rotation.z=Math.PI/2;flare.position.x=.7;flare.renderOrder=3;
+const cap=new THREE.Mesh(new THREE.SphereGeometry(.2,24,12,0,Math.PI*2,0,Math.PI/2),gl);cap.rotation.z=Math.PI/2;cap.position.x=-1.35;cap.renderOrder=3;
+const scrM=new THREE.MeshStandardMaterial({color:0x2a3a30,emissive:0x0a1a10,roughness:.6,side:THREE.DoubleSide});const scr=new THREE.Mesh(new THREE.CircleGeometry(.5,48),scrM);scr.rotation.y=-Math.PI/2;scr.position.x=XS-.2+.0;
+const cath=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.03,24),KIT.mat(0x9aa3a8,{metalness:.9,roughness:.25}));cath.rotation.z=Math.PI/2;cath.position.x=-1.25;
+const anode=new THREE.Mesh(new THREE.TorusGeometry(.08,.015,8,24),KIT.mat(0xc49a3a,{metalness:.9,roughness:.3}));anode.rotation.y=Math.PI/2;anode.position.x=-.85;
+const pT=new THREE.Mesh(new THREE.BoxGeometry(.5,.012,.22),KIT.mat(0x9aa3a8,{metalness:.8,roughness:.3})),pB=pT.clone();pT.position.set(0,.13,0);pB.position.set(0,-.13,0);
+const sgn=(t)=>{const c=P3.card([{t,mono:1,s:110}],.09,.09,{bg:'#fff',bd:'#0000'});return c;};const lT=sgn('+'),lB=sgn('−');lT.position.set(0,.22,.0);lB.position.set(0,-.22,.0);
+[lT,lB].forEach(l=>{l.visible=false;});
+T.add(neck,flare,cap,scr,cath,anode,pT,pB,lT,lB);L.add(T);
+/* stand */
+[[-1.0],[.7]].forEach(([x])=>{const r=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,TY-.2,10),M.steel);r.position.set(x,(TY-.2)/2,TZ);const c=new THREE.Mesh(new THREE.TorusGeometry(x>0?.42:.21,.025,8,24),KIT.mat(0x2d3a40));c.rotation.y=Math.PI/2;c.position.set(x,TY,TZ);
+  const b=new THREE.Mesh(RBox(.4,.05,.4,.02),KIT.mat(0x2b3036));b.position.set(x,.025,TZ);L.add(r,c,b);});
+/* power supply */
+const PS=new THREE.Group();PS.position.set(-1.9,0,1.15);const psb=new THREE.Mesh(RBox(.8,.42,.5,.04),KIT.mat(0x2b3036,{metalness:.3}));psb.position.y=.21;
+const psl=KIT.lcd(.5,.16);psl.m.position.set(0,.3,.251);psl.set('0 kV');PS.add(psb,psl.m);castAll(PS);L.add(PS);L.label('مصدر جهد عالٍ',V(-1.9,.62,1.15),'small');
+[[0xc62828,[-1.25,TY,TZ]],[0x1c1c1c,[-.85,TY-.2,TZ]]].forEach(([c,e],i)=>{const pts=[V(-1.9+(i?.15:-.15),.3,1.4),V(-1.7,.05,1.2),V(-1.3,.05,.8),V(e[0]-(i?0:.18),.3,TZ+.15),V(e[0]-(i?0:.12),e[1]-.12,TZ)];
+  L.add(KIT.wire(pts,i?0xc62828:0x1c1c1c,.02));});
+L.label('المهبط (−)',V(-1.25,TY+.35,TZ),'small');L.label('المصعد (+)',V(-.85,TY+.35,TZ),'small');L.label('شاشة مضيئة',V(XS-.2,TY+.65,TZ),'small');
+/* magnet (bar) */
+const MG=new THREE.Group();{const n=new THREE.Mesh(RBox(.16,.16,.35,.02),KIT.mat(0xc62828)),s=new THREE.Mesh(RBox(.16,.16,.35,.02),KIT.mat(0x1f6fb2));n.position.z=-.175;s.position.z=.175;
+  const ln=P3.card([{t:'N',mono:1,s:120}],.12,.12,{bg:'#c62828',ink:'#fff',bd:'#0000'}),ls=P3.card([{t:'S',mono:1,s:120}],.12,.12,{bg:'#1f6fb2',ink:'#fff',bd:'#0000'});ln.position.set(0,.081,-.17);ln.rotation.x=-Math.PI/2;ls.position.set(0,.081,.17);ls.rotation.x=-Math.PI/2;
+  MG.add(n,s,ln,ls);castAll(MG);}
+const MG_OFF=V(1.5,.08,1.3);MG.position.copy(MG_OFF);L.add(MG);
+/* ---------- beam ---------- */
+const bmM=new THREE.MeshBasicMaterial({color:$lc(0x7dffb0),transparent:true,opacity:.75,blending:THREE.AdditiveBlending,depthWrite:false});
+let beam=new THREE.Mesh(new THREE.BufferGeometry(),bmM);beam.renderOrder=9;T.add(beam);
+const spot=new THREE.Sprite(new THREE.SpriteMaterial({map:P3.glowTex(),color:$lc(0x9dffc4),transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));spot.scale.setScalar(.32);spot.renderOrder=10;T.add(spot);
+let dy=0,dyT=0;
+function target(){return S.on?(S.plates*.19+(-S.mag)*.17):0;}// + plates top → up ; N toward tube → down
+function buildBeam(){const pts=[];const x1=-.85,x2=XS-.21;for(let i=0;i<=40;i++){const x=x1+(x2-x1)*i/40;const u=Math.max(0,(x+.25)/(x2+.25));pts.push(V(x,dy*u*u*(x>-.25?1:0),0));}
+  beam.geometry.dispose();beam.geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),60,.012,6);spot.position.set(x2-.01,dy,0);}
+P3.loop(L,(dt,t)=>{const tg=target();if(Math.abs(tg-dyT)>1e-4)dyT=tg;const old=dy;dy+=(dyT-dy)*Math.min(1,dt*6);
+  const vis=S.on;beam.visible=vis;spot.material.opacity=vis?.9+.1*Math.sin(t*20):0;scrM.emissive.copy($lc(vis?0x1f6a3a:0x0a1a10));cath.material.emissive=cath.material.emissive||new THREE.Color();
+  if(vis&&(Math.abs(old-dy)>1e-4||!beam.geometry.attributes.position))buildBeam();bmM.opacity=.6+.15*Math.sin(t*30);});
+/* ---------- actions ---------- */
+function desc(){if(!S.on)return '—';const d=target();if(Math.abs(d)<.01)return 'يسير في خط مستقيم';return d>0?'ينحرف إلى أعلى':'ينحرف إلى أسفل';}
+function record(){if(!S.on)return;let k;if(S.plates&&!S.mag)k=S.plates>0?'اللوح العلوي موجب':'اللوح العلوي سالب';else if(S.mag&&!S.plates)k=S.mag>0?'القطب الشمالي نحو الأنبوب':'القطب الجنوبي نحو الأنبوب';else if(!S.plates&&!S.mag)k='دون مؤثر';else k=null;
+  const d=desc();crD.textContent=d;if(k&&!S.obs[k]){S.obs[k]=d+(S.plates&&!S.mag?(S.plates>0?' (نحو اللوح الموجب)':' (نحو اللوح الموجب السفلي)'):'');renderNB();}}
+function setOn(){S.on=!S.on;psl.set(S.on?'15 kV':'0 kV');P3.click();if(S.on)P3.noise(.4,.15,6000,2);sync();setTimeout(()=>{record();render();},400);}
+function setPlates(p){S.plates=p;lT.visible=lB.visible=!!p;const tops=p>0?'+':'−';[lT,lB].forEach((l,i)=>{l.material.map=canvasTex(128,128,c=>{c.fillStyle=(i?(p>0?'#1f6fb2':'#c62828'):(p>0?'#c62828':'#1f6fb2'));c.beginPath();c.arc(64,64,60,0,7);c.fill();c.fillStyle='#fff';c.font='800 110px "IBM Plex Mono"';c.textAlign='center';c.textBaseline='middle';c.fillText(i?(p>0?'−':'+'):(p>0?'+':'−'),64,70);});l.material.needsUpdate=true;});
+  P3.click();sync();setTimeout(()=>{record();render();},500);}
+async function setMag(g){if(S.busy)return;S.busy=true;sync();const to=g?V(.1,TY,TZ+.62):MG_OFF;MG.rotation.y=g<0?Math.PI:0;await L.arc(MG,to,700,g?TY+.3:.6);S.mag=g;S.busy=false;sync();setTimeout(()=>{record();render();},500);}
+/* ---------- UI ---------- */
+function stepIdx(){if(!S.on&&!Object.keys(S.obs).length)return 0;const ks=Object.keys(S.obs);const hp=ks.some(k=>k.startsWith('اللوح')),hm=ks.some(k=>k.startsWith('القطب'));if(!hp)return 1;if(!hm)return 2;return 3;}
+function render(){const k=stepIdx();let title,html;
+  if(k===0){title='شغّل الجهد العالي';html=`<p class="p3-txt">الأنبوب مفرّغ من الهواء. شغّل الجهد العالي ولاحظ ما يخرج من المهبط وأين يتوهج الضوء.</p>`;}
+  else if(k===1){title='قرّب الأشعة من شحنات كهربائية';html=`<p class="p3-txt">اشحن اللوحين داخل الأنبوب، ثم اعكس الشحنة. نحو أي لوح ينحرف الشعاع؟</p>`;}
+  else if(k===2){title='قرّب المغناطيس';html=`<p class="p3-txt">أبعد شحنة الألواح، ثم قرّب القطب الشمالي ثم الجنوبي من الأنبوب ولاحظ الشعاع.</p>`;}
+  else{title='استنتج';html=`<p class="p3-ok">ينحرف الشعاع نحو اللوح الموجب ويتأثر بالمغناطيس؛ إذن أشعة المهبط جسيمات سالبة الشحنة: الإلكترونات.</p>`;}
+  sec.steps(NAMES,k,title,html);}
+function renderNB(){const e=Object.entries(S.obs);sec.$('.p3-nb').innerHTML=`<table class="p3-t"><thead><tr><th>الحالة</th><th>ملاحظة الشعاع</th></tr></thead><tbody>`+
+  (e.length?e.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join(''):'<tr><td colspan="2" class="muted">شغّل الأنبوب وجرّب المؤثرات.</td></tr>')+'</tbody></table>';}
+function sync(){const o=sec.$('[data-a="on"]');o.setAttribute('aria-pressed',S.on);o.textContent=S.on?'⚡ أوقف الجهد':'⚡ شغّل الجهد العالي';
+  sec.$$('button[data-p]').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.p===S.plates));sec.$$('[data-g]').forEach(x=>{x.setAttribute('aria-pressed',+x.dataset.g===S.mag);x.disabled=S.busy;});}
+sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;const d=x.dataset;
+  if(d.a==='on')setOn();else if(d.p!=null)setPlates(+d.p);else if(d.g!=null)setMag(+d.g);});
+L.onTap(PS,setOn);L.onTap(MG,()=>setMag(S.mag?0:1));
+buildBeam();sync();render();renderNB();
+};
+
+/* =====================================================================
+   ١٢) أنواع الإشعاع ونفاذيتها — 3D (ثالث متوسط · النواة)
+   ===================================================================== */
+const RAD={};EXP_MODS.rad=RAD;
+RAD.init=function(){gm();
+const SRC={a:{n:'ألفا α',col:0xff5a3a,sz:.035,sp:1.2},b:{n:'بيتا β',col:0x3a8aff,sz:.022,sp:2.4},g:{n:'جاما γ',col:0xffd23a,sz:.016,sp:3.5},x:{n:'مصدر مجهول ؟'},bg:{n:'بلا مصدر (الخلفية)'}};
+const ABS={none:{n:'بلا حاجز'},paper:{n:'ورقة'},al:{n:'ألومنيوم 3 mm'},pb:{n:'رصاص 2 cm'}};
+const RATE={a:{none:150,paper:0,al:0,pb:0},b:{none:120,paper:110,al:0,pb:0},g:{none:80,paper:79,al:70,pb:16},bg:{none:0,paper:0,al:0,pb:0}};const BG=3;// counts per 10 s
+const S={src:'bg',abs:'none',busy:false,tab:{},unk:['a','b','g'][Math.floor(Math.random()*3)],ans:'',ok:null,count:0};P3.dbg.rad=S;
+const NAMES=['قِس الخلفية','اختر المصدر','جرّب الحواجز','حدّد المصدر المجهول'];
+const sec=P3.section('rad',{title:'أنواع الإشعاع ونفاذيتها',grade:'ثالث متوسط',lesson:'النواة',
+  hud:`<div class="p3-row"><div class="p3-m warm"><small>عدد النبضات في 10 s</small><b class="rdC">0</b></div><div class="p3-m"><small>الزمن</small><b class="rdT">0.0 s</b></div></div>`,
+  side:`<div class="p3-box"><h4 class="p3-h">لوحة التحكم</h4>
+    <div class="p3-acts"><span class="p3-lab">المصدر</span>${['bg','a','b','g','x'].map(k=>`<button class="p3-b" data-s="${k}">${SRC[k].n}</button>`).join('')}</div>
+    <div class="p3-acts"><span class="p3-lab">الحاجز</span>${Object.entries(ABS).map(([k,v])=>`<button class="p3-b" data-b="${k}">${v.n}</button>`).join('')}</div>
+    <div class="p3-acts"><button class="p3-b pri" data-a="go">▶ ابدأ العدّ 10 ثوانٍ</button></div></div>`,
+  learn:`<div class="panel"><h3>أنواع الإشعاع</h3><p><b>ألفا α:</b> جسيمات ثقيلة موجبة (نواة هيليوم)، نفاذيتها ضعيفة؛ توقفها ورقة.</p><p><b>بيتا β:</b> إلكترونات سريعة، نفاذيتها متوسطة؛ تمر من الورق ويوقفها لوح ألومنيوم رقيق.</p><p><b>جاما γ:</b> موجات كهرومغناطيسية عالية الطاقة، نفاذيتها كبيرة؛ يلزم الرصاص السميك أو الخرسانة لتقليلها.</p></div>
+    <div class="panel"><h3>الإشعاع الخلفي</h3><p>يسجّل العدّاد دائمًا عددًا قليلًا من النبضات حتى دون مصدر، مصدره الصخور والفضاء؛ لذلك نقيسه أولًا ونقارن به.</p></div>`,
+  quiz:[{q:'الإشعاع الذي توقفه ورقة:',o:['ألفا','بيتا','جاما'],a:0},{q:'أكبر أنواع الإشعاع نفاذية:',o:['ألفا','بيتا','جاما'],a:2},
+        {q:'يمر من الورق ويوقفه الألومنيوم:',o:['ألفا','بيتا','جاما'],a:1},{q:'لماذا نقيس الإشعاع الخلفي أولًا؟',o:['للمقارنة به','لتسخين العدّاد','لأنه أخطر'],a:0}],
+  report:()=>({title:'أنواع الإشعاع ونفاذيتها',grade:'ثالث متوسط',lesson:'النواة',cols:['المصدر','بلا حاجز','ورقة','ألومنيوم','رصاص'],
+    rows:['bg','a','b','g','x'].map(s=>[SRC[s].n,...Object.keys(ABS).map(b=>S.tab[s+b]!=null?String(S.tab[s+b]):'')]),note:'العدد في 10 ثوانٍ. حدّد نوع الإشعاع الذي يوقفه كل حاجز.'})
+});
+const L=new Lab(sec,{target:V(0,.45,.45),dist:a=>Math.max(3.8,6.3/a),exposure:.95});buildRoom(L);
+const toast=m=>L.toast(m);
+/* ---------- layout: source — absorber — GM tube ---------- */
+const Y=.45,Z=.35,SX=-1.2,AX=-.25,GX=.8;
+const base=new THREE.Mesh(RBox(3.2,.05,.7,.02),KIT.mat(0x2b3036,{metalness:.3}));base.position.set(-.1,.025,Z);L.add(base);
+// lead castle around the source
+const lead=KIT.mat(0x6b7480,{metalness:.35,roughness:.55});
+[[0,.42,0,.5,.1,.5],[0,.18,-.2,.5,.36,.1],[0,.18,.2,.5,.36,.1],[-.2,.18,0,.1,.36,.3]].forEach(([x,y,z,w,h,d])=>{const b=new THREE.Mesh(RBox(w,h,d,.01),lead);b.position.set(SX+x-.05,y,Z+z);b.castShadow=true;L.add(b);});
+const srcRod=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.28,14),KIT.mat(0x9aa3a8,{metalness:.8}));srcRod.rotation.z=Math.PI/2;srcRod.position.set(SX+.05,Y,Z);L.add(srcRod);
+const srcCap=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.04,20),KIT.mat(0xffd84a));srcCap.rotation.z=Math.PI/2;srcCap.position.set(SX+.2,Y,Z);L.add(srcCap);
+const srcLbl=L.label('',V(SX,.75,Z),'gas');
+// absorber holder and absorbers
+const hold=new THREE.Mesh(RBox(.3,.12,.3,.02),KIT.mat(0x2d3a40));hold.position.set(AX,.11,Z);L.add(hold);
+const A={paper:new THREE.Mesh(new THREE.BoxGeometry(.008,.5,.42),KIT.mat(0xfbfaf4,{roughness:.95})),al:new THREE.Mesh(new THREE.BoxGeometry(.03,.5,.42),KIT.mat(0xc9ced3,{metalness:.9,roughness:.3})),pb:new THREE.Mesh(RBox(.2,.5,.42,.01),lead)};
+const ABS_HOME={paper:V(-.7,.27,1.25),al:V(-.25,.27,1.25),pb:V(.25,.27,1.25)};
+Object.entries(A).forEach(([k,m])=>{m.position.copy(ABS_HOME[k]);m.castShadow=true;L.add(m);const c=P3.card([{t:ABS[k].n,s:54}],.42,.12);c.position.set(ABS_HOME[k].x,.08,1.6);c.rotation.x=-.9;L.add(c);L.onTap(m,()=>setAbs(k));});
+// GM tube + counter
+const gmT=new THREE.Group();gmT.position.set(GX,Y,Z);{const t=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.6,24),KIT.mat(0x2d3a40,{metalness:.5}));t.rotation.z=Math.PI/2;t.position.x=.3;
+  const w=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,.01,24),KIT.mat(0xb87333,{metalness:.6}));w.rotation.z=Math.PI/2;w.position.x=0;gmT.add(t,w);}
+const gmS=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,Y,10),M.steel);gmS.position.set(GX+.3,Y/2,Z);L.add(gmT,gmS);
+const CT=new THREE.Group();CT.position.set(1.85,0,Z+.1);const cb=new THREE.Mesh(RBox(.7,.4,.45,.04),KIT.mat(0xe8eaec,{roughness:.4}));cb.position.y=.2;const cl=KIT.lcd(.5,.17);cl.m.position.set(0,.26,.226);cl.set('0');
+CT.add(cb,cl.m);castAll(CT);L.add(CT);L.add(KIT.wire([V(GX+.6,Y,Z),V(1.4,.3,Z),V(1.6,.15,Z+.1),V(1.6,.2,Z+.3)],0x1c1c1c,.015));
+L.label('أنبوب جايجر',V(GX+.3,Y+.25,Z),'small');L.label('العدّاد',V(1.85,.6,Z+.1),'small');L.label('مكان الحاجز',V(AX,.62,Z),'small');
+/* ---------- particles ---------- */
+const NP=60;const pool=[...Array(NP)].map(()=>{const m=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),new THREE.MeshBasicMaterial({color:0xffffff}));m.visible=false;L.add(m);return {m,on:false};});
+const sparks=[...Array(20)].map(()=>{const s=new THREE.Sprite(new THREE.SpriteMaterial({map:P3.glowTex(),color:0xffffff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));s.visible=false;s.scale.setScalar(.12);L.add(s);return {s,t:0};});
+let si=0;function spark(p,c){const s=sparks[si++%sparks.length];s.s.position.copy(p);s.s.material.color.copy($lc(c));s.s.visible=true;s.t=performance.now();}
+const cntEl=sec.$('.rdC'),tEl=sec.$('.rdT');
+const real=()=>S.src==='x'?S.unk:S.src;
+function emit(pass){const p=pool.find(x=>!x.on);if(!p)return;const s=SRC[real()];p.on=true;p.pass=pass;p.x=SX+.25;p.y=Y+(Math.random()-.5)*.06;p.z=Z+(Math.random()-.5)*.06;p.v=s.sp;p.col=s.col;
+  p.m.material.color.copy($lc(s.col));p.m.scale.setScalar(s.sz);p.m.visible=true;}
+P3.loop(L,(dt,t,now)=>{pool.forEach(p=>{if(!p.on)return;p.x+=p.v*dt;const stopX=S.abs==='none'?99:AX-.02;
+    if(!p.pass&&p.x>=stopX){spark(V(stopX,p.y,p.z),p.col);p.on=false;p.m.visible=false;return;}
+    if(p.x>=GX){p.on=false;p.m.visible=false;spark(V(GX,p.y,p.z),0x7dffb0);return;}p.m.position.set(p.x,p.y,p.z);});
+  sparks.forEach(s=>{if(!s.s.visible)return;const a=(now-s.t)/300;if(a>1)s.s.visible=false;else s.s.material.opacity=1-a;});});
+/* ---------- actions ---------- */
+function poisson(l){if(l<=0)return 0;let L0=Math.exp(-Math.min(l,600)),k=0,p=1;if(l>60)return Math.max(0,Math.round(l+Math.sqrt(l)*(Math.random()+Math.random()+Math.random()-1.5)*1.4));do{k++;p*=Math.random();}while(p>L0);return k-1;}
+async function setAbs(k){if(S.busy||S.abs===k)return;S.busy=true;sync();if(S.abs!=='none')await L.arc(A[S.abs],ABS_HOME[S.abs],600,.8);if(k!=='none')await L.arc(A[k],V(AX,.42,Z),700,.9);S.abs=k;S.busy=false;P3.click();sync();render();}
+function setSrc(k){if(S.busy)return;S.src=k;srcLbl.textContent=SRC[k].n;srcCap.material.color.copy($lc(k==='bg'?0x666666:k==='x'?0xffffff:SRC[k].col));P3.click();sync();render();}
+async function go(){if(S.busy)return;S.busy=true;sync();const r=real();const mean=(RATE[r]?RATE[r][S.abs]:0)+BG;const n=poisson(mean);
+  const passFrac=r==='bg'?0:RATE[r][S.abs]/Math.max(1,RATE[r].none);const emits=r==='bg'?0:Math.min(140,RATE[r].none*.6);
+  const times=[...Array(n)].map(()=>Math.random()*10).sort((a,b)=>a-b);let shown=0,ei=0;const etimes=[...Array(Math.round(emits))].map(()=>Math.random()*10).sort((a,b)=>a-b);
+  await L.tw(10000/2.5,k=>{const t=k*10;while(shown<times.length&&times[shown]<=t){shown++;P3.noise(.012,.5,3500,3);}
+    while(ei<etimes.length&&etimes[ei]<=t){ei++;emit(Math.random()<passFrac);}cntEl.textContent=shown;cl.set(String(shown));tEl.textContent=t.toFixed(1)+' s';});
+  cntEl.textContent=n;cl.set(String(n));S.tab[S.src+S.abs]=n;S.count=n;S.busy=false;toast(`${SRC[S.src].n} · ${ABS[S.abs].n}: ${n} نبضة في 10 s`);sync();render();renderNB();}
+/* ---------- UI ---------- */
+function stepIdx(){const t=S.tab;if(t['bgnone']==null)return 0;const tried=['a','b','g'].filter(s=>t[s+'none']!=null).length;if(tried<2)return 1;const abs=Object.keys(t).filter(k=>/(paper|al|pb)$/.test(k)&&!k.startsWith('x')).length;if(abs<4)return 2;return 3;}
+function render(){const k=stepIdx();let title,html;
+  if(k===0){title='قِس الإشعاع الخلفي';html=`<p class="p3-txt">دون أي مصدر، شغّل العدّاد 10 ثوانٍ. هذا الإشعاع الخلفي الذي ستقارن به كل القراءات.</p>`;}
+  else if(k===1){title='اختر مصدرًا مشعًا';html=`<p class="p3-txt">قِس كل مصدر (ألفا وبيتا وجاما) بلا حاجز أولًا. لاحظ الجسيمات المنطلقة نحو أنبوب جايجر.</p>`;}
+  else if(k===2){title='جرّب الحواجز';html=`<p class="p3-txt">ضع الورقة ثم الألومنيوم ثم الرصاص بين المصدر والعدّاد. إذا نزلت القراءة إلى مستوى الخلفية (نحو ${BG}) فالحاجز أوقف الإشعاع.</p>`;}
+  else{title='حدّد المصدر المجهول';html=`<p class="p3-txt">اختر «مصدر مجهول ؟» وقِسه مع الحواجز، ثم حدّد نوعه في دفتر المختبر.</p>${S.ok?'<p class="p3-ok">إجابة صحيحة!</p>':''}`;}
+  sec.steps(NAMES,k,title,html);}
+function renderNB(){const cell=(s,b)=>S.tab[s+b]!=null?S.tab[s+b]:'—';
+  sec.$('.p3-nb').innerHTML=`<table class="p3-t"><thead><tr><th>المصدر</th><th>بلا</th><th>ورقة</th><th>Al</th><th>Pb</th></tr></thead><tbody>`+['bg','a','b','g','x'].map(s=>`<tr><td>${SRC[s].n.split(' (')[0]}</td>${Object.keys(ABS).map(b=>`<td class="n">${cell(s,b)}</td>`).join('')}</tr>`).join('')+
+  `</tbody></table><div class="p3-acts" style="margin-top:8px"><span class="p3-lab">المجهول هو</span><select class="rdSel" aria-label="نوع المصدر المجهول"><option value="">اختر</option>${['a','b','g'].map(k=>`<option value="${k}" ${S.ans===k?'selected':''}>${SRC[k].n}</option>`).join('')}</select><button class="p3-b" data-a="chk">تحقق</button><span class="p3-fb ${S.ok==null?'':S.ok?'ok':'bad'}">${S.ok==null?'':S.ok?'✓ صحيح':'✗ قارن قراءاته بالحواجز'}</span></div>`;
+  const sel=sec.$('.rdSel');sel.onchange=()=>{S.ans=sel.value;};}
+function sync(){const b=S.busy;sec.$$('[data-s]').forEach(x=>{x.setAttribute('aria-pressed',x.dataset.s===S.src);x.disabled=b;});sec.$$('[data-b]').forEach(x=>{x.setAttribute('aria-pressed',x.dataset.b===S.abs);x.disabled=b;});sec.$('[data-a="go"]').disabled=b;}
+sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;const d=x.dataset;
+  if(d.s)setSrc(d.s);else if(d.b)setAbs(d.b);else if(d.a==='go')go();
+  else if(d.a==='chk'){if(!S.ans){toast('اختر نوع المصدر أولًا.');return;}S.ok=S.ans===S.unk;if(S.ok)P3.good();else{try{L2.bad();}catch(err){}}renderNB();render();}});
+L.onTap(CT,go);setSrc('bg');sync();render();renderNB();
+};
+
+/* =====================================================================
+   ١٣) الفلزات القلوية مع الماء — 3D (ثالث متوسط · العناصر الممثلة)
+   ===================================================================== */
+const ALK={};EXP_MODS.alk=ALK;
+ALK.init=function(){gm();
+const MET={li:{f:'Li',n:'الليثيوم',v:.25,dur:9,melt:false,flame:false,float:'يطفو',mv:'يتحرك ببطء ويفور بهدوء',fl:'لا يشتعل',rank:1},
+  na:{f:'Na',n:'الصوديوم',v:.8,dur:6,melt:true,flame:false,float:'يطفو',mv:'ينصهر إلى كرة لامعة ويندفع بسرعة مع أزيز',fl:'لا يشتعل غالبًا',rank:2},
+  k:{f:'K',n:'البوتاسيوم',v:1.4,dur:3.6,melt:true,flame:true,float:'يطفو',mv:'يندفع بسرعة كبيرة ويُسمع فرقعة',fl:'يشتعل بلهب بنفسجي فاتح (ليلكي)',rank:3}};
+const S={cur:null,php:false,busy:false,obs:{},order:{},ok:null,piece:false};P3.dbg.alk=S;
+const NAMES=['أضف الكاشف','اقطع قطعة','ضعها في الماء','قارن النشاط'];
+const sec=P3.section('alk',{title:'الفلزات القلوية مع الماء',grade:'ثالث متوسط',lesson:'العناصر الممثلة',
+  hud:`<div class="p3-m warm" style="min-width:210px"><small>الملاحظة</small><b class="akO" style="font-family:var(--f-body);font-size:.98rem">—</b></div>`,
+  side:`<div class="p3-box"><h4 class="p3-h">لوحة التحكم</h4>
+    <div class="p3-acts"><button class="p3-b" data-a="php">💧 أضف كاشف الفينولفثالين</button></div>
+    <div class="p3-acts"><span class="p3-lab">الفلز</span>${Object.entries(MET).map(([k,m])=>`<button class="p3-b" data-m="${k}">${m.f} ${m.n}</button>`).join('')}</div>
+    <div class="p3-acts"><button class="p3-b" data-a="cut">🔪 اقطع قطعة صغيرة</button><button class="p3-b pri" data-a="drop">⬇ ضعها في الماء</button></div>
+    <div class="p3-acts"><button class="p3-b" data-a="reset">↺ ماء جديد</button></div></div>`,
+  learn:`<div class="panel"><h3>الفلزات القلوية (المجموعة 1)</h3><p>فلزات لينة تُقطع بالسكين، لامعة عند القطع ثم تفقد بريقها بسرعة لتفاعلها مع الهواء؛ لذلك تُحفظ تحت الزيت.</p>
+      <p>تتفاعل مع الماء فتنتج <b>هيدروكسيد الفلز</b> (محلول قاعدي يحوّل الفينولفثالين إلى الوردي) وغاز <b>الهيدروجين</b>.</p><p class="p3-eq">2Na + 2H₂O → 2NaOH + H₂</p></div>
+    <div class="panel"><h3>تدرّج النشاط</h3><p>يزداد نشاط الفلزات القلوية كلما اتجهنا إلى أسفل المجموعة: الليثيوم ثم الصوديوم ثم البوتاسيوم؛ لأن إلكترون التكافؤ يبتعد عن النواة فيسهل فقده.</p>
+      <p><b>تحذير:</b> هذه التجربة خطرة في الواقع، وتُعرض فقط بحواجز أمان وبكميات صغيرة جدًا.</p></div>`,
+  quiz:[{q:'أنشط الفلزات الثلاثة مع الماء:',o:['الليثيوم','الصوديوم','البوتاسيوم'],a:2},{q:'الغاز الناتج من تفاعل الصوديوم مع الماء:',o:['الأكسجين','الهيدروجين','الكلور'],a:1},
+        {q:'تحوّل لون الفينولفثالين إلى الوردي يدل على أن المحلول:',o:['حمضي','قاعدي','متعادل'],a:1},{q:'تُحفظ الفلزات القلوية تحت الزيت لأنها:',o:['تتفاعل مع الهواء والماء بسرعة','ثقيلة جدًا','تذوب في الزيت'],a:0}],
+  report:()=>({title:'الفلزات القلوية مع الماء',grade:'ثالث متوسط',lesson:'العناصر الممثلة',cols:['الفلز','الطفو','الحركة','اللهب','لون الكاشف'],
+    rows:Object.entries(MET).map(([k,m])=>{const o=S.obs[k];return [`${m.n} ${m.f}`,o?m.float:'',o?m.mv:'',o?m.fl:'',o?(o.php?'وردي':'لم يُضف الكاشف'):''];}),note:'رتّب الفلزات حسب نشاطها، وفسّر.'})
+});
+const L=new Lab(sec,{target:V(-.3,.4,.5),dist:a=>Math.max(4,6.8/a),exposure:.95});buildRoom(L);
+const toast=m=>L.toast(m),akO=sec.$('.akO');
+/* ---------- trough ---------- */
+const TX=.3,TZ=.25,WY=.42;const tr=new THREE.Group();tr.position.set(TX,0,TZ);
+const tpts=[[0,0],[.95,0],[1.0,.04],[1.05,.55],[1.09,.57],[1.04,.57]].map(p=>new THREE.Vector2(p[0],p[1]));
+const bowl=new THREE.Mesh(new THREE.LatheGeometry(tpts,64),G.glass);bowl.renderOrder=3;
+const wM=G.water(0xcfe9f3,.42);const water=new THREE.Mesh(new THREE.CylinderGeometry(1.02,.96,WY-.02,64),wM);water.position.y=(WY+.02)/2;water.renderOrder=1;
+tr.add(bowl,water);L.add(tr);
+// safety screen
+const scr=new THREE.Group();{const p=new THREE.Mesh(new THREE.PlaneGeometry(1.6,1.0),new THREE.MeshPhysicalMaterial({color:0xeef8fa,transparent:true,opacity:.1,roughness:0,clearcoat:1,side:THREE.DoubleSide,depthWrite:false}));p.position.y=.62;p.renderOrder=12;p.material.userData.keepEnv=1;
+  const f=new THREE.Mesh(new THREE.BoxGeometry(1.64,.04,.04),KIT.mat(0x2d3a40));f.position.y=1.12;const l1=new THREE.Mesh(new THREE.BoxGeometry(.04,1.12,.04),KIT.mat(0x2d3a40));l1.position.set(-.8,.56,0);const l2=l1.clone();l2.position.x=.8;scr.add(p,f,l1,l2);}
+
+// oil jars
+const JAR={};Object.entries(MET).forEach(([k,m],i)=>{const g=new THREE.Group();g.position.set(-1.95+i*.0,0,-.55+i*.48);
+  const j=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,.34,24,1,true),G.glass);j.position.y=.17;j.renderOrder=3;const oil=new THREE.Mesh(new THREE.CylinderGeometry(.15,.15,.24,24),G.water(0xe8c96a,.55));oil.position.y=.13;
+  const lump=new THREE.Mesh(new THREE.DodecahedronGeometry(.06,0),KIT.mat(0x8f969c,{metalness:.5,roughness:.6}));lump.position.y=.06;const c=P3.card([{t:m.f,mono:1,s:110}],.16,.1);c.position.set(0,.2,.162);
+  g.add(j,oil,lump,c);L.add(g);JAR[k]=g;L.onTap(g,()=>pick(k));});
+L.label('فلزات محفوظة تحت الزيت',V(-1.95,.6,-.05),'small');
+// cutting tile + knife
+const tile=new THREE.Mesh(RBox(.6,.03,.45,.01),KIT.mat(0xf2efe6,{roughness:.8}));tile.position.set(-1.1,.015,1.0);L.add(tile);
+const knife=new THREE.Group();{const b=new THREE.Mesh(new THREE.BoxGeometry(.32,.06,.008),M.steel);b.position.x=.16;const h=new THREE.Mesh(RBox(.22,.05,.035,.01),KIT.mat(0x1c1c1c));h.position.x=-.11;knife.add(b,h);}
+knife.position.set(-1.1,.06,1.25);knife.rotation.y=.3;L.add(knife);
+const piece=new THREE.Mesh(new THREE.BoxGeometry(.07,.05,.07),KIT.mat(0xd9dde0,{metalness:.95,roughness:.15}));piece.visible=false;piece.castShadow=true;L.add(piece);
+const ball=new THREE.Mesh(new THREE.SphereGeometry(.04,20,14),KIT.mat(0xe8ecef,{metalness:1,roughness:.08}));ball.visible=false;L.add(ball);
+const kf=Flame({s:.42});kf.S.air=1;kf.S.salt=0xc48cff;kf.g.visible=true;L.add(kf.g);
+const bub=Bubbles(160,{op:.8});L.add(bub.mesh);
+// pink trail
+const trail=[];const trM=new THREE.MeshBasicMaterial({color:$lc(0xff4fa3),transparent:true,opacity:0,depthWrite:false});
+function addTrail(x,z){if(trail.length>90)return;const m=new THREE.Mesh(new THREE.CircleGeometry(1,24),trM.clone());m.rotation.x=-Math.PI/2;m.position.set(x,WY-.005,z);m.scale.setScalar(.03);m.renderOrder=2;m.userData.t=0;L.add(m);trail.push(m);}
+/* ---------- sim ---------- */
+const R={on:false,t:0,x:0,z:0,dx:1,dz:0,m:null,lastTr:0,size:1};
+P3.loop(L,(dt,t,now)=>{kf.tick(now);bub.update(dt,t);
+  trail.forEach(m=>{m.userData.t+=dt;const k=Math.min(1,m.userData.t/2.2);m.scale.setScalar(.03+.2*k);m.material.opacity=S.php?.32*Math.min(1,m.userData.t*2):0;});
+  if(!R.on)return;const m=MET[R.m];R.t+=dt;const life=1-R.t/m.dur;const o=m.melt&&R.t>.4?ball:piece;
+  if(m.melt&&R.t>.4&&piece.visible){piece.visible=false;ball.visible=true;}
+  const sp=m.v*(.6+.4*Math.sin(t*7));R.dx+=(Math.random()-.5)*dt*8;R.dz+=(Math.random()-.5)*dt*8;const l=Math.hypot(R.dx,R.dz)||1;R.dx/=l;R.dz/=l;
+  R.x+=R.dx*sp*dt;R.z+=R.dz*sp*dt;const rr=Math.hypot(R.x,R.z);if(rr>.82){R.x*=.82/rr;R.z*=.82/rr;R.dx=-R.dx;R.dz=-R.dz;}
+  const s=Math.max(.05,life);o.scale.setScalar(s);o.position.set(TX+R.x,WY+.015,TZ+R.z);o.rotation.y+=dt*4;
+  for(let i=0;i<Math.ceil(m.v*4);i++)bub.spawn(TX+R.x+(Math.random()-.5)*.08,WY-.05,TZ+R.z+(Math.random()-.5)*.08,.006+Math.random()*.008,WY+.01,.3);
+  if(now-R.lastTr>140){R.lastTr=now;addTrail(TX+R.x,TZ+R.z);}
+  if(m.flame){kf.S.on=true;kf.S.saltK=1;kf.g.position.set(TX+R.x,WY+.03,TZ+R.z);kf.g.scale.setScalar(.6+.4*s);if(Math.random()<dt*6)P3.noise(.05,.3,2500,2);}
+  if(Math.random()<dt*(m.v*6))P3.noise(.08,.08,4000,1);
+  if(R.t>=m.dur){R.on=false;o.visible=false;kf.S.on=false;kf.S.saltK=0;if(m.melt){P3.pop();P3.flash(L,V(TX+R.x,WY+.08,TZ+R.z),m.flame?0xd9b0ff:0xfff0c0,.7);}finish();}});
+/* ---------- actions ---------- */
+function pick(k){if(S.busy||R.on)return;S.cur=k;S.piece=false;piece.visible=false;akO.textContent='—';P3.click();sync();render();}
+async function addPhp(){if(S.busy||S.php)return;S.busy=true;sync();const d=new THREE.Mesh(new THREE.SphereGeometry(.03,10,8),G.water(0xffffff,.8));L.scene.add(d);
+  for(let i=0;i<3;i++){d.position.set(TX,1.1,TZ);await L.tw(400,k=>d.position.y=1.1-(1.1-WY)*k);}L.scene.remove(d);S.php=true;S.busy=false;toast('أُضيف الفينولفثالين: الماء عديم اللون لأنه متعادل.');sync();render();}
+async function cut(){if(S.busy||!S.cur||S.piece||R.on)return;S.busy=true;sync();const j=JAR[S.cur];const lump=j.children[2];
+  piece.material.color.copy($lc(0xd9dde0));piece.position.set(j.position.x,.12,j.position.z);piece.scale.setScalar(1);piece.visible=true;await L.arc(piece,V(-1.1,.06,1.0),700,.7);
+  const k0=knife.position.clone();await L.move(knife,V(-1.12,.16,1.0),300);await L.move(knife,V(-1.12,.065,1.0),250);P3.tone(900,.05,'triangle',.05);await L.move(knife,k0,300);
+  akO.textContent='سطح القطع لامع ثم يفقد بريقه بسرعة';await L.tw(1200,k=>piece.material.color.copy($lc(0xd9dde0)).lerp($lc(0x8a9096),k));S.piece=true;S.busy=false;sync();render();}
+async function drop(){if(S.busy||!S.piece||R.on)return;S.busy=true;sync();await L.arc(piece,V(TX,WY+.03,TZ),800,1.2);ball.scale.setScalar(1);ball.visible=false;piece.scale.setScalar(1);
+  Object.assign(R,{on:true,t:0,x:0,z:0,dx:1,dz:.3,m:S.cur,lastTr:0});akO.textContent=MET[S.cur].mv;}
+function finish(){const m=MET[R.m];S.obs[R.m]={php:S.php};S.piece=false;S.busy=false;akO.textContent=m.mv+(m.flame?' · '+m.fl:'')+(S.php?' · الماء وردي (قاعدي)':'');
+  toast(`${m.n}: ${m.mv}.`);sync();render();renderNB();}
+function reset(){if(S.busy||R.on)return;trail.forEach(m=>L.scene.remove(m));trail.length=0;S.php=false;bub.clear();akO.textContent='—';toast('ماء جديد دون كاشف.');sync();render();}
+/* ---------- UI ---------- */
+function stepIdx(){const n=Object.keys(S.obs).length;if(!S.php&&!n)return 0;if(n>=3)return 3;if(!S.piece)return 1;return 2;}
+function render(){const k=stepIdx(),m=S.cur&&MET[S.cur];let title,html;
+  if(k===0){title='أضف الكاشف';html=`<p class="p3-txt">أضف قطرات الفينولفثالين إلى الماء لتكشف عن المحلول القاعدي الناتج.</p>`;}
+  else if(k===1){title=m?'اقطع قطعة من '+m.n:'اختر فلزًا';html=`<p class="p3-txt">${m?'اقطع قطعة صغيرة جدًا بالسكين، ولاحظ سطح القطع.':'اختر فلزًا من اللوحة: الليثيوم أو الصوديوم أو البوتاسيوم.'}</p>`;}
+  else if(k===2){title='ضعها في الماء';html=`<p class="p3-txt">ضع القطعة في الماء (في الواقع خلف حاجز أمان)، وراقب: هل تطفو؟ هل تنصهر؟ ما سرعة حركتها؟ وهل يظهر لهب؟</p>`;}
+  else{title='قارن النشاط';html=`<p class="p3-txt">رتّب الفلزات من الأقل نشاطًا إلى الأكثر في دفتر المختبر.</p>${S.ok?'<p class="p3-ok">صحيح! يزداد النشاط كلما اتجهنا إلى أسفل المجموعة الأولى.</p>':''}`;}
+  sec.steps(NAMES,k,title,html);}
+function renderNB(){let h=`<table class="p3-t"><thead><tr><th>الفلز</th><th>الحركة</th><th>اللهب</th></tr></thead><tbody>`+Object.entries(MET).map(([k,m])=>`<tr><td>${m.f}</td><td>${S.obs[k]?m.mv:'—'}</td><td>${S.obs[k]?m.fl:'—'}</td></tr>`).join('')+'</tbody></table>';
+  if(Object.keys(S.obs).length>=3)h+=`<div class="p3-acts" style="margin-top:8px"><span class="p3-lab">الأقل نشاطًا ← الأكثر</span>${[1,2,3].map(i=>`<select class="akS" data-i="${i}" aria-label="الترتيب ${i}"><option value="">${i}</option>${Object.entries(MET).map(([k,m])=>`<option value="${k}" ${S.order[i]===k?'selected':''}>${m.f}</option>`).join('')}</select>`).join('')}<button class="p3-b" data-a="chk">تحقق</button><span class="p3-fb ${S.ok==null?'':S.ok?'ok':'bad'}">${S.ok==null?'':S.ok?'✓':'✗'}</span></div>`;
+  sec.$('.p3-nb').innerHTML=h;sec.$$('.akS').forEach(s=>s.onchange=()=>{S.order[s.dataset.i]=s.value;});}
+function sync(){const b=S.busy||R.on;sec.$('[data-a="php"]').disabled=b||S.php;sec.$('[data-a="php"]').classList.toggle('done',S.php);
+  sec.$$('[data-m]').forEach(x=>{x.setAttribute('aria-pressed',x.dataset.m===S.cur);x.disabled=b;x.classList.toggle('done',!!S.obs[x.dataset.m]);});
+  sec.$('[data-a="cut"]').disabled=b||!S.cur||S.piece;sec.$('[data-a="drop"]').disabled=b||!S.piece;sec.$('[data-a="reset"]').disabled=b;}
+sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;const d=x.dataset;
+  if(d.m)pick(d.m);else if(d.a==='php')addPhp();else if(d.a==='cut')cut();else if(d.a==='drop')drop();else if(d.a==='reset')reset();
+  else if(d.a==='chk'){const o=[S.order[1],S.order[2],S.order[3]];if(o.some(v=>!v)){toast('أكمل الترتيب أولًا.');return;}S.ok=o.join()==='li,na,k';if(S.ok)P3.good();else{try{L2.bad();}catch(err){}}renderNB();render();}});
+L.onTap(tile,cut);L.onTap(tr,drop);
+sync();render();renderNB();
+};
+
+/* =====================================================================
+   ١٤) ظروف صدأ الحديد — 3D (ثالث متوسط · العناصر الانتقالية)
+   ===================================================================== */
+const RUST={};EXP_MODS.rust=RUST;
+RUST.init=function(){gm();
+const TB=[{k:'A',n:'ماء وهواء',sub:'ماء الصنبور',rate:.13,liq:.45,col:0xcfe7f1,oil:false,dry:false},
+  {k:'B',n:'ماء مغلي + زيت',sub:'لا يوجد هواء',rate:0,liq:.45,col:0xcfe7f1,oil:true,dry:false},
+  {k:'C',n:'هواء جاف',sub:'كلوريد الكالسيوم',rate:0,liq:0,col:0,oil:false,dry:true},
+  {k:'D',n:'ماء مالح وهواء',sub:'محلول ملح الطعام',rate:.22,liq:.45,col:0xdfeef2,oil:false,dry:false},
+  {k:'E',n:'مسمار مجلفن',sub:'مطلي بالخارصين، ماء وهواء',rate:0,liq:.45,col:0xcfe7f1,oil:false,dry:false,zinc:true}];
+const LV=r=>r<.05?'لا صدأ':r<.35?'صدأ قليل':r<.7?'صدأ متوسط':'صدأ كثير';
+const S={ph:0,day:0,busy:false,log:{}};P3.dbg.rust=S;
+const NAMES=['ضع المسامير','انتظر الأيام','افحص الأنابيب','استنتج'];
+const sec=P3.section('rust',{title:'ظروف صدأ الحديد',grade:'ثالث متوسط',lesson:'العناصر الانتقالية',
+  hud:`<div class="p3-m warm"><small>الأيام</small><b class="ruD">0</b></div>`,
+  side:`<div class="p3-box"><h4 class="p3-h">لوحة التحكم</h4>
+    <div class="p3-acts"><button class="p3-b" data-a="put">① ضع المسامير في الأنابيب</button></div>
+    <div class="p3-acts"><button class="p3-b" data-a="d1">⏩ مرور يوم</button><button class="p3-b" data-a="d3">⏩ مرور 3 أيام</button><button class="p3-b" data-a="rec">📋 سجّل الملاحظة</button></div>
+    <div class="p3-acts"><button class="p3-b" data-a="reset">↺ إعادة التجربة</button></div></div>`,
+  learn:`<div class="panel"><h3>صدأ الحديد</h3><p>الحديد عنصر انتقالي يتفاعل ببطء مع <b>الأكسجين</b> بوجود <b>الماء</b> فيتكوّن الصدأ (أكسيد الحديد المائي) ذو اللون البني المحمر.</p><p class="p3-eq">4Fe + 3O₂ + xH₂O → 2Fe₂O₃·xH₂O</p></div>
+    <div class="panel"><h3>ماذا تعلّمنا الأنابيب؟</h3><p><b>B</b> (لا هواء) و<b>C</b> (لا ماء): لا صدأ؛ إذن يلزم الماء والهواء معًا.</p><p><b>D</b>: الملح يسرّع الصدأ.</p><p><b>E</b>: طلاء الحديد بالخارصين (الجلفنة) يحميه.</p></div>`,
+  quiz:[{q:'يحتاج صدأ الحديد إلى:',o:['الماء فقط','الهواء فقط','الماء والهواء معًا'],a:2},{q:'أي الأنابيب صدئ مسماره أكثر؟',o:['الماء المالح','الهواء الجاف','الماء المغلي والزيت'],a:0},
+        {q:'لماذا يُغلى الماء ويُغطّى بالزيت في الأنبوب B؟',o:['لطرد الهواء ومنع دخوله','لتسخين المسمار','لتلوين الماء'],a:0},{q:'طلاء الحديد بالخارصين لحمايته يسمى:',o:['الجلفنة','التقطير','الترشيح'],a:0}],
+  report:()=>({title:'ظروف صدأ الحديد',grade:'ثالث متوسط',lesson:'العناصر الانتقالية',cols:['الأنبوب','الظروف',...Object.keys(S.log).map(d=>'اليوم '+d)],
+    rows:TB.map(t=>[t.k,t.n,...Object.keys(S.log).map(d=>S.log[d][t.k])]),note:'ما الظروف اللازمة لصدأ الحديد؟ وكيف نمنعه؟'})
+});
+const L=new Lab(sec,{target:V(0,.55,.45),dist:a=>Math.max(3.6,6/a),exposure:.95});buildRoom(L);
+const toast=m=>L.toast(m);
+/* ---------- rack + tubes ---------- */
+const rack=new THREE.Group();{[-.17,.17].forEach(z=>{const r=new THREE.Mesh(RBox(3.1,.06,.08,.02),KIT.wood(0x9b6a3c));r.position.set(0,.62,z);rack.add(r);});const t=new THREE.Group();const b=new THREE.Mesh(RBox(3.1,.06,.42,.02),KIT.wood(0x9b6a3c));b.position.y=.03;
+  [-1.52,1.52].forEach(x=>{const s=new THREE.Mesh(RBox(.06,.62,.42,.01),KIT.wood(0x8a5a32));s.position.set(x,.33,0);rack.add(s);});rack.add(t,b);castAll(rack);}
+rack.position.set(0,0,.3);L.add(rack);
+const rustT=canvasTex(256,256,c=>{c.fillStyle='#8a3d1c';c.fillRect(0,0,256,256);for(let i=0;i<900;i++){c.fillStyle=['#b5561f','#6b2a12','#c9772e','#9a4a22'][i%4];c.beginPath();c.arc(Math.random()*256,Math.random()*256,2+Math.random()*6,0,7);c.fill();}});
+const T={};
+TB.forEach((tb,i)=>{const x=-1.2+i*.6,tt=TestTube(.13,1.0);tt.g.position.set(x,.16,.3);if(tb.liq){tt.seg(0,tb.liq);setCol(tt.lm,tb.col);}L.add(tt.g);
+  if(tb.oil){const o=new THREE.Mesh(new THREE.CylinderGeometry(.118,.118,.07,24),G.water(0xe8c96a,.7));o.position.y=tb.liq+.035;tt.g.add(o);}
+  if(tb.dry){const cc=new THREE.InstancedMesh(new THREE.SphereGeometry(.022,8,6),KIT.mat(0xf6f6f2,{roughness:.9}),40);for(let j=0;j<40;j++){const d=new THREE.Object3D();const a=j*2.4,r=(j%5)*.022;d.position.set(Math.cos(a)*r,-.06+Math.floor(j/8)*.03,Math.sin(a)*r);d.updateMatrix();cc.setMatrixAt(j,d.matrix);}tt.g.add(cc);
+    const cot=new THREE.Mesh(new THREE.CylinderGeometry(.115,.115,.06,16),KIT.mat(0xffffff,{roughness:1}));cot.position.y=.2;tt.g.add(cot);}
+  if(tb.dry||tb.oil)tt.stp.visible=true;
+  // nail
+  const nm=new THREE.MeshStandardMaterial({color:$lc(tb.zinc?0xb9c3c8:0x8e969c),metalness:.85,roughness:tb.zinc?.45:.3});
+  const ng=new THREE.Group();const sh=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.62,12),nm);sh.position.y=.31;const tp=new THREE.Mesh(new THREE.ConeGeometry(.018,.06,12),nm);tp.rotation.x=Math.PI;tp.position.y=-.03;
+  const hd=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.02,18),nm);hd.position.y=.63;ng.add(sh,tp,hd);ng.rotation.z=.08;
+  const fl=new THREE.InstancedMesh(new THREE.SphereGeometry(.012,6,5),new THREE.MeshStandardMaterial({map:rustT,roughness:1}),60);fl.count=0;for(let j=0;j<60;j++){const d=new THREE.Object3D();const a=j*2.39;d.position.set(Math.cos(a)*.02,.02+(j/60)*.55,Math.sin(a)*.02);d.scale.set(1,.6+Math.random()*.8,1);d.updateMatrix();fl.setMatrixAt(j,d.matrix);}ng.add(fl);
+  ng.position.set(x+.75,.05,1.15);ng.rotation.z=Math.PI/2;castAll(ng);L.add(ng);
+  const card=P3.card([{t:tb.k+' · '+tb.n,s:52},{t:tb.sub,s:38}],.56,.24,tb.rate?{}:{bd:'#2f6fb2'});card.position.set(x,.06,.78);card.rotation.x=-.95;L.add(card);
+  T[tb.k]={tb,tt,ng,nm,fl,r:0,x};L.onTap(tt.g,()=>zoom(tb.k));});
+/* ---------- actions ---------- */
+function setRust(k,r){const o=T[k];o.r=r;o.nm.color.copy($lc(o.tb.zinc?0xb9c3c8:0x8e969c)).lerp($lc(0x8a3d1c),Math.min(1,r*1.1));o.nm.metalness=.85-.7*r;o.nm.roughness=.3+.6*r;o.fl.count=Math.floor(60*Math.min(1,r));
+  if(o.tb.liq&&o.tb.rate)setCol(o.tt.lm,new THREE.Color(o.tb.col).lerp(new THREE.Color(0xc9864a),Math.min(.6,r*.6)).getHex());}
+async function put(){if(S.busy||S.ph!==0)return;S.busy=true;sync();
+  for(const tb of TB){const o=T[tb.k];if(o.tt.stp.visible){await L.tw(250,k=>o.tt.stp.position.y=1.045+.3*k);}
+    await L.tw(800,k=>{const e=ease(k);o.ng.rotation.z=Math.PI/2*(1-e);o.ng.position.set(o.x*e+(o.x+.75)*(1-e),.05+(1-e)*0+Math.sin(Math.PI*k)*1.0+e*.12,1.15*(1-e)+.3*e);});
+    P3.tone(500,.05,'triangle',.04);if(o.tt.stp.visible)await L.tw(250,k=>o.tt.stp.position.y=1.345-.3*k);}
+  S.ph=1;S.busy=false;S.log[0]=Object.fromEntries(TB.map(t=>[t.k,'لا صدأ']));toast('وُضعت المسامير الخمسة. اترك الأنابيب عدة أيام.');sync();render();renderNB();}
+async function days(n){if(S.busy||S.ph<1)return;if(S.day>=9){toast('مرّت 9 أيام؛ يكفي هذا للمقارنة.');return;}S.busy=true;sync();const d0=S.day,d1=Math.min(9,S.day+n);
+  await L.tw(1200*n,k=>{S.day=d0+(d1-d0)*k;sec.$('.ruD').textContent=Math.floor(S.day);TB.forEach(tb=>setRust(tb.k,Math.min(1,tb.rate*S.day)));});
+  S.day=d1;sec.$('.ruD').textContent=d1;S.ph=2;S.busy=false;sync();render();}
+function record(){if(S.ph<1)return;const d=Math.round(S.day);S.log[d]=Object.fromEntries(TB.map(t=>[t.k,LV(T[t.k].r)]));P3.click();toast('سُجّلت ملاحظات اليوم '+d+'.');renderNB();render();}
+async function zoom(k){if(S.busy)return;const o=T[k];S.busy=true;const c0=L.camera.position.clone(),t0=L.controls.target.clone(),c1=V(o.x,.6,1.55),t1=V(o.x,.4,.3);
+  await L.tw(600,q=>{const e=ease(q);L.camera.position.copy(lerpV(c0,c1,e));L.controls.target.copy(lerpV(t0,t1,e));});toast(`الأنبوب ${k}: ${o.tb.n} — ${LV(o.r)}`);await sleep(1600);
+  await L.tw(600,q=>{const e=ease(q);L.camera.position.copy(lerpV(c1,c0,e));L.controls.target.copy(lerpV(t1,t0,e));});S.busy=false;}
+function reset(){if(S.busy)return;S.ph=0;S.day=0;S.log={};sec.$('.ruD').textContent='0';TB.forEach(tb=>{const o=T[tb.k];setRust(tb.k,0);if(tb.liq)setCol(o.tt.lm,tb.col);o.ng.rotation.z=Math.PI/2;o.ng.position.set(o.x+.75,.05,1.15);});sync();render();renderNB();toast('أُعيدت التجربة.');}
+/* ---------- UI ---------- */
+function stepIdx(){if(S.ph===0)return 0;if(S.day<3)return 1;if(Object.keys(S.log).length<3)return 2;return 3;}
+function render(){const k=stepIdx();let title,html;
+  if(k===0){title='جهّز الأنابيب';html=`<p class="p3-txt">خمسة أنابيب بظروف مختلفة: ماء وهواء، ماء مغلي عليه زيت (بلا هواء)، هواء جاف بكلوريد الكالسيوم (بلا ماء)، ماء مالح، ومسمار مجلفن. ضع المسامير.</p>`;}
+  else if(k===1){title='انتظر الأيام';html=`<p class="p3-txt">قدّم الزمن يومًا بعد يوم، وسجّل ملاحظاتك. اضغط على أي أنبوب لتقترب منه.</p>`;}
+  else if(k===2){title='افحص الأنابيب وسجّل';html=`<p class="p3-txt">في أي الأنابيب ظهر الصدأ؟ وفي أيها لم يظهر؟ سجّل الملاحظة في أكثر من يوم.</p>`;}
+  else{title='استنتج';html=`<p class="p3-ok">يصدأ الحديد بوجود الماء والهواء معًا (A وD)، والملح يسرّع الصدأ (D)، ولا يصدأ دون هواء (B) أو دون ماء (C)، والجلفنة تحميه (E).</p>`;}
+  sec.steps(NAMES,k,title,html);}
+function renderNB(){const ds=Object.keys(S.log).map(Number).sort((a,b)=>a-b).slice(-3);
+  sec.$('.p3-nb').innerHTML=`<table class="p3-t"><thead><tr><th>الأنبوب</th>${ds.map(d=>`<th>اليوم ${d}</th>`).join('')||'<th>الملاحظة</th>'}</tr></thead><tbody>`+
+  TB.map(t=>`<tr><td><b>${t.k}</b> ${t.n}</td>${ds.map(d=>`<td>${S.log[d][t.k]}</td>`).join('')||'<td>—</td>'}</tr>`).join('')+'</tbody></table>';}
+function sync(){const b=S.busy;const p=sec.$('[data-a="put"]');p.disabled=b||S.ph!==0;p.classList.toggle('done',S.ph>0);['d1','d3','rec'].forEach(a=>sec.$(`[data-a="${a}"]`).disabled=b||S.ph<1);sec.$('[data-a="reset"]').disabled=b;}
+sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;const a=x.dataset.a;
+  if(a==='put')put();else if(a==='d1')days(1);else if(a==='d3')days(3);else if(a==='rec')record();else if(a==='reset')reset();});
+TB.forEach(tb=>setRust(tb.k,0));sync();render();renderNB();
+};
 /* ---------- register in the library ---------- */
-const D3=['elec','gasp','flame','minr','weat','ruth','half','elem'];
+const D3=['elec','gasp','flame','minr','weat','ruth','half','elem','rock','plate','crt','rad','alk','rust'];
 EXPS.forEach(e=>{if(EXP_MODS[e.id])e.ready=true;if(D3.includes(e.id))e.d3=true;});renderLib();
 })();
