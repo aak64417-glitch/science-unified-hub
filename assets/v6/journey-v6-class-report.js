@@ -300,7 +300,7 @@
     const weakFreq = new Map();
     if (!skills.length) rows.forEach(r => String(r.weakConcepts || '').split(/[،,]/).map(x => x.trim()).filter(x => x && x !== '—').forEach(w => weakFreq.set(w, (weakFreq.get(w) || 0) + 1)));
     const ranked = part.slice().sort((a, b) => b.avg - a.avg || b.done - a.done);
-    const honor = ranked.filter(s => s.avg >= 80).slice(0, 8);
+    const honor = part.filter(s => s.avg >= 80).sort((a, b) => pct(b.avg) - pct(a.avg) || b.done - a.done || String(a.name).localeCompare(String(b.name), 'ar'));
     const remedial = ranked.filter(s => s.avg < 60 || Object.values(s.best).some(v => v < 60)).reverse();
     const improvers = part.filter(s => s.improve > 0).sort((a, b) => b.improve - a.improve).slice(0, 5);
     const times = rows.map(r => +new Date(resultTime(r))).filter(Number.isFinite);
@@ -377,7 +377,7 @@
         : weakFreq.size ? `<section class="v6cr-sec"><h2>المفاهيم التي تحتاج تعزيزًا</h2><ul class="v6cr-chips">${[...weakFreq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([w, n]) => `<li>${E(w)} <b>${n}</b></li>`).join('')}</ul></section>` : ''}
 
       <section class="v6cr-grid two">
-        <div class="v6cr-card honor"><h3>🏅 لوحة التميز</h3>${honor.length ? `<ol>${honor.map(s => `<li>${E(s.name)} <b>${pct(s.avg)}%</b></li>`).join('')}</ol>` : '<p class="v6cr-muted">لم يصل أحد إلى 80% بعد.</p>'}
+        <div class="v6cr-card honor"><h3>🏅 لوحة التميز</h3>${honor.length ? `<ol${honor.length > 8 ? ' class="v6cr-cols"' : ''}>${honor.map(s => `<li>${E(s.name)} <b>${pct(s.avg)}%</b></li>`).join('')}</ol>` : '<p class="v6cr-muted">لم يصل أحد إلى 80% بعد.</p>'}
           ${improvers.length ? `<h4>الأكثر تحسنًا</h4><ol>${improvers.map(s => `<li>${E(s.name)} <b><bdi dir="ltr">+${pct(s.improve)}</bdi></b></li>`).join('')}</ol>` : ''}</div>
         <div class="v6cr-card remedial"><h3>🩺 المستهدفون بالخطة العلاجية</h3>${remedial.length ? `<ol>${remedial.map(s => { const w = Object.entries(s.best).sort((a, b) => a[1] - b[1])[0]; const gt = groups.find(x => x.key === w?.[0]); return `<li>${E(s.name)} <b>${pct(s.avg)}%</b><small>${gt ? 'الأضعف: ' + E(gt.title) + ' (' + pct(w[1]) + '%)' : ''}</small></li>`; }).join('')}</ol>` : '<p class="v6cr-muted">لا يوجد طلاب دون 60%.</p>'}
           <h4>غير المشاركين: ${absent.length}</h4>${!hide && absent.length ? `<p class="v6cr-absent-list">${absent.map(s => E(s.name)).join('، ')}</p>` : ''}</div>

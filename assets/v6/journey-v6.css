@@ -247,6 +247,8 @@ html.task-loading body::after{border-color:#D3E2E8!important;border-top-color:va
 .v6cr-card li b{color:#0F8B8D;margin-inline-start:6px}
 .v6cr-card li small{display:block;color:#5E7384}
 .v6cr-card.honor{background:#FFFBF0;border-color:#F3D594}
+.v6cr-card ol.v6cr-cols{columns:2;column-gap:22px}
+.v6cr-card ol.v6cr-cols li{break-inside:avoid}
 .v6cr-card.remedial{background:#FFF7F8;border-color:#F0C3CA}
 .v6cr-card.remedial li b{color:#D1495B}
 .v6cr-svg{width:100%;height:auto;display:block}
