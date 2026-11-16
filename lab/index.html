@@ -4253,7 +4253,7 @@ MOD.init=function(){
 EXP_MODS.chg=CHG;EXP_MODS.osmo=OSMO;EXP_MODS.photo=PHOTO;EXP_MODS.yeast=YEAST;EXP_MODS.trans=TRANS;
 EXPS.forEach(e=>{if(EXP_MODS[e.id])e.ready=true;});renderLib();
 
-if(location.hash.length>1)openExp(location.hash.slice(1));
+window.addEventListener('load',()=>{if(location.hash.length>1)openExp(location.hash.slice(1));});
 </script>
 <script src="lab3d-pro.js"></script>
 
