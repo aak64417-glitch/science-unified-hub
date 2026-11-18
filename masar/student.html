@@ -144,6 +144,7 @@ main{max-width:760px;margin:-52px auto 40px;padding:0 16px;position:relative;z-i
 <div class="toast" id="toast"></div>
 
 <script src="missions-data.js"></script>
+<script src="missions-data-s2.js"></script>
 <script>
 const BASE="https://yqoleecldcvnfdmkqgeq.supabase.co",KEY="sb_publishable_P-wXPFs08V6kTx5FkFZXsA_x-ElUhhd",
 token=new URLSearchParams(location.search).get("t")||"",DEMO=!token&&new URLSearchParams(location.search).has("demo"),
@@ -163,10 +164,12 @@ const Q=[
 ["العلم والتقنية","تطبيق المعرفة العلمية لحل مشكلة هو:",["تصميم جهاز لتنقية الماء","التخمين دون اختبار","إهمال النتائج"],0,"التقنية هي استخدام العلم لحل مشكلات الحياة، مثل تنقية الماء."]];
 const QUIZ_LESSON="العلم وعملياته";
 
-const KEYS=["العلم وعملياته","النماذج العلمية","تقويم التفسيرات العلمية","الحركة","القوى والحركة","الشغل والآلات البسيطة","الخواص والتغيرات الفيزيائية","الخواص والتغيرات الكيميائية","تركيب المادة","العناصر والمركبات والمخاليط","الذرات والعناصر","الصخور والمعادن","صفائح الأرض المتحركة","التجوية والتعرية وأثرهما"],
-TITLES=["العلم وعملياته","النماذج العلمية","تقويم التفسيرات العلمية","الحركة","قوانين نيوتن للحركة","الشغل والآلات البسيطة","الخواص والتغيرات الفيزيائية","الخواص والتغيرات الكيميائية","تركيب المادة","العناصر والمركبات والمخاليط","المعادن - جواهر الأرض","أنواع الصخور","صفائح الأرض المتحركة","التجوية والتعرية وأثرهما"],
-ICONS=["🔬","🧩","🧐","🏃","🍎","⚙️","🧊","🔥","⚛️","🧪","💎","🪨","🌍","🌬️"],
-SKILLS=[8,3,3,3,3,3,3,3,3,3,3,3,3,3];
+const KEYS=["العلم وعملياته","النماذج العلمية","تقويم التفسيرات العلمية","الحركة","القوى والحركة","الشغل والآلات البسيطة","الخواص والتغيرات الفيزيائية","الخواص والتغيرات الكيميائية","تركيب المادة","العناصر والمركبات والمخاليط","الذرات والعناصر","الصخور والمعادن","صفائح الأرض المتحركة","التجوية والتعرية وأثرهما","الغلاف الجوي والطقس", "الكتل والجبهات الهوائية", "الأرض والنظام الشمسي", "الفضاء والنجوم والمجرات", "عالم الخلايا", "وظائف الخلايا", "الإسفنجيات واللاسعات والديدان المفلطحة والأسطوانية", "الرخويات والديدان الحلقية والمفصليات وشوكيات الجلد", "الحبليات ومجموعاتها", "الطيور والثدييات", "ما النظام البيئي؟", "المخلوقات الحية والبيئة والطاقة", "استخدام الموارد الطبيعية", "الإنسان والبيئة"],
+TITLES=["العلم وعملياته","النماذج العلمية","تقويم التفسيرات العلمية","الحركة","قوانين نيوتن للحركة","الشغل والآلات البسيطة","الخواص والتغيرات الفيزيائية","الخواص والتغيرات الكيميائية","تركيب المادة","العناصر والمركبات والمخاليط","المعادن - جواهر الأرض","أنواع الصخور","صفائح الأرض المتحركة","التجوية والتعرية وأثرهما","الغلاف الجوي والطقس", "الكتل والجبهات الهوائية", "الأرض والنظام الشمسي", "الفضاء والنجوم والمجرات", "عالم الخلايا", "وظائف الخلايا", "الإسفنجيات واللاسعات والديدان المفلطحة والأسطوانية", "الرخويات والديدان الحلقية والمفصليات وشوكيات الجلد", "الحبليات ومجموعاتها", "الطيور والثدييات", "ما النظام البيئي؟", "المخلوقات الحية والبيئة والطاقة", "استخدام الموارد الطبيعية", "الإنسان والبيئة"],
+ICONS=["🔬","🧩","🧐","🏃","🍎","⚙️","🧊","🔥","⚛️","🧪","💎","🪨","🌍","🌬️","☁️", "🌬️", "🪐", "⭐", "🔬", "🧫", "🪸", "🐙", "🐟", "🦅", "🌳", "☀️", "⛏️", "♻️"],
+SKILLS=[8,3,3,3,3,3,3,3,3,3,3,3,3,3,6, 6, 8, 8, 6, 3, 4, 8, 6, 7, 3, 8, 2, 5];
+/* دروس الفصل الدراسي الثاني: الدرس الكامل في تطبيق الدروس */
+const S2_IDS=["g7s2-c7-l1", "g7s2-c7-l2", "g7s2-c8-l1", "g7s2-c8-l2", "g7s2-c9-l1", "g7s2-c9-l2", "g7s2-c10-l1", "g7s2-c10-l2", "g7s2-c11-l1", "g7s2-c11-l2", "g7s2-c12-l1", "g7s2-c12-l2", "g7s2-c13-l1", "g7s2-c13-l2"];
 
 /* ===== التخزين المحلي (لا يؤثر على الخادم) ===== */
 const ME="masar_v2_"+token.slice(-16);
@@ -206,7 +209,7 @@ async function logLogin(ls){if(DEMO)return;try{const k="masar_login_"+token.slic
 
 /* ===== الواجهة ===== */
 function assigned(){return lessons.map(l=>{const idx=Math.max(KEYS.indexOf(l.key),KEYS.indexOf(l.title));return {l,idx,title:idx>=0?TITLES[idx]:l.title,hasQuiz:l.title===QUIZ_LESSON||l.key===QUIZ_LESSON}})}
-const openLessonPage=idx=>location.href="lessons.html?t="+encodeURIComponent(token)+"&li="+idx;
+const openLessonPage=idx=>{if(idx>=14){window.open("https://aak64417-glitch.github.io/science-lessons-app/lessons/"+S2_IDS[idx-14]+".html","_blank","noopener");return}location.href="lessons.html?t="+encodeURIComponent(token)+"&li="+idx};
 function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
 const esc=s=>String(s??"").replace(/[&<>"]/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[x]));
 
@@ -274,7 +277,7 @@ function drawM(){
     const q=st.q,a=mz.ans[mz.i];
     h+=`<p class="qnum">✋ ${esc(sk.t)}</p><p class="qtext">${esc(q[0])}</p><div id="opts"></div><div id="fb"></div>`;box.innerHTML=h;
     const o=$("opts");for(const j of st.opts){const b=el("button","opt",esc(q[1][j]));if(a!==undefined){b.disabled=true;if(j===q[2])b.classList.add("right");else if(j===a)b.classList.add("wrong")}else b.onclick=()=>{mz.ans[mz.i]=j;if(navigator.vibrate)navigator.vibrate(j===q[2]?30:[60,40,60]);drawM()};o.append(b)}
-    if(a!==undefined){const ok=a===q[2],fb=$("fb");fb.append(el("div","feedback "+(ok?"ok":"no"),ok?["👏 صحيح!","🎉 ممتاز!","✅ أحسنت!"][mz.i%3]:"💡 الإجابة الصحيحة: «"+esc(q[1][q[2]])+"»"));
+    if(a!==undefined){const ok=a===q[2],fb=$("fb");fb.append(el("div","feedback "+(ok?"ok":"no"),(ok?["👏 صحيح!","🎉 ممتاز!","✅ أحسنت!"][mz.i%3]:"💡 الإجابة الصحيحة: «"+esc(q[1][q[2]])+"»")+(q[3]?"<span>"+esc(q[3])+"</span>":"")));
       const n=el("button","cta",mz.i===total-1?"🏁 أنهيت المهمة":"التالي ←");n.onclick=()=>{if(mz.i===total-1)finishMission();else{mz.i++;drawM()}};fb.append(n)}
   }
   $("mx").onclick=()=>{if(mz.i>0&&!confirm("الخروج من المهمة؟ ستبدأ من جديد لاحقًا."))return;mz=null;backHome()};
