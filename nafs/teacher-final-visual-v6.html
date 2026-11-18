@@ -241,6 +241,7 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
       <button data-target="reports">التقارير</button>
       <button data-target="support">العلاجي والإثرائي</button>
       <button data-target="achievement">ملف الإنجاز</button>
+      <button data-target="control">لوحة التحكم</button>
       <button data-target="settings">الإعدادات</button>
     </nav>
     <div class="user">
@@ -294,6 +295,7 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
       <div class="tool" onclick="goTo('reports')"><b>📊 تقارير الطلاب</b><span>الدخول، المحاولات، الوقت، النسبة، المستوى، وتحليل الأداء.</span></div>
       <div class="tool" onclick="goTo('support')"><b>🎯 العلاجي والإثرائي</b><span>مسارات تلقائية مبنية على النواتج التي لم يتقنها الطالب.</span></div>
       <div class="tool" onclick="goTo('achievement')"><b>🏅 ملف الإنجاز</b><span>ملخصات التنفيذ، نسب المشاركة، وشواهد الإنجاز باسم <span id="uiAchievementTeachers">الأستاذ علي طاهر البقاشي والأستاذ صالح الكفيل</span>.</span></div>
+      <div class="tool" onclick="goTo('control')"><b>🗓️ لوحة التحكم</b><span>بدء عام دراسي جديد، تغيير الطلاب، إعادة تسمية الفصول، النسخ الاحتياطي والأرشيف.</span></div>
       <div class="tool" onclick="goTo('settings')"><b>⚙️ الإعدادات</b><span>الاتصال بالخادم، إعدادات الفصول، النسخ الاحتياطي والهوية.</span></div>
     </div>
   </section>
@@ -384,7 +386,7 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
       <div class="tool"><b>✨ اقتراح أسئلة</b><span>اقتراح متوازن ويمكن تعديله قبل الحفظ.</span></div>
       <div class="tool"><b>✏️ تعديل وإضافة</b><span>تعديل سؤال أو إضافة سؤال جديد قبل التكليف.</span></div>
       <div class="tool"><b>📅 الجدولة</b><span>تحديد تاريخ ووقت الفتح والإغلاق.</span></div>
-      <div class="tool"><b>👥 الاستهداف</b><span>اختيار الفصل: 1/3، 2/3، 3/3، 4/3.</span></div>
+      <div class="tool"><b>👥 الاستهداف</b><span>اختيار الفصل من قائمة فصول العام الحالي.</span></div>
     </div>
 
     <div style="margin-top:18px">
@@ -526,13 +528,15 @@ th{background:#eef7ff;color:#17376c;font-size:14px} td{font-size:14px}
     <div class="section-head"><div><h2>الإعدادات</h2><small>الاتصال • الفصول • الهوية • النسخ الاحتياطي</small></div></div>
     <div class="tools">
       <div class="tool"><b>🔗 إعدادات الخادم</b><span>رابط Apps Script ومصدر النتائج.</span></div>
-      <div class="tool"><b>🏫 الفصول</b><span>إدارة 1/3، 2/3، 3/3، 4/3.</span></div>
+      <div class="tool" onclick="goTo('control')" style="cursor:pointer"><b>🏫 الفصول</b><span>إضافة الفصول وإعادة تسميتها من «لوحة التحكم».</span></div>
       <div class="tool"><b>☁️ النسخ الاحتياطي</b><span>حفظ واستعادة بيانات المنصة.</span></div>
       <div class="tool"><b>🎨 الهوية</b><span>شعار نافس وهوية المجالات الثلاثة.</span></div>
     </div>
   </section>
 
   
+  <section id="control" class="section"><div id="yearControlRoot"></div></section>
+
 <div id="appModal" class="modal-overlay" onclick="if(event.target===this)closeAppModal()">
   <div class="modal-card">
     <div class="modal-head"><h3 id="appModalTitle">نافذة</h3><button class="modal-close" onclick="closeAppModal()">إغلاق ✕</button></div>
@@ -1998,4 +2002,5 @@ document.addEventListener('DOMContentLoaded',()=>{
   try{window.renderBank()}catch(e){}
 })();
 </script>
+<script src="nafs-year-control.js?v=20261118a"></script>
 </body></html>
