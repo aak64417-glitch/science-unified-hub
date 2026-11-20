@@ -1012,7 +1012,39 @@ P3.loop(L,(dt,t)=>{if(fizz>0){fizz-=dt;const r=rocks[S.cur];if(r)for(let i=0;i<3
 function hRange(k){const r=S.R[k];let lo=null,hi=null;['nail','coin','glass','steel'].forEach(t=>{if(r[t]==null)return;const H=TOOLS[t].H;
     const softer=t==='glass'?r.glass==='لا يخدش الزجاج':r[t]==='يُخدش';if(softer)hi=hi==null?H:Math.min(hi,H);else lo=lo==null?H:Math.max(lo,H);});
   if(lo==null&&hi==null)return '';if(lo==null)return `أقل من ${hi}`;if(hi==null)return `أكبر من ${lo}`;return `بين ${lo} و${hi}`;}
-function result(t){mnR.textContent=t;}
+function result(t){mnR.textContent=t;if(t&&t!=='—')toast(t);}
+/* عدسة البريق: عرض مكبَّر واضح لسطح العيّنة يوضح نوع البريق مع مقارنة بالأنواع الأربعة */
+const LUS={met:{n:'فلزي',d:'يلمع ويعكس الضوء كالمعادن (مثل سطح ملعقة)'},gla:{n:'زجاجي',d:'لامع كالزجاج، وقد يكون شفافًا أو نصف شفاف'},pea:{n:'لؤلؤي',d:'لمعان ناعم هادئ يشبه سطح اللؤلؤ'},ear:{n:'ترابي (معتم)',d:'باهت لا يعكس الضوء، يشبه التراب أو الطين'}};
+const SKIN={talc:['#eef0e8','#d9dccf','pea'],gyps:['#f3efe4','#ddd6c6','gla'],calc:['#f4ecd8','#e2d4b4','gla'],quar:['#eef6fb','#c9dbe6','gla'],magn:['#55585e','#1d1e22','met'],hema:['#8a5a50','#4a2a24','met'],pyri:['#f0d77a','#9c7a26','met']};
+if(!document.getElementById('lusCss')){const st=document.createElement('style');st.id='lusCss';st.textContent=`
+.lusOv{position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:rgba(10,18,24,.55);backdrop-filter:blur(2px)}
+.lusP{background:#fff;color:#14222b;border-radius:22px;padding:16px 20px;width:min(720px,94%);box-shadow:0 20px 60px rgba(0,0,0,.4);display:grid;grid-template-columns:230px 1fr;gap:18px;align-items:center;direction:rtl}
+.lusP h3{grid-column:1/-1;margin:0;font-size:1.25rem}
+.lusL{width:220px;height:220px;border-radius:50%;border:12px solid #1c1c1c;box-shadow:0 0 0 4px #888 inset,0 8px 20px rgba(0,0,0,.35);position:relative;overflow:hidden}
+.lusL i{position:absolute;inset:0}
+.lusL .gl{background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.95) 45%,transparent 58%);animation:lusSw 2.2s ease-in-out infinite}
+.lusL.pea .gl{background:linear-gradient(115deg,transparent 20%,rgba(255,230,250,.55) 38%,rgba(210,240,255,.55) 50%,rgba(255,255,230,.5) 62%,transparent 80%);animation-duration:3.4s;filter:blur(6px)}
+.lusL.gla .gl{background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.98) 46%,transparent 52%),radial-gradient(circle at 70% 30%,rgba(255,255,255,.9) 0 6%,transparent 7%)}
+.lusL.ear .gl{display:none}
+.lusL.ear .tx{background-image:radial-gradient(rgba(0,0,0,.25) 1.2px,transparent 1.6px),radial-gradient(rgba(255,255,255,.18) 1px,transparent 1.5px);background-size:9px 9px,13px 13px}
+.lusL .fc{background:repeating-linear-gradient(35deg,rgba(255,255,255,.12) 0 18px,rgba(0,0,0,.12) 18px 36px)}
+.lusL.met .fc{background:conic-gradient(from 30deg,rgba(255,255,255,.35),rgba(0,0,0,.35),rgba(255,255,255,.5),rgba(0,0,0,.3),rgba(255,255,255,.35))}
+@keyframes lusSw{0%{transform:translateX(-70%)}60%,100%{transform:translateX(70%)}}
+.lusT{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.lusT div{border:2px solid #dfe5ea;border-radius:12px;padding:6px 10px;opacity:.55;font-size:.92rem}
+.lusT div.on{opacity:1;border-color:#e08a2e;background:#fff4e6;box-shadow:0 0 0 3px rgba(224,138,46,.25)}
+.lusT b{display:block;font-size:1.02rem}
+.lusR{font-size:1.15rem;font-weight:700;color:#8a4b00;margin:4px 0}
+`;document.head.appendChild(st);}
+function hideLus(){const o=L.stage.querySelector('.lusOv');if(o)o.remove();}
+function showLus(k,mk){hideLus();const m=MIN[mk],sk=SKIN[mk],types=mk==='hema'?['met','ear']:[sk[2]];
+  const o=document.createElement('div');o.className='lusOv';
+  o.innerHTML=`<div class="lusP"><h3>🔍 فحص البريق بالعدسة المكبرة · العيّنة ${k}</h3>
+   <div class="lusL ${types[types.length-1]==='ear'&&types.length===1?'ear':sk[2]}"><i style="background:radial-gradient(circle at 35% 30%,${sk[0]},${sk[1]})"></i><i class="fc"></i><i class="tx"></i><i class="gl"></i></div>
+   <div><div class="lusR">البريق: ${m.lus}</div><p style="margin:0;font-size:.95rem">البريق هو طريقة انعكاس الضوء عن سطح المعدن. لاحظ كيف يلمع سطح العيّنة تحت العدسة، ثم قارنه بالأنواع:</p>
+   <div class="lusT">${Object.entries(LUS).map(([key,v])=>`<div class="${types.includes(key)?'on':''}"><b>${v.n}</b>${v.d}</div>`).join('')}</div>
+   <button class="p3-b pri lusX">متابعة ←</button></div></div>`;
+  o.addEventListener('click',e=>{if(e.target===o||e.target.closest('.lusX'))o.remove();});L.stage.appendChild(o);}
 function addMark(parent,col,w,pos,rot){const m=new THREE.Mesh(new THREE.BoxGeometry(w,.004,.012),new THREE.MeshBasicMaterial({color:$lc(col)}));m.position.copy(pos);m.rotation.y=rot||0;parent.add(m);marks.push({m,parent});return m;}
 async function pick(k){if(S.busy)return;if(S.cur===k)return;S.busy=true;sync();
   if(S.cur){const o=rocks[S.cur];await L.arc(o,o.userData.home,600,.6);}
@@ -1020,7 +1052,7 @@ async function pick(k){if(S.busy)return;if(S.cur===k)return;S.busy=true;sync();
 async function scrub(o,c,ax='x',amp=.12,n=3,d=900){const p0=o.position[ax];await L.tw(d,k=>{o.position[ax]=p0+Math.sin(k*Math.PI*2*n)*amp;});o.position[ax]=p0;}
 async function test(t){if(S.busy)return;if(!S.cur){toast('اختر عيّنة أولًا (A إلى F).');return;}const k=S.cur,s=SAMPLES.find(x=>x.k===k),m=MIN[s.m],r=rocks[k],R=S.R[k];
   if(R[t]!=null){toast('أجريت هذا الاختبار على العيّنة '+k+' من قبل.');return;}
-  S.busy=true;sync();const top=r.position.y+r.userData.top;
+  hideLus();S.busy=true;sync();const top=r.position.y+r.userData.top;
   if(t==='nail'||t==='coin'||t==='steel'){const tool=tools[t],th=tool.userData.home.clone(),tr=tool.rotation.clone();
     await L.arc(tool,V(r.position.x+.05,top+(t==='coin'?.08:.02),r.position.z+.02),700,1.0);
     if(t==='coin'){tool.rotation.set(0,0,.5);}
@@ -1037,7 +1069,7 @@ async function test(t){if(S.busy)return;if(!S.cur){toast('اختر عيّنة أ
   else if(t==='lus'){const lens=tools.lus,h=lens.userData.home.clone(),q=lens.rotation.clone();await L.arc(lens,V(r.position.x,top+.45,r.position.z+.15),800,1.0);
     const c0=L.camera.position.clone(),t0=L.controls.target.clone(),c1=V(r.position.x,top+.9,r.position.z+1.4),t1=V(r.position.x,top,r.position.z);
     await L.tw(600,kk=>{const e=ease(kk);L.camera.position.copy(lerpV(c0,c1,e));L.controls.target.copy(lerpV(t0,t1,e));});
-    const y0=r.rotation.y;await L.tw(1600,kk=>r.rotation.y=y0+kk*Math.PI*2);R.lus=m.lus;result('البريق: '+m.lus);
+    const y0=r.rotation.y;await L.tw(1600,kk=>r.rotation.y=y0+kk*Math.PI*2);R.lus=m.lus;result('البريق: '+m.lus);showLus(k,s.m);
     await L.tw(600,kk=>{const e=ease(kk);L.camera.position.copy(lerpV(c1,c0,e));L.controls.target.copy(lerpV(t1,t0,e));});lens.rotation.copy(q);await L.arc(lens,h,700,1.0);}
   else if(t==='mag'){const mg=tools.mag,h=mg.userData.home.clone();await L.arc(mg,V(r.position.x,top+.35,r.position.z),800,1.0);
     if(m.mag){P3.tone(520,.15,'triangle',.06);const p0=r.position.clone();await L.move(r,V(p0.x,top+.16,p0.z),250);await sleep(700);await L.move(r,p0,350);}else await sleep(800);
