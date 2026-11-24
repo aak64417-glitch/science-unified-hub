@@ -83,6 +83,8 @@ img{display:block;max-width:100%}
 .vbar h4{margin:0;font-size:15.5px;font-weight:800;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vbar button{border:0;border-radius:12px;background:var(--gold);color:var(--navy);font:inherit;font-weight:900;padding:9px 16px;cursor:pointer}
 .viewer iframe{flex:1;width:100%;border:0;background:#fff}
+.viewer .pdfbox{flex:1;min-height:0;width:100%;padding:12px 0;box-sizing:border-box;background:#0b1530}
+.viewer .pdfbox.hidden,.viewer iframe.hidden{display:none}
 .vload{position:absolute;inset:60px 0 0;display:grid;place-items:center;color:#fff;font-weight:700;pointer-events:none}
 
 /* ===== Lock ===== */
@@ -138,8 +140,10 @@ img{display:block;max-width:100%}
   <div class="vbar"><h4 id="vtitle"></h4><button type="button" id="vclose">إغلاق ✕</button></div>
   <div class="vload" id="vload">جارٍ فتح الشاهد…</div>
   <iframe id="frame" title="عرض الشاهد"></iframe>
+  <div id="pdfBox" class="pdfbox hidden" role="document" aria-label="عرض ملف PDF"></div>
 </div>
 
+<script src="pdf-view.js"></script>
 <script src="video-player.js"></script>
 <script>
 (function(){
@@ -222,8 +226,13 @@ document.getElementById('pclose').onclick=closePanel;
 document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closePanel()});
 
 var frame=document.getElementById('frame');
-function openViewer(src,t,kind){if(kind==='pdf'){window.open(src,'_blank','noopener');return}
-  document.getElementById('vtitle').textContent=t;document.getElementById('vload').classList.remove('hidden');
+var pdfBox=document.getElementById('pdfBox'),stopPdf=null;
+function openViewer(src,t,kind){
+  document.getElementById('vtitle').textContent=t;
+  if(kind==='pdf'||/\.pdf(\?|$)/i.test(src)){if(!window.PFPdf){window.open(src,'_blank','noopener');return}
+    frame.classList.add('hidden');pdfBox.classList.remove('hidden');document.getElementById('vload').classList.add('hidden');
+    document.getElementById('viewer').classList.remove('hidden');stopPdf=window.PFPdf.render(pdfBox,new URL(src,location.href).href);return}
+  frame.classList.remove('hidden');pdfBox.classList.add('hidden');document.getElementById('vload').classList.remove('hidden');
   if(kind==='image'){frame.removeAttribute('src');frame.srcdoc='<!doctype html><html><body style="margin:0;background:#0b1530;display:flex;justify-content:center"><img src="'+new URL(src,location.href).href+'" style="max-width:100%;height:auto;display:block"></body></html>';}
   else{frame.removeAttribute('srcdoc');frame.src=src;}
   document.getElementById('viewer').classList.remove('hidden');}
@@ -231,7 +240,7 @@ frame.addEventListener('load',function(){document.getElementById('vload').classL
   try{var d=frame.contentDocument;if(!d)return;var p=(frame.contentWindow.location.pathname||'');
     if(/\/(index\.html)?$/.test(p)&&/portfolio-1448\/(index\.html)?$/.test(p)){closeViewer();return}
     d.querySelectorAll('a[href="./"],a[href="index.html"],a[href^="tablet-storage"],a[href^="secure-vault"],a[href^="add-report"],a[href^="progress-1448"]').forEach(function(a){a.style.display='none'});}catch(e){}});
-function closeViewer(){document.getElementById('viewer').classList.add('hidden');frame.removeAttribute('srcdoc');frame.src='about:blank'}
+function closeViewer(){if(stopPdf){stopPdf();stopPdf=null}pdfBox.replaceChildren();pdfBox.classList.add('hidden');frame.classList.remove('hidden');document.getElementById('viewer').classList.add('hidden');frame.removeAttribute('srcdoc');frame.src='about:blank'}
 document.getElementById('vclose').onclick=closeViewer;
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(!document.getElementById('viewer').classList.contains('hidden'))closeViewer();else closePanel()}});
 start();
