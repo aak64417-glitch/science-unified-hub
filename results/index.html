@@ -136,6 +136,21 @@ td.nm{text-align:right}
 .stat{background:#f6f9fd;border:1px solid #e4ecf7;border-radius:14px;padding:10px;text-align:center}
 .stat small{display:block;color:var(--muted);font-size:13px}
 .stat b{font-size:22px;font-weight:900;direction:ltr;display:block}
+.step{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:900;color:#0a2a5e;margin:16px 0 10px}
+.step:first-child{margin-top:0}
+.step .sn{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gold2),var(--gold));display:grid;place-items:center;font-size:15px;flex:none}
+.typepick{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.tp input{position:absolute;opacity:0;pointer-events:none}
+.tp span{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:14px;background:#f1f5fb;border:2px solid var(--line);color:#24395e;font-weight:900;font-size:14px;cursor:pointer;text-align:center;transition:.15s}
+.tp span svg{width:30px;height:30px}
+.tp input:checked+span{background:var(--g);color:#fff;border-color:transparent;box-shadow:0 8px 16px #0a2a5e33;transform:translateY(-2px)}
+.tp input:focus-visible+span{outline:3px solid #1d6fe055}
+.attach{display:flex;align-items:center;justify-content:center;gap:10px;border:2px dashed #9fb8de;background:#f5f9ff;border-radius:16px;padding:18px;cursor:pointer;color:#1d4f9e;font-weight:900;font-size:16px}
+.attach svg{width:28px;height:28px}.attach.on{border-color:#22a45d;background:#ecf8ef;color:#1b8a4b}
+.qdet{margin-top:16px;border:1px solid var(--line);border-radius:14px;padding:10px 14px;background:#fbfdff}
+.qdet summary{cursor:pointer;font-weight:900;color:#24395e}
+.form small{font-weight:700}
+@media(max-width:700px){.typepick{grid-template-columns:repeat(3,1fr)}}
 .addopts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .addopt{border:2px dashed color-mix(in srgb,var(--c) 45%,#fff);background:color-mix(in srgb,var(--c) 7%,#fff);border-radius:18px;padding:20px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:var(--c);transition:.15s;text-align:center}
 .addopt:hover{transform:translateY(-2px);background:color-mix(in srgb,var(--c) 13%,#fff)}
@@ -311,12 +326,12 @@ const IC={
 const ico=(n,extra='')=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ${extra}>${IC[n]||''}</svg>`;
 
 const TYPES={
- periodic:{n:'الاختبارات الفترية',s:'فتري',c:'#1d6fe0',g:'linear-gradient(135deg,#2b8cf0,#1553c4)',i:'doc'},
- diagnostic:{n:'الاختبارات التشخيصية',s:'تشخيصي',c:'#2fae4e',g:'linear-gradient(135deg,#55c75a,#239142)',i:'search'},
- short:{n:'الاختبارات القصيرة',s:'قصير',c:'#7c4ddb',g:'linear-gradient(135deg,#9b6af0,#6a3fc4)',i:'timer'},
- nafs:{n:'اختبارات نافس',s:'نافس',c:'#14a8b5',g:'linear-gradient(135deg,#1fc1c4,#0f8f9d)',i:'trend'},
- final:{n:'الاختبارات النهائية',s:'نهائي',c:'#f59e0b',g:'linear-gradient(135deg,#1c5fd0,#0b3170)',i:'trophy'},
- other:{n:'اختبارات أخرى',s:'أخرى',c:'#64748b',g:'linear-gradient(135deg,#7b8aa3,#4b5a74)',i:'file'}
+ periodic:{one:'الاختبار الفتري',n:'الاختبارات الفترية',s:'فتري',c:'#1d6fe0',g:'linear-gradient(135deg,#2b8cf0,#1553c4)',i:'doc'},
+ diagnostic:{one:'الاختبار التشخيصي',n:'الاختبارات التشخيصية',s:'تشخيصي',c:'#2fae4e',g:'linear-gradient(135deg,#55c75a,#239142)',i:'search'},
+ short:{one:'الاختبار القصير',n:'الاختبارات القصيرة',s:'قصير',c:'#7c4ddb',g:'linear-gradient(135deg,#9b6af0,#6a3fc4)',i:'timer'},
+ nafs:{one:'اختبار نافس',n:'اختبارات نافس',s:'نافس',c:'#14a8b5',g:'linear-gradient(135deg,#1fc1c4,#0f8f9d)',i:'trend'},
+ final:{one:'الاختبار النهائي',n:'الاختبارات النهائية',s:'نهائي',c:'#f59e0b',g:'linear-gradient(135deg,#1c5fd0,#0b3170)',i:'trophy'},
+ other:{one:'اختبار',n:'اختبارات أخرى',s:'أخرى',c:'#64748b',g:'linear-gradient(135deg,#7b8aa3,#4b5a74)',i:'file'}
 };
 const TILE_TYPES=['final','nafs','short','diagnostic','periodic'];
 const STAGES={
@@ -348,7 +363,7 @@ let S=load();
 let UI={view:'home',f:{type:'all',stage:'all',grade:'all',subject:'all'},test:null,sec:'all',rtest:null};
 function load(){let o={};try{const r=localStorage.getItem(LS);if(r)o=JSON.parse(r)||{}}catch(e){}return migrate(o)}
 function migrate(o){
- o.settings=Object.assign({school:'مدرسة أبي الدرداء المتوسطة',slogan:'معًا .. نصنع التميز',admin:'إدارة التعليم بمحافظة الأحساء',teacher:'علي طاهر البقاشي',principal:'فوزي محمد الهلال',counselor:'',year:'1448هـ',term:'',logo:'',levels:JSON.parse(JSON.stringify(DEFAULT_LEVELS)),lastBackup:null},o.settings||{});
+ o.settings=Object.assign({school:'مدرسة أبي الدرداء المتوسطة',slogan:'معًا .. نصنع التميز',admin:'إدارة التعليم بمحافظة الأحساء',teacher:'علي طاهر البقاشي',principal:'فوزي محمد الهلال',counselor:'',year:'1448هـ',term:'',logo:'',levels:JSON.parse(JSON.stringify(DEFAULT_LEVELS)),lastBackup:null,classes:{'m-2':[1],'m-3':[1,2]}},o.settings||{});
  o.tests=Array.isArray(o.tests)?o.tests:[];
  o.tests.forEach(t=>{t.students=t.students||[];t.questions=t.questions||[];t.sections=t.sections||[1]});
  return o;
@@ -510,7 +525,7 @@ function filtered(){
  const f=UI.f;return S.tests.filter(t=>(f.type==='all'||t.type===f.type)&&(f.stage==='all'||t.stage===f.stage)&&(f.grade==='all'||String(t.grade)===String(f.grade))&&(f.subject==='all'||t.subject===f.subject));
 }
 function filterBar(){
- const f=UI.f;const subs=[...new Set(S.tests.map(t=>t.subject))];
+ const f=UI.f;const subs=[...new Set([...SUBJECTS.filter(x=>x!=='أخرى'),...S.tests.map(t=>t.subject)])];
  const gopts=f.stage==='all'?'':STAGES[f.stage].g.map((g,i)=>`<option value="${i+1}" ${String(f.grade)===String(i+1)?'selected':''}>${g}</option>`).join('');
  return `<div class="filters">
   <label>المرحلة</label><select class="sel" onchange="UI.f.stage=this.value;UI.f.grade='all';render()"><option value="all">كل المراحل</option>${Object.entries(STAGES).map(([k,s])=>`<option value="${k}" ${f.stage===k?'selected':''}>${s.n}</option>`).join('')}</select>
@@ -535,7 +550,7 @@ function vHome(){
  const cnt=k=>S.tests.filter(t=>t.type===k).length;
  return `${filterBar()}
  <div class="flex" style="justify-content:flex-start;margin:-4px 0 12px;flex-wrap:wrap"><button class="btn b-gold" onclick="quickAdd()">${ico('plus')}إضافة درجات اختبار</button><button class="btn b-light" onclick="testForm()">${ico('clip')}اختبار جديد</button></div>
- <div class="types">${TILE_TYPES.map(k=>`<button class="tile ${UI.f.type===k?'on':''}" style="background:${TYPES[k].g}" onclick="UI.f.type=UI.f.type==='${k}'?'all':'${k}';render()"><span class="cnt">${cnt(k)}</span>${ico(TYPES[k].i)}<span>${TYPES[k].n}</span></button>`).join('')}</div>
+ <div class="types">${TILE_TYPES.map(k=>`<button class="tile ${UI.f.type===k?'on':''}" style="background:${TYPES[k].g}" onclick="tileClick('${k}')"><span class="cnt">${cnt(k)}</span>${ico(TYPES[k].i)}<span>${TYPES[k].n}</span></button>`).join('')}</div>
  <div class="kpis">
   <div class="kpi k1">${ico('ppl')}<b>${uniq}</b><span>إجمالي الطلاب</span></div>
   <div class="kpi k2">${ico('check')}<b>${pr==null?'—':fmt(pr)+'%'}</b><span>نسبة النجاح</span></div>
@@ -559,6 +574,7 @@ function vHome(){
   </div></div>
  </div>`;
 }
+function tileClick(k){if(!S.tests.some(t=>t.type===k)){testForm(null,{type:k});return}UI.f.type=UI.f.type===k?'all':k;render()}
 function quickAdd(){
  if(!S.tests.length){testForm();toast('أنشئ الاختبار أولًا، ثم تنتقل مباشرة لإضافة الدرجات');return}
  const ts=S.tests.slice().sort((a,b)=>(b.created||0)-(a.created||0));
@@ -590,37 +606,55 @@ function vTests(){
  ${filterBar()}
  ${ts.length?`<div class="tests">${ts.map(testCard).join('')}</div>`:`<div class="panel"><div class="empty">${ico('clip')}<br>لا توجد اختبارات ${S.tests.length?'مطابقة للتصفية':'بعد'}.<br><button class="btn b-gold" style="margin-top:10px" onclick="testForm()">${ico('plus')}إنشاء أول اختبار</button></div></div>`}`;
 }
-function testForm(id){
- const t=id?S.tests.find(x=>x.id===id):{name:'',type:'periodic',stage:'m',grade:1,subject:'العلوم',total:20,pass:50,date:'',sections:[1],questions:[],term:''};
+function testForm(id,preset={}){
+ const t=id?S.tests.find(x=>x.id===id):Object.assign({name:'',type:UI.f.type!=='all'?UI.f.type:'periodic',stage:UI.f.stage!=='all'?UI.f.stage:'m',grade:UI.f.grade!=='all'?+UI.f.grade:1,subject:UI.f.subject!=='all'?UI.f.subject:'العلوم',total:'',pass:50,date:'',sections:null,questions:[],term:S.settings.term||''},preset);
  const stageOpts=Object.entries(STAGES).map(([k,s])=>`<option value="${k}" ${t.stage===k?'selected':''}>${s.n}</option>`).join('');
- const body=`<div class="form">
-  <div class="f w2">اسم الاختبار *<input class="inp" id="f_name" value="${esc(t.name)}" placeholder="مثال: الاختبار الفتري الأول"></div>
-  <div class="f">نوع الاختبار<select class="sel" id="f_type">${Object.entries(TYPES).map(([k,v])=>`<option value="${k}" ${t.type===k?'selected':''}>${v.n}</option>`).join('')}</select></div>
-  <div class="f">المادة<input class="inp" id="f_subject" list="subjList" value="${esc(t.subject)}"><datalist id="subjList">${SUBJECTS.map(s=>`<option>${s}</option>`).join('')}</datalist></div>
-  <div class="f">المرحلة<select class="sel" id="f_stage" onchange="fillGrades()">${stageOpts}</select></div>
-  <div class="f">الصف<select class="sel" id="f_grade"></select></div>
-  <div class="f">الدرجة الكلية للاختبار *<input class="inp" id="f_total" type="number" min="1" step="0.5" value="${t.total}"></div>
+ const known=SUBJECTS.includes(t.subject)&&t.subject!=='أخرى';
+ const body=`
+ <div class="step"><span class="sn">١</span>نوع الاختبار</div>
+ <div class="typepick">${Object.entries(TYPES).map(([k,v])=>`<label class="tp" style="--g:${v.g}"><input type="radio" name="f_type" value="${k}" ${t.type===k?'checked':''}><span>${ico(v.i)}${v.n.replace('الاختبارات ','').replace('اختبارات ','')}</span></label>`).join('')}</div>
+ <div class="step"><span class="sn">٢</span>المادة والصف والفصول</div>
+ <div class="form">
+  <div class="f">المادة *<select class="sel" id="f_subjSel" onchange="$('#f_subjOther').classList.toggle('hide',this.value!=='أخرى')">${SUBJECTS.map(s=>`<option ${(known?t.subject===s:s==='أخرى')?'selected':''}>${s}</option>`).join('')}</select><input class="inp ${known?'hide':''}" id="f_subjOther" placeholder="اكتب اسم المادة" value="${known?'':esc(t.subject)}"></div>
+  <div class="f">المرحلة<select class="sel" id="f_stage" onchange="window._grade=1;window._secs=null;fillGrades()">${stageOpts}</select></div>
+  <div class="f w2">الصف<select class="sel" id="f_grade"></select></div>
+  <div class="f w4">الفصول المختبَرة <small>(فصول المدرسة الفعلية لهذا الصف — تُحفظ للمرات القادمة)</small><div class="secs" id="f_secs"></div></div>
+ </div>
+ <div class="step"><span class="sn">٣</span>بيانات الاختبار</div>
+ <div class="form">
+  <div class="f w2">اسم الاختبار <small>(يُكتب تلقائيًا إن تُرك فارغًا)</small><input class="inp" id="f_name" value="${esc(t.name)}" placeholder="مثال: الاختبار الفتري الأول"></div>
+  <div class="f">الدرجة الكلية للاختبار *<input class="inp" id="f_total" type="number" min="1" step="0.5" value="${t.total}" placeholder="مثال: 20"></div>
   <div class="f">حد النجاح (٪)<input class="inp" id="f_pass" type="number" min="1" max="100" value="${t.pass??50}"></div>
-  <div class="f">التاريخ<input class="inp" id="f_date" value="${esc(t.date)}" placeholder="مثال: ١٤٤٨/٥/١٠"></div>
+  <div class="f w2">التاريخ<input class="inp" id="f_date" value="${esc(t.date)}" placeholder="مثال: ١٤٤٨/٥/١٠"></div>
   <div class="f w2">الفصل الدراسي / الفترة<input class="inp" id="f_term" value="${esc(t.term||'')}" placeholder="مثال: الفصل الدراسي الأول"></div>
-  <div class="f w4">الفصول المختبَرة<div class="secs" id="f_secs"></div></div>
-  <div class="f w4"><div class="flex" style="justify-content:space-between;flex-wrap:wrap"><span>تحليل الأسئلة والمهارات (اختياري — يتيح مؤشرات الصعوبة والتمييز وخطة علاجية حسب المهارة)</span>
-   <span class="flex"><input class="inp" id="q_n" type="number" min="0" max="80" style="width:80px" value="${t.questions.length||''}" placeholder="العدد"><input class="inp" id="q_m" type="number" min="0.25" step="0.25" style="width:90px" placeholder="درجة السؤال" value="${t.questions[0]?.mark||1}"><button class="btn b-light b-sm" type="button" onclick="genQs()">توليد الأسئلة</button></span></div>
-   <div id="qWrap" style="margin-top:8px"></div></div>
- </div>`;
- modal(`${ico(id?'edit':'plus','style="width:24px;height:24px"')}${id?'تعديل الاختبار':'اختبار جديد'}`,body,`<button class="btn b-gold" onclick="saveTest('${id||''}')">💾 حفظ</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
- window._qs=JSON.parse(JSON.stringify(t.questions));window._secs=[...t.sections];window._grade=t.grade;
+ </div>
+ ${id?'':`<div class="step"><span class="sn">٤</span>إرفاق درجات الطلاب <small style="font-weight:700;color:var(--muted)">(Excel أو PDF — اختياري، ويمكن إضافتها لاحقًا)</small></div>
+ <label class="attach" id="f_attachLbl">${ico('up')}<span id="f_attachTxt">اضغط لاختيار ملف الدرجات (‎.xlsx ‎.csv ‎.pdf)</span><input type="file" accept=".xlsx,.xls,.csv,.pdf,application/pdf" class="hide" onchange="window._pend=this.files[0]||null;$('#f_attachTxt').textContent=_pend?('📎 '+_pend.name):'اضغط لاختيار ملف الدرجات';$('#f_attachLbl').classList.toggle('on',!!_pend)"></label>`}
+ <details class="qdet" ${t.questions.length?'open':''}><summary>تحليل الأسئلة والمهارات (اختياري) — لمؤشرات الصعوبة والتمييز والخطة العلاجية حسب المهارة</summary>
+  <div class="flex" style="flex-wrap:wrap;margin:8px 0"><input class="inp" id="q_n" type="number" min="0" max="80" style="width:110px" value="${t.questions.length||''}" placeholder="عدد الأسئلة"><input class="inp" id="q_m" type="number" min="0.25" step="0.25" style="width:120px" placeholder="درجة السؤال" value="${t.questions[0]?.mark||1}"><button class="btn b-light b-sm" type="button" onclick="genQs()">توليد الأسئلة</button></div>
+  <div id="qWrap"></div></details>`;
+ modal(`${ico(id?'edit':'plus','style="width:24px;height:24px"')}${id?'تعديل الاختبار':'اختبار جديد'}`,body,`<button class="btn b-gold" onclick="saveTest('${id||''}')">💾 ${id?'حفظ':'حفظ ومتابعة'}</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+ window._pend=null;window._qs=JSON.parse(JSON.stringify(t.questions));window._grade=t.grade;
+ window._secs=t.sections?[...t.sections]:[...classesOf(t.stage,t.grade)];
  fillGrades();drawQs();
 }
+function classesOf(st,gr){return (S.settings.classes&&S.settings.classes[st+'-'+gr])||[]}
+function rememberClasses(st,gr,list){S.settings.classes=S.settings.classes||{};const k=st+'-'+gr;S.settings.classes[k]=[...new Set([...(S.settings.classes[k]||[]),...list])].sort((a,b)=>a-b);save()}
 function fillGrades(){
  const st=$('#f_stage').value;const g=$('#f_grade');const cur=window._grade;
  g.innerHTML=STAGES[st].g.map((x,i)=>`<option value="${i+1}" ${cur==i+1?'selected':''}>${x} ${STAGES[st].s}</option>`).join('');
- g.onchange=()=>{window._grade=+g.value;drawSecs()};window._grade=+g.value;drawSecs();
+ const upd=()=>{window._grade=+g.value;window._secs=[...classesOf(st,window._grade)];drawSecs()};
+ g.onchange=upd;window._grade=+g.value;
+ if(window._secs==null)window._secs=[...classesOf(st,window._grade)];
+ drawSecs();
 }
 function drawSecs(){
- const gr=window._grade||1;
- $('#f_secs').innerHTML=Array.from({length:12},(_,i)=>i+1).map(n=>`<label><input type="checkbox" value="${n}" ${window._secs.includes(n)?'checked':''} onchange="window._secs=[...document.querySelectorAll('#f_secs input:checked')].map(x=>+x.value)">الفصل ${secLabel(n,gr)}</label>`).join('');
+ const st=$('#f_stage').value,gr=window._grade||1;
+ const all=[...new Set([...classesOf(st,gr),...window._secs])].sort((a,b)=>a-b);
+ $('#f_secs').innerHTML=(all.length?all.map(n=>`<label><input type="checkbox" value="${n}" ${window._secs.includes(n)?'checked':''} onchange="window._secs=[...document.querySelectorAll('#f_secs input:checked')].map(x=>+x.value)">الفصل ${secLabel(n,gr)}</label>`).join(''):`<span class="muted" style="font-size:14px">لم تُسجَّل فصول لهذا الصف بعد — أضف رقم الفصل، أو أرفق ملف الدرجات وتُستخرج الفصول منه تلقائيًا.</span>`)+
+ `<span class="flex" style="gap:6px"><input class="inp" id="f_newSec" type="number" min="1" max="30" placeholder="رقم الفصل" style="width:110px"><button class="btn b-light b-sm" type="button" onclick="addSec()">${ico('plus')}إضافة فصل</button></span>`;
 }
+function addSec(){const v=parseInt(toEn($('#f_newSec').value));if(!v||v<1){toast('اكتب رقم الفصل، مثل 1 أو 2');return}const st=$('#f_stage').value;rememberClasses(st,window._grade,[v]);if(!window._secs.includes(v))window._secs.push(v);drawSecs()}
 function genQs(){
  const n=Math.max(0,Math.min(80,parseInt(toEn($('#q_n').value))||0));const m=num($('#q_m').value)||1;
  const old=window._qs;window._qs=Array.from({length:n},(_,i)=>old[i]?{...old[i]}:{label:'س'+(i+1),mark:m,skill:''});
@@ -636,18 +670,25 @@ function drawQs(){
 }
 function qsum(){const b=$('#qsumBox b');if(b)b.textContent=window._qs.reduce((a,q)=>a+(num(q.mark)||0),0)}
 function saveTest(id){
- const name=$('#f_name').value.trim();const total=num($('#f_total').value);
- if(!name){toast('اكتب اسم الاختبار');return}
- if(!total||total<=0){toast('أدخل الدرجة الكلية للاختبار');return}
- if(!window._secs.length){toast('اختر فصلًا واحدًا على الأقل');return}
+ const type=(document.querySelector('input[name=f_type]:checked')||{}).value;
+ if(!type){toast('اختر نوع الاختبار');return}
+ const subjSel=$('#f_subjSel').value;const subject=subjSel==='أخرى'?$('#f_subjOther').value.trim():subjSel;
+ if(!subject){toast('اكتب اسم المادة');return}
+ const total=num($('#f_total').value);
+ if(!total||total<=0){toast('أدخل الدرجة الكلية للاختبار');$('#f_total').focus();return}
+ const stage=$('#f_stage').value,grade=+$('#f_grade').value;
+ if(!window._secs.length&&!window._pend&&!id){toast('أضف فصلًا واحدًا على الأقل، أو أرفق ملف الدرجات');return}
+ let name=$('#f_name').value.trim();
+ if(!name){const T=TYPES[type];name=`${T.one} — ${subject}`;const same=S.tests.filter(x=>x.id!==id&&x.name.startsWith(name)&&x.stage===stage&&x.grade===grade).length;if(same)name+=` (${toAr(same+1)})`}
  const qs=window._qs.map(q=>({label:String(q.label||'').trim()||'س',mark:num(q.mark)||1,skill:String(q.skill||'').trim()}));
  const qt=qs.reduce((a,q)=>a+q.mark,0);
  if(qs.length&&Math.abs(qt-total)>0.001&&!confirm(`مجموع درجات الأسئلة (${qt}) لا يساوي الدرجة الكلية (${total}). هل تريد المتابعة؟`))return;
- const data={name,type:$('#f_type').value,subject:$('#f_subject').value.trim()||'العلوم',stage:$('#f_stage').value,grade:+$('#f_grade').value,total,pass:num($('#f_pass').value)||50,date:$('#f_date').value.trim(),term:$('#f_term').value.trim(),sections:[...window._secs].sort((a,b)=>a-b),questions:qs};
- if(id){const t=S.tests.find(x=>x.id===id);Object.assign(t,data);t.students.forEach(s=>{if(Array.isArray(s.ans)){s.ans=qs.map((_,i)=>s.ans[i]??'')}})}
- else{S.tests.push({id:uid(),created:Date.now(),students:[],...data});}
- save();closeModal();toast('✅ تم حفظ الاختبار');
- if(!id)go('entry',{test:S.tests[S.tests.length-1].id});else render();
+ const data={name,type,subject,stage,grade,total,pass:num($('#f_pass').value)||50,date:$('#f_date').value.trim(),term:$('#f_term').value.trim(),sections:[...window._secs].sort((a,b)=>a-b),questions:qs};
+ if(data.sections.length)rememberClasses(stage,grade,data.sections);
+ if(id){const t=S.tests.find(x=>x.id===id);if(!data.sections.length)data.sections=t.sections;Object.assign(t,data);t.students.forEach(s=>{if(Array.isArray(s.ans)){s.ans=qs.map((_,i)=>s.ans[i]??'')}})}
+ else{if(!data.sections.length)data.sections=[1];data._auto=!window._secs.length;S.tests.push({id:uid(),created:Date.now(),students:[],...data});}
+ const pend=window._pend;save();closeModal();toast('✅ تم حفظ الاختبار');
+ if(!id){const nt=S.tests[S.tests.length-1];go('entry',{test:nt.id});if(pend)setTimeout(()=>importFile(pend),150)}else render();
 }
 function dupTest(id){const t=S.tests.find(x=>x.id===id);const c=JSON.parse(JSON.stringify(t));c.id=uid();c.created=Date.now();c.name=t.name+' (نسخة)';c.students=[];S.tests.push(c);save();render();toast('تم نسخ الاختبار بدون درجات')}
 function delTest(id){const t=S.tests.find(x=>x.id===id);if(!confirm(`حذف «${t.name}» وجميع درجاته نهائيًا؟`))return;S.tests=S.tests.filter(x=>x.id!==id);save();render();toast('تم الحذف')}
@@ -794,7 +835,8 @@ function impPrev(){
 function impCommit(){
  const t=curT();const{out}=impParse();if(!out.length)return;
  const mode=document.querySelector('input[name=pm]:checked').value;
- out.forEach(s=>{delete s.warn;if(!t.sections.includes(s.section))t.sections.push(s.section)});t.sections.sort((a,b)=>a-b);
+ if(t._auto){const fs=[...new Set(out.map(x=>x.section))];if(fs.length)t.sections=[];delete t._auto}
+ out.forEach(s=>{delete s.warn;if(!t.sections.includes(s.section))t.sections.push(s.section)});t.sections.sort((a,b)=>a-b);rememberClasses(t.stage,t.grade,t.sections);
  let msg='';
  if(mode==='replace'){t.students=out;msg=`تم إدخال ${out.length} طالب`}
  else if(mode==='update'){let u=0,a=0;const key=n=>n.replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/\s+/g,' ').trim();
