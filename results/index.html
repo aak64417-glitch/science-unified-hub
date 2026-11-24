@@ -268,6 +268,7 @@ td.nm{text-align:right}
   <button class="nav-btn" data-v="analysis"></button>
   <button class="nav-btn" data-v="remedial"></button>
   <button class="nav-btn" data-v="settings"></button>
+  <button class="nav-btn" data-v="saved"></button>
   <button class="nav-btn" data-v="help"></button>
   <a class="nav-btn" href="../" style="text-decoration:none"></a>
   <div class="store" id="storeInfo"></div>
@@ -282,7 +283,7 @@ td.nm{text-align:right}
 </div>
 
 <div class="ov" id="ov"><div class="modal" id="modal"></div></div>
-<div id="rpOv"><div class="rp-bar"><b id="rpTitle">التقرير</b><button class="btn b-gold b-sm" onclick="window.print()">🖨️ طباعة / حفظ PDF</button><button class="btn b-light b-sm" onclick="closeReport()">✕ إغلاق</button></div><div id="rpBody"></div></div>
+<div id="rpOv"><div class="rp-bar"><b id="rpTitle">التقرير</b><button class="btn b-green b-sm" id="rpSaveBtn" onclick="saveReportCloud()">💾 حفظ التقرير في المنصة</button><button class="btn b-gold b-sm" onclick="window.print()">🖨️ طباعة / حفظ PDF</button><button class="btn b-light b-sm" onclick="closeReport()">✕ إغلاق</button></div><div id="rpBody"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -364,16 +365,17 @@ let UI={view:'home',f:{type:'all',stage:'all',grade:'all',subject:'all'},test:nu
 function load(){let o={};try{const r=localStorage.getItem(LS);if(r)o=JSON.parse(r)||{}}catch(e){}return migrate(o)}
 function migrate(o){
  o.settings=Object.assign({school:'مدرسة أبي الدرداء المتوسطة',slogan:'معًا .. نصنع التميز',admin:'إدارة التعليم بمحافظة الأحساء',teacher:'علي طاهر البقاشي',principal:'فوزي محمد الهلال',counselor:'',year:'1448هـ',term:'',logo:'',levels:JSON.parse(JSON.stringify(DEFAULT_LEVELS)),lastBackup:null,classes:{'m-2':[1],'m-3':[1,2]}},o.settings||{});
- o.tests=Array.isArray(o.tests)?o.tests:[];
+ o.tests=Array.isArray(o.tests)?o.tests:[];o.reports=Array.isArray(o.reports)?o.reports:[];o.deleted=o.deleted||{};
  o.tests.forEach(t=>{t.students=t.students||[];t.questions=t.questions||[];t.sections=t.sections||[1]});
  return o;
 }
 let saveH;
-function save(){clearTimeout(saveH);saveH=setTimeout(()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){toast('⚠️ تعذّر الحفظ في المتصفح — صدّر نسخة احتياطية')}storeInfo()},250)}
+function save(){clearTimeout(saveH);saveH=setTimeout(()=>{track();try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){toast('⚠️ تعذّر الحفظ في المتصفح — صدّر نسخة احتياطية')}schedulePush();storeInfo()},250)}
 function storeInfo(){
  const n=S.tests.reduce((a,t)=>a+t.students.length,0);
  const lb=S.settings.lastBackup?new Date(S.settings.lastBackup).toLocaleDateString('ar-SA-u-ca-gregory'):'لم تُصدَّر بعد';
- $('#storeInfo').innerHTML=`<b>💾 الحفظ</b><br>الاختبارات: ${S.tests.length} — النتائج: ${n}<br>البيانات محفوظة في هذا المتصفح.<br>آخر نسخة احتياطية: ${lb}`;
+ const cs=cloudOn()?({ok:'☁️ محفوظة في المنصة ✓',saving:'☁️ جارٍ الحفظ في المنصة…',wait:'☁️ سيُحفظ في المنصة خلال ثوانٍ',err:'⚠️ تعذّر الحفظ في المنصة',off:'☁️ الحفظ في المنصة'}[Cloud.st]||'☁️ الحفظ في المنصة مفعّل'):'⚠️ البيانات في هذا المتصفح فقط — فعّل «الحفظ في المنصة» من الإعدادات';
+ $('#storeInfo').innerHTML=`<b>💾 الحفظ</b><br>الاختبارات: ${S.tests.length} — النتائج: ${n}<br>${cs}<br>آخر نسخة احتياطية: ${lb}`;
 }
 
 /* ---------- analysis core ---------- */
@@ -497,7 +499,7 @@ function barsSVG(items,{w=520,h=230,max=100,suffix=''}={}){
 const hbar=(label,v,c)=>`<div class="bar-row"><span>${label}</span><div class="tr"><div class="fl" style="width:${Math.max(0,Math.min(100,v||0))}%;background:${c}"></div></div><b>${fmt(v)}%</b></div>`;
 
 /* ---------- navigation ---------- */
-const NAV={home:['الرئيسية','home'],tests:['إدارة الاختبارات','clip'],analysis:['التقارير والتحليلات','chart'],remedial:['الخطط العلاجية','heal'],settings:['إعدادات المنصة','gear'],help:['المساعدة والدعم','help']};
+const NAV={home:['الرئيسية','home'],tests:['إدارة الاختبارات','clip'],analysis:['التقارير والتحليلات','chart'],remedial:['الخطط العلاجية','heal'],settings:['إعدادات المنصة','gear'],saved:['التقارير المحفوظة','file'],help:['المساعدة والدعم','help']};
 document.querySelectorAll('.nav-btn').forEach(b=>{
  const v=b.dataset.v;
  if(v){b.innerHTML=`${ico(NAV[v][1])}<span>${NAV[v][0]}</span>`;b.onclick=()=>go(v)}
@@ -513,7 +515,7 @@ function header(){
 function render(){
  header();storeInfo();
  document.querySelectorAll('.nav-btn[data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===UI.view||(UI.view==='entry'&&b.dataset.v==='tests')));
- const V={home:vHome,tests:vTests,entry:vEntry,analysis:vAnalysis,remedial:vRemedial,settings:vSettings,help:vHelp};
+ const V={home:vHome,tests:vTests,entry:vEntry,analysis:vAnalysis,remedial:vRemedial,settings:vSettings,saved:vSaved,help:vHelp};
  $('#view').innerHTML=(V[UI.view]||vHome)();
  afterRender();
 }
@@ -1042,6 +1044,7 @@ function openReport(id,sec,named){
  }
  $('#rpTitle').textContent=`${named?'تقرير بالأسماء':'تقرير بدون أسماء'} — ${t.name}`;
  $('#rpBody').innerHTML=pages.map((p,i)=>`<div class="rp">${p}${rpFoot(i+1,pages.length)}</div>`).join('');
+ RP_META={title:`${named?'تقرير بالأسماء':'تقرير بدون أسماء'} — ${t.name}${sec!=='all'?' — الفصل '+secLabel(sec,t.grade):''}`,kind:named?'named':'anon',test:t.id};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير في المنصة';
  $('#rpOv').classList.add('show');document.title=`${named?'تقرير بالأسماء':'تقرير إحصائي'} - ${t.name}`;
 }
 function openRemedialReport(id){
@@ -1052,15 +1055,144 @@ function openRemedialReport(id){
  <div class="rp-sec"><h3>المهارات المستهدفة والإجراءات</h3>${remedialTable(A,weak)}</div>
  <div class="rp-sec"><h3>الطلاب المستهدفون (${low.length})</h3>${low.length?`<table><tr><th>م</th><th>الاسم</th><th>الفصل</th><th>النسبة قبل العلاج</th><th>النسبة بعد العلاج</th><th>ملاحظات</th></tr>${low.map((r,i)=>`<tr><td>${i+1}</td><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td><td>${fmt(r.p)}%</td><td></td><td></td></tr>`).join('')}</table>`:'<p>لا يوجد طلاب دون حد النجاح.</p>'}</div>${rpSign()}`;
  $('#rpTitle').textContent='الخطة العلاجية — '+t.name;
- $('#rpBody').innerHTML=`<div class="rp">${page}${rpFoot(1,1)}</div>`;$('#rpOv').classList.add('show');
+ $('#rpBody').innerHTML=`<div class="rp">${page}${rpFoot(1,1)}</div>`;RP_META={title:'الخطة العلاجية — '+t.name,kind:'plan',test:t.id};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير في المنصة';$('#rpOv').classList.add('show');
 }
 function closeReport(){$('#rpOv').classList.remove('show');document.title='منصة تحليل نتائج الاختبارات | أبي الدرداء المتوسطة'}
+
+/* ---------- الحفظ السحابي في مستودع المنصة (بطريقة ملف الإنجاز) ----------
+   يستخدم رمز الوصول نفسه المحفوظ لملف الإنجاز (pf1448.control.ghtoken).
+   المستودع عام، لذلك تُشفَّر البيانات (AES-256) بكلمة مرور لا يعرفها غيرك. */
+const CLOUD={tk:'pf1448.control.ghtoken',pk:'results.cloud.pass',repo:'aak64417-glitch/science-unified-hub',dir:'results-data/'};
+const Cloud={key:null,salt:null,sha:null,busy:false,dirty:false,last:0,timer:null,st:'off',msg:''};
+const lsGet=k=>{try{return localStorage.getItem(k)||''}catch(e){return''}};
+const lsSet=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+const cloudOn=()=>!!(lsGet(CLOUD.tk)&&lsGet(CLOUD.pk));
+const b64ToBytes=s=>Uint8Array.from(atob(String(s).replace(/\s/g,'')),c=>c.charCodeAt(0));
+const bytesToB64=b=>{let s='';for(let i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s)};
+async function gh(method,path,body,raw){
+ const url=raw||`https://api.github.com/repos/${CLOUD.repo}/contents/${path}`+(method==='GET'?`?ref=main&t=${Date.now()}`:'');
+ const r=await fetch(url,{method,cache:'no-store',headers:{Authorization:'Bearer '+lsGet(CLOUD.tk),Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},body:body?JSON.stringify(body):undefined});
+ const d=await r.json().catch(()=>({}));
+ if(!r.ok){const e=new Error(r.status===401?'رمز الوصول غير صحيح أو منتهي الصلاحية':r.status===403?'رمز الوصول لا يملك صلاحية الكتابة على المستودع':r.status===409?'conflict':(d.message||'تعذّر الاتصال بـ GitHub'));e.status=r.status;throw e}
+ return d;
+}
+async function ghRead(path){
+ try{const d=await gh('GET',path);let b64=d.content&&d.encoding==='base64'?d.content:null;
+  if(!b64){const bl=await gh('GET','',null,`https://api.github.com/repos/${CLOUD.repo}/git/blobs/${d.sha}`);b64=bl.content}
+  return{text:new TextDecoder().decode(b64ToBytes(b64)),sha:d.sha}}
+ catch(e){if(e.status===404)return null;throw e}
+}
+const ghWrite=(path,text,sha,msg)=>gh('PUT',path,Object.assign({message:msg,content:bytesToB64(new TextEncoder().encode(text)),branch:'main'},sha?{sha}:{}));
+async function ghDelete(path,msg){try{const d=await gh('GET',path);await gh('DELETE',path,{message:msg,sha:d.sha,branch:'main'})}catch(e){if(e.status!==404)throw e}}
+async function deriveKey(pass,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function ensureKey(){if(!Cloud.key){if(!Cloud.salt)Cloud.salt=crypto.getRandomValues(new Uint8Array(16));Cloud.key=await deriveKey(lsGet(CLOUD.pk),Cloud.salt)}}
+async function encObj(obj){await ensureKey();const iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},Cloud.key,new TextEncoder().encode(JSON.stringify(obj))));return JSON.stringify({v:1,app:'results-analysis',salt:bytesToB64(Cloud.salt),iv:bytesToB64(iv),ct:bytesToB64(ct)})}
+async function decObj(text){const e=JSON.parse(text);if(!Cloud.key||bytesToB64(Cloud.salt||new Uint8Array())!==e.salt){Cloud.salt=b64ToBytes(e.salt);Cloud.key=await deriveKey(lsGet(CLOUD.pk),Cloud.salt)}
+ try{const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(e.iv)},Cloud.key,b64ToBytes(e.ct));return JSON.parse(new TextDecoder().decode(pt))}catch(x){const er=new Error('كلمة مرور الحفظ السحابي لا تطابق البيانات المحفوظة');er.badPass=true;throw er}}
+function setCloud(st,msg=''){Cloud.st=st;Cloud.msg=msg;storeInfo()}
+/* تتبع التعديلات والحذف لدمج البيانات بين الأجهزة */
+let SNAP=null;
+function track(mark=true){
+ const now=Date.now();S.deleted=S.deleted||{};const h={},ids=new Set();
+ S.tests.forEach(t=>{ids.add(t.id);const{upd,...rest}=t;const x=JSON.stringify(rest);h[t.id]=x;if(mark&&(!t.upd||(SNAP&&SNAP.h[t.id]!==undefined&&SNAP.h[t.id]!==x)))t.upd=now});
+ const{upd:su,lastBackup,...sr}=S.settings;const sh=JSON.stringify(sr);
+ if(mark&&SNAP){if(SNAP.s!==sh)S.settings.upd=now;SNAP.ids.forEach(id=>{if(!ids.has(id))S.deleted[id]=now})}
+ SNAP={h,ids,s:sh};
+}
+function mergeState(L,R){
+ R=migrate(R);const del=Object.assign({},R.deleted||{},L.deleted||{});
+ const map={};[...R.tests,...L.tests].forEach(t=>{if(del[t.id])return;const c=map[t.id];if(!c||(t.upd||0)>(c.upd||0))map[t.id]=t});
+ const rep={};[...(R.reports||[]),...(L.reports||[])].forEach(r=>{if(!del[r.id])rep[r.id]=r});
+ const settings=(R.settings.upd||0)>(L.settings.upd||0)?R.settings:L.settings;
+ return Object.assign({},L,{settings,tests:Object.values(map).sort((a,b)=>(a.created||0)-(b.created||0)),reports:Object.values(rep),deleted:del});
+}
+async function cloudPull(){
+ const f=await ghRead(CLOUD.dir+'data.enc');
+ if(!f){Cloud.sha=null;return false}
+ const remote=await decObj(f.text);Cloud.sha=f.sha;
+ S=mergeState(S,remote);track(false);try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+ return true;
+}
+async function cloudPush(){
+ if(!cloudOn())return;
+ if(Cloud.busy){Cloud.dirty=true;return}
+ Cloud.busy=true;clearTimeout(Cloud.timer);Cloud.timer=null;setCloud('saving');
+ const put=async()=>{const d=await ghWrite(CLOUD.dir+'data.enc',await encObj(S),Cloud.sha,'تحليل النتائج: حفظ البيانات (مشفّرة)');Cloud.sha=d.content.sha};
+ try{
+  try{await put()}catch(e){if(e.status===409||e.status===422){await cloudPull();await put();render()}else throw e}
+  Cloud.last=Date.now();setCloud('ok');
+ }catch(e){setCloud('err',e.message)}
+ finally{Cloud.busy=false;if(Cloud.dirty){Cloud.dirty=false;schedulePush()}}
+}
+function schedulePush(){
+ if(!cloudOn())return;Cloud.pending=true;if(Cloud.timer)return;
+ const wait=Math.max(4000,Cloud.last+30000-Date.now());setCloud('wait');
+ Cloud.timer=setTimeout(()=>{Cloud.timer=null;Cloud.pending=false;cloudPush()},wait);
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&Cloud.timer){clearTimeout(Cloud.timer);Cloud.timer=null;cloudPush()}});
+async function cloudEnable(){
+ const tok=($('#c_tok')?.value||'').trim();
+ if(tok){if(!/^(github_pat_|ghp_)/.test(tok)){toast('رمز الوصول يجب أن يبدأ بـ github_pat_');return}lsSet(CLOUD.tk,tok)}
+ if(!lsGet(CLOUD.tk)){toast('أدخل رمز الوصول (نفس رمز ملف الإنجاز)');return}
+ const p=$('#c_pass').value;if(p.length<6){toast('كلمة المرور ٦ أحرف على الأقل');return}
+ lsSet(CLOUD.pk,p);Cloud.key=null;Cloud.salt=null;Cloud.sha=null;setCloud('saving','جارٍ الاتصال…');
+ try{const had=await cloudPull();await cloudPush();if(Cloud.st==='err')throw new Error(Cloud.msg);
+  toast(had?'✅ تم الربط ودمج البيانات المحفوظة':'✅ تم تفعيل الحفظ في المنصة');render()}
+ catch(e){if(e.badPass)lsSet(CLOUD.pk,null);setCloud(cloudOn()?'err':'off',e.message);toast('⚠️ '+e.message);render()}
+}
+function cloudDisable(){if(!confirm('إيقاف الحفظ السحابي على هذا الجهاز؟ تبقى البيانات المحفوظة في المنصة كما هي.'))return;lsSet(CLOUD.pk,null);Cloud.key=null;setCloud('off');render()}
+async function cloudSyncNow(){if(!cloudOn())return;setCloud('saving');try{await cloudPull();render();await cloudPush();toast(Cloud.st==='ok'?'✅ تمت المزامنة':'⚠️ '+Cloud.msg)}catch(e){setCloud('err',e.message);toast('⚠️ '+e.message)}}
+/* التقارير المحفوظة */
+let RP_META=null;
+async function saveReportCloud(){
+ if(!RP_META)return;
+ if(!cloudOn()){toast('فعّل الحفظ في المنصة أولًا من الإعدادات');closeReport();go('settings');return}
+ const b=$('#rpSaveBtn');b.disabled=true;b.textContent='⏳ جارٍ الحفظ…';
+ try{const id=uid();const file=CLOUD.dir+'reports/'+id+'.enc';
+  await ghWrite(file,await encObj({title:RP_META.title,html:$('#rpBody').innerHTML}),null,'تحليل النتائج: حفظ تقرير (مشفّر)');
+  S.reports=S.reports||[];S.reports.push({id,file,title:RP_META.title,kind:RP_META.kind,test:RP_META.test,date:Date.now()});
+  save();b.textContent='✓ محفوظ في المنصة';toast('✅ حُفظ التقرير — تجده في «التقارير المحفوظة»');
+ }catch(e){b.disabled=false;b.textContent='💾 حفظ التقرير في المنصة';toast('⚠️ '+e.message)}
+}
+async function openSaved(id){
+ const r=(S.reports||[]).find(x=>x.id===id);if(!r)return;toast('جارٍ فتح التقرير…');
+ try{const f=await ghRead(r.file);if(!f)throw new Error('ملف التقرير غير موجود');const o=await decObj(f.text);
+  RP_META=null;$('#rpTitle').textContent=o.title;$('#rpBody').innerHTML=o.html;$('#rpSaveBtn').classList.add('hide');$('#rpOv').classList.add('show');document.title=o.title}
+ catch(e){toast('⚠️ '+e.message)}
+}
+async function delSaved(id){
+ const r=(S.reports||[]).find(x=>x.id===id);if(!r||!confirm(`حذف التقرير «${r.title}» من المنصة؟`))return;
+ try{await ghDelete(r.file,'تحليل النتائج: حذف تقرير');}catch(e){toast('⚠️ '+e.message);return}
+ S.reports=S.reports.filter(x=>x.id!==id);S.deleted=S.deleted||{};S.deleted[id]=Date.now();save();render();toast('تم حذف التقرير');
+}
+const RKIND={named:['بالأسماء','t-blu'],anon:['بدون أسماء','t-grn'],plan:['خطة علاجية','t-org']};
+function vSaved(){
+ const list=(S.reports||[]).slice().sort((a,b)=>b.date-a.date);
+ return `<div class="toolbar"><h2>التقارير المحفوظة</h2>${cloudOn()?`<button class="btn b-light" onclick="cloudSyncNow()">🔄 مزامنة</button>`:''}</div>
+ ${!cloudOn()?`<div class="panel"><div class="empty">☁️<br>لحفظ التقارير في المنصة فعّل «الحفظ في المنصة» من الإعدادات، ثم افتح أي تقرير واضغط «حفظ التقرير في المنصة».<br><button class="btn b-gold" style="margin-top:10px" onclick="go('settings')">الإعدادات</button></div></div>`
+ :list.length?`<div class="tests">${list.map(r=>`<div class="tcard"><div class="tt" style="background:linear-gradient(135deg,#143f8b,#0a2a5e)">${ico('file')}<div><b>${esc(r.title)}</b><small>${new Date(r.date).toLocaleDateString('ar-SA-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'})}</small></div></div><div class="tf" style="padding-top:12px"><span class="tag ${(RKIND[r.kind]||RKIND.anon)[1]}">${(RKIND[r.kind]||RKIND.anon)[0]}</span><span style="flex:1"></span><button class="btn b-blue b-sm" onclick="openSaved('${r.id}')">${ico('eye')}فتح</button><button class="btn b-red b-sm" onclick="delSaved('${r.id}')">${ico('trash')}</button></div></div>`).join('')}</div>`
+ :`<div class="panel"><div class="empty">${ico('file')}<br>لا توجد تقارير محفوظة بعد. افتح تقريرًا من «التقارير والتحليلات» واضغط «💾 حفظ التقرير في المنصة».</div></div>`}`;
+}
+function cloudPanel(){
+ const hasTok=!!lsGet(CLOUD.tk),on=cloudOn();
+ const st={ok:'✅ متصل — آخر حفظ '+(Cloud.last?new Date(Cloud.last).toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'}):''),saving:'⏳ جارٍ الحفظ…',wait:'⏳ سيُحفظ خلال ثوانٍ',err:'⚠️ '+esc(Cloud.msg),off:'غير مفعّل'}[Cloud.st]||'';
+ return `<div class="panel" style="margin-bottom:16px"><div class="ph">☁️ الحفظ في المنصة (مثل ملف الإنجاز)</div><div class="pb">
+ ${on?`<div class="note blue"><b>${st}</b><br>تُحفظ الاختبارات والدرجات والتقارير تلقائيًا في مستودع المنصة، مشفّرة بكلمة المرور، وتظهر على أي جهاز تفعّل فيه الحفظ بالرمز وكلمة المرور نفسيهما.</div>
+  <div class="flex" style="flex-wrap:wrap;margin-top:10px"><button class="btn b-gold" onclick="cloudSyncNow()">🔄 مزامنة الآن</button><button class="btn b-light" onclick="go('saved')">${ico('file')}التقارير المحفوظة</button><button class="btn b-red" onclick="cloudDisable()">إيقاف على هذا الجهاز</button></div>`
+ :`<div class="note">المستودع عام، لذلك تُشفَّر أسماء الطلاب ودرجاتهم بكلمة مرور قبل رفعها فلا يقرؤها غيرك. <b>احفظ كلمة المرور جيدًا</b>: بدونها لا يمكن فتح البيانات على جهاز آخر.</div>
+  <div class="form" style="margin-top:12px">
+   ${hasTok?`<div class="f w2">رمز الوصول<div class="tag t-grn" style="align-self:flex-start">✓ موجود على هذا الجهاز (من ملف الإنجاز)</div></div>`:`<div class="f w2">رمز الوصول (نفس رمز ملف الإنجاز github_pat_…)<input class="inp" id="c_tok" type="password" autocomplete="off" placeholder="github_pat_..."></div>`}
+   <div class="f w2">كلمة مرور التشفير (جديدة، أو نفس كلمة المرور إن فعّلته على جهاز آخر)<input class="inp" id="c_pass" type="password" autocomplete="new-password" placeholder="٦ أحرف على الأقل"></div>
+  </div><button class="btn b-gold" style="margin-top:12px" onclick="cloudEnable()">☁️ تفعيل الحفظ في المنصة</button>`}
+ </div></div>`;
+}
 
 /* ---------- SETTINGS ---------- */
 function vSettings(){
  const s=S.settings;
  const f=(k,l,ph='')=>`<div class="f w2">${l}<input class="inp" value="${esc(s[k])}" placeholder="${ph}" onchange="S.settings.${k}=this.value.trim();save();header()"></div>`;
  return `<div class="toolbar"><h2>إعدادات المنصة</h2></div>
+ ${cloudPanel()}
  <div class="grid2">
   <div class="panel"><div class="ph">${ico('gear')}بيانات المدرسة والتقارير</div><div class="pb"><div class="form" style="grid-template-columns:1fr 1fr 1fr 1fr">
    ${f('school','اسم المدرسة')}${f('slogan','شعار المدرسة')}${f('admin','إدارة التعليم')}${f('year','العام الدراسي')}${f('term','الفصل الدراسي','مثال: الفصل الدراسي الأول')}${f('teacher','معلم المادة')}${f('principal','مدير المدرسة')}${f('counselor','الموجّه / المرشد الطلابي (يظهر في التوقيعات)')}
@@ -1102,7 +1234,7 @@ function vHelp(){return `<div class="toolbar"><h2>المساعدة والدعم<
  <h3>٣) إضافة الدرجات</h3><p>من الرئيسية اضغط <b>إضافة درجات اختبار</b> واختر الاختبار (أو من بطاقة الاختبار ← <b>إدخال الدرجات</b>)، ثم اختر إحدى الطرق:</p><ul><li><b>ملف Excel</b> ‎(.xlsx / .csv): مثل كشف الدرجات المصدَّر من نظام نور، أو <b>نموذج Excel الفارغ</b> من المنصة بعد تعبئته.</li><li><b>ملف PDF:</b> كشف درجات يحتوي نصًا (غير ممسوح ضوئيًا). تُقرأ الأسماء والأرقام تلقائيًا.</li><li><b>لصق:</b> انسخ الأعمدة من Excel أو جداول Google والصقها.</li><li><b>يدويًا:</b> أضف صفوفًا واكتب مباشرة.</li></ul><p>بعد رفع الملف تظهر <b>شاشة معاينة</b>: تأكد من عمود الاسم والفصل والدرجة (تُحدَّد تلقائيًا ويمكن تغييرها)، واختر: إضافة، أو استبدال الكل، أو <b>تحديث حسب الاسم</b> (لإكمال درجات طلاب موجودين). الدرجة الأكبر من الدرجة الكلية تظهر بتنبيه أحمر.</p>
  <h3>٤) التقارير</h3><p><b>بالأسماء:</b> للمعلم وولي الأمر والإرشاد — يتضمن كشف النتائج وقوائم الدعم والتميز. <b>بدون أسماء:</b> إحصائي للإدارة وملف الإنجاز. اضغط «طباعة / حفظ PDF» واختر «حفظ بتنسيق PDF» من نافذة الطباعة.</p>
  <h3>٥) قراءة المؤشرات</h3><ul><li><b>الوسيط:</b> الدرجة التي يقع نصف الطلاب تحتها — أدق من المتوسط عند وجود درجات متطرفة.</li><li><b>الانحراف المعياري:</b> كلما ارتفع زاد تفاوت الطلاب (فوق ١٨ يستدعي تعليمًا متمايزًا).</li><li><b>معامل الصعوبة:</b> نسبة الإتقان؛ أقل من ٤٠٪ صعب ويحتاج إعادة تدريس.</li><li><b>معامل التمييز:</b> أقل من ٠٫٢ يعني أن السؤال لا يفرّق بين المتفوق والضعيف.</li></ul>
- <h3>٦) حفظ البيانات</h3><p>البيانات تُحفظ في المتصفح على هذا الجهاز. من <b>الإعدادات</b> صدّر نسخة احتياطية بانتظام واستوردها على أي جهاز آخر.</p>
+ <h3>٦) حفظ البيانات والتقارير</h3><p>من <b>الإعدادات ← الحفظ في المنصة</b> اكتب كلمة مرور للتشفير واضغط «تفعيل» (يُستخدم رمز الوصول نفسه المحفوظ لملف الإنجاز). بعدها تُحفظ الاختبارات والدرجات تلقائيًا في مستودع المنصة مشفّرة، وتظهر على أي جهاز تفعّل فيه الحفظ بالرمز وكلمة المرور نفسيهما. لحفظ تقرير افتحه واضغط <b>«💾 حفظ التقرير في المنصة»</b>، وتجده في <b>التقارير المحفوظة</b>. ويبقى «تصدير نسخة احتياطية» متاحًا كاحتياط إضافي.</p>
 </div></div>`}
 
 /* ---------- modal ---------- */
@@ -1114,7 +1246,8 @@ document.addEventListener('dragover',e=>{if(UI.view==='entry'){e.preventDefault(
 document.addEventListener('dragleave',e=>{if(!e.relatedTarget)document.body.classList.remove('drag')});
 document.addEventListener('drop',e=>{if(UI.view!=='entry')return;e.preventDefault();document.body.classList.remove('drag');const f=e.dataTransfer.files[0];if(f)importFile(f)});
 window.addEventListener('beforeunload',()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}});
-render();
+track(false);render();
+if(cloudOn()){setCloud('saving','جارٍ تحميل البيانات من المنصة…');cloudPull().then(h=>{setCloud('ok');Cloud.last=Date.now();render()}).catch(e=>{if(e.badPass)lsSet(CLOUD.pk,null);setCloud(cloudOn()?'err':'off',e.message);toast('⚠️ '+e.message)})}
 </script>
 </body>
 </html>
