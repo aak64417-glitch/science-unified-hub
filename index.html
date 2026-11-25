@@ -91,7 +91,7 @@ footer{border-top:1px solid #26597e;padding:18px 24px;text-align:center;color:#9
 </section>
 <section class="grid" id="platforms">
 <button class="card c1" type="button" onclick="openScientificInvestigator()" style="color:inherit;text-align:right;width:100%;font:inherit;cursor:pointer">
-<div class="icon">🔎</div><div><h2>مسابقة المحقق العلمي</h2><p>دخول الطلاب أو لوحة المعلم والنتائج.</p></div><div class="go">‹</div>
+<span class="badge">جديد</span><div class="icon">🔎</div><div><h2>منصة مسابقات المحقق العلمي</h2><p>مسابقات لجميع صفوف المتوسط، تقارير بالأسماء وبدون أسماء، شهادات ولوحة شرف، وطلاب كل عام دراسي.</p></div><div class="go">‹</div>
 </button>
 <a class="card c3" href="results/" style="color:inherit;text-decoration:none;background:linear-gradient(135deg,#1c5fd0,#0b2f6e)"><span class="badge">جديد</span><div class="icon">📈</div><div><h2>منصة تحليل نتائج الاختبارات</h2><p>تحليل الاختبارات الفترية والتشخيصية والقصيرة ونافس والنهائية لجميع المراحل، مع تقارير بالأسماء وبدون أسماء وخطط علاجية.</p></div><div class="go">‹</div></a>
 <a class="card c7" href="masar/teacher.html" style="color:inherit;text-decoration:none"><span class="badge">الخطة العلاجية</span><div class="icon">🧬</div><div><h2>مسار التقدم — مادة العلوم</h2><p>منصة المعلم: إدارة الطلاب المستهدفين وتكليف الدروس ومتابعة نتائج المهارات. دخول الطلاب بالباركود الفردي.</p></div><div class="go">‹</div></a>
@@ -147,12 +147,13 @@ footer{border-top:1px solid #26597e;padding:18px 24px;text-align:center;color:#9
 
 <div id="scientificModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="scientificTitle">
 <div class="modal">
-<h3 id="scientificTitle">مسابقة المحقق العلمي</h3>
+<h3 id="scientificTitle">منصة مسابقات المحقق العلمي</h3>
 <p>اختر طريقة الدخول المطلوبة</p>
 <div class="modal-actions">
-<a class="modal-link student" href="https://aak64417-glitch.github.io/Scince-platform-new/?api=https%3A%2F%2Fscript.google.com%2Fmacros%2Fs%2FAKfycbz6-iPHp20-ZWMhgZA6WsAnZM-WPoCgPgFMyjbAHwg6xvGPGZhMDluhqOZGd20I6InDuw%2Fexec" target="_blank" rel="noopener">👨‍🎓 رابط مسابقة المحقق العلمي<small>دخول الطالب وحل المسابقة وإرسال النتيجة</small></a>
-<button class="modal-link student" type="button" onclick="copyInvestigatorStudentLink()" style="cursor:pointer;color:#fff;font:inherit">🔗 نسخ رابط الطلاب<small>نسخ رابط مسابقة المحقق العلمي لإرساله للطلاب</small></button>
-<a class="modal-link teacher" href="https://aak64417-glitch.github.io/Scince-platform-new/teacher.html?api=https%3A%2F%2Fscript.google.com%2Fmacros%2Fs%2FAKfycbz6-iPHp20-ZWMhgZA6WsAnZM-WPoCgPgFMyjbAHwg6xvGPGZhMDluhqOZGd20I6InDuw%2Fexec" target="_blank" rel="noopener">👨‍🏫 لوحة المعلم<small>عرض النتائج والتصفية وحذف مشاركة الطالب</small></a>
+<a class="modal-link student" href="https://aak64417-glitch.github.io/Scince-platform-new/contest/" target="_blank" rel="noopener">👨‍🎓 منصة الطالب<small>المسابقات المفتوحة — حل المسابقة وإرسال النتيجة</small></a>
+<button class="modal-link student" type="button" onclick="copyInvestigatorStudentLink()" style="cursor:pointer;color:#fff;font:inherit">🔗 نسخ رابط الطلاب<small>لإرساله للطلاب (ولكل مسابقة رابط و QR من لوحة المعلم)</small></button>
+<a class="modal-link teacher" href="https://aak64417-glitch.github.io/Scince-platform-new/contest/admin.html" target="_blank" rel="noopener">👨‍🏫 لوحة المعلم<small>المسابقات، طلاب العام، النتائج، التقارير والشهادات</small></a>
+<a class="modal-link teacher" href="https://aak64417-glitch.github.io/Scince-platform-new/teacher.html?api=https%3A%2F%2Fscript.google.com%2Fmacros%2Fs%2FAKfycbz6-iPHp20-ZWMhgZA6WsAnZM-WPoCgPgFMyjbAHwg6xvGPGZhMDluhqOZGd20I6InDuw%2Fexec" target="_blank" rel="noopener" style="opacity:.8">🗂️ نتائج المنصة السابقة<small>للاطلاع على النتائج القديمة فقط</small></a>
 </div>
 <button class="close-btn" type="button" onclick="closeScientificInvestigator()">إغلاق</button>
 </div>
@@ -181,7 +182,7 @@ document.getElementById('scientificModal').addEventListener('click',function(e){
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeNafs();closeScientificInvestigator();closeScienceJourney();}});
 
 async function copyInvestigatorStudentLink(){
-const link='https://aak64417-glitch.github.io/Scince-platform-new/';
+const link='https://aak64417-glitch.github.io/Scince-platform-new/contest/';
 let ok=false;
 try{await navigator.clipboard.writeText(link);ok=true;}catch(e){
 const ta=document.createElement('textarea');
