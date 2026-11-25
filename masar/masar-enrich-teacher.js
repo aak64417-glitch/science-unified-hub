@@ -92,14 +92,16 @@ $("enAdd").onclick=async()=>{const items=parseNames();if(!items.length){msg("ا�
  if(/row-level|policy|permission/i.test(fail))fail="قاعدة البيانات لا تسمح بعد لحساب المعلم بإضافة طلاب — شغّل ملف الصلاحيات (SETUP-control-panel.sql) مرة واحدة في Supabase";msg(ok?"✓ أُضيف "+ok+" طالبًا متميزًا"+($("enIssueNew").checked?" • باركود جاهز لـ "+qr:"")+(fail?" • توقفت الإضافة: "+fail:"")+". فعّل لهم الأنشطة من الأسفل.":"تعذرت الإضافة: "+fail,ok&&!fail?true:false)};
 
 /* إضافة طالب: يُربط بحساب المعلم (teacher_id) حتى يسمح له الجدول بقراءته بعد الإضافة */
-async function insertStudent(row){let noCol=false,last;
- try{return await api("masar_students","POST",Object.assign({teacher_id:uid},row))}catch(e){last=e;noCol=/teacher_id|column|schema cache/i.test(e.message);if(!noCol&&!/row-level|policy/i.test(e.message))throw e}
- if(noCol){try{return await api("masar_students","POST",row)}catch(e){last=e;if(!/row-level|policy/i.test(e.message))throw e}}
- /* محاولة أخيرة: إضافة دون طلب إرجاع السجل، ثم البحث عنه */
- const body=noCol?row:Object.assign({teacher_id:uid},row);
- const r=await fetch(B+"/rest/v1/masar_students",{method:"POST",headers:{apikey:K,Authorization:"Bearer "+jwt,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify(body)});
- if(!r.ok){let t="";try{t=(await r.json()).message||""}catch(e){}throw Error(t||last.message)}
- const f=await api("masar_students?select=*&full_name=eq."+encodeURIComponent(row.full_name)+"&class_name=eq."+encodeURIComponent(row.class_name));if(!f.length)throw Error("أُضيف الطالب لكن قاعدة البيانات لا تسمح للمعلم بقراءته");return f}
+let TID=null;
+async function teacherId(){if(TID)return TID;try{const r=await api("masar_students?select=teacher_id&teacher_id=not.is.null&limit=1");if(r&&r[0]&&r[0].teacher_id)TID=r[0].teacher_id}catch(e){}return TID||uid}
+async function insertStudent(row){const tid=await teacherId(),withT=Object.assign({teacher_id:tid},row);
+ try{return await api("masar_students","POST",withT)}catch(e){
+  if(/could not find|does not exist/i.test(e.message)&&/teacher_id/.test(e.message))return await api("masar_students","POST",row);
+  if(!/row-level|policy/i.test(e.message))throw e;
+  /* محاولة أخيرة: إضافة دون طلب إرجاع السجل، ثم البحث عنه */
+  const r=await fetch(B+"/rest/v1/masar_students",{method:"POST",headers:{apikey:K,Authorization:"Bearer "+jwt,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify(withT)});
+  if(!r.ok){let t="";try{t=(await r.json()).message||""}catch(x){}throw Error(t||e.message)}
+  const f=await api("masar_students?select=*&full_name=eq."+encodeURIComponent(row.full_name)+"&class_name=eq."+encodeURIComponent(row.class_name));if(!f.length)throw Error("أُضيف الطالب لكن قاعدة البيانات لا تسمح للمعلم بقراءته");return f}}
 window.masarInsertStudent=insertStudent;
 
 /* ---------- الحذف ---------- */
