@@ -107,7 +107,7 @@
   /* ---------- القائمة ---------- */
   var nav=document.createElement('nav');nav.className='mz-nav';nav.setAttribute('aria-label','أقسام لوحة المعلم');
   nav.innerHTML=VIEWS.map(function(v){return '<a href="#'+v[0]+'" data-v="'+v[0]+'"><i>'+v[1]+'</i><span><b class="mz-l">'+v[2]+'</b><b class="mz-s">'+v[4]+'</b><small>'+v[3]+'</small></span></a>'}).join('')+
-    '<div class="mz-nav-foot">مدرسة أبي الدرداء المتوسطة<br>علوم الأول المتوسط</div>';
+    '<div class="mz-nav-foot">مدرسة أبي الدرداء المتوسطة<br>علوم المرحلة المتوسطة</div>';
   document.body.appendChild(nav);
   var current='';
   function apply(scroll){

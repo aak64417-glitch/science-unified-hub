@@ -144,7 +144,7 @@ main{max-width:760px;margin:-52px auto 40px;padding:0 16px;position:relative;z-i
 <div class="toast" id="toast"></div>
 
 <script src="missions-data.js"></script>
-<script src="missions-data-s2.js"></script>
+<script src="missions-data-s2.js"></script><script src="missions-data-g89.js?v=1"></script>
 <script>
 const BASE="https://yqoleecldcvnfdmkqgeq.supabase.co",KEY="sb_publishable_P-wXPFs08V6kTx5FkFZXsA_x-ElUhhd",
 token=new URLSearchParams(location.search).get("t")||"",DEMO=!token&&new URLSearchParams(location.search).has("demo"),
@@ -170,6 +170,8 @@ ICONS=["🔬","🧩","🧐","🏃","🍎","⚙️","🧊","🔥","⚛️","🧪"
 SKILLS=[8,3,3,3,3,3,3,3,3,3,3,3,3,3,6, 6, 8, 8, 6, 3, 4, 8, 6, 7, 3, 8, 2, 5];
 /* دروس الفصل الدراسي الثاني: الدرس الكامل في تطبيق الدروس */
 const S2_IDS=["g7s2-c7-l1", "g7s2-c7-l2", "g7s2-c8-l1", "g7s2-c8-l2", "g7s2-c9-l1", "g7s2-c9-l2", "g7s2-c10-l1", "g7s2-c10-l2", "g7s2-c11-l1", "g7s2-c11-l2", "g7s2-c12-l1", "g7s2-c12-l2", "g7s2-c13-l1", "g7s2-c13-l2"];
+/* الصفان الثاني والثالث المتوسط: تُضاف دروسهم بعد دروس الأول المتوسط (الفهرس 28 فما بعد) */
+if(typeof MASAR_EXTRA!=="undefined")MASAR_EXTRA.forEach(x=>{KEYS.push(x.key);TITLES.push(x.t);ICONS.push(x.ic);SKILLS.push(x.n)});
 
 /* ===== التخزين المحلي (لا يؤثر على الخادم) ===== */
 const ME="masar_v2_"+token.slice(-16);
@@ -209,7 +211,7 @@ async function logLogin(ls){if(DEMO)return;try{const k="masar_login_"+token.slic
 
 /* ===== الواجهة ===== */
 function assigned(){return lessons.map(l=>{const idx=Math.max(KEYS.indexOf(l.key),KEYS.indexOf(l.title));return {l,idx,title:idx>=0?TITLES[idx]:l.title,hasQuiz:l.title===QUIZ_LESSON||l.key===QUIZ_LESSON}})}
-const openLessonPage=idx=>{if(idx>=14){window.open("https://aak64417-glitch.github.io/science-lessons-app/lessons/"+S2_IDS[idx-14]+".html","_blank","noopener");return}location.href="lessons.html?t="+encodeURIComponent(token)+"&li="+idx};
+const openLessonPage=idx=>{if(idx>=28&&typeof MASAR_EXTRA!=="undefined"&&MASAR_EXTRA[idx-28]){window.open("https://aak64417-glitch.github.io/science-lessons-app/"+MASAR_EXTRA[idx-28].page,"_blank","noopener");return}if(idx>=14){window.open("https://aak64417-glitch.github.io/science-lessons-app/lessons/"+S2_IDS[idx-14]+".html","_blank","noopener");return}location.href="lessons.html?t="+encodeURIComponent(token)+"&li="+idx};
 function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
 const esc=s=>String(s??"").replace(/[&<>"]/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[x]));
 
