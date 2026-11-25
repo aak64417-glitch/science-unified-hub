@@ -24,6 +24,7 @@
 
   /* تعديلات البنك السابق لا تُضاف إلى البنك الجديد */
   g.applyQuestionOverrides = function (items) {
+      if (typeof g.extractClassConfig === 'function') items = g.extractClassConfig(items); // إعداد الفصول المضافة ليس سؤالًا
     const data = refreshLessonCatalog(), qmap = new Map((data.questions || []).map(q => [String(q.id), q]));
     (Array.isArray(items) ? items : []).forEach(item => {
       const id = String(item?.questionId || '').trim(); if (!id) return;

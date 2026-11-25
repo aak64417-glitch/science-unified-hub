@@ -38,6 +38,7 @@
   const bankIds = () => new Set((g.SCIENCE_DATA?.questions || []).map(q => String(q.id)));
   if (typeof g.applyQuestionOverrides === 'function') {
     g.applyQuestionOverrides = function (items) {
+      if (typeof g.extractClassConfig === 'function') items = g.extractClassConfig(items); // إعداد الفصول المضافة ليس سؤالًا
       const data = g.SCIENCE_DATA || { lessons: [], questions: [] };
       const qmap = new Map((data.questions || []).map(q => [String(q.id), q]));
       (Array.isArray(items) ? items : []).forEach(item => {

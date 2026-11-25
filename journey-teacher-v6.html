@@ -259,13 +259,15 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
 
 <section id="studentsTab" class="panel glass hidden">
   <div class="section-head" style="margin-top:0">
-    <div><h3>إدارة الطلاب</h3><p>قائمة مركزية لفصول أول متوسط وثالث متوسط. يمكنك إضافة طالب، تصحيح اسمه، نقله، استبداله أو حذفه، ويظهر التغيير في صفحة الطالب مباشرة.</p></div>
+    <div><h3>إدارة الطلاب</h3><p>قائمة مركزية لفصول المرحلة المتوسطة (خمسة فصول لكل صف، ويمكنك إضافة فصول أخرى). يمكنك إضافة طالب، تصحيح اسمه، نقله، استبداله أو حذفه، ويظهر التغيير في صفحة الطالب مباشرة.</p></div>
     <div class="actions"><button id="reloadStudentsBtn" class="btn secondary">تحديث القوائم</button></div>
   </div>
   <div class="note student-admin-note"><b>الفرق بين التعديل والاستبدال:</b> «تعديل الاسم» لتصحيح اسم الطالب الحالي مع تحديث اسمه في نتائجه السابقة، أما «استبدال الطالب» فيُبقي نتائج الطالب القديم محفوظة ويضيف الطالب الجديد بهوية مستقلة.</div>
   <div id="studentsOverview" class="student-class-overview"></div>
   <div class="student-admin-toolbar">
     <div class="field"><label>الفصل</label><select id="studentsClass"></select></div>
+    <button type="button" id="addClassBtn" class="btn secondary" onclick="addClassAdmin()">+ إضافة فصل</button>
+    <button type="button" id="removeClassBtn" class="btn secondary" onclick="removeClassAdmin()">حذف فصل مضاف</button>
     <div class="field"><label>اسم الطالب المستجد</label><input id="newStudentName" placeholder="اكتب الاسم الرباعي أو كما تريد ظهوره للطالب"></div>
     <button id="addStudentBtn" class="btn">+ إضافة الطالب</button>
   </div>
@@ -358,11 +360,89 @@ let currentQuestionPickerLesson="";
 let questionOverridesLoaded=false;
 let currentEditingQuestionId="";
 const GRADE_CLASSES={
- '1':['1/1','2/1','3/1','4/1'],
- '2':['1/2'],
- '3':['1/3','2/3','3/3','4/3']
+ '1':['1/1','2/1','3/1','4/1','5/1'],
+ '2':['1/2','2/2','3/2','4/2','5/2'],
+ '3':['1/3','2/3','3/3','4/3','5/3']
 };
 const CLASSES=[...GRADE_CLASSES['1'],...GRADE_CLASSES['2'],...GRADE_CLASSES['3']];
+/* فصول إضافية يضيفها المعلم من «إدارة الطلاب»: تُحفظ محليًا وفي الخادم (قناة تعديلات البنك) لتظهر في صفحة الطالب أيضًا */
+const BASE_CLASSES=[...CLASSES];
+const EXTRA_CLASSES_KEY='journey_extra_classes_v1';
+const CLASS_CONFIG_ID='__journey_classes__';
+function classSort(a,b){const [sa,ga]=String(a).split('/').map(Number),[sb,gb]=String(b).split('/').map(Number);return (ga-gb)||(sa-sb)}
+function mergeExtraClasses(list){
+ let changed=false;
+ (Array.isArray(list)?list:[]).forEach(c=>{
+   c=String(c||'').trim();const m=c.match(/^(\d{1,2})\/([123])$/);if(!m||Number(m[1])<1)return;
+   if(!GRADE_CLASSES[m[2]].includes(c)){GRADE_CLASSES[m[2]].push(c);GRADE_CLASSES[m[2]].sort(classSort);changed=true}
+   if(!CLASSES.includes(c)){CLASSES.push(c);changed=true}
+ });
+ if(changed)CLASSES.sort(classSort);
+ return changed;
+}
+function extraClassesList(){return CLASSES.filter(c=>!BASE_CLASSES.includes(c))}
+function removeExtraClass(c){
+ if(BASE_CLASSES.includes(c))return false;
+ const g=String(c).split('/')[1];
+ const i=CLASSES.indexOf(c);if(i>=0)CLASSES.splice(i,1);
+ if(GRADE_CLASSES[g]){const j=GRADE_CLASSES[g].indexOf(c);if(j>=0)GRADE_CLASSES[g].splice(j,1)}
+ return true;
+}
+try{mergeExtraClasses(JSON.parse(localStorage.getItem(EXTRA_CLASSES_KEY)||'[]'))}catch(e){}
+function extractClassConfig(items){
+ const rest=[];
+ (Array.isArray(items)?items:[]).forEach(it=>{
+   if(String(it?.questionId||'')!==CLASS_CONFIG_ID){rest.push(it);return}
+   let p=it.payload;if(typeof p==='string'){try{p=JSON.parse(p)}catch(e){p=null}}
+   if(String(it.action||'upsert')!=='delete'&&p&&Array.isArray(p.classes)){
+     try{localStorage.setItem(EXTRA_CLASSES_KEY,JSON.stringify(p.classes))}catch(e){}
+     extraClassesList().filter(c=>!p.classes.includes(c)).forEach(removeExtraClass);
+     mergeExtraClasses(p.classes);
+     setTimeout(()=>{try{refreshClassSelects()}catch(e){}},0);
+   }
+ });
+ return rest;
+}
+function refreshClassSelects(){
+ ['classFilter','portfolioClass','studentsClass','studentPortfolioClass'].forEach(id=>{
+   const sel=$(id);if(!sel)return;const keep=sel.value;
+   [...sel.options].filter(o=>/^\d{1,2}\/[123]$/.test(o.value||o.textContent)).forEach(o=>o.remove());
+   CLASSES.forEach(c=>sel.insertAdjacentHTML('beforeend',`<option>${c}</option>`));
+   if([...sel.options].some(o=>(o.value||o.textContent)===keep))sel.value=keep;
+ });
+ try{updateTaskClassOptions($('taskClass')?.value||'')}catch(e){}
+ try{if(!$('studentsTab')?.classList.contains('hidden'))renderStudentsAdmin()}catch(e){}
+}
+async function saveExtraClassesRemote(){
+ const list=extraClassesList();
+ try{localStorage.setItem(EXTRA_CLASSES_KEY,JSON.stringify(list))}catch(e){}
+ await apiAction('upsertQuestionOverride',{questionId:CLASS_CONFIG_ID,payload:JSON.stringify({id:CLASS_CONFIG_ID,type:'config',classes:list})});
+}
+function toLatinDigits(v){return String(v??'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).trim()}
+async function addClassAdmin(){
+ if(!getKey()){alert('أدخل مفتاح المعلم وحمّل اللوحة أولًا.');return}
+ const g=toLatinDigits(prompt('اختر الصف:\n1 = الأول المتوسط\n2 = الثاني المتوسط\n3 = الثالث المتوسط','1'));
+ if(!g)return;
+ if(!['1','2','3'].includes(g)){alert('رقم الصف يجب أن يكون 1 أو 2 أو 3.');return}
+ const next=Math.max(0,...GRADE_CLASSES[g].map(c=>Number(String(c).split('/')[0])||0))+1;
+ const n=toLatinDigits(prompt(`رقم الفصل الجديد في ${GRADE_LABELS[g]}:`,String(next)));
+ if(!n)return;
+ if(!/^\d{1,2}$/.test(n)||Number(n)<1){alert('رقم الفصل غير صحيح.');return}
+ const cls=`${Number(n)}/${g}`;
+ if(CLASSES.includes(cls)){alert(`الفصل ${cls} موجود مسبقًا.`);return}
+ mergeExtraClasses([cls]);studentRoster[cls]=studentRoster[cls]||[];
+ refreshClassSelects();$('studentsClass').value=cls;renderStudentsAdmin();
+ try{await saveExtraClassesRemote();alert(`تمت إضافة الفصل ${cls}. اكتب أسماء طلابه الآن ثم اضغط «إضافة الطالب».`)}
+ catch(e){alert(`أُضيف الفصل ${cls} على هذا الجهاز، لكن تعذر حفظه في الخادم: ${e.message||e}\nأعد المحاولة لاحقًا ليظهر في صفحة الطالب.`)}
+}
+async function removeClassAdmin(){
+ const cls=currentStudentsClass();
+ if(BASE_CLASSES.includes(cls)){alert('هذا من الفصول الأساسية ولا يُحذف. يمكن حذف الفصول المضافة فقط.');return}
+ if((studentRoster[cls]||[]).length){alert('لا يمكن حذف فصل فيه طلاب. انقل الطلاب أو احذفهم أولًا.');return}
+ if(!confirm(`حذف الفصل ${cls} من القوائم؟`))return;
+ removeExtraClass(cls);delete studentRoster[cls];refreshClassSelects();$('studentsClass').value=CLASSES[0];renderStudentsAdmin();
+ try{await saveExtraClassesRemote()}catch(e){alert('حُذف على هذا الجهاز وتعذر الحفظ في الخادم: '+(e.message||e))}
+}
 const GRADE_LABELS={'1':'أول متوسط','2':'ثاني متوسط','3':'ثالث متوسط'};
 function lessonTerm(l){return String(l?.term||'1')}
 function defaultTerm(){const m=new Date().getMonth()+1;return (m>=1&&m<=6)?'2':'1'}
@@ -599,7 +679,7 @@ function lessonQuestions(lessonId){const data=refreshLessonCatalog();return (dat
 function explicitQuestionIds(lessonId){const ids=taskQuestionSelections[String(lessonId)];return Array.isArray(ids)?ids.map(String):null}
 function questionSelectionStatus(lessonId){const all=lessonQuestions(lessonId),explicit=explicitQuestionIds(lessonId);return explicit===null?`عشوائي من كامل البنك (${all.length})`:`محدد يدويًا ${explicit.length} من ${all.length}`}
 function applyQuestionOverrides(items){
- const data=refreshLessonCatalog(), list=Array.isArray(items)?items:[], qmap=new Map((data.questions||[]).map(q=>[String(q.id),q]));
+ const data=refreshLessonCatalog(), list=extractClassConfig(items), qmap=new Map((data.questions||[]).map(q=>[String(q.id),q]));
  list.forEach(item=>{
    const id=String(item?.questionId||'').trim(); if(!id)return;
    if(String(item.action||'upsert')==='delete'){qmap.delete(id);return}
@@ -854,6 +934,7 @@ function renderTasks(){
 }
 
 async function loadAllStudents(){
+ try{await ensureQuestionOverridesLoaded()}catch(e){}
  const roster={};
  for(const className of CLASSES){
   const r=await jsonp({action:'getStudents',className});
@@ -1492,5 +1573,5 @@ function generatePortfolioReport(kind){
 async function copyReportText(){const text=$('reportPaper').innerText;if(copyWithoutClipboardPermission(text)){alert('تم نسخ نص التقرير.')}else{prompt('انسخ نص التقرير:',text)}}
 
 document.addEventListener('DOMContentLoaded',init);
-</script><script src="assets/v6/journey-v6-teacher.js?v=20261021-v6e"></script><script src="assets/v6/journey-v6-class-report.js?v=20261125-g2"></script><script src="assets/v6/journey-v6-copy.js?v=20261108-v6f4"></script>
+</script><script src="assets/v6/journey-v6-teacher.js?v=20261125-cls"></script><script src="assets/v6/journey-v6-class-report.js?v=20261125-g2"></script><script src="assets/v6/journey-v6-copy.js?v=20261108-v6f4"></script>
 </body></html>
