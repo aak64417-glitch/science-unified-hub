@@ -184,6 +184,11 @@ function classSort(a,b){const [sa,ga]=String(a).split('/').map(Number),[sb,gb]=S
 function extractClassConfig(items){
  const rest=[];
  (Array.isArray(items)?items:[]).forEach(it=>{
+   if(String(it?.questionId||'')==='__journey_year__'){
+     let y=it.payload;if(typeof y==='string'){try{y=JSON.parse(y)}catch(e){y=null}}
+     if(y&&/^\d{4}$/.test(String(y.year))){CFG.year=String(y.year)+'هـ';try{$('footerText').textContent=`${CFG.schoolName||''} • ${CFG.subject||''} • العام ${CFG.year}`}catch(e){}}
+     return;
+   }
    if(String(it?.questionId||'')!==CLASS_CONFIG_ID){rest.push(it);return}
    let p=it.payload;if(typeof p==='string'){try{p=JSON.parse(p)}catch(e){p=null}}
    if(p&&Array.isArray(p.classes)){

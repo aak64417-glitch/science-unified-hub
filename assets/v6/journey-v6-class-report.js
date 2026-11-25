@@ -7,7 +7,7 @@
   const E = s => String(s ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
   const pct = v => Math.round(Number(v) || 0);
   const mean = a => a.length ? a.reduce((s, x) => s + x, 0) / a.length : 0;
-  const T = { teacher: 'علي طاهر البقاشي', principal: 'فوزي محمد الهلال', school: 'مدرسة أبي الدرداء المتوسطة', year: '1448هـ' };
+  const T = { teacher: 'علي طاهر البقاشي', principal: 'فوزي محمد الهلال', school: 'مدرسة أبي الدرداء المتوسطة', get year() { return typeof window.journeyYearLabel === 'function' ? window.journeyYearLabel() : '1448هـ'; } };
   const LEVELS = [['متميز', 90, '#1E9E5A'], ['متقن', 80, '#0F8B8D'], ['جيد', 70, '#3A7BD5'], ['يحتاج تعزيزًا بسيطًا', 60, '#F4B63F'], ['يحتاج خطة علاجية', 0, '#D1495B']];
   const levelOf = p => LEVELS.find(l => p >= l[1]) || LEVELS[LEVELS.length - 1];
   const TYPE = { training: 'تدريب', test: 'اختبار', exam: 'اختبار', remedial: 'علاجي', enrich: 'إثراء' };

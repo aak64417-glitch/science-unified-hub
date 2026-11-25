@@ -271,6 +271,18 @@ button,input,select{font:inherit}button{cursor:pointer}a{text-decoration:none;co
     <div class="field"><label>اسم الطالب المستجد</label><input id="newStudentName" placeholder="اكتب الاسم الرباعي أو كما تريد ظهوره للطالب"></div>
     <button id="addStudentBtn" class="btn">+ إضافة الطالب</button>
   </div>
+  <div class="note student-year-box" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between">
+    <div><b>العام الدراسي الحالي: <span id="journeyYearLabel">1448هـ</span></b><br><small>في بداية كل عام: اضغط «بدء عام دراسي جديد» ثم أدخل أسماء طلاب كل فصل دفعة واحدة.</small></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button type="button" class="btn secondary" onclick="bulkAddStudentsAdmin()">📋 إدخال أسماء الفصل دفعة واحدة</button>
+      <button type="button" class="btn" style="background:#B23A48 !important;background-image:none !important" onclick="startNewYearAdmin()">🎓 بدء عام دراسي جديد</button>
+    </div>
+  </div>
+  <div id="bulkStudentsBox" class="note hidden">
+    <b>أسماء طلاب الفصل <span id="bulkClassLabel"></span></b> — اكتب أو الصق اسمًا واحدًا في كل سطر (من كشف نور أو Excel). الأسماء الموجودة مسبقًا لا تتكرر.
+    <textarea id="bulkStudentsText" rows="8" style="width:100%;margin-top:8px;font:inherit;padding:10px;border-radius:12px;border:1px solid #cfdde3;box-sizing:border-box"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px"><button type="button" class="btn" id="bulkStudentsSave" onclick="saveBulkStudentsAdmin()">إضافة الأسماء</button><button type="button" class="btn secondary" onclick="$('bulkStudentsBox').classList.add('hidden')">إلغاء</button></div>
+  </div>
   <div id="studentsAdminStatus" class="note good">اختر الفصل لعرض الطلاب.</div>
   <div class="table-wrap student-admin-table">
     <table>
@@ -389,9 +401,35 @@ function removeExtraClass(c){
  return true;
 }
 try{mergeExtraClasses(JSON.parse(localStorage.getItem(EXTRA_CLASSES_KEY)||'[]'))}catch(e){}
+/* العام الدراسي: يُحفظ في الخادم، ونتائج الأعوام السابقة لا تظهر في اللوحة بعد بدء عام جديد */
+const YEAR_CONFIG_ID='__journey_year__';
+const YEAR_KEY='journey_year_v1';
+let JOURNEY_YEAR={year:'1448',startAt:''};
+try{const y=JSON.parse(localStorage.getItem(YEAR_KEY)||'null');if(y&&/^\d{4}$/.test(String(y.year)))JOURNEY_YEAR={year:String(y.year),startAt:String(y.startAt||'')}}catch(e){}
+function journeyYearLabel(){return JOURNEY_YEAR.year+'هـ'}
+window.journeyYearLabel=journeyYearLabel;
+function setJourneyYear(y){
+ if(!y||!/^\d{4}$/.test(String(y.year)))return;
+ const changed=String(y.year)!==JOURNEY_YEAR.year||String(y.startAt||'')!==JOURNEY_YEAR.startAt;
+ JOURNEY_YEAR={year:String(y.year),startAt:String(y.startAt||'')};
+ try{localStorage.setItem(YEAR_KEY,JSON.stringify(JOURNEY_YEAR))}catch(e){}
+ try{applyYearLabels()}catch(e){}
+ if(changed){try{results=results.filter(inCurrentYear);renderAll()}catch(e){}}
+}
+function inCurrentYear(r){
+ if(!JOURNEY_YEAR.startAt)return true;
+ const start=new Date(JOURNEY_YEAR.startAt).getTime();if(!Number.isFinite(start))return true;
+ const t=new Date(r?.submittedAt||r?.timestamp||r?.createdAt||'').getTime();
+ return !Number.isFinite(t)||t>=start;
+}
+function applyYearLabels(){
+ if($('footer'))$('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام '+journeyYearLabel();
+ if($('journeyYearLabel'))$('journeyYearLabel').textContent=journeyYearLabel();
+}
 function extractClassConfig(items){
  const rest=[];
  (Array.isArray(items)?items:[]).forEach(it=>{
+   if(String(it?.questionId||'')===YEAR_CONFIG_ID){let p=it.payload;if(typeof p==='string'){try{p=JSON.parse(p)}catch(e){p=null}}if(p)setJourneyYear(p);return}
    if(String(it?.questionId||'')!==CLASS_CONFIG_ID){rest.push(it);return}
    let p=it.payload;if(typeof p==='string'){try{p=JSON.parse(p)}catch(e){p=null}}
    if(String(it.action||'upsert')!=='delete'&&p&&Array.isArray(p.classes)){
@@ -546,7 +584,7 @@ function restoreTeacherCache(){
   const cachedResults=Array.isArray(cached?.results)?cached.results.map(normalizeResult):[];
   if(!cachedTasks.length && !cachedResults.length)return false;
   tasks=cachedTasks;
-  results=cachedResults;
+  results=cachedResults.filter(inCurrentYear);
   renderAll();
   updatePortfolioTasks();
   updateResultFilters();
@@ -568,7 +606,8 @@ async function loadTeacher(){
   const data=await jsonp({action:'report',key});
   if(!data||data.ok===false) throw new Error(data?.message||data?.error||'تعذر تحميل البيانات.');
   tasks=Array.isArray(data.tasks)?data.tasks:[];
-  results=Array.isArray(data.results)?data.results.map(normalizeResult):[];
+  try{await ensureQuestionOverridesLoaded()}catch(e){}
+  results=Array.isArray(data.results)?data.results.map(normalizeResult).filter(inCurrentYear):[];
   saveTeacherCache();
   $('lastUpdate').textContent='آخر تحديث: '+new Date().toLocaleString('ar-SA');
   setStatus(`تم الربط بنجاح — ${tasks.length} تكليف و${results.length} نتيجة.`,true);
@@ -599,7 +638,7 @@ function fmt(v){try{return new Date(v).toLocaleString('ar-SA')}catch{return v||'
 function typeName(m){return({training:'تدريب',exam:'اختبار',remedial:'علاجي',enrich:'إثراء',test:'اختبار',mixed:'متنوع'}[m]||m)}
 function init(){
  $('teacherSub').textContent='مدرسة أبي الدرداء المتوسطة | المعلم: علي البقاشي';
- $('footer').textContent='مدرسة أبي الدرداء المتوسطة • العام 1448هـ';
+ applyYearLabels();
  CLASSES.forEach(c=>{$('classFilter').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('portfolioClass')) $('portfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentsClass')) $('studentsClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`); if($('studentPortfolioClass')) $('studentPortfolioClass').insertAdjacentHTML('beforeend',`<option>${c}</option>`)});
  refreshLessonCatalog();
  if($('taskTerm')) $('taskTerm').value=defaultTerm();
@@ -1026,6 +1065,65 @@ async function deleteStudentAdmin(cls,code){
  }catch(e){alert(e.message||e)}
 }
 
+function bulkAddStudentsAdmin(){
+ if(!getKey()){alert('أدخل مفتاح المعلم وحمّل اللوحة أولًا.');return}
+ $('bulkClassLabel').textContent=currentStudentsClass();
+ $('bulkStudentsText').value='';
+ $('bulkStudentsBox').classList.remove('hidden');
+ $('bulkStudentsText').focus();
+}
+async function saveBulkStudentsAdmin(){
+ const cls=currentStudentsClass();
+ const seen=new Set((studentRoster[cls]||[]).map(s=>normalizeStudentNameKey(s.name)));
+ const names=[];
+ $('bulkStudentsText').value.split(/\r?\n/).forEach(line=>{
+   const name=line.replace(/^[\s\d٠-٩.\-–)]+/,'').replace(/\t.*$/,'').replace(/\s+/g,' ').trim();
+   const key=normalizeStudentNameKey(name);
+   if(name.length>=3&&!seen.has(key)){seen.add(key);names.push(name)}
+ });
+ if(!names.length){alert('لا توجد أسماء جديدة للإضافة.');return}
+ if(!confirm(`إضافة ${names.length} طالبًا إلى الفصل ${cls}؟`))return;
+ const btn=$('bulkStudentsSave');btn.disabled=true;let ok=0;const fail=[];
+ for(let i=0;i<names.length;i++){
+   $('studentsAdminStatus').textContent=`جارٍ إضافة الطلاب إلى الفصل ${cls} (${i+1} من ${names.length})...`;
+   try{await apiAction('addStudent',{className:cls,studentName:names[i]});ok++}catch(e){fail.push(names[i])}
+ }
+ btn.disabled=false;$('bulkStudentsBox').classList.add('hidden');
+ await loadAllStudents();renderStudentsAdmin();
+ alert(`تمت إضافة ${ok} طالبًا إلى الفصل ${cls}.`+(fail.length?`\nتعذرت إضافة: ${fail.join('، ')}`:''));
+}
+async function startNewYearAdmin(){
+ if(!getKey()){alert('أدخل مفتاح المعلم وحمّل اللوحة أولًا.');return}
+ const y=toLatinDigits(prompt('اكتب العام الدراسي الجديد بالهجري (4 أرقام):',String(Number(JOURNEY_YEAR.year)+1)));
+ if(!y)return;
+ if(!/^\d{4}$/.test(y)){alert('اكتب العام بأربعة أرقام، مثل 1449.');return}
+ const word=prompt(`سيتم الآن بدء العام ${y}هـ:\n• حذف جميع الطلاب من جميع الفصول\n• حذف جميع التكليفات وروابطها\n• إخفاء نتائج الأعوام السابقة من اللوحة والتقارير\nيبقى بنك الأسئلة والفصول كما هي.\n\nللتأكيد اكتب: عام جديد`,'');
+ if(String(word||'').trim()!=='عام جديد'){alert('لم يتم التنفيذ.');return}
+ const status=t=>{$('studentsAdminStatus').className='note';$('studentsAdminStatus').textContent=t};
+ const fail=[];
+ try{
+   status('جارٍ تحميل قوائم الطلاب...');
+   await loadAllStudents();
+   const all=[];CLASSES.forEach(c=>(studentRoster[c]||[]).forEach(s=>all.push([c,s])));
+   for(let i=0;i<all.length;i++){
+     const [c,s]=all[i];status(`حذف الطلاب (${i+1} من ${all.length})...`);
+     try{await apiAction('setStudentActive',{className:c,studentCode:s.code,active:'false'})}catch(e){fail.push(s.name)}
+   }
+   const list=[...tasks];
+   for(let i=0;i<list.length;i++){
+     status(`حذف التكليفات (${i+1} من ${list.length})...`);
+     try{await apiAction('deleteTask',{id:list[i].id});tasks=tasks.filter(x=>String(x.id)!==String(list[i].id))}catch(e){fail.push('تكليف: '+(list[i].title||list[i].id))}
+   }
+   const cfg={year:y,startAt:new Date().toISOString()};
+   await apiAction('upsertQuestionOverride',{questionId:YEAR_CONFIG_ID,payload:JSON.stringify({id:YEAR_CONFIG_ID,type:'config',...cfg})});
+   setJourneyYear(cfg);
+   results=[];try{localStorage.removeItem(TEACHER_CACHE_KEY)}catch(e){}
+   saveTeacherCache();
+   await loadAllStudents();renderAll();renderStudentsAdmin();updatePortfolioTasks();updateResultFilters();
+   status(`بدأ العام الدراسي ${y}هـ. أدخل الآن أسماء طلاب كل فصل.`);
+   alert(`بدأ العام الدراسي ${y}هـ بنجاح.`+(fail.length?`\nلم يكتمل حذف: ${fail.join('، ')} — أعد المحاولة لها.`:'')+`\nاختر كل فصل ثم اضغط «إدخال أسماء الفصل دفعة واحدة».`);
+ }catch(e){alert('تعذر إكمال بدء العام الجديد: '+(e.message||e)+'\nلم يُغيَّر العام الدراسي؛ يمكنك إعادة المحاولة.')}
+}
 // أبقينا هذه الدالة للتوافق مع النسخ السابقة فقط، ولا تعتمد النسخة الحالية عليها.
 async function syncStudentsFromTracker(){
  if(!getKey()){alert('حمّل لوحة المعلم أولًا وأدخل مفتاح المعلم.');return}
@@ -1456,7 +1554,7 @@ function generateStudentPortfolio(){
    <div class="sp-student-card">
      <div><span>اسم الطالب:</span><b>${esc(name)}</b></div>
      <div><span>الفصل:</span><b>${esc(cls)}</b></div>
-     <div><span>العام الدراسي:</span><b>1448هـ</b></div>
+     <div><span>العام الدراسي:</span><b>${esc(journeyYearLabel())}</b></div>
    </div>
    <div class="sp-motto">التعلم رحلة مستمرة… وأنت على الطريق الصحيح</div>
  </div>
