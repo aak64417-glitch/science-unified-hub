@@ -4,6 +4,7 @@
 (function(){
 "use strict";
 if(!document.getElementById("enCard")||!window.ENRICH)return;
+{const h=document.querySelector("#enCard h2");if(h)h.insertAdjacentHTML("beforeend",' <small style="font-size:12px;color:#7a6f96;font-weight:500">إصدار ٦</small>')}
 const SK_Q="إثراء — تحدي التفكير",SK_T="إثراء — المهمة الإبداعية",PREFIX="إثراء ";
 const E=window.ENRICH;
 const enIdx=k=>E.findIndex(e=>e.key===k||e.t===k);
