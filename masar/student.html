@@ -368,7 +368,7 @@ async function init(){
   if(!DEMO&&(!token||token.length<40))throw Error("امسح الباركود الخاص بك مرة أخرى، أو اطلب بطاقتك من المعلم.");
   const d=await rpc("masar_student_home",{p_token:token});
   lessons=(d.lessons||[]).filter(l=>l&&l.enabled!==false&&l.active!==false);
-  student=d;logLogin(lessons);
+  if(/^إثراء/.test(String(d.class||""))){location.replace("enrich.html"+location.search);return}student=d;logLogin(lessons);
   const full=String(d.name||"").trim().replace(/\s+/g," ");
   const hr=new Date().getHours();
   $("greet").textContent=(hr<12?"صباح الخير":"مساء الخير")+" 👋 هذه منصتك الخاصة";$("hello").textContent=full||"طالب";document.title="مسار التقدم | "+(full||"مادة العلوم");

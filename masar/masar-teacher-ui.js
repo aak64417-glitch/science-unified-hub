@@ -13,7 +13,8 @@
     ['students','👥','الطلاب','المستهدفون وحالتهم','الطلاب'],
     ['cards','🔑','بطاقات الدخول','الباركود والروابط','البطاقات'],
     ['follow','📈','المتابعة','الزيارات والنتائج','المتابعة'],
-    ['reports','📊','التقارير','تقدم الطلاب وملف الإنجاز','التقارير']
+    ['reports','📊','التقارير','تقدم الطلاب وملف الإنجاز','التقارير'],
+    ['enrich','🌟','الخطة الإثرائية','الطلاب المتميزون','الإثراء']
   ];
   var IDS=VIEWS.map(function(v){return v[0]});
 
@@ -38,7 +39,7 @@
   var noteCard=tag('note','note');
   if(noteCard){noteCard.classList.add('mz-notecard');var st=$('stats');if(st)st.style.display='none'}
   var prev=cardOf('previewToggle');if(prev){prev.dataset.view='home';prev.classList.add('mz-preview')}
-  tag('asLessons','assign');tag('students','students');tag('qcRows','cards');
+  tag('asLessons','assign');tag('enStudents','enrich');tag('students','students');tag('qcRows','cards');
   tag('acTabs','follow','visits');tag('results','follow','results');
   var rep=panel.querySelector('.rp-card');if(rep)rep.dataset.view='reports';
   /* أي بطاقة لم تُصنَّف تبقى في الرئيسية حتى لا يختفي شيء */

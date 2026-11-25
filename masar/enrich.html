@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#3b1f6e">
+<title>مسار التميّز | الخطة الإثرائية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap">
+<style>
+:root{--bg:#f6f2ff;--card:#fff;--ink:#24164a;--muted:#6b5f8a;--line:#e5dcf7;--v:#5b2fb3;--v2:#3b1f6e;--gold:#f2b632;--gold2:#c98a07;--ok:#12a17a;--okbg:#e2f6ee;--bad:#d4475a;--badbg:#fdecee;--soft:#efe8fd}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:700 17px/1.65 Tajawal,Tahoma,Arial,sans-serif}
+button{font:inherit;cursor:pointer;border:0}
+.hide{display:none!important}
+.wrap{max-width:820px;margin:auto;padding:0 14px}
+header{background:linear-gradient(125deg,var(--v2),var(--v) 60%,#8a4fd8);color:#fff;padding:16px 0 54px;border-radius:0 0 26px 26px;position:relative;overflow:hidden}
+header:before{content:"";position:absolute;inset-inline-end:-60px;top:-80px;width:230px;height:230px;border:46px solid #ffffff12;border-radius:50%}
+header:after{content:"✦  ✧  ✦";position:absolute;inset-inline-start:22px;bottom:14px;color:#f2b63266;letter-spacing:6px;font-size:18px}
+.top{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.av{width:52px;height:52px;border-radius:16px;background:var(--gold);display:grid;place-items:center;font-size:28px;flex:none;box-shadow:0 6px 16px #0003}
+.top small{display:block;color:#e3d6ff;font-weight:500;font-size:13px}
+.top h1{margin:0;font-size:21px;line-height:1.35}
+.badge{margin-inline-start:auto;background:#ffffff1f;border:1px solid #ffffff40;border-radius:999px;padding:5px 12px;font-size:13px;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:-38px;position:relative;z-index:2}
+.st{background:var(--card);border-radius:18px;padding:10px 8px;text-align:center;box-shadow:0 8px 22px #3b1f6e14;border:1px solid var(--line)}
+.st b{display:block;font-size:24px;color:var(--v);line-height:1.2}.st span{font-size:12.5px;color:var(--muted);font-weight:500}
+.st.g b{color:var(--gold2)}
+.lvl{margin:12px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:14px}
+.lvl .bar{flex:1;height:10px;background:var(--soft);border-radius:9px;overflow:hidden}.lvl .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#f59e0b);border-radius:9px;transition:width .6s}
+h2.sec{font-size:17px;margin:14px 2px 8px;color:var(--v2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;padding-bottom:22px}
+.ms{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px;text-align:right;display:flex;gap:10px;align-items:center;color:var(--ink);transition:transform .15s}
+.ms:active{transform:scale(.98)}
+.ms i{font-style:normal;font-size:30px;width:50px;height:50px;border-radius:14px;background:var(--soft);display:grid;place-items:center;flex:none}
+.ms b{display:block;font-size:15.5px;line-height:1.4}.ms small{color:var(--muted);font-weight:500;font-size:12.5px}
+.ms .stars{color:var(--gold);font-size:14px;letter-spacing:1px}
+.ms.done{border-color:#cbe9dc;background:linear-gradient(135deg,#fff,#f1fbf6)}.ms.done i{background:var(--okbg)}
+.ms.soon{opacity:.6}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 0}
+.bd{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px}
+.bd.off{opacity:.38;filter:grayscale(1)}
+.empty{background:var(--card);border:2px dashed var(--line);border-radius:18px;padding:22px;text-align:center;color:var(--muted)}
+#loading{min-height:100vh;display:grid;place-items:center;text-align:center;padding:20px}
+.spin{width:46px;height:46px;border:5px solid var(--soft);border-top-color:var(--v);border-radius:50%;animation:sp 1s linear infinite;margin:auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* شاشة المهمة: تملأ الشاشة دون تمرير */
+#mission{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;z-index:20}
+.mbar{background:linear-gradient(125deg,var(--v2),var(--v));color:#fff;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));display:flex;align-items:center;gap:10px}
+.mbar button{background:#ffffff22;color:#fff;border-radius:12px;padding:6px 12px;font-size:14px}
+.mbar b{font-size:16px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dots{display:flex;gap:5px;justify-content:center;padding:10px 0 4px}
+.dots i{width:26px;height:7px;border-radius:9px;background:var(--line)}.dots i.on{background:var(--gold)}.dots i.ok{background:var(--ok)}.dots i.no{background:var(--bad)}
+.stage{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;justify-content:center;padding:6px 0 10px}
+.pane{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px 18px;box-shadow:0 10px 26px #3b1f6e12;animation:in .3s ease both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tag{display:inline-block;background:var(--soft);color:var(--v);border-radius:999px;padding:2px 12px;font-size:13px;margin-bottom:8px}
+.tag.g{background:#fff4d6;color:var(--gold2)}
+.pane h3{margin:0 0 8px;font-size:19px;line-height:1.5}
+.pane p{margin:0;font-size:16.5px;line-height:1.85}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{background:var(--soft);border:2px solid transparent;border-radius:14px;padding:10px 14px;text-align:right;color:var(--ink);font-size:16px;display:flex;gap:10px;align-items:center}
+.opt span{width:28px;height:28px;border-radius:9px;background:#fff;display:grid;place-items:center;flex:none;font-size:14px;color:var(--v)}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}.opt.no{background:var(--badbg);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.why{margin-top:10px;border-radius:14px;padding:10px 12px;font-size:15px;line-height:1.75}
+.why.ok{background:var(--okbg)}.why.no{background:var(--badbg)}
+.steps{margin:10px 0 0;padding:0;list-style:none;counter-reset:s;display:grid;gap:7px}
+.steps li{counter-increment:s;display:flex;gap:10px;align-items:flex-start;font-size:15.5px;line-height:1.7}
+.steps li:before{content:counter(s);width:26px;height:26px;border-radius:8px;background:var(--gold);color:#3a2600;display:grid;place-items:center;flex:none;font-size:14px;margin-top:2px}
+.foot{padding:10px 0 calc(12px + env(safe-area-inset-bottom));display:flex;gap:8px}
+.btn{flex:1;background:var(--v);color:#fff;border-radius:16px;padding:13px;font-size:17px}
+.btn.g{background:var(--gold);color:#3a2600}.btn.s{background:var(--soft);color:var(--v);flex:.6}
+.btn:disabled{opacity:.45}
+.fin{text-align:center}.fin .big{font-size:58px;line-height:1.1}.fin h3{font-size:22px}
+.fin .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.fin .row div{background:var(--soft);border-radius:14px;padding:8px}.fin .row b{display:block;font-size:22px;color:var(--v)}.fin .row span{font-size:12.5px;color:var(--muted);font-weight:500}
+.toast{position:fixed;bottom:22px;inset-inline:0;margin:auto;width:max-content;max-width:90%;background:var(--v2);color:#fff;border-radius:14px;padding:10px 16px;font-size:15px;z-index:50;animation:in .3s ease both}
+@media(max-height:680px){.pane{padding:14px}.pane p{font-size:15.5px;line-height:1.7}.opt{padding:8px 12px;font-size:15px}.pane h3{font-size:17px}}
+</style>
+</head>
+<body>
+<div id="loading"><div><div class="spin"></div><p>جارٍ فتح بطاقتك…</p></div></div>
+
+<div id="home" class="hide">
+ <header><div class="wrap top"><div class="av">🌟</div><div><small id="greet"></small><h1 id="hello"></h1><small id="klass"></small></div><span class="badge">الخطة الإثرائية</span></div></header>
+ <div class="wrap">
+  <div class="stats"><div class="st g"><b id="sPts">0</b><span>نقطة تميّز</span></div><div class="st"><b id="sDone">0</b><span>مهمة مكتملة</span></div><div class="st"><b id="sAcc">—</b><span>دقة التحديات</span></div></div>
+  <div class="lvl"><span id="lvName">🔭 مستكشف</span><div class="bar"><i id="lvBar" style="width:0"></i></div><span id="lvNext"></span></div>
+  <div class="badges" id="badges"></div>
+  <h2 class="sec">🚀 مهماتك الإثرائية</h2>
+  <div class="grid" id="grid"></div>
+ </div>
+</div>
+
+<div id="mission" class="hide">
+ <div class="mbar"><button id="mBack" type="button">→ رجوع</button><b id="mTitle"></b></div>
+ <div class="wrap" style="flex:1;display:flex;flex-direction:column;min-height:0;width:100%">
+  <div class="dots" id="dots"></div>
+  <div class="stage" id="stage"></div>
+  <div class="foot" id="foot"></div>
+ </div>
+</div>
+
+<script src="enrich-data.js?v=20261125a"></script>
+<script>
+const BASE="https://yqoleecldcvnfdmkqgeq.supabase.co",KEY="sb_publishable_P-wXPFs08V6kTx5FkFZXsA_x-ElUhhd",
+Q=new URLSearchParams(location.search),token=Q.get("t")||"",DEMO=!token&&Q.has("demo"),
+H={"apikey":KEY,"Authorization":"Bearer "+KEY,"Content-Type":"application/json"},
+$=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),
+AR=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+const SK_Q="إثراء — تحدي التفكير",SK_T="إثراء — المهمة الإبداعية",KIND="تدريب مهارة";
+const LS="masar_enr_"+(token.slice(-16)||"demo");
+let me={done:{},queue:[]};try{me=Object.assign(me,JSON.parse(localStorage.getItem(LS)||"{}"))}catch(e){}
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(me))}catch(e){}};
+let lessons=[],student={};
+
+async function rpc(name,p){if(DEMO){await new Promise(r=>setTimeout(r,200));return name==="masar_student_home"?{name:"طالب متميز (معاينة)",class:"إثراء 1/1",lessons:ENRICH.slice(0,4).map(x=>({key:x.key,title:x.key,enabled:true}))}:{ok:true}}
+ const r=await fetch(BASE+"/rest/v1/rpc/"+name,{method:"POST",headers:H,body:JSON.stringify(p)});const t=await r.text();let j;try{j=JSON.parse(t)}catch{j={error:t}}if(!r.ok||j.error)throw Error(j.error||j.message||"فشل الاتصال");return j}
+/* إرسال النتائج مع طابور احتياطي عند انقطاع الإنترنت */
+async function submit(item){try{await rpc("masar_student_submit",item);return true}catch(e){me.queue.push(item);save();return false}}
+async function flush(){if(!me.queue.length)return;const q=me.queue.splice(0);save();for(const it of q){try{await rpc("masar_student_submit",it)}catch(e){me.queue.push(it)}}save()}
+const sub=(key,skill,c,t,secs)=>({p_token:token,p_lesson_key:key,p_skill_key:skill,p_skill_title:skill,p_assessment_kind:KIND,p_correct:c,p_total:t,p_seconds:Math.max(1,Math.min(36000,Math.round(secs)))});
+
+/* سجل الدخول والخروج (مثل منصة الطالب) */
+function logLogin(){if(DEMO||!lessons.length)return;const key=lessons[0].key,k="masar_login_"+token.slice(-16),VK="masar_visit_"+token.slice(-16);let last=0;try{last=+sessionStorage.getItem(k)||0}catch(e){}
+ if(Date.now()-last<30*60000){try{if(!sessionStorage.getItem(VK))sessionStorage.setItem(VK,JSON.stringify({start:last,key}))}catch(e){}return}
+ rpc("masar_student_submit",{p_token:token,p_lesson_key:key,p_skill_key:"دخول المنصة",p_skill_title:"دخول المنصة",p_assessment_kind:"دخول",p_correct:0,p_total:1,p_seconds:0}).then(()=>{try{const n=Date.now();sessionStorage.setItem(k,String(n));sessionStorage.setItem(VK,JSON.stringify({start:n,key}))}catch(e){}}).catch(()=>{})}
+(function(){if(DEMO)return;const VK="masar_visit_"+token.slice(-16);let sent=0;const send=()=>{try{const v=JSON.parse(sessionStorage.getItem(VK)||"null");if(!v||!v.key||Date.now()-sent<15000)return;sent=Date.now();fetch(BASE+"/rest/v1/rpc/masar_student_submit",{method:"POST",keepalive:true,headers:H,body:JSON.stringify({p_token:token,p_lesson_key:v.key,p_skill_key:"خروج المنصة",p_skill_title:"خروج المنصة",p_assessment_kind:"خروج",p_correct:0,p_total:1,p_seconds:Math.min(36000,Math.round((Date.now()-v.start)/1000))})}).catch(()=>{})}catch(e){}};addEventListener("pagehide",send);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")send()})})();
+
+/* ===== النقاط والمستويات والأوسمة ===== */
+const ptsOf=d=>d?(d.best||0)*10+(d.best===4?10:0)+(d.task?20:0):0;
+const totalPts=()=>Object.values(me.done).reduce((a,d)=>a+ptsOf(d),0);
+const LEVELS=[[0,"🔭 مستكشف"],[60,"🔬 باحث"],[150,"🧠 مفكّر"],[280,"🏅 عالم صغير"],[450,"👑 عبقري العلوم"]];
+const BADGES=[["🌟","أول إنجاز",()=>Object.values(me.done).some(d=>d.best!=null||d.task)],["🧠","مفكر ناقد",()=>Object.values(me.done).filter(d=>d.best===4).length>=3],["🛠️","مبتكر",()=>Object.values(me.done).filter(d=>d.task).length>=3],["🏆","بطل الإثراء",()=>mine().length>0&&mine().every(m=>isDone(m.idx))]];
+const isDone=i=>{const d=me.done[i];return !!(d&&d.task&&d.best>=3)};
+function mine(){return lessons.map(l=>({l,idx:ENRICH.findIndex(e=>e.key===l.key||e.t===l.key||e.key===l.title||e.t===l.title)}))}
+
+function renderHome(){const list=mine(),pts=totalPts();let lv=0;LEVELS.forEach((x,i)=>{if(pts>=x[0])lv=i});
+ $("sPts").textContent=AR(pts);$("sDone").textContent=AR(list.filter(m=>m.idx>=0&&isDone(m.idx)).length);
+ const ds=Object.values(me.done).filter(d=>d.best!=null);$("sAcc").textContent=ds.length?AR(Math.round(ds.reduce((a,d)=>a+d.best,0)*100/(ds.length*4)))+"٪":"—";
+ const nx=LEVELS[lv+1];$("lvName").textContent=LEVELS[lv][1];$("lvBar").style.width=(nx?Math.round((pts-LEVELS[lv][0])*100/(nx[0]-LEVELS[lv][0])):100)+"%";$("lvNext").textContent=nx?"التالي: "+nx[1]:"أعلى مستوى ✓";
+ $("badges").innerHTML=BADGES.map(([ic,n,ok])=>`<span class="bd ${ok()?"":"off"}">${ic} ${n}</span>`).join("");
+ const g=$("grid");g.innerHTML="";
+ if(!list.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">⏳ لم يُفعّل معلمك أي مهمة إثرائية بعد.<br>عد قريبًا!</div>';return}
+ list.forEach(m=>{const b=document.createElement("button");b.type="button";const E=ENRICH[m.idx];
+  if(!E){b.className="ms soon";b.innerHTML=`<i>⏳</i><span><b>${esc(m.l.title||m.l.key)}</b><small>المهمة الإثرائية لهذا الدرس قريبًا</small></span>`;g.append(b);return}
+  const d=me.done[m.idx],done=isDone(m.idx),st=d&&d.best!=null?"★".repeat(d.best)+"☆".repeat(4-d.best):"";
+  b.className="ms"+(done?" done":"");b.innerHTML=`<i>${done?"✅":E.ic}</i><span><b>${esc(E.t)}</b><small>${done?"مكتملة • "+AR(ptsOf(d))+" نقطة":d?"أكمل مهمتك…":"٤ تحديات + مهمة إبداعية"}</small>${st?`<div class="stars">${st}</div>`:""}</span>`;
+  b.onclick=()=>openMission(m);g.append(b)})}
+
+/* ===== المهمة ===== */
+let M=null;
+function openMission(m){const E=ENRICH[m.idx];M={m,E,step:0,ans:[],t0:Date.now()};$("mTitle").textContent=E.ic+" "+E.t;$("home").classList.add("hide");$("mission").classList.remove("hide");draw()}
+$("mBack").onclick=()=>{if(M&&M.step>0&&M.step<6&&!confirm("الخروج من المهمة؟ لن تُحفظ إجاباتك في هذه المحاولة."))return;closeMission()};
+function closeMission(){M=null;$("mission").classList.add("hide");$("home").classList.remove("hide");renderHome();window.scrollTo(0,0)}
+function dots(){$("dots").innerHTML=Array.from({length:6},(_,i)=>{let c=i===M.step?"on":"";if(i>=1&&i<=4&&M.ans[i-1]!=null)c=M.ans[i-1]?"ok":"no";if(i<M.step&&(i===0||i===5))c="ok";return `<i class="${c}"></i>`}).join("")}
+function foot(btns){const f=$("foot");f.innerHTML="";btns.forEach(([t,cls,fn,dis])=>{const b=document.createElement("button");b.type="button";b.className="btn "+(cls||"");b.textContent=t;b.disabled=!!dis;b.onclick=fn;f.append(b)})}
+function draw(){dots();const s=$("stage"),E=M.E;s.scrollTop=0;
+ if(M.step===0){s.innerHTML=`<div class="pane"><span class="tag g">💡 فكرة إثرائية</span><h3>هل تعلم؟</h3><p>${esc(E.idea)}</p></div>`;foot([["ابدأ التحديات ←","g",()=>{M.step=1;draw()}]]);return}
+ if(M.step>=1&&M.step<=4){const qi=M.step-1,q=E.q[qi],a=M.ans[qi];
+  s.innerHTML=`<div class="pane"><span class="tag">🧠 تحدٍّ ${AR(M.step)} من ٤ • ${esc(q[4])}</span><h3>${esc(q[0])}</h3><div class="opts">${q[1].map((o,i)=>`<button type="button" class="opt" data-i="${i}"><span>${"أبجد"[i]}</span>${esc(o)}</button>`).join("")}</div><div id="why"></div></div>`;
+  const show=pick=>{s.querySelectorAll(".opt").forEach(b=>{const i=+b.dataset.i;b.disabled=true;if(i===q[2])b.classList.add("ok");else if(i===pick)b.classList.add("no")});$("why").innerHTML=`<div class="why ${pick===q[2]?"ok":"no"}">${pick===q[2]?"✅ إجابة متميزة! ":"💡 الإجابة الصحيحة: «"+esc(q[1][q[2]])+"». "}${esc(q[3])}</div>`};
+  if(a!=null)show(M.pick[qi]);
+  s.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(M.ans[qi]!=null)return;const i=+b.dataset.i;M.ans[qi]=i===q[2];(M.pick=M.pick||[])[qi]=i;show(i);dots();foot([[M.step<4?"التحدي التالي ←":"إلى المهمة الإبداعية ←","",()=>{M.step++;draw()}]])});
+  foot([["اختر إجابة أولًا","",null,true]]);if(a!=null)foot([[M.step<4?"التحدي التالي ←":"إلى المهمة الإبداعية ←","",()=>{M.step++;draw()}]]);return}
+ if(M.step===5){const T=E.task;s.innerHTML=`<div class="pane"><span class="tag g">🛠️ المهمة الإبداعية</span><h3>${esc(T.h)}</h3><p>${esc(T.p)}</p><ul class="steps">${T.steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><p style="font-size:14px;color:var(--muted);margin-top:10px">📸 نفّذ المهمة واعرض عملك على معلمك، ثم اضغط «أنجزت المهمة».</p></div>`;
+  foot([["لاحقًا","s",()=>finish(false)],["✓ أنجزت المهمة","g",()=>finish(true)]]);return}
+ const r=M.res;s.innerHTML=`<div class="pane fin"><div class="big">${r.c===4?"🏆":r.c>=3?"🌟":"💪"}</div><h3>${r.c===4?"أداء عبقري!":r.c>=3?"أحسنت يا متميز!":"محاولة جيدة، تستطيع أفضل!"}</h3><div style="color:var(--gold);font-size:26px;letter-spacing:3px">${"★".repeat(r.c)}${"☆".repeat(4-r.c)}</div><div class="row"><div><b>${AR(r.c)}/٤</b><span>تحديات صحيحة</span></div><div><b>${r.task?"✓":"—"}</b><span>المهمة الإبداعية</span></div><div><b>+${AR(r.pts)}</b><span>نقطة</span></div></div><p style="font-size:14px;color:var(--muted);margin-top:10px">${r.sent?"✓ وصلت نتيجتك إلى معلمك":"⏳ ستُرسل نتيجتك لمعلمك تلقائيًا عند توفر الإنترنت"}</p></div>`;
+ foot([["إعادة المحاولة","s",()=>openMission(M.m)],["العودة للمهمات","",closeMission]])}
+
+async function finish(task){const c=M.ans.filter(Boolean).length,secs=(Date.now()-M.t0)/1000,idx=M.m.idx,key=M.m.l.key;
+ const prev=me.done[idx]||{},before=ptsOf(me.done[idx]);const d={best:Math.max(prev.best??-1,c),task:!!(prev.task||task),tries:(prev.tries||0)+1,last:Date.now()};me.done[idx]=d;save();
+ M.res={c,task,pts:Math.max(0,ptsOf(d)-before),sent:true};M.step=6;draw();
+ const ok1=await submit(sub(key,SK_Q,c,4,secs));let ok2=true;if(task&&!prev.task)ok2=await submit(sub(key,SK_T,1,1,secs));
+ M&&(M.res.sent=ok1&&ok2,M.step===6&&draw());
+ if(c===4)confetti();toastBadges()}
+let shown=new Set(BADGES.filter(b=>b[2]()).map(b=>b[1]));
+function toastBadges(){BADGES.forEach(([ic,n,ok])=>{if(!shown.has(n)&&ok()){shown.add(n);toast(ic+" حصلت على وسام: "+n)}})}
+function toast(t){const e=document.createElement("div");e.className="toast";e.textContent=t;document.body.append(e);setTimeout(()=>e.remove(),3200)}
+function confetti(){for(let i=0;i<40;i++){const e=document.createElement("i");e.style.cssText=`position:fixed;top:-12px;left:${Math.random()*100}vw;width:9px;height:14px;background:${["#f2b632","#5b2fb3","#12a17a","#e8590c"][i%4]};border-radius:2px;z-index:60;transition:transform 1.6s ease-in,opacity 1.6s`;document.body.append(e);requestAnimationFrame(()=>{e.style.transform=`translateY(${innerHeight+40}px) rotate(${Math.random()*720}deg)`;e.style.opacity=".2"});setTimeout(()=>e.remove(),1700)}}
+
+async function init(){
+ if(!DEMO&&(!token||token.length<40))throw Error("امسح الباركود الخاص بك مرة أخرى، أو اطلب بطاقتك من المعلم.");
+ const d=await rpc("masar_student_home",{p_token:token});
+ lessons=(d.lessons||[]).filter(l=>l&&l.enabled!==false&&l.active!==false);student=d;logLogin();
+ const full=String(d.name||"").trim().replace(/\s+/g," "),hr=new Date().getHours();
+ $("greet").textContent=(hr<12?"صباح الخير":"مساء الخير")+" ✨ منصة المتميزين";$("hello").textContent=full||"طالب متميز";
+ $("klass").textContent="الفصل "+String(d.class||"").replace(/^إثراء\s*/,"")+" • علوم الأول المتوسط";document.title="مسار التميّز | "+(full||"الخطة الإثرائية");
+ $("loading").classList.add("hide");$("home").classList.remove("hide");renderHome();flush()}
+init().catch(e=>{$("loading").innerHTML="<div><div style='font-size:46px'>🔑</div><b>تعذر فتح البطاقة</b><p style='color:var(--muted);font-weight:500'>"+esc(e.message)+"</p></div>"});
+</script>
+</body>
+</html>
