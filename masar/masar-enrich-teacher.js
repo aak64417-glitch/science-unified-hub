@@ -133,13 +133,29 @@ $("enWipe").onclick=()=>{const all=[...enrStudents];if(!all.length){msg("لا ي
 /* ---------- الباركود ---------- */
 function enShare(s,url){return "🌟 مادة العلوم — مسار التميّز (الخطة الإثرائية)\nالطالب: "+s.full_name+" — الفصل "+enCls(s)+"\nرابط دخولك الشخصي (لا تشاركه مع غيرك):\n"+url}
 async function copyEn(t,ok){try{await navigator.clipboard.writeText(t);msg("✓ "+ok,true)}catch(e){prompt("انسخ:",t)}}
-function enCardNode(s,fc){const w=cardNode(Object.assign({},s,{class_name:enCls(s)}),linkOf(s),fc||"");w.querySelectorAll("text").forEach(t=>{if(t.textContent.trim()==="مسار التقدم التعليمي")t.textContent="الخطة الإثرائية"});return w}
-function enPrint(list){list=list.filter(linkOf);if(!list.length){msg("لا يوجد باركود صالح للطباعة — أصدر الباركود أولًا.",false);return}if(typeof QRCode!=="function"){msg("تعذر تحميل أداة الباركود؛ تحقق من الإنترنت.",false);return}
- const box=$("qcPrint");box.replaceChildren();list.forEach(s=>box.append(enCardNode(s)));document.body.classList.add("qc-printing");setTimeout(()=>{window.print();setTimeout(()=>document.body.classList.remove("qc-printing"),500)},400)}
-async function enImage(s){try{msg("⏳ جارٍ تجهيز صورة البطاقة…");const fc=await embedFont(),node=enCardNode(s,fc),svg=node.querySelector("svg");svg.setAttribute("width","2112");svg.setAttribute("height","1392");
- const img=new Image();await new Promise((r,j)=>{img.onload=r;img.onerror=()=>j(Error("تعذر رسم البطاقة"));img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(new XMLSerializer().serializeToString(svg))});await new Promise(r=>setTimeout(r,150));
- const cv=document.createElement("canvas");cv.width=2112;cv.height=1392;cv.getContext("2d").drawImage(img,0,0);const blob=await new Promise(r=>cv.toBlob(r,"image/png"));
- const name="بطاقة-تميز-"+s.full_name+".png",file=new File([blob],name,{type:"image/png"});
+/* بطاقة الباركود على نموذج «الخطة الإثرائية في مادة العلوم» — 4 بطاقات في الصفحة */
+let TPL=null;
+async function tplData(){if(TPL)return TPL;const b=await (await fetch("enrich-card.jpg?v=1")).blob();TPL=await new Promise((r,j)=>{const f=new FileReader();f.onload=()=>r(f.result);f.onerror=j;f.readAsDataURL(b)});return TPL}
+function fitName(n,w,max){const len=[...String(n)].length||1;return Math.max(24,Math.min(max,Math.floor(w/(len*0.52))))}
+function enCardSVG(s,tpl,fc){const url=linkOf(s),name=String(s.full_name||"").trim().replace(/\s+/g," "),cls=enCls(s),F="Tajawal,Tahoma,Arial,sans-serif";
+ const ns=fitName(name,370,46);
+ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1024" width="100%" height="100%">${fc?`<style>${fc}</style>`:""}<image href="${tpl}" x="0" y="0" width="1536" height="1024"/>${url?qrSvg(url,138,365,396):""}<text x="995" y="${480+ns*0.36}" text-anchor="end" font-family="${F}" font-weight="800" font-size="${ns}" fill="#0b2a6b"></text><text x="1075" y="${673+16}" text-anchor="end" font-family="${F}" font-weight="800" font-size="46" fill="#0b2a6b"></text></svg>`}
+function enCardNode(s,tpl,fc){const w=document.createElement("div");w.className="encard";w.innerHTML=enCardSVG(s,tpl,fc);const t=w.querySelectorAll("text");t[0].textContent=String(s.full_name||"").trim().replace(/\s+/g," ");t[1].textContent=enCls(s);return w}
+async function enCardCanvas(s,tpl,fc){const node=enCardNode(s,tpl,fc),svg=node.querySelector("svg");svg.setAttribute("width","1536");svg.setAttribute("height","1024");
+ const img=new Image();await new Promise((r,j)=>{img.onload=r;img.onerror=()=>j(Error("تعذر رسم البطاقة"));img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(new XMLSerializer().serializeToString(svg))});await new Promise(r=>setTimeout(r,120));
+ const cv=document.createElement("canvas");cv.width=1536;cv.height=1024;const g=cv.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,1536,1024);g.drawImage(img,0,0);return cv}
+/* ملف PDF أفقي A4 — 4 بطاقات في كل صفحة (136×90.7 مم) مع خطوط قص خفيفة */
+async function enPrint(list){list=list.filter(linkOf);if(!list.length){msg("لا يوجد باركود صالح للطباعة — أصدر الباركود أولًا.",false);return}
+ if(typeof QRCode!=="function"){msg("تعذر تحميل أداة الباركود؛ تحقق من الإنترنت.",false);return}
+ if(!window.jspdf){msg("تعذر تحميل أداة PDF؛ تحقق من الإنترنت.",false);return}
+ try{const tpl=await tplData(),fc=await embedFont(),{jsPDF}=window.jspdf,pdf=new jsPDF("l","mm","a4"),W=136,H=90.7,G=5,x0=(297-2*W-G)/2,y0=(210-2*H-G)/2;
+  for(let i=0;i<list.length;i++){msg("⏳ جارٍ تجهيز البطاقات… "+(i+1)+" من "+list.length);const k=i%4;if(i&&!k)pdf.addPage("a4","l");
+   const cv=await enCardCanvas(list[i],tpl,fc),x=x0+(k%2)*(W+G),y=y0+Math.floor(k/2)*(H+G);pdf.addImage(cv.toDataURL("image/jpeg",.92),"JPEG",x,y,W,H);
+   pdf.setDrawColor(190);pdf.setLineWidth(.15);pdf.setLineDashPattern([1.5,1.5],0);pdf.rect(x,y,W,H)}
+  const name=list.length===1?"بطاقة-"+list[0].full_name+".pdf":"بطاقات-الخطة-الإثرائية.pdf";pdf.save(name);msg("✓ جُهّز ملف البطاقات ("+list.length+" بطاقة • "+Math.ceil(list.length/4)+" صفحة). افتحه واطبعه بحجم A4 أفقي.",true)}
+ catch(e){msg("تعذر تجهيز البطاقات: "+e.message,false)}}
+async function enImage(s){try{msg("⏳ جارٍ تجهيز صورة البطاقة…");const cv=await enCardCanvas(s,await tplData(),await embedFont()),blob=await new Promise(r=>cv.toBlob(r,"image/png"));
+ const name="بطاقة-الخطة-الإثرائية-"+s.full_name+".png",file=new File([blob],name,{type:"image/png"});
  if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"بطاقة "+s.full_name,text:enShare(s,linkOf(s))});else{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000)}msg("✓ جُهّزت صورة بطاقة "+s.full_name,true)}catch(e){if(e.name!=="AbortError")msg(e.message,false)}}
 $("enIssue").onclick=async()=>{const list=act().filter(s=>!linkOf(s));if(!list.length){msg("✓ جميع الطلاب المتميزين لديهم باركود صالح.",true);return}
  if(!TOKFIELD)TOKFIELD=detectField();if(!TOKFIELD){msg("لم أجد حقل رمز الدخول في سجل الطالب.",false);return}
