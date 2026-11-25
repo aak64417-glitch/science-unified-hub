@@ -77,6 +77,24 @@ h2.sec{font-size:17px;margin:14px 2px 8px;color:var(--v2)}
 .fin .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .fin .row div{background:var(--soft);border-radius:14px;padding:8px}.fin .row b{display:block;font-size:22px;color:var(--v)}.fin .row span{font-size:12.5px;color:var(--muted);font-weight:500}
 .toast{position:fixed;bottom:22px;inset-inline:0;margin:auto;width:max-content;max-width:90%;background:var(--v2);color:#fff;border-radius:14px;padding:10px 16px;font-size:15px;z-index:50;animation:in .3s ease both}
+.pts{margin:6px 0 0;padding:0 18px 0 0;display:grid;gap:6px}.pts li{font-size:16px;line-height:1.75}
+.note{margin-top:10px;background:#fff8e6;border-radius:12px;padding:8px 12px;font-size:14.5px;line-height:1.7}
+.card2{display:flex;gap:12px;align-items:flex-start;background:var(--soft);border-radius:16px;padding:12px;margin-top:8px}.card2 .ic{font-size:30px}.card2 b{display:block;font-size:17px}.card2 small{color:var(--muted);font-weight:500}.card2 p{font-size:15.5px;margin-top:4px!important}.card2.job{background:#fff4d6}
+.lab h3{font-size:17px}.labsvg{width:100%;max-height:150px;background:#fbf9ff;border-radius:14px;margin:4px 0}
+.sl{display:block;margin:4px 0;font-size:14.5px}.sl input{width:100%;accent-color:var(--v)}
+.readout{background:var(--soft);border-radius:12px;padding:8px 10px;font-size:14.5px;margin:6px 0;line-height:1.8}
+.labmsg{margin-top:8px;font-size:14.5px;color:var(--v2);min-height:1.4em}
+.lt{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px}.lt th{background:var(--soft);padding:4px}.lt td{border-bottom:1px solid var(--line);padding:3px;text-align:center}
+.clsprog{font-size:13px;color:var(--muted);text-align:center}.clsit{background:#fff8e6;border:2px dashed var(--gold);border-radius:14px;padding:14px;text-align:center;font-size:18px;margin:8px 0}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}.bin{background:var(--v);color:#fff;border-radius:12px;padding:12px 6px;font-size:15px}.bin.ok{background:var(--ok)}.bin.no{background:var(--bad);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.clsdone{display:grid;gap:4px;font-size:14px}.chk{display:block;font-size:14.5px;margin:4px 0}
+.lv2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.lv2>div{background:var(--soft);border-radius:12px;padding:6px 8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.chip{background:var(--soft);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;border:2px solid transparent}.chip.on{border-color:var(--v);background:#fff}
+.ctr{display:grid;gap:6px;margin:6px 0}.ctr>div{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:12px;padding:6px 10px;font-size:15px}.ctr span{flex:1}.ctr button{width:36px;height:36px;border-radius:10px;background:var(--v);color:#fff;font-size:20px}.ctr b{min-width:24px;text-align:center}
+.upbox{margin-top:12px;background:#f1fbf6;border:2px dashed #9fd8bf;border-radius:16px;padding:10px 12px}.upbox small{display:block;color:var(--muted);font-weight:500;font-size:13px}
+.uprow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.upbtn{background:#fff;border:1px solid #9fd8bf;border-radius:12px;padding:8px 12px;font-size:14.5px;cursor:pointer}
+.uplist{margin-top:6px;display:grid;gap:4px}.upit{font-size:14px;background:#fff;border-radius:10px;padding:5px 10px}.upit.ok{color:var(--ok)}.upit.err{color:var(--bad)}
 @media(max-height:680px){.pane{padding:14px}.pane p{font-size:15.5px;line-height:1.7}.opt{padding:8px 12px;font-size:15px}.pane h3{font-size:17px}}
 </style>
 </head>
@@ -103,7 +121,7 @@ h2.sec{font-size:17px;margin:14px 2px 8px;color:var(--v2)}
  </div>
 </div>
 
-<script src="enrich-data.js?v=20261125a"></script>
+<script src="enrich-data.js?v=20261125b"></script>
 <script>
 const BASE="https://yqoleecldcvnfdmkqgeq.supabase.co",KEY="sb_publishable_P-wXPFs08V6kTx5FkFZXsA_x-ElUhhd",
 Q=new URLSearchParams(location.search),token=Q.get("t")||"",DEMO=!token&&Q.has("demo"),
@@ -130,57 +148,118 @@ function logLogin(){if(DEMO||!lessons.length)return;const key=lessons[0].key,k="
 (function(){if(DEMO)return;const VK="masar_visit_"+token.slice(-16);let sent=0;const send=()=>{try{const v=JSON.parse(sessionStorage.getItem(VK)||"null");if(!v||!v.key||Date.now()-sent<15000)return;sent=Date.now();fetch(BASE+"/rest/v1/rpc/masar_student_submit",{method:"POST",keepalive:true,headers:H,body:JSON.stringify({p_token:token,p_lesson_key:v.key,p_skill_key:"خروج المنصة",p_skill_title:"خروج المنصة",p_assessment_kind:"خروج",p_correct:0,p_total:1,p_seconds:Math.min(36000,Math.round((Date.now()-v.start)/1000))})}).catch(()=>{})}catch(e){}};addEventListener("pagehide",send);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")send()})})();
 
 /* ===== النقاط والمستويات والأوسمة ===== */
-const ptsOf=d=>d?(d.best||0)*10+(d.best===4?10:0)+(d.task?20:0):0;
+const ptsOf=d=>d?(d.best>0?d.best:0)*10+(d.best!=null&&d.best===(d.n||4)?10:0)+(d.task?20:0)+(d.lab?20:0)+((d.up&&d.up.length)?10:0):0;
 const totalPts=()=>Object.values(me.done).reduce((a,d)=>a+ptsOf(d),0);
 const LEVELS=[[0,"🔭 مستكشف"],[60,"🔬 باحث"],[150,"🧠 مفكّر"],[280,"🏅 عالم صغير"],[450,"👑 عبقري العلوم"]];
-const BADGES=[["🌟","أول إنجاز",()=>Object.values(me.done).some(d=>d.best!=null||d.task)],["🧠","مفكر ناقد",()=>Object.values(me.done).filter(d=>d.best===4).length>=3],["🛠️","مبتكر",()=>Object.values(me.done).filter(d=>d.task).length>=3],["🏆","بطل الإثراء",()=>mine().length>0&&mine().every(m=>isDone(m.idx))]];
-const isDone=i=>{const d=me.done[i];return !!(d&&d.task&&d.best>=3)};
+const BADGES=[["🌟","أول إنجاز",()=>Object.values(me.done).some(d=>d.best!=null||d.task)],["🧪","عالم المختبر",()=>Object.values(me.done).filter(d=>d.lab).length>=3],["🧠","مفكر ناقد",()=>Object.values(me.done).filter(d=>d.best!=null&&d.best===(d.n||4)).length>=3],["📎","باحث مبدع",()=>Object.values(me.done).filter(d=>d.up&&d.up.length).length>=2],["🛠️","مبتكر",()=>Object.values(me.done).filter(d=>d.task).length>=3],["🏆","بطل الإثراء",()=>mine().length>0&&mine().every(m=>isDone(m.idx))]];
+const isDone=i=>{const d=me.done[i];return !!(d&&d.task&&d.best>=Math.max(2,(d.n||4)-1))};
 function mine(){return lessons.map(l=>({l,idx:ENRICH.findIndex(e=>e.key===l.key||e.t===l.key||e.key===l.title||e.t===l.title)}))}
 
 function renderHome(){const list=mine(),pts=totalPts();let lv=0;LEVELS.forEach((x,i)=>{if(pts>=x[0])lv=i});
  $("sPts").textContent=AR(pts);$("sDone").textContent=AR(list.filter(m=>m.idx>=0&&isDone(m.idx)).length);
- const ds=Object.values(me.done).filter(d=>d.best!=null);$("sAcc").textContent=ds.length?AR(Math.round(ds.reduce((a,d)=>a+d.best,0)*100/(ds.length*4)))+"٪":"—";
+ const ds=Object.values(me.done).filter(d=>d.best!=null);$("sAcc").textContent=ds.length?AR(Math.round(ds.reduce((a,d)=>a+d.best,0)*100/ds.reduce((a,d)=>a+(d.n||4),0)))+"٪":"—";
  const nx=LEVELS[lv+1];$("lvName").textContent=LEVELS[lv][1];$("lvBar").style.width=(nx?Math.round((pts-LEVELS[lv][0])*100/(nx[0]-LEVELS[lv][0])):100)+"%";$("lvNext").textContent=nx?"التالي: "+nx[1]:"أعلى مستوى ✓";
  $("badges").innerHTML=BADGES.map(([ic,n,ok])=>`<span class="bd ${ok()?"":"off"}">${ic} ${n}</span>`).join("");
  const g=$("grid");g.innerHTML="";
  if(!list.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">⏳ لم يُفعّل معلمك أي مهمة إثرائية بعد.<br>عد قريبًا!</div>';return}
  list.forEach(m=>{const b=document.createElement("button");b.type="button";const E=ENRICH[m.idx];
   if(!E){b.className="ms soon";b.innerHTML=`<i>⏳</i><span><b>${esc(m.l.title||m.l.key)}</b><small>المهمة الإثرائية لهذا الدرس قريبًا</small></span>`;g.append(b);return}
-  const d=me.done[m.idx],done=isDone(m.idx),st=d&&d.best!=null?"★".repeat(d.best)+"☆".repeat(4-d.best):"";
-  b.className="ms"+(done?" done":"");b.innerHTML=`<i>${done?"✅":E.ic}</i><span><b>${esc(E.t)}</b><small>${done?"مكتملة • "+AR(ptsOf(d))+" نقطة":d?"أكمل مهمتك…":"٤ تحديات + مهمة إبداعية"}</small>${st?`<div class="stars">${st}</div>`:""}</span>`;
+  const d=me.done[m.idx],done=isDone(m.idx),st=d&&d.best!=null?"★".repeat(d.best)+"☆".repeat(Math.max(0,(d.n||4)-d.best)):"";
+  b.className="ms"+(done?" done":"");b.innerHTML=`<i>${done?"✅":E.ic}</i><span><b>${esc(E.t)}</b><small>${done?"مكتملة • "+AR(ptsOf(d))+" نقطة":d?"أكمل مهمتك…":"اعرف أكثر • مختبر • تحديات • مشروع"}</small>${st?`<div class="stars">${st}</div>`:""}</span>`;
   b.onclick=()=>openMission(m);g.append(b)})}
 
-/* ===== المهمة ===== */
+/* ===== المهمة (الإصدار الثاني): اعرف أكثر ← العالِم والمهنة ← المختبر ← التحديات ← المشروع ورفع الملف ===== */
+const SK_L="إثراء — المختبر الافتراضي",BUCKET="masar-uploads";
 let M=null;
-function openMission(m){const E=ENRICH[m.idx];M={m,E,step:0,ans:[],t0:Date.now()};$("mTitle").textContent=E.ic+" "+E.t;$("home").classList.add("hide");$("mission").classList.remove("hide");draw()}
-$("mBack").onclick=()=>{if(M&&M.step>0&&M.step<6&&!confirm("الخروج من المهمة؟ لن تُحفظ إجاباتك في هذه المحاولة."))return;closeMission()};
+const STEPS=E=>["read","sci","lab",...E.q.map((q,i)=>"q"+i),"task","fin"];
+function openMission(m){const E=ENRICH[m.idx];M={m,E,st:STEPS(E),step:0,ans:[],pick:[],labOk:false,labNote:"",up:[],t0:Date.now()};$("mTitle").textContent=E.ic+" "+E.t;$("home").classList.add("hide");$("mission").classList.remove("hide");draw()}
+$("mBack").onclick=()=>{if(M&&M.step>0&&M.st[M.step]!=="fin"&&!confirm("الخروج من المهمة؟ لن تُحفظ هذه المحاولة."))return;closeMission()};
 function closeMission(){M=null;$("mission").classList.add("hide");$("home").classList.remove("hide");renderHome();window.scrollTo(0,0)}
-function dots(){$("dots").innerHTML=Array.from({length:6},(_,i)=>{let c=i===M.step?"on":"";if(i>=1&&i<=4&&M.ans[i-1]!=null)c=M.ans[i-1]?"ok":"no";if(i<M.step&&(i===0||i===5))c="ok";return `<i class="${c}"></i>`}).join("")}
+function dots(){$("dots").innerHTML=M.st.slice(0,-1).map((k,i)=>{let c=i===M.step?"on":i<M.step?"ok":"";if(k[0]==="q"&&k!=="q"&&M.ans[+k.slice(1)]!=null)c=M.ans[+k.slice(1)]?"ok":"no";return `<i class="${c}"></i>`}).join("")}
 function foot(btns){const f=$("foot");f.innerHTML="";btns.forEach(([t,cls,fn,dis])=>{const b=document.createElement("button");b.type="button";b.className="btn "+(cls||"");b.textContent=t;b.disabled=!!dis;b.onclick=fn;f.append(b)})}
-function draw(){dots();const s=$("stage"),E=M.E;s.scrollTop=0;
- if(M.step===0){s.innerHTML=`<div class="pane"><span class="tag g">💡 فكرة إثرائية</span><h3>هل تعلم؟</h3><p>${esc(E.idea)}</p></div>`;foot([["ابدأ التحديات ←","g",()=>{M.step=1;draw()}]]);return}
- if(M.step>=1&&M.step<=4){const qi=M.step-1,q=E.q[qi],a=M.ans[qi];
-  s.innerHTML=`<div class="pane"><span class="tag">🧠 تحدٍّ ${AR(M.step)} من ٤ • ${esc(q[4])}</span><h3>${esc(q[0])}</h3><div class="opts">${q[1].map((o,i)=>`<button type="button" class="opt" data-i="${i}"><span>${"أبجد"[i]}</span>${esc(o)}</button>`).join("")}</div><div id="why"></div></div>`;
-  const show=pick=>{s.querySelectorAll(".opt").forEach(b=>{const i=+b.dataset.i;b.disabled=true;if(i===q[2])b.classList.add("ok");else if(i===pick)b.classList.add("no")});$("why").innerHTML=`<div class="why ${pick===q[2]?"ok":"no"}">${pick===q[2]?"✅ إجابة متميزة! ":"💡 الإجابة الصحيحة: «"+esc(q[1][q[2]])+"». "}${esc(q[3])}</div>`};
-  if(a!=null)show(M.pick[qi]);
-  s.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(M.ans[qi]!=null)return;const i=+b.dataset.i;M.ans[qi]=i===q[2];(M.pick=M.pick||[])[qi]=i;show(i);dots();foot([[M.step<4?"التحدي التالي ←":"إلى المهمة الإبداعية ←","",()=>{M.step++;draw()}]])});
-  foot([["اختر إجابة أولًا","",null,true]]);if(a!=null)foot([[M.step<4?"التحدي التالي ←":"إلى المهمة الإبداعية ←","",()=>{M.step++;draw()}]]);return}
- if(M.step===5){const T=E.task;s.innerHTML=`<div class="pane"><span class="tag g">🛠️ المهمة الإبداعية</span><h3>${esc(T.h)}</h3><p>${esc(T.p)}</p><ul class="steps">${T.steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><p style="font-size:14px;color:var(--muted);margin-top:10px">📸 نفّذ المهمة واعرض عملك على معلمك، ثم اضغط «أنجزت المهمة».</p></div>`;
-  foot([["لاحقًا","s",()=>finish(false)],["✓ أنجزت المهمة","g",()=>finish(true)]]);return}
- const r=M.res;s.innerHTML=`<div class="pane fin"><div class="big">${r.c===4?"🏆":r.c>=3?"🌟":"💪"}</div><h3>${r.c===4?"أداء عبقري!":r.c>=3?"أحسنت يا متميز!":"محاولة جيدة، تستطيع أفضل!"}</h3><div style="color:var(--gold);font-size:26px;letter-spacing:3px">${"★".repeat(r.c)}${"☆".repeat(4-r.c)}</div><div class="row"><div><b>${AR(r.c)}/٤</b><span>تحديات صحيحة</span></div><div><b>${r.task?"✓":"—"}</b><span>المهمة الإبداعية</span></div><div><b>+${AR(r.pts)}</b><span>نقطة</span></div></div><p style="font-size:14px;color:var(--muted);margin-top:10px">${r.sent?"✓ وصلت نتيجتك إلى معلمك":"⏳ ستُرسل نتيجتك لمعلمك تلقائيًا عند توفر الإنترنت"}</p></div>`;
+const next=()=>{M.step++;draw()};
+function draw(){dots();const s=$("stage"),E=M.E,k=M.st[M.step];s.scrollTop=0;
+ if(k==="read"){const R=E.read||{h:"هل تعلم؟",p:[E.idea]};s.innerHTML=`<div class="pane"><span class="tag g">📖 اعرف أكثر</span><h3>${esc(R.h)}</h3><ul class="pts">${R.p.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>${E.read?`<div class="note">💡 ${esc(E.idea)}</div>`:""}</div>`;foot([["التالي: العالِم والمهنة ←","g",next]]);return}
+ if(k==="sci"){if(!E.sci){next();return}s.innerHTML=`<div class="pane"><span class="tag">🧑‍🔬 عالِم ومهنة</span><div class="card2"><div class="ic">🧑‍🔬</div><div><b>${esc(E.sci.n)}</b><small>${esc(E.sci.y)}</small><p>${esc(E.sci.t)}</p></div></div><div class="card2 job"><div class="ic">💼</div><div><b>مهنة: ${esc(E.job.n)}</b><p>${esc(E.job.t)}</p></div></div></div>`;foot([["التالي: المختبر الافتراضي ←","g",next]]);return}
+ if(k==="lab"){if(!E.lab){next();return}s.innerHTML=`<div class="pane lab"><span class="tag g">🧪 المختبر الافتراضي</span><h3>${esc(E.lab.title)}</h3><div id="labHost"></div><div id="labMsg" class="labmsg"></div></div>`;
+  const ok=note=>{if(M.labOk)return;M.labOk=true;M.labNote=note||"";$("labMsg").innerHTML="✅ أحسنت! أنجزت المختبر"+(note?" — "+esc(note):"");foot([["التالي: تحديات التفكير ←","g",next]])};
+  LABS[E.lab.type]($("labHost"),E.lab,ok,t=>{$("labMsg").innerHTML=t});foot([["أكمل المختبر أولًا","",null,true],["تخطَّ","s",next]]);if(M.labOk)ok(M.labNote);return}
+ if(k[0]==="q"){const qi=+k.slice(1),q=E.q[qi],a=M.ans[qi],n=E.q.length;
+  s.innerHTML=`<div class="pane"><span class="tag">🧠 تحدٍّ ${AR(qi+1)} من ${AR(n)} • ${esc(q[4])}</span><h3>${esc(q[0])}</h3><div class="opts">${q[1].map((o,i)=>`<button type="button" class="opt" data-i="${i}"><span>${"أبجد"[i]}</span>${esc(o)}</button>`).join("")}</div><div id="why"></div></div>`;
+  const nx=qi<n-1?"التحدي التالي ←":"إلى المشروع ←";
+  const show=pick=>{s.querySelectorAll(".opt").forEach(b=>{const i=+b.dataset.i;b.disabled=true;if(i===q[2])b.classList.add("ok");else if(i===pick)b.classList.add("no")});$("why").innerHTML=`<div class="why ${pick===q[2]?"ok":"no"}">${pick===q[2]?"✅ إجابة متميزة! ":"💡 الإجابة الصحيحة: «"+esc(q[1][q[2]])+"». "}${esc(q[3])}</div>`;foot([[nx,"",next]])};
+  if(a!=null)show(M.pick[qi]);else foot([["اختر إجابة أولًا","",null,true]]);
+  s.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(M.ans[qi]!=null)return;const i=+b.dataset.i;M.ans[qi]=i===q[2];M.pick[qi]=i;show(i);dots()});return}
+ if(k==="task"){const T=E.task;s.innerHTML=`<div class="pane"><span class="tag g">🛠️ المشروع / التحدي البحثي</span><h3>${esc(T.h)}</h3><p>${esc(T.p)}</p><ul class="steps">${T.steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+   <div class="upbox"><b>📎 ارفع عملك لمعلمك</b><small>صورة لعملك أو ملف (PDF / Word / PowerPoint) — حتى 10 م.ب</small><div class="uprow"><label class="upbtn">📷 تصوير<input type="file" accept="image/*" capture="environment" id="upCam" hidden></label><label class="upbtn">🖼️ صورة من الجهاز<input type="file" accept="image/*" id="upImg" hidden></label><label class="upbtn">📄 إرفاق ملف<input type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,image/*" id="upFile" hidden></label></div><div id="upList" class="uplist"></div></div></div>`;
+  ["upCam","upImg","upFile"].forEach(id=>$(id).onchange=e=>{const f=e.target.files&&e.target.files[0];e.target.value="";if(f)doUpload(f)});
+  renderUps();return}
+ const r=M.res,n=E.q.length;s.innerHTML=`<div class="pane fin"><div class="big">${r.c===n?"🏆":r.c>=n-1?"🌟":"💪"}</div><h3>${r.c===n?"أداء عبقري!":r.c>=n-1?"أحسنت يا متميز!":"محاولة جيدة، تستطيع أفضل!"}</h3><div class="row"><div><b>${r.lab?"✓":"—"}</b><span>المختبر</span></div><div><b>${AR(r.c)}/${AR(n)}</b><span>التحديات</span></div><div><b>${r.up?"📎 "+AR(r.up):r.task?"✓":"—"}</b><span>المشروع</span></div></div><p style="font-size:15px;margin-top:10px">+${AR(r.pts)} نقطة تميّز</p><p style="font-size:14px;color:var(--muted)">${r.sent?"✓ وصلت نتيجتك إلى معلمك":"⏳ ستُرسل نتيجتك لمعلمك تلقائيًا عند توفر الإنترنت"}</p></div>`;
  foot([["إعادة المحاولة","s",()=>openMission(M.m)],["العودة للمهمات","",closeMission]])}
+function renderUps(){const box=$("upList");if(!box)return;box.innerHTML=M.up.map(u=>`<div class="upit ${u.err?"err":u.done?"ok":""}">${u.err?"✗":u.done?"✓":"⏳"} ${esc(u.name)}${u.err?" — "+esc(u.err):u.done?"":" … جارٍ الرفع"}</div>`).join("");
+ const any=M.up.some(u=>u.done),busy=M.up.some(u=>!u.done&&!u.err);foot([["لاحقًا","s",()=>finish(false)],[any?"✓ أنهيت المشروع ورفعته":"✓ أنجزت المشروع","g",()=>finish(true),busy]])}
+/* ضغط الصور قبل الرفع (أسرع على الجوال) */
+async function shrink(f){if(!/^image\//.test(f.type)||/gif|svg/.test(f.type))return f;try{const url=URL.createObjectURL(f),img=new Image();await new Promise((r,j)=>{img.onload=r;img.onerror=j;img.src=url});const k=Math.min(1,1600/Math.max(img.width,img.height)),cv=document.createElement("canvas");cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);URL.revokeObjectURL(url);const b=await new Promise(r=>cv.toBlob(r,"image/jpeg",.82));return b?new File([b],f.name.replace(/\.[^.]+$/,"")+".jpg",{type:"image/jpeg"}):f}catch(e){return f}}
+async function folder(){const h=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(token||"demo"));return "t/"+[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("").slice(0,16)}
+async function doUpload(f0){if(M.up.filter(u=>u.done).length>=5){toast("يكفي 5 ملفات لكل مشروع");return}const u={name:f0.name};M.up.push(u);renderUps();
+ try{const f=await shrink(f0);if(f.size>10*1024*1024)throw Error("الملف أكبر من 10 م.ب");const ext=(f.name.split(".").pop()||"bin").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,5)||"bin";
+  const path=(await folder())+"/"+M.m.idx+"-"+Date.now()+"."+ext;
+  if(!DEMO){const r=await fetch(BASE+"/storage/v1/object/"+BUCKET+"/"+path,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":f.type||"application/octet-stream","x-upsert":"false"},body:f});
+   if(!r.ok){let t="";try{t=(await r.json()).message||""}catch(e){}throw Error(/bucket|not found/i.test(t)?"خدمة الرفع غير مفعّلة بعد — أخبر معلمك":/policy|row-level|denied|Unauthorized/i.test(t)?"خدمة الرفع غير مفعّلة بعد — أخبر معلمك":t||"تعذر الرفع")}}
+  u.done=true;u.path=path;const d=me.done[M.m.idx]=me.done[M.m.idx]||{};(d.up=d.up||[]).push({n:f0.name,p:path,at:Date.now()});save();toast("✓ رُفع الملف")}
+ catch(e){u.err=e.message||"تعذر الرفع"}renderUps()}
+async function finish(task){const n=M.E.q.length,c=M.ans.filter(Boolean).length,secs=(Date.now()-M.t0)/1000,idx=M.m.idx,key=M.m.l.key,ups=M.up.filter(u=>u.done).length;
+ const prev=me.done[idx]||{},before=ptsOf(me.done[idx]);const d=Object.assign({},prev,{best:Math.max(prev.best??-1,c),n,task:!!(prev.task||task),lab:!!(prev.lab||M.labOk),tries:(prev.tries||0)+1,last:Date.now()});me.done[idx]=d;save();
+ M.res={c,task,lab:M.labOk,up:ups,pts:Math.max(0,ptsOf(d)-before),sent:true};M.step=M.st.length-1;draw();
+ let ok=await submit(sub(key,SK_Q,c,n,secs));if(M.labOk&&!prev.lab)ok=await submit(sub(key,SK_L,1,1,secs))&&ok;if(task&&(!prev.task||ups))ok=await submit(sub(key,SK_T,ups?1:1,1,secs))&&ok;
+ if(M){M.res.sent=ok;if(M.st[M.step]==="fin")draw()}if(c===n)confetti();toastBadges()}
 
-async function finish(task){const c=M.ans.filter(Boolean).length,secs=(Date.now()-M.t0)/1000,idx=M.m.idx,key=M.m.l.key;
- const prev=me.done[idx]||{},before=ptsOf(me.done[idx]);const d={best:Math.max(prev.best??-1,c),task:!!(prev.task||task),tries:(prev.tries||0)+1,last:Date.now()};me.done[idx]=d;save();
- M.res={c,task,pts:Math.max(0,ptsOf(d)-before),sent:true};M.step=6;draw();
- const ok1=await submit(sub(key,SK_Q,c,4,secs));let ok2=true;if(task&&!prev.task)ok2=await submit(sub(key,SK_T,1,1,secs));
- M&&(M.res.sent=ok1&&ok2,M.step===6&&draw());
- if(c===4)confetti();toastBadges()}
 let shown=new Set(BADGES.filter(b=>b[2]()).map(b=>b[1]));
 function toastBadges(){BADGES.forEach(([ic,n,ok])=>{if(!shown.has(n)&&ok()){shown.add(n);toast(ic+" حصلت على وسام: "+n)}})}
 function toast(t){const e=document.createElement("div");e.className="toast";e.textContent=t;document.body.append(e);setTimeout(()=>e.remove(),3200)}
 function confetti(){for(let i=0;i<40;i++){const e=document.createElement("i");e.style.cssText=`position:fixed;top:-12px;left:${Math.random()*100}vw;width:9px;height:14px;background:${["#f2b632","#5b2fb3","#12a17a","#e8590c"][i%4]};border-radius:2px;z-index:60;transition:transform 1.6s ease-in,opacity 1.6s`;document.body.append(e);requestAnimationFrame(()=>{e.style.transform=`translateY(${innerHeight+40}px) rotate(${Math.random()*720}deg)`;e.style.opacity=".2"});setTimeout(()=>e.remove(),1700)}}
-
+/* ===== محرك المختبرات الافتراضية ===== */
+const sl=(id,lab,min,max,step,val,unit)=>`<label class="sl"><span>${lab}: <b id="${id}V">${val}</b> ${unit}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"></label>`;
+const LABS={
+classify(host,L,ok,say){let i=0,err=0;const items=L.items.slice();const one=()=>{if(i>=items.length){ok(err?"أخطأت في "+AR(err)+" ثم صحّحت":"صنّفت الكل صحيحًا من أول مرة");host.innerHTML=`<div class="clsdone">${items.map(x=>`<span>${esc(x[0])} ← <b>${esc(L.bins[x[1]])}</b></span>`).join("")}</div>`;return}
+  const it=items[i];host.innerHTML=`<div class="clsprog">${AR(i+1)} / ${AR(items.length)}</div><div class="clsit">${esc(it[0])}</div><div class="bins">${L.bins.map((b,j)=>`<button type="button" class="bin" data-j="${j}">${esc(b)}</button>`).join("")}</div>`;
+  host.querySelectorAll(".bin").forEach(b=>b.onclick=()=>{const j=+b.dataset.j;if(j===it[1]){b.classList.add("ok");say("✅ صحيح");setTimeout(()=>{i++;one()},450)}else{err++;b.classList.add("no");say("❌ فكّر مرة أخرى")}})};one()},
+pendulum(host,L,ok,say){const rows=[];host.innerHTML=`<svg viewBox="0 0 300 150" class="labsvg"><line x1="40" y1="8" x2="260" y2="8" stroke="#6b5f8a" stroke-width="4"/><g id="pd" transform="rotate(0 150 8)"><line id="pdL" x1="150" y1="8" x2="150" y2="100" stroke="#3b1f6e" stroke-width="2"/><circle id="pdB" cx="150" cy="100" r="10" fill="#f2b632"/></g></svg>${sl("pL","طول الخيط",20,100,20,60,"سم")}${sl("pM","الكتلة",50,200,50,100,"جم")}<button type="button" class="btn" id="pGo" style="width:100%;margin:6px 0">⏱️ قِس زمن 10 ذبذبات</button><table class="lt"><thead><tr><th>الطول</th><th>الكتلة</th><th>زمن 10 ذبذبات</th></tr></thead><tbody id="pT"></tbody></table>`;
+  const L_=()=>+$("pL").value,m=()=>+$("pM").value;const upd=()=>{$("pLV").textContent=L_();$("pMV").textContent=m();const y=8+L_()*1.3;$("pdL").setAttribute("y2",y);$("pdB").setAttribute("cy",y);$("pdB").setAttribute("r",6+m()/40)};["pL","pM"].forEach(id=>$(id).oninput=upd);upd();
+  say("غيّر متغيرًا واحدًا في كل مرة، وسجّل 3 قياسات على الأقل.");
+  $("pGo").onclick=()=>{const T=2*Math.PI*Math.sqrt(L_()/100/9.8),t10=(10*T).toFixed(1);let a=0,st=performance.now();$("pGo").disabled=true;const an=n=>{const k=(n-st)/1000;const ang=22*Math.cos(2*Math.PI*k/(T*1.2));$("pd").setAttribute("transform",`rotate(${ang} 150 8)`);if(k<T*2.4)requestAnimationFrame(an);else{$("pd").setAttribute("transform","rotate(0 150 8)");$("pGo").disabled=false;rows.push([L_(),m(),t10]);$("pT").innerHTML=rows.slice(-5).map(r=>`<tr><td>${r[0]} سم</td><td>${r[1]} جم</td><td>${r[2]} ث</td></tr>`).join("");
+   const Ls=new Set(rows.map(r=>r[0])),Ms=new Set(rows.map(r=>r[1]));if(rows.length>=3&&Ls.size>=2&&Ms.size>=2)ok("لاحظ: الطول يغيّر الزمن، والكتلة لا تغيّره");else say("سجّلت "+AR(rows.length)+" قياس — جرّب أطوالًا وكتلًا مختلفة")}};requestAnimationFrame(an)}},
+motion(host,L,ok,say){const hits=new Set();host.innerHTML=`<svg viewBox="0 0 300 70" class="labsvg"><rect x="0" y="50" width="300" height="6" fill="#d9cff0"/><line x1="270" y1="20" x2="270" y2="56" stroke="#e8590c" stroke-width="3"/><text x="270" y="15" font-size="10" text-anchor="middle" fill="#e8590c">النهاية</text><text id="car" x="10" y="48" font-size="26">🏎️</text></svg>${sl("mD","المسافة",10,100,10,50,"م")}${sl("mT","الزمن",2,20,1,10,"ث")}<div class="readout">السرعة = <b id="mV"></b></div><button type="button" class="btn" id="mGo" style="width:100%">🚦 انطلق</button>`;
+  const upd=()=>{$("mDV").textContent=$("mD").value;$("mTV").textContent=$("mT").value;$("mV").textContent=AR((+$("mD").value/+$("mT").value).toFixed(2).replace(/\.00$/,""))+" م/ث"};["mD","mT"].forEach(id=>$(id).oninput=upd);upd();say("الهدف: سرعة 5 م/ث بتركيبتين مختلفتين من المسافة والزمن.");
+  $("mGo").onclick=()=>{const d=+$("mD").value,t=+$("mT").value,v=d/t,dur=Math.max(1,t/4)*1000,st=performance.now(),car=$("car");$("mGo").disabled=true;const an=n=>{const k=Math.min(1,(n-st)/dur);car.setAttribute("x",10+250*k);if(k<1)requestAnimationFrame(an);else{$("mGo").disabled=false;if(Math.abs(v-5)<1e-9){hits.add(d+"/"+t);if(hits.size>=2)ok("حققت 5 م/ث بطريقتين: "+[...hits].map(h=>h.replace("/"," م في ")+" ث").join(" و "));else say("✅ 5 م/ث! ابحث عن تركيبة ثانية مختلفة")}else say("السرعة "+AR(v.toFixed(2))+" م/ث — "+(v>5?"أسرع من المطلوب":"أبطأ من المطلوب"))}};requestAnimationFrame(an)}},
+newton(host,L,ok,say){const hits=new Set();host.innerHTML=`<svg viewBox="0 0 300 70" class="labsvg"><rect x="0" y="52" width="300" height="5" fill="#d9cff0"/><g id="cart"><rect x="10" y="28" width="46" height="22" rx="4" fill="#5b2fb3"/><circle cx="20" cy="52" r="5" fill="#333"/><circle cx="46" cy="52" r="5" fill="#333"/><text x="33" y="44" font-size="10" fill="#fff" text-anchor="middle" id="cartM"></text></g><text x="2" y="20" font-size="11" fill="#e8590c" id="fArr">→</text></svg>${sl("nF","القوة",0,40,2,10,"نيوتن")}${sl("nM","الكتلة",2,20,2,10,"كجم")}<label class="chk"><input type="checkbox" id="nFr"> احتكاك مع السطح (4 نيوتن)</label><div class="readout">التسارع = (القوة − الاحتكاك) ÷ الكتلة = <b id="nA"></b></div><button type="button" class="btn" id="nGo" style="width:100%">▶ ادفع العربة</button>`;
+  const a=()=>Math.max(0,+$("nF").value-($("nFr").checked?4:0))/+$("nM").value;const upd=()=>{$("nFV").textContent=$("nF").value;$("nMV").textContent=$("nM").value;$("cartM").textContent=$("nM").value+" كجم";$("nA").textContent=AR(a().toFixed(2).replace(/\.00$/,""))+" م/ث²";$("fArr").textContent="→".repeat(Math.max(1,Math.round(+$("nF").value/8)))};["nF","nM","nFr"].forEach(id=>$(id).oninput=upd);upd();say("الهدف: تسارع 2 م/ث² بكتلتين مختلفتين.");
+  $("nGo").onclick=()=>{const A=a(),st=performance.now(),g=$("cart");$("nGo").disabled=true;const an=n=>{const k=(n-st)/1000,x=Math.min(230,0.5*A*k*k*14);g.setAttribute("transform",`translate(${x} 0)`);if(k<2.2&&x<230)requestAnimationFrame(an);else{$("nGo").disabled=false;setTimeout(()=>g.setAttribute("transform",""),500);if(Math.abs(A-2)<1e-9){hits.add($("nM").value);if(hits.size>=2)ok("كلما زادت الكتلة احتجت إلى قوة أكبر للتسارع نفسه");else say("✅ تسارع 2 م/ث²! غيّر الكتلة وحقق الهدف مرة أخرى")}else say(A===0?"لم تتحرك العربة: القوة لم تتغلب على الاحتكاك":"التسارع "+AR(A.toFixed(2))+" م/ث²")}};requestAnimationFrame(an)}},
+lever(host,L,ok,say){const found=new Set();host.innerHTML=`<svg viewBox="0 0 300 120" class="labsvg"><polygon points="150,100 138,118 162,118" fill="#6b5f8a"/><g id="beam"><rect x="20" y="92" width="260" height="8" rx="3" fill="#c98a07"/>${[1,2,3,4].map(i=>`<text x="${150-i*30}" y="112" font-size="9" text-anchor="middle" fill="#6b5f8a">${i}</text><text x="${150+i*30}" y="112" font-size="9" text-anchor="middle" fill="#6b5f8a">${i}</text>`).join("")}<g id="wL"></g><g id="wR"></g></g></svg><div class="lv2"><div><b>اليسار</b>${sl("lW1","الثقل",1,4,1,2,"وحدة")}${sl("lD1","البعد",1,4,1,2,"")}</div><div><b>اليمين</b>${sl("lW2","الثقل",1,4,1,1,"وحدة")}${sl("lD2","البعد",1,4,1,3,"")}</div></div><div class="readout" id="lR"></div>`;
+  const box=(g,x,w)=>{$(g).innerHTML=Array.from({length:w},(_,i)=>`<rect x="${x-10}" y="${80-i*12}" width="20" height="11" rx="2" fill="#5b2fb3"/>`).join("")};
+  const upd=()=>{const w1=+$("lW1").value,d1=+$("lD1").value,w2=+$("lW2").value,d2=+$("lD2").value;["lW1","lD1","lW2","lD2"].forEach(id=>$(id+"V").textContent=$(id).value);box("wL",150-d1*30,w1);box("wR",150+d2*30,w2);const tq=w2*d2-w1*d1;$("beam").setAttribute("transform",`rotate(${Math.max(-12,Math.min(12,tq*3))} 150 96)`);
+   $("lR").innerHTML=`${AR(w1)}×${AR(d1)} = <b>${AR(w1*d1)}</b> &nbsp;|&nbsp; ${AR(w2)}×${AR(d2)} = <b>${AR(w2*d2)}</b> ${tq===0?"⚖️ متزنة":""}`;
+   if(tq===0){const key=[w1,d1,w2,d2].join("");if(!found.has(key)){found.add(key);if(found.size>=3)ok("الاتزان: الثقل × البعد متساويان في الجهتين");else say("✅ اتزان! ("+AR(found.size)+" من ٣) جرّب حالة مختلفة")}}};
+  ["lW1","lD1","lW2","lD2"].forEach(id=>$(id).oninput=upd);upd();say("حرّك الأثقال والأبعاد حتى تتزن الرافعة — ابحث عن 3 حالات اتزان مختلفة.")},
+density(host,L,ok,say){const OBJ=[["قطعة فلين",5,20,"🟫"],["شمعة",45,50,"🕯️"],["مكعب بلاستيك",60,50,"🧊"],["مسمار حديد",79,10,"🔩"]],LIQ=[["زيت",0.8,"#f6d365"],["ماء",1.0,"#9ed8ff"],["عسل",1.4,"#e0a106"]];let o=0,l=1,tests=0,right=0;const tried=new Set();
+  host.innerHTML=`<svg viewBox="0 0 300 120" class="labsvg"><rect x="90" y="30" width="120" height="85" rx="6" fill="#f3edff" stroke="#6b5f8a"/><rect id="liq" x="92" y="55" width="116" height="58" rx="4"/><text id="obj" x="150" y="25" font-size="24" text-anchor="middle"></text></svg><div class="chips" id="dO"></div><div class="chips" id="dL"></div><div class="readout" id="dR"></div><div class="lv2"><button type="button" class="btn s" id="pF">أتوقع: يطفو</button><button type="button" class="btn s" id="pS">أتوقع: يغوص</button></div>`;
+  const chips=()=>{$("dO").innerHTML=OBJ.map((x,i)=>`<button type="button" class="chip ${i===o?"on":""}" data-o="${i}">${x[3]} ${x[0]}</button>`).join("");$("dL").innerHTML=LIQ.map((x,i)=>`<button type="button" class="chip ${i===l?"on":""}" data-l="${i}">${x[0]} (${AR(x[1])})</button>`).join("");host.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{o=+b.dataset.o;reset()});host.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{l=+b.dataset.l;reset()})};
+  const reset=()=>{chips();const O=OBJ[o];$("liq").setAttribute("fill",LIQ[l][2]);$("obj").textContent=O[3];$("obj").setAttribute("y",25);$("dR").innerHTML=`كتلة ${O[0]} = ${AR(O[1])} جم، وحجمه = ${AR(O[2])} سم³ ← احسب كثافته ثم توقّع`;$("pF").disabled=$("pS").disabled=false};
+  const test=pred=>{const O=OBJ[o],D=O[1]/O[2],fl=D<LIQ[l][1];$("pF").disabled=$("pS").disabled=true;$("obj").setAttribute("y",fl?66:108);tests++;const k=o+"-"+l;tried.add(k);if(pred===fl)right++;$("dR").innerHTML=`الكثافة = ${AR(O[1])} ÷ ${AR(O[2])} = <b>${AR(D.toFixed(2).replace(/\.00$/,""))}</b> جم/سم³ ← ${fl?"يطفو 🟢":"يغوص 🔵"} ${pred===fl?"✅ توقعك صحيح":"❌ توقعك غير صحيح"}`;if(tried.size>=4)ok("توقعاتك الصحيحة: "+AR(right)+" من "+AR(tests));else say("أجريت "+AR(tried.size)+" من ٤ اختبارات مختلفة")};
+  $("pF").onclick=()=>test(true);$("pS").onclick=()=>test(false);reset();say("اختر جسمًا وسائلًا، احسب الكثافة، ثم توقّع. أجرِ 4 اختبارات مختلفة.")},
+atom(host,L,ok,say){const EL=["","H هيدروجين","He هيليوم","Li ليثيوم","Be بيريليوم","B بورون","C كربون","N نيتروجين","O أكسجين","F فلور","Ne نيون"],TG=[[6,6,6,"ذرة كربون-12 متعادلة"],[2,2,2,"ذرة هيليوم-4 متعادلة"],[9,10,10,"أيون فلور سالب F⁻ (عدد الكتلة 19)"]];let p=1,n=0,e=1,t=0;
+  host.innerHTML=`<svg viewBox="0 0 300 120" class="labsvg"><circle cx="150" cy="60" r="52" fill="none" stroke="#d9cff0" stroke-dasharray="4 4"/><g id="nuc"></g><g id="ele"></g></svg><div class="ctr">${[["p","بروتون ➕","#e8590c"],["n","نيوترون ⚪","#868e96"],["e","إلكترون ➖","#1c7ed6"]].map(([k,t,c])=>`<div><span style="color:${c}">${t}</span><button type="button" data-k="${k}" data-d="-1">−</button><b id="c${k}"></b><button type="button" data-k="${k}" data-d="1">+</button></div>`).join("")}</div><div class="readout" id="aR"></div>`;
+  const upd=()=>{$("cp").textContent=AR(p);$("cn").textContent=AR(n);$("ce").textContent=AR(e);let s="";for(let i=0;i<p+n;i++){const a=i*2.4,r=4+Math.sqrt(i)*4;s+=`<circle cx="${150+r*Math.cos(a)}" cy="${60+r*Math.sin(a)}" r="5" fill="${(i<2*Math.min(p,n)?i%2===0:p>n)?"#e8590c":"#adb5bd"}"/>`}$("nuc").innerHTML=s;$("ele").innerHTML=Array.from({length:e},(_,i)=>{const a=i/Math.max(1,e)*Math.PI*2;return `<circle cx="${150+52*Math.cos(a)}" cy="${60+52*Math.sin(a)}" r="4" fill="#1c7ed6"/>`}).join("");
+   const ch=p-e;$("aR").innerHTML=`العنصر: <b>${p?EL[p]||"؟":"—"}</b> • العدد الذري ${AR(p)} • عدد الكتلة ${AR(p+n)} • الشحنة ${ch?(ch>0?"+":"−")+AR(Math.abs(ch)):"متعادلة"}<br>🎯 المهمة ${AR(Math.min(t+1,3))}/٣: ${t<3?TG[t][3]:"أنجزت جميع المهام"}`;
+   if(t<3&&p===TG[t][0]&&n===TG[t][1]&&e===TG[t][2]){t++;if(t>=3)ok("بنيت الكربون والهيليوم وأيون الفلور");else{say("✅ ممتاز! انتقل إلى المهمة التالية");setTimeout(upd,600)}}};
+  host.querySelectorAll(".ctr button").forEach(b=>b.onclick=()=>{const k=b.dataset.k,d=+b.dataset.d;if(k==="p")p=Math.max(0,Math.min(10,p+d));if(k==="n")n=Math.max(0,Math.min(12,n+d));if(k==="e")e=Math.max(0,Math.min(12,e+d));upd()});upd();say("استخدم الأزرار لبناء الذرة المطلوبة في كل مهمة.")},
+hardness(host,L,ok,say){const MIN=[["جبس",2],["كالسيت",3],["أباتيت",5],["أورثوكليز",6],["كوارتز",7]],TOOLS=[["ظفر الإصبع",2.5,"💅"],["عملة نحاسية",3.5,"🪙"],["لوح زجاج",5.5,"🪟"],["مبرد فولاذي",6.5,"🗜️"]];const samples=[...MIN].sort(()=>Math.random()-.5).slice(0,2).map((m,i)=>({nm:["أ","ب"][i],m}));let cur=0,done=0;
+  host.innerHTML=`<div class="chips" id="hS"></div><div class="clsit" id="hNm"></div><div class="chips" id="hT"></div><div class="readout" id="hR"></div><div class="chips" id="hG"></div>`;
+  const draw_=()=>{const S=samples[cur];$("hS").innerHTML=samples.map((x,i)=>`<button type="button" class="chip ${i===cur?"on":""}" data-s="${i}">🪨 العينة ${x.nm}${x.ok?" ✓":""}</button>`).join("");$("hNm").textContent="العينة "+S.nm+": اخدشها بالأدوات ثم حدد اسمها";$("hT").innerHTML=TOOLS.map((t,i)=>`<button type="button" class="chip" data-t="${i}">${t[2]} ${t[0]} (${AR(t[1])})</button>`).join("");$("hG").innerHTML=S.ok?"":MIN.map((m,i)=>`<button type="button" class="chip" data-g="${i}">${m[0]} (${AR(m[1])})</button>`).join("");
+   host.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{cur=+b.dataset.s;$("hR").textContent="";draw_()});
+   host.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{const t=TOOLS[+b.dataset.t];$("hR").innerHTML=t[1]>S.m[1]?`${t[2]} ${t[0]} <b>خدش</b> العينة ← صلادتها أقل من ${AR(t[1])}`:`${t[2]} ${t[0]} <b>لم يخدش</b> العينة ← صلادتها أكبر من ${AR(t[1])}`});
+   host.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{const g=MIN[+b.dataset.g];if(g[0]===S.m[0]){S.ok=true;done++;$("hR").innerHTML="✅ صحيح! العينة "+S.nm+" هي "+g[0];if(done>=2)ok("حددت المعدنين باختبار الصلادة");draw_()}else $("hR").innerHTML="❌ ليس "+g[0]+" — استخدم أدوات أكثر لتحديد المدى"})};draw_();say("اختبر كل عينة بالأدوات، ثم استنتج صلادتها واسمها.")}
+};
 async function init(){
  if(!DEMO&&(!token||token.length<40))throw Error("امسح الباركود الخاص بك مرة أخرى، أو اطلب بطاقتك من المعلم.");
  const d=await rpc("masar_student_home",{p_token:token});

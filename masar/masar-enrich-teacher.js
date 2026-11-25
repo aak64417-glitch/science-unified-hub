@@ -5,7 +5,7 @@
 "use strict";
 if(!document.getElementById("enCard")||!window.ENRICH)return;
 {const h=document.querySelector("#enCard h2");if(h)h.insertAdjacentHTML("beforeend",' <small style="font-size:12px;color:#7a6f96;font-weight:500">إصدار ٦</small>')}
-const SK_Q="إثراء — تحدي التفكير",SK_T="إثراء — المهمة الإبداعية",PREFIX="إثراء ";
+const SK_Q="إثراء — تحدي التفكير",SK_T="إثراء — المهمة الإبداعية",SK_L="إثراء — المختبر الافتراضي",PREFIX="إثراء ",BUCKET="masar-uploads";
 const E=window.ENRICH;
 const enIdx=k=>E.findIndex(e=>e.key===k||e.t===k);
 const enCls=s=>String(s.class_name||"").replace(/^إثراء\s*/,"");
@@ -21,16 +21,30 @@ function enStat(s){
  const lg=all.filter(r=>r.assessment_kind==="دخول"),lastLogin=lg.reduce((a,r)=>r.recorded_at>a?r.recorded_at:a,"");
  const touched=[...new Set([...keys,...rs.map(r=>r.lesson_key)])].filter(k=>enIdx(k)>=0);
  const per=touched.map(k=>{const q=rs.filter(r=>r.lesson_key===k&&r.skill_title===SK_Q),t=rs.some(r=>r.lesson_key===k&&r.skill_title===SK_T);
-  const best=q.length?Math.max(...q.map(r=>+r.correct_count||0)):null,last=rs.filter(r=>r.lesson_key===k).reduce((a,r)=>r.recorded_at>a?r.recorded_at:a,"");
-  return {k,i:enIdx(k),assigned:keys.includes(k),best,tries:q.length,task:t,last,done:best!=null&&best>=3&&t,pts:(best||0)*10+(best===4?10:0)+(t?20:0)}}).sort((a,b)=>a.i-b.i);
- const asg=per.filter(p=>p.assigned),acts=asg.length*2,doneActs=asg.reduce((a,p)=>a+(p.best!=null&&p.best>=3?1:0)+(p.task?1:0),0);
+  const lab=rs.some(r=>r.lesson_key===k&&r.skill_title===SK_L),best=q.length?Math.max(...q.map(r=>+r.correct_count||0)):null,last=rs.filter(r=>r.lesson_key===k).reduce((a,r)=>r.recorded_at>a?r.recorded_at:a,"");
+  const nq=(E[enIdx(k)]||{q:[]}).q.length||4;return {k,i:enIdx(k),assigned:keys.includes(k),best,nq,lab,tries:q.length,task:t,last,done:best!=null&&best>=nq-1&&t,pts:(best||0)*10+(best===nq?10:0)+(t?20:0)+(lab?20:0)}}).sort((a,b)=>a.i-b.i);
+ const asg=per.filter(p=>p.assigned),acts=asg.length*3,doneActs=asg.reduce((a,p)=>a+(p.lab?1:0)+(p.best!=null&&p.best>=p.nq-1?1:0)+(p.task?1:0),0);
  const qs=rs.filter(r=>r.skill_title===SK_Q),cor=qs.reduce((a,r)=>a+(+r.correct_count||0),0),tot=qs.reduce((a,r)=>a+(+r.total_count||0),0);
  const progress=pct(doneActs,acts),pts=per.reduce((a,p)=>a+p.pts,0);let lv=0;LEVELS.forEach((x,i)=>{if(pts>=x[0])lv=i});
  const band=!keys.length?"none":!rs.length?"0":progress>=85?"3":progress>=50?"2":"1";
- const badges=[["🌟","أول إنجاز",rs.length>0],["🧠","مفكر ناقد",per.filter(p=>p.best===4).length>=3],["🛠️","مبتكر",per.filter(p=>p.task).length>=3],["🏆","بطل الإثراء",asg.length>0&&asg.every(p=>p.done)],["🔥","مثابر",lg.length>=5]];
- return {s,keys,per,asg,progress,acc:pct(cor,tot),tot,pts,level:LEVELS[lv][1],band,badges,completed:asg.filter(p=>p.done).length,tasks:per.filter(p=>p.task).length,perfect:per.filter(p=>p.best===4).length,
+ const badges=[["🌟","أول إنجاز",rs.length>0],["🧪","عالم المختبر",per.filter(p=>p.lab).length>=3],["🧠","مفكر ناقد",per.filter(p=>p.best!=null&&p.best===p.nq).length>=3],["📎","باحث مبدع",(UPS[s.id]||[]).length>=2],["🛠️","مبتكر",per.filter(p=>p.task).length>=3],["🏆","بطل الإثراء",asg.length>0&&asg.every(p=>p.done)],["🔥","مثابر",lg.length>=5]];
+ return {s,keys,per,asg,progress,acc:pct(cor,tot),tot,pts,level:LEVELS[lv][1],band,badges,completed:asg.filter(p=>p.done).length,tasks:per.filter(p=>p.task).length,labs:per.filter(p=>p.lab).length,perfect:per.filter(p=>p.best!=null&&p.best===p.nq).length,
   attempts:qs.length,secs:rs.reduce((a,r)=>a+(+r.seconds_spent||0),0),last:rs.reduce((a,r)=>r.recorded_at>a?r.recorded_at:a,""),loginN:lg.length,lastLogin}}
 
+/* ---------- الأعمال المرفوعة (Supabase Storage: masar-uploads/t/<بصمة الرمز>/<رقم الدرس>-<الوقت>.<الامتداد>) ---------- */
+const UPS={};let UPS_ERR="",UPS_BUSY=false;
+async function folderOf(s){const t=tokInfo[s.id]&&tokInfo[s.id].t;if(!t)return null;const h=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return "t/"+[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("").slice(0,16)}
+async function stor(path,body){const r=await fetch(B+"/storage/v1/"+path,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+jwt,"Content-Type":"application/json"},body:JSON.stringify(body)});const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){j={message:t}}if(!r.ok)throw Error(j.message||j.error||t);return j}
+async function listUps(s){const f=await folderOf(s);if(!f)return [];const arr=await stor("object/list/"+BUCKET,{prefix:f,limit:200,offset:0,sortBy:{column:"name",order:"desc"}});
+ return (arr||[]).filter(o=>o.name&&o.id!==null).map(o=>{const m=o.name.match(/^(\d+)-(\d+)\.(\w+)$/)||[];return {path:f+"/"+o.name,name:o.name,idx:m[1]!=null?+m[1]:-1,at:m[2]?+m[2]:Date.parse(o.created_at)||0,ext:(m[3]||"").toLowerCase(),mime:(o.metadata&&o.metadata.mimetype)||""}})}
+async function signUps(list){if(!list.length)return;const r=await stor("object/sign/"+BUCKET,{expiresIn:3600,paths:list.map(u=>u.path)});(r||[]).forEach((x,i)=>{if(x&&x.signedURL)list[i].url=B+"/storage/v1"+x.signedURL})}
+async function loadAllUps(){if(UPS_BUSY)return;UPS_BUSY=true;UPS_ERR="";renderUps();try{for(const s of act()){UPS[s.id]=await listUps(s);await signUps(UPS[s.id])}}catch(e){UPS_ERR=/not found|bucket/i.test(e.message)?"خدمة رفع الملفات غير مفعّلة بعد — شغّل ملف الإعداد SETUP-uploads.sql مرة واحدة في Supabase.":e.message}finally{UPS_BUSY=false}renderUps()}
+const isImg=u=>/^image\//.test(u.mime)||/^(jpe?g|png|webp|gif|heic)$/.test(u.ext);
+function upCard(u,small){const L=E[u.idx],d=u.at?new Date(u.at).toLocaleDateString("ar-SA",{day:"numeric",month:"short"}):"";return `<a class="en-up${small?" sm":""}" href="${u.url||"#"}" target="_blank" rel="noopener">${isImg(u)&&u.url?`<img src="${u.url}" alt="" loading="lazy" crossorigin="anonymous">`:`<span class="ic">${u.ext==="pdf"?"📕":/docx?/.test(u.ext)?"📘":/pptx?/.test(u.ext)?"📙":"📄"}</span>`}<small>${escR(L?L.t:"")}${d?" • "+d:""}</small></a>`}
+function renderUps(){const box=$("enUps");if(!box)return;if(UPS_ERR){box.innerHTML='<p class="en-empty" style="color:#c92a2a">'+escR(UPS_ERR)+'</p>';return}
+ const rows=act().map(s=>[s,UPS[s.id]||[]]).filter(x=>x[1].length);box.innerHTML=UPS_BUSY&&!rows.length?'<p class="en-empty">⏳ جارٍ تحميل الأعمال…</p>':rows.length?rows.map(([s,l])=>`<div class="en-uprow"><b>${escR(s.full_name)} <small>(${escR(enCls(s))}) • ${l.length} عمل</small></b><div class="en-upgrid">${l.map(u=>upCard(u)).join("")}</div></div>`).join(""):'<p class="en-empty">لم يرفع الطلاب أعمالًا بعد.</p>'}
+$("enUpLoad").onclick=()=>loadAllUps();
+async function delUps(s){try{const l=await listUps(s);if(l.length){await fetch(B+"/storage/v1/object/"+BUCKET,{method:"DELETE",headers:{apikey:K,Authorization:"Bearer "+jwt,"Content-Type":"application/json"},body:JSON.stringify({prefixes:l.map(u=>u.path)})})}}catch(e){}}
 /* ---------- العرض ---------- */
 function renderEnr(){
  const list=act(),st=list.map(enStat),planned=st.filter(x=>x.keys.length),started=planned.filter(x=>x.attempts||x.tasks);
@@ -45,7 +59,7 @@ function renderEnr(){
   const btn=(t,f,cls)=>{const b=document.createElement("button");b.type="button";b.className="secondary qc-b"+(cls?" "+cls:"");b.textContent=t;b.onclick=f;td.append(b)};
   if(s.active&&url){btn("🖨️ بطاقة",()=>enPrint([s]));btn("🖼️ صورة",()=>enImage(s));btn("واتساب",()=>window.open("https://wa.me/?text="+encodeURIComponent(enShare(s,url)),"_blank","noopener"));btn("📋",()=>copyEn(url,"نُسخ رابط "+s.full_name));btn("🔗 تجربة",()=>window.open(url,"_blank","noopener"))}
   if(s.active&&!url&&TOKSEED)btn("🔐 إصدار باركود",async()=>{try{msg("⏳ جارٍ الإصدار…");(await issueOne(s))?msg("✓ صدر باركود "+s.full_name,true):msg("تعذر التحقق من الرمز مع الخادم",false);renderEnr()}catch(e){msg(e.message,false)}});
-  btn("🎓 ملف إنجاز",()=>openRep("enPf",s.id));
+  btn("🎓 ملف إنجاز",()=>openRep("enPf",s.id));if((UPS[s.id]||[]).length)btn("📎 "+UPS[s.id].length,()=>{$("enUps").scrollIntoView({behavior:"smooth"})});
   btn(s.active?"⏸ إيقاف":"↩ إعادة",async()=>{try{await api("masar_students?id=eq."+s.id,"PATCH",{active:!s.active});await reload();msg("✓ تم تعديل حالة "+s.full_name,true)}catch(e){msg(e.message,false)}});
   btn("🗑️",()=>delStudents([s],"حذف الطالب «"+s.full_name+"» من الخطة الإثرائية نهائيًا؟"),"en-del");
   tb.append(tr)});
@@ -124,7 +138,7 @@ window.masarInsertStudent=insertStudent;
 
 /* ---------- الحذف ---------- */
 async function delStudents(list,question){if(!list.length)return;if(!confirm(question))return;let del=0,off=0;
- for(const s of list){msg("⏳ "+s.full_name+"…");try{try{await api("masar_skill_results?student_id=eq."+s.id,"DELETE")}catch(e){}await api("masar_assignments?student_id=eq."+s.id,"DELETE");await api("masar_students?id=eq."+s.id,"DELETE");del++}
+ for(const s of list){msg("⏳ "+s.full_name+"…");await delUps(s);try{try{await api("masar_skill_results?student_id=eq."+s.id,"DELETE")}catch(e){}await api("masar_assignments?student_id=eq."+s.id,"DELETE");await api("masar_students?id=eq."+s.id,"DELETE");del++}
   catch(e){try{await api("masar_students?id=eq."+s.id,"PATCH",{active:false,class_name:"أرشيف "+String(s.class_name)});off++}catch(e2){}}}
  await reload();msg("✓ حُذف "+del+" طالب"+(off?" • تعذر الحذف النهائي لـ "+off+" فأُوقفوا ونُقلوا إلى الأرشيف":""),true)}
 $("enWipe").onclick=()=>{const all=[...enrStudents];if(!all.length){msg("لا يوجد طلاب في الخطة الإثرائية",false);return}
@@ -174,7 +188,7 @@ function enData(){const pool=enPool(),st=pool.map(enStat),planned=st.filter(x=>x
  const classes=[...new Set(pool.map(enCls))].sort().map(c=>{const x=planned.filter(q=>enCls(q.s)===c);return {c,n:pool.filter(s=>enCls(s)===c).length,started:x.filter(q=>q.attempts||q.tasks).length,prog:x.length?Math.round(x.reduce((a,q)=>a+q.progress,0)/x.length):0}});
  const qs=rs.filter(r=>r.skill_title===SK_Q);
  return {pool,st,planned,started,bands,perLesson,classes,avgP:planned.length?Math.round(planned.reduce((a,x)=>a+x.progress,0)/planned.length):0,avgA:pct(qs.reduce((a,r)=>a+(+r.correct_count||0),0),qs.reduce((a,r)=>a+(+r.total_count||0),0)),
-  completed:st.reduce((a,x)=>a+x.completed,0),tasks:st.reduce((a,x)=>a+x.tasks,0),perfect:st.reduce((a,x)=>a+x.perfect,0),attempts:qs.length,secs:rs.reduce((a,r)=>a+(+r.seconds_spent||0),0),logins:lg.length,top:planned.filter(x=>x.band==="3").length}}
+  completed:st.reduce((a,x)=>a+x.completed,0),tasks:st.reduce((a,x)=>a+x.tasks,0),labs:st.reduce((a,x)=>a+x.labs,0),ups:pool.reduce((a,s)=>a+(UPS[s.id]||[]).length,0),perfect:st.reduce((a,x)=>a+x.perfect,0),attempts:qs.length,secs:rs.reduce((a,r)=>a+(+r.seconds_spent||0),0),logins:lg.length,top:planned.filter(x=>x.band==="3").length}}
 const strip=d=>{const n=d.planned.length||1;return `<div class="rp-strip">${["3","2","1","0"].map(b=>d.bands[b]?`<i style="flex:${d.bands[b]};background:${BANDS[b][1]}">${d.bands[b]}</i>`:"").join("")||'<i style="flex:1;background:#dee2e6">لا بيانات بعد</i>'}</div><div class="rp-legend">${["3","2","1","0"].map(b=>`<span><i style="background:${BANDS[b][1]}"></i>${BANDS[b][0]}: <b>${d.bands[b]}</b> (${pct(d.bands[b],n)}%)</span>`).join("")}</div>`};
 const clsLabel=()=>$("rpClass").value!=="all"?" — الفصل "+$("rpClass").value:"";
 const sign3='<div class="rp-sign"><div>معلم المادة<br><b>علي طاهر البقاشي</b></div><div>المرشد الطلابي<br><b>مانع المعيدي</b></div><div>مدير المدرسة<br><b>فوزي محمد الهلال</b></div></div>';
@@ -183,13 +197,13 @@ const enHead=(t,s)=>rpHead(t,s).replace('class="rp-head"','class="rp-head en-hea
 function planHtml(){const d=enData(),acts=d.perLesson.filter(l=>l.assigned);
  return `<div class="rp">${enHead("تقرير الخطة الإثرائية للطلاب المتميزين","منصة مسار التقدم — علوم الصف الأول المتوسط"+clsLabel())}
  <h2>بيانات التنفيذ</h2><p><b>المعلم:</b> علي طاهر البقاشي &nbsp;•&nbsp; <b>مدير المدرسة:</b> فوزي محمد الهلال &nbsp;•&nbsp; <b>المرشد الطلابي:</b> مانع المعيدي &nbsp;•&nbsp; <b>الفئة المستهدفة:</b> الطلاب المتميزون في العلوم</p>
- <h2>فكرة الخطة</h2><p>مسار إثرائي رقمي مستقل داخل منصة مسار التقدم، يقدّم للطلاب المتميزين محتوى يتجاوز متطلبات الدرس الأساسية. يدخل كل طالب ببطاقة باركود شخصية إلى صفحة «مسار التميّز»، ويجد الأنشطة التي فعّلها المعلم، ولكل نشاط ثلاث مراحل: فكرة إثرائية تربط الدرس بالواقع وبإسهامات العلماء، ثم أربعة تحديات في مهارات التفكير العليا (التطبيق، التحليل، التقويم، الاستدلال) مع تبرير علمي فوري لكل إجابة، ثم مهمة إبداعية ينفذها الطالب بيده (تصميم تجربة، بناء نموذج، تحقيق علمي). ويحصل الطالب على نقاط تميّز وأوسمة ومستويات تحفّزه على الاستمرار.</p>
+ <h2>فكرة الخطة</h2><p>مسار إثرائي رقمي مستقل داخل منصة مسار التقدم، يقدّم للطلاب المتميزين محتوى يتجاوز متطلبات الدرس الأساسية. يدخل كل طالب ببطاقة باركود شخصية إلى صفحة «مسار التميّز»، ويجد الأنشطة التي فعّلها المعلم، ولكل نشاط خمس مراحل: قراءة إثرائية «اعرف أكثر» تتجاوز الكتاب وتربط الدرس بالواقع، ثم تعريف بعالِم ومهنة علمية مرتبطين بالدرس، ثم مختبر افتراضي تفاعلي ينفذه الطالب بنفسه (يغيّر المتغيرات ويقيس ويستنتج)، ثم تحديات في مهارات التفكير العليا مع تبرير فوري، ثم مشروع أو تحدٍّ بحثي ينفذه الطالب ويرفع صورته أو ملفه من المنصة. ويحصل الطالب على نقاط تميّز وأوسمة ومستويات تحفّزه على الاستمرار.</p>
  <h2>الأهداف</h2><ul><li>رعاية الطلاب المتميزين وتنمية قدراتهم في مادة العلوم بما يتجاوز المحتوى الأساسي.</li><li>تنمية مهارات التفكير العليا: التطبيق، والتحليل، والتقويم، والاستدلال العلمي.</li><li>تنمية الإبداع والابتكار عبر مهمات عملية: تصميم التجارب، وبناء النماذج، وتقويم الادعاءات العلمية.</li><li>ربط مفاهيم الدروس بالواقع وبالبيئة المحلية وبإسهامات العلماء.</li><li>متابعة إنجاز كل طالب رقميًا وتوثيقه في ملف إنجاز خاص به.</li></ul>
- <h2>مؤشرات التنفيذ</h2>${tiles([[d.pool.length,"طالبًا متميزًا مستهدفًا"],[d.started.length+" من "+d.planned.length,"بدأوا الأنشطة"],[d.avgP+"%","متوسط الإنجاز"],[d.attempts?d.avgA+"%":"—","دقة تحديات التفكير العليا"],[d.completed,"مهمة إثرائية مكتملة"],[d.tasks,"مهمة إبداعية منفذة"]])}
+ <h2>مؤشرات التنفيذ</h2>${tiles([[d.pool.length,"طالبًا متميزًا مستهدفًا"],[d.started.length+" من "+d.planned.length,"بدأوا الأنشطة"],[d.avgP+"%","متوسط الإنجاز"],[d.attempts?d.avgA+"%":"—","دقة تحديات التفكير العليا"],[d.completed,"مهمة إثرائية مكتملة"],[d.labs+" • "+d.tasks,"مختبرًا منجزًا • مشروعًا منفذًا"]])}
  <h2>الفئة المستهدفة حسب الفصول</h2>${hbars(d.classes.map(c=>["الفصل "+c.c+" ("+c.started+" من "+c.n+" بدأوا)",pct(c.started,c.n),"#7048e8"]))}
  <h2>الأنشطة الإثرائية المفعّلة (${acts.length} من ${E.length})</h2>${acts.length?`<div class="rp-tw"><table class="rp-t"><thead><tr><th>#</th><th>النشاط الإثرائي</th><th>المهمة الإبداعية</th><th>المستفيدون</th><th>دقة التحديات</th><th>أكملوه</th></tr></thead><tbody>${acts.map((l,i)=>`<tr><td>${i+1}</td><td class="nm">${escR(l.t)}</td><td>${escR(E[l.i].task.h)}</td><td>${l.assigned}</td><td>${l.attempts?l.acc+"%":"—"}</td><td>${l.done}</td></tr>`).join("")}</tbody></table></div>`:'<p class="rp-empty">لم تُفعّل أنشطة بعد.</p>'}
  <h2>توزيع الطلاب حسب مستوى الإنجاز</h2>${strip(d)}
- <h2>الشواهد الرقمية</h2><div class="rp-ev">مرات دخول الطلاب المتميزين: <b>${d.logins}</b> &nbsp;•&nbsp; محاولات تحديات التفكير: <b>${d.attempts}</b> &nbsp;•&nbsp; تحديات أُجيبت كاملة (٤ من ٤): <b>${d.perfect}</b> &nbsp;•&nbsp; المهمات الإبداعية المنفذة: <b>${d.tasks}</b> &nbsp;•&nbsp; زمن العمل: <b>${fmtMin(d.secs)}</b><br>تُسجَّل كل محاولة رقميًا بتاريخها ووقتها وزمنها ونتيجتها، ولكل طالب ملف إنجاز خاص يوثّق مهماته وأوسمته.</div>
+ <h2>الشواهد الرقمية</h2><div class="rp-ev">مرات دخول الطلاب المتميزين: <b>${d.logins}</b> &nbsp;•&nbsp; محاولات تحديات التفكير: <b>${d.attempts}</b> &nbsp;•&nbsp; تحديات أُجيبت كاملة (٤ من ٤): <b>${d.perfect}</b> &nbsp;•&nbsp; المختبرات الافتراضية المنجزة: <b>${d.labs}</b> &nbsp;•&nbsp; المشاريع المنفذة: <b>${d.tasks}</b> &nbsp;•&nbsp; الأعمال المرفوعة: <b>${d.ups}</b> &nbsp;•&nbsp; زمن العمل: <b>${fmtMin(d.secs)}</b><br>تُسجَّل كل محاولة رقميًا بتاريخها ووقتها وزمنها ونتيجتها، ولكل طالب ملف إنجاز خاص يوثّق مهماته وأوسمته.</div>
  <h2>التوصيات</h2><ul>${d.planned.length-d.started.length>0?`<li>متابعة ${d.planned.length-d.started.length} طالب متميز لم يبدأ الأنشطة بعد وتشجيعه على الدخول بالباركود.</li>`:""}${d.top?`<li>تكريم ${d.top} طالب متفوق (85% فأكثر) وعرض مهماتهم الإبداعية في الإذاعة المدرسية أو معرض العلوم.</li>`:""}<li>إشراك الطلاب المتميزين قادةً ومساعدين لزملائهم في الخطة العلاجية.</li><li>تفعيل أنشطة إثرائية جديدة تباعًا مع تقدم الدروس، وترشيح المتفوقين للمسابقات العلمية.</li></ul>
  <p class="rp-note">التقرير لا يتضمن أسماء الطلاب؛ جميع الأرقام مجمّعة ومحسوبة آليًا من سجل المنصة حتى تاريخ إصداره.</p>${sign3}</div>`}
 
@@ -199,16 +213,17 @@ function progHtml(){const d=enData();
  <h2>توزيع الطلاب حسب مستوى الإنجاز</h2>${strip(d)}
  <h2>تقدم كل طالب</h2><div class="rp-tw"><table class="rp-t"><thead><tr><th>#</th><th>الطالب</th><th>الفصل</th><th>الأنشطة المفعّلة</th><th>المكتملة</th><th>نسبة الإنجاز</th><th>دقة التحديات</th><th>المهمات الإبداعية</th><th>النقاط</th><th>المستوى</th><th>مرات الدخول</th><th>آخر نشاط</th><th>الحالة</th></tr></thead><tbody>${d.st.sort((a,b)=>b.progress-a.progress||b.pts-a.pts||a.s.full_name.localeCompare(b.s.full_name,"ar")).map((x,i)=>`<tr><td>${i+1}</td><td class="nm">${escR(x.s.full_name)}</td><td>${escR(enCls(x.s))}</td><td>${x.keys.length}</td><td>${x.completed}</td><td class="pc">${bar(x.progress)}<b>${x.progress}%</b></td><td>${x.attempts?x.acc+"%":"—"}</td><td>${x.tasks}</td><td>${x.pts}</td><td>${x.level}</td><td>${x.loginN}</td><td>${fmtDate(x.last)}</td><td><span class="rp-chip" style="background:${BANDS[x.band][1]}">${BANDS[x.band][0].split(" (")[0]}</span></td></tr>`).join("")||'<tr><td colspan="13">لا يوجد طلاب متميزون في هذا الاختيار.</td></tr>'}</tbody></table></div>
  <div class="rp-2"><div><h2>دقة التحديات في كل نشاط</h2>${hbars(d.perLesson.filter(l=>l.attempts).map(l=>[l.t,l.acc]))}</div><div><h2>متوسط الإنجاز لكل فصل</h2>${hbars(d.classes.map(c=>["الفصل "+c.c+" ("+c.n+")",c.prog]))}</div></div>
- <p class="rp-note">طريقة الحساب: لكل نشاط مفعّل جزءان: تحديات التفكير (تُحتسب منجزة عند ٣ إجابات صحيحة من ٤ فأكثر في أفضل محاولة) والمهمة الإبداعية. نسبة الإنجاز = الأجزاء المنجزة ÷ أجزاء الأنشطة المفعّلة. النقاط = ١٠ لكل إجابة صحيحة في أفضل محاولة + ١٠ مكافأة للعلامة الكاملة + ٢٠ للمهمة الإبداعية.</p>
+ <p class="rp-note">طريقة الحساب: لكل نشاط مفعّل ثلاثة أجزاء: المختبر الافتراضي، وتحديات التفكير (تُحتسب منجزة عند خطأ واحد على الأكثر في أفضل محاولة)، والمشروع. نسبة الإنجاز = الأجزاء المنجزة ÷ أجزاء الأنشطة المفعّلة. النقاط = ٢٠ للمختبر الافتراضي + ١٠ لكل إجابة صحيحة في أفضل محاولة + ١٠ مكافأة للعلامة الكاملة + ٢٠ للمشروع.</p>
  <div class="rp-sign"><div>معلم المادة<br><b>علي طاهر البقاشي</b></div><div>مدير المدرسة<br><b>فوزي محمد الهلال</b></div></div></div>`}
 
 function pfOne(s){const x=enStat(s),earned=x.badges.filter(b=>b[2]);
  return `<div class="rp en-pf">${enHead("ملف إنجاز الطالب المتميز","الخطة الإثرائية — منصة مسار التقدم — علوم الصف الأول المتوسط")}
  <div class="en-id"><div class="en-av">🌟</div><div><small>اسم الطالب</small><b>${escR(s.full_name)}</b><span>الفصل ${escR(enCls(s))} • المستوى: ${x.level}</span></div><div class="en-pts"><b>${x.pts}</b><span>نقطة تميّز</span></div></div>
- ${tiles([[x.completed+" / "+x.keys.length,"مهمة إثرائية مكتملة"],[x.progress+"%","نسبة الإنجاز"],[x.attempts?x.acc+"%":"—","دقة تحديات التفكير"],[x.tasks,"مهمة إبداعية منفذة"],[x.loginN,"مرة دخول"],[x.secs?fmtMin(x.secs):"—","زمن العمل"]])}
+ ${tiles([[x.completed+" / "+x.keys.length,"مهمة إثرائية مكتملة"],[x.progress+"%","نسبة الإنجاز"],[x.attempts?x.acc+"%":"—","دقة تحديات التفكير"],[x.labs,"مختبرًا افتراضيًا أنجزه"],[x.tasks+" • 📎 "+(UPS[s.id]||[]).length,"مشروع منفذ • عمل مرفوع"],[x.secs?fmtMin(x.secs):"—","زمن العمل"]])}
  <h2>الأوسمة</h2><div class="en-bdg">${x.badges.map(b=>`<span class="${b[2]?"":"off"}">${b[0]} ${b[1]}</span>`).join("")}</div>
- <h2>سجل المهمات الإثرائية</h2>${x.per.length?`<div class="rp-tw"><table class="rp-t"><thead><tr><th>#</th><th>النشاط الإثرائي</th><th>أفضل نتيجة في التحديات</th><th>المحاولات</th><th>المهمة الإبداعية</th><th>الحالة</th><th>التاريخ</th></tr></thead><tbody>${x.per.map((p,i)=>`<tr><td>${i+1}</td><td class="nm">${escR(E[p.i].t)}</td><td>${p.best!=null?`<span class="en-stars">${"★".repeat(p.best)}${"☆".repeat(4-p.best)}</span> ${p.best}/4`:"—"}</td><td>${p.tries}</td><td>${p.task?"✓ "+escR(E[p.i].task.h):"—"}</td><td>${p.done?"✅ مكتملة":p.best!=null||p.task?"قيد الإنجاز":p.assigned?"لم تبدأ":"—"}</td><td>${fmtDate(p.last)}</td></tr>`).join("")}</tbody></table></div>`:'<p class="rp-empty">لم تُفعّل للطالب أنشطة بعد.</p>'}
+ <h2>سجل المهمات الإثرائية</h2>${x.per.length?`<div class="rp-tw"><table class="rp-t"><thead><tr><th>#</th><th>النشاط الإثرائي</th><th>المختبر</th><th>أفضل نتيجة في التحديات</th><th>المحاولات</th><th>المشروع</th><th>الحالة</th><th>التاريخ</th></tr></thead><tbody>${x.per.map((p,i)=>`<tr><td>${i+1}</td><td class="nm">${escR(E[p.i].t)}</td><td>${p.lab?"✓":"—"}</td><td>${p.best!=null?`<span class="en-stars">${"★".repeat(p.best)}${"☆".repeat(Math.max(0,p.nq-p.best))}</span> ${p.best}/${p.nq}`:"—"}</td><td>${p.tries}</td><td>${p.task?"✓ "+escR(E[p.i].task.h)+((UPS[s.id]||[]).some(u=>u.idx===p.i)?" 📎":""):"—"}</td><td>${p.done?"✅ مكتملة":p.best!=null||p.task||p.lab?"قيد الإنجاز":p.assigned?"لم تبدأ":"—"}</td><td>${fmtDate(p.last)}</td></tr>`).join("")}</tbody></table></div>`:'<p class="rp-empty">لم تُفعّل للطالب أنشطة بعد.</p>'}
  ${earned.length||x.completed?`<div class="en-cert"><b>شهادة تميّز</b><p>تشهد إدارة مدرسة أبي الدرداء المتوسطة ومعلم مادة العلوم بأن الطالب <b>${escR(s.full_name)}</b> قد شارك في الخطة الإثرائية للطلاب المتميزين، وأنجز <b>${x.completed}</b> مهمة إثرائية، وحصل على <b>${x.pts}</b> نقطة تميّز${earned.length?"، ونال أوسمة: "+earned.map(b=>b[1]).join("، "):""}. مع تمنياتنا له بدوام التفوق.</p></div>`:""}
+ ${(UPS[s.id]||[]).length?`<h2>📎 من أعمال الطالب ومشاريعه (${(UPS[s.id]||[]).length})</h2><div class="en-upgrid pf">${(UPS[s.id]||[]).slice(0,6).map(u=>upCard(u,1)).join("")}</div>`:""}
  <h2>ملاحظات معلم المادة</h2><div class="en-lines"><i></i><i></i></div>
  <div class="rp-sign"><div>معلم المادة<br><b>علي طاهر البقاشي</b></div><div>ولي أمر الطالب<br><b>&nbsp;</b></div><div>مدير المدرسة<br><b>فوزي محمد الهلال</b></div></div></div>`}
 
@@ -260,6 +275,7 @@ const css=document.createElement("style");css.textContent=`
 .en-bdg{display:flex;flex-wrap:wrap;gap:8px}.en-bdg span{border:1px solid #e7dcfa;background:#fff;border-radius:999px;padding:4px 12px;font-weight:700}.en-bdg span.off{opacity:.35;filter:grayscale(1)}
 .en-stars{color:#e0a106;letter-spacing:1px}
 .en-cert{margin:18px 0;border:3px double #c98a07;border-radius:16px;padding:14px 18px;background:#fffbef;text-align:center}.en-cert b:first-child{font-size:20px;color:#8a5a00}.en-cert p{margin:6px 0 0}
+.en-ups{margin:6px 0}.en-uprow{background:#fbf9ff;border:1px solid #ece4fb;border-radius:14px;padding:8px 10px;margin:6px 0}.en-uprow small{color:#7a6f96;font-weight:500}.en-upgrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}.en-up{display:flex;flex-direction:column;align-items:center;gap:3px;width:110px;text-decoration:none;color:#24164a;background:#fff;border:1px solid #e7dcfa;border-radius:12px;padding:5px}.en-up img{width:100px;height:80px;object-fit:cover;border-radius:8px}.en-up .ic{font-size:40px;height:80px;display:grid;place-items:center}.en-up small{font-size:11px;text-align:center;line-height:1.3}.en-upgrid.pf .en-up{width:140px}.en-upgrid.pf .en-up img{width:130px;height:100px}
 .en-lines i{display:block;border-bottom:1px dashed #bbb;height:30px}
 #reportDoc .rp+.rp{margin-top:18px}
 @media print{#reportDoc .rp+.rp{break-before:page;page-break-before:always;margin-top:0}.en-head,.en-pts,.en-av,.en-id,.en-cert{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
@@ -267,5 +283,5 @@ const css=document.createElement("style");css.textContent=`
 body.tv-in[data-tv="enrich"] #panel>[data-view="enrich"]{display:block;animation:mzIn .28s ease both}`;document.head.appendChild(css);
 
 /* ربط إعادة التحميل */
-{const _r=reload;reload=async function(){await _r.apply(this,arguments);try{renderEnr()}catch(e){console.error(e)}}}
+{const _r=reload;reload=async function(){await _r.apply(this,arguments);try{renderEnr();renderUps();if(act().length)loadAllUps()}catch(e){console.error(e)}}}
 })();
