@@ -120,13 +120,21 @@ body.tv-in[data-tv="follow"][data-sub="results"] #panel>[data-sub="visits"]{disp
 /* تلوين المكوّنات القائمة بألوان الهوية */
 .as-lesson{background:#fff!important;border-color:var(--mz-line)!important;color:var(--mz-ink)!important;font:600 14px var(--mz-font)!important}
 .as-lesson .as-n{background:#F1EADC!important}
-.as-lesson.on{background:var(--mz-pine)!important;border-color:var(--mz-pine)!important;color:#fff!important}
-.as-lesson.on .as-n{background:var(--mz-maize)!important;color:var(--mz-ink)}
-.as-lesson small{color:var(--mz-muted)!important}.as-lesson.on small{color:#CDE6DC!important}
+.as-lesson small{color:var(--mz-muted)!important}
+/* الدرس المفعّل (محفوظ في الخادم — يبقى بعد الخروج والدخول) */
+.as-lesson.act{background:var(--mz-pine)!important;border-color:var(--mz-pine)!important;color:#fff!important}
+.as-lesson.act .as-n{background:var(--mz-maize)!important;color:var(--mz-ink)!important}
+.as-lesson.act small{color:#CDE6DC!important}
+.as-lesson.act.part{background:#2E7D6B!important;border-color:#2E7D6B!important}
+/* الدرس المحدّد مؤقتًا للتفعيل أو الإيقاف */
+.as-lesson.on{box-shadow:0 0 0 3px var(--mz-maize)!important;border-color:var(--mz-maize)!important}
+.as-lesson.on:not(.act){background:#FFF6DA!important}
+.as-lesson.on:not(.act) .as-n{background:var(--mz-maize)!important}
 .as-panel{background:#FBF6EC!important;border-color:var(--mz-line)!important}
 .as-class{border-color:var(--mz-line)!important}.as-class.on{border-color:var(--mz-pine)!important;box-shadow:0 0 0 3px rgba(15,91,79,.18)!important}
 .as-count,.as-ex summary,.qc-imp summary{color:var(--mz-pine)!important}
-.as-matrix tr.sel td{background:var(--mz-mint)!important}
+.as-matrix tr.act td:first-child{color:var(--mz-pine)!important;font-weight:700}
+.as-matrix tr.sel td{background:#FFF6DA!important}
 .ac-tab{background:#fff!important;border-color:var(--mz-line)!important;color:var(--mz-ink)!important;font:600 15px var(--mz-font)!important}
 .ac-tab.on{background:var(--mz-pine)!important;border-color:var(--mz-pine)!important;color:#fff!important}.ac-tab.on small{color:#CDE6DC!important}
 .ac-kpis div{background:#F6EFE2!important;color:var(--mz-muted)!important}.ac-kpis b{color:var(--mz-pine)!important}
