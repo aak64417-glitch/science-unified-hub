@@ -84,12 +84,23 @@ $("enAdd").onclick=async()=>{const items=parseNames();if(!items.length){msg("ا�
  if(!confirm("إضافة "+add.length+" طالبًا إلى الخطة الإثرائية:\n"+Object.keys(by).map(c=>"الفصل "+c+": "+by[c].length).join("\n")+(dup.length?"\n(تجاوز "+dup.length+" اسم موجود مسبقًا)":"")+"\nمتابعة؟"))return;
  const b=$("enAdd");b.disabled=true;let ok=0,qr=0,fail="";
  for(const x of add){msg("⏳ إضافة "+x.n+" ("+(ok+1)+" من "+add.length+")…");
-  try{const r=await api("masar_students","POST",{full_name:x.n,class_name:PREFIX+x.cl,active:true});const row=Array.isArray(r)?r[0]:r;if(!row||!row.id)throw Error("لم يُرجع الخادم سجل الطالب");enrStudents.push(row);ok++;
+  try{const r=await insertStudent({full_name:x.n,class_name:PREFIX+x.cl,active:true});const row=Array.isArray(r)?r[0]:r;if(!row||!row.id)throw Error("لم يُرجع الخادم سجل الطالب");enrStudents.push(row);ok++;
    if($("enIssueNew").checked&&TOKSEED){if(!TOKFIELD)TOKFIELD=detectField();if(TOKFIELD){try{if(await issueOne(row))qr++}catch(e){}}}}
   catch(e){fail=e.message;break}}
  b.disabled=false;await reload();
  if(ok)$("enNames").value="";
  if(/row-level|policy|permission/i.test(fail))fail="قاعدة البيانات لا تسمح بعد لحساب المعلم بإضافة طلاب — شغّل ملف الصلاحيات (SETUP-control-panel.sql) مرة واحدة في Supabase";msg(ok?"✓ أُضيف "+ok+" طالبًا متميزًا"+($("enIssueNew").checked?" • باركود جاهز لـ "+qr:"")+(fail?" • توقفت الإضافة: "+fail:"")+". فعّل لهم الأنشطة من الأسفل.":"تعذرت الإضافة: "+fail,ok&&!fail?true:false)};
+
+/* إضافة طالب: يُربط بحساب المعلم (teacher_id) حتى يسمح له الجدول بقراءته بعد الإضافة */
+async function insertStudent(row){let noCol=false,last;
+ try{return await api("masar_students","POST",Object.assign({teacher_id:uid},row))}catch(e){last=e;noCol=/teacher_id|column|schema cache/i.test(e.message);if(!noCol&&!/row-level|policy/i.test(e.message))throw e}
+ if(noCol){try{return await api("masar_students","POST",row)}catch(e){last=e;if(!/row-level|policy/i.test(e.message))throw e}}
+ /* محاولة أخيرة: إضافة دون طلب إرجاع السجل، ثم البحث عنه */
+ const body=noCol?row:Object.assign({teacher_id:uid},row);
+ const r=await fetch(B+"/rest/v1/masar_students",{method:"POST",headers:{apikey:K,Authorization:"Bearer "+jwt,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify(body)});
+ if(!r.ok){let t="";try{t=(await r.json()).message||""}catch(e){}throw Error(t||last.message)}
+ const f=await api("masar_students?select=*&full_name=eq."+encodeURIComponent(row.full_name)+"&class_name=eq."+encodeURIComponent(row.class_name));if(!f.length)throw Error("أُضيف الطالب لكن قاعدة البيانات لا تسمح للمعلم بقراءته");return f}
+window.masarInsertStudent=insertStudent;
 
 /* ---------- الحذف ---------- */
 async function delStudents(list,question){if(!list.length)return;if(!confirm(question))return;let del=0,off=0;

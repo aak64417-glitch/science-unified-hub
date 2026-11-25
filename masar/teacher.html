@@ -365,7 +365,7 @@ $("cpAdd").onclick=async()=>{const cl=$("cpClass").value.trim(),names=[...new Se
  if(!add.length){cpNote("جميع الأسماء موجودة مسبقًا في المنصة",false);return}
  if(!confirm("إضافة "+add.length+" طالب إلى الفصل "+cl+(dup.length?"\n(تجاوز "+dup.length+" اسم موجود مسبقًا)":"")+"؟"))return;
  const btn=$("cpAdd");btn.disabled=true;let ok=0,qr=0,fail="";
- for(const n of add){cpNote("⏳ إضافة "+n+" ("+(ok+1)+" من "+add.length+")…");try{const r=await api("masar_students","POST",{full_name:n,class_name:cl,active:true});const row=Array.isArray(r)?r[0]:r;if(!row||!row.id)throw Error("لم يُرجع الخادم سجل الطالب");students.push(row);ok++;
+ for(const n of add){cpNote("⏳ إضافة "+n+" ("+(ok+1)+" من "+add.length+")…");try{const r=await (window.masarInsertStudent||(b=>api("masar_students","POST",b)))({full_name:n,class_name:cl,active:true});const row=Array.isArray(r)?r[0]:r;if(!row||!row.id)throw Error("لم يُرجع الخادم سجل الطالب");students.push(row);ok++;
    if($("cpIssue").checked&&TOKSEED){if(!TOKFIELD)TOKFIELD=detectField();if(TOKFIELD){try{if(await issueOne(row))qr++}catch(e){}}}}catch(e){fail=cpDenied(e);break}}
  btn.disabled=false;await reload();
  if(ok){$("cpNames").value="";cpNote("✓ أُضيف "+ok+" طالب إلى الفصل "+cl+($("cpIssue").checked?" • باركود جاهز لـ "+qr:"")+(fail?" • توقفت الإضافة: "+fail:"")+". اطبع بطاقاتهم من قسم «بطاقات الدخول بالباركود».",!fail);const q=$("qcClass");if(q){q.value=cl;q.onchange&&q.onchange()}}
@@ -384,4 +384,4 @@ try{$("cpYear").value=new Intl.DateTimeFormat("ar-SA-u-ca-islamic",{year:"numeri
 
 const _renderT=render;render=function(){_renderT();if(!$("reportWrap").classList.contains("hide"))$("rpClass").onchange()};
 </script></html>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Changa:wght@600;700&family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="masar-teacher-ui.css?v=20261125a"><script src="enrich-data.js?v=20261125a"></script><script src="masar-enrich-teacher.js?v=20261125b"></script><script src="masar-teacher-ui.js?v=20261125a"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Changa:wght@600;700&family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="masar-teacher-ui.css?v=20261125a"><script src="enrich-data.js?v=20261125a"></script><script src="masar-enrich-teacher.js?v=20261125c"></script><script src="masar-teacher-ui.js?v=20261125a"></script>
