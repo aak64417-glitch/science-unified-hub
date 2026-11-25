@@ -11,8 +11,8 @@
   const LEVELS = [['متميز', 90, '#1E9E5A'], ['متقن', 80, '#0F8B8D'], ['جيد', 70, '#3A7BD5'], ['يحتاج تعزيزًا بسيطًا', 60, '#F4B63F'], ['يحتاج خطة علاجية', 0, '#D1495B']];
   const levelOf = p => LEVELS.find(l => p >= l[1]) || LEVELS[LEVELS.length - 1];
   const TYPE = { training: 'تدريب', test: 'اختبار', exam: 'اختبار', remedial: 'علاجي', enrich: 'إثراء' };
-  const gradeOfClass = c => String(c || '').endsWith('/3') ? '3' : '1';
-  const gradeName = gr => gr === '3' ? 'الصف الثالث المتوسط' : 'الصف الأول المتوسط';
+  const gradeOfClass = c => { const s = String(c || ''); return s.endsWith('/3') ? '3' : s.endsWith('/2') ? '2' : '1'; };
+  const gradeName = gr => ({ '1': 'الصف الأول المتوسط', '2': 'الصف الثاني المتوسط', '3': 'الصف الثالث المتوسط' })[gr] || 'الصف الأول المتوسط';
   const nameKey = n => (typeof normalizeStudentNameKey === 'function' ? normalizeStudentNameKey(n) : String(n || '').trim());
   const fmtDate = v => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { day: 'numeric', month: 'long', year: 'numeric' }).format(d); };
   const fmtShort = v => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { day: 'numeric', month: 'short' }).format(d); };
