@@ -99,16 +99,20 @@ const isUuid=v=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const newUuid=()=>crypto.randomUUID?crypto.randomUUID():"10000000-1000-4000-8000-100000000000".replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));
 /* يجهّز سجل الطالب كاملًا: رمز المعلم + معرّف + رمز الدخول (token_digest) لأن الجدول يشترطهما */
 async function buildRow(row){const sm=await sample(),out=Object.assign({teacher_id:await teacherId()},row);
- const field=TOKFIELD||("token_digest" in sm?"token_digest":null)||detectField();
  if(isUuid(sm.id)||!("id" in sm))out.id=newUuid();
- if(field){let v;try{if(out.id&&TOKSEED){const t=await tokenFor({id:out.id});v=await SCHEMES[TOKSCHEME||"hex"](t)}}catch(e){}
-  if(!v)v=hex(await sha("pending|"+Date.now()+"|"+Math.random()));out[field]=v}
- return out}
-async function insertStudent(row){let body=await buildRow(row);
+ let t="";try{if(out.id&&TOKSEED)t=await tokenFor({id:out.id})}catch(e){}
+ if(!t)t="P"+hex(await sha("pending|"+Date.now()+"|"+Math.random()));
+ /* كل أعمدة الرمز تُملأ من رمز الطالب الحقيقي وبصيغة القيم الموجودة عند الطلاب الحاليين */
+ const fmt=async(v)=>{v=String(v||"");if(/^\\x[0-9a-f]{64}$/i.test(v))return SCHEMES.hexsalt(t);if(/^[0-9a-f]{64}$/i.test(v))return SCHEMES.hex(t);if(/^[A-Za-z0-9+/]{43}=$/.test(v))return SCHEMES.b64(t);if(/^M[A-Za-z0-9_-]{40,}$/.test(v))return t;return SCHEMES.hex(t)};
+ const cols=new Set(["token_digest"]);if(TOKFIELD)cols.add(TOKFIELD);Object.keys(sm).forEach(k=>{if(/token|digest|hash/i.test(k)&&typeof sm[k]==="string")cols.add(k)});
+ for(const c of cols){if(c===TOKFIELD&&TOKSCHEME)out[c]=await SCHEMES[TOKSCHEME](t);else out[c]=await fmt(sm[c])}
+ out.__tok=t;return out}
+async function insertStudent(row){let body=await buildRow(row);delete body.__tok;
  const sm=await sample();for(let i=0;i<6;i++){try{return await api("masar_students","POST",body)}catch(e){const m=e.message||"";
    const col=(m.match(/column "?([a-z_]+)"? of relation/i)||m.match(/find the '([a-z_]+)' column/i)||[])[1];
    if(col&&/could not find|does not exist/i.test(m)&&col in body){delete body[col];continue}
    if(/invalid input syntax for type (integer|bigint)/i.test(m)&&body.id){delete body.id;continue}
+   if(col&&/not-null/i.test(m)&&!(col in body)&&/token|digest|hash/i.test(col)){body[col]=body.token_digest;continue}
    if(col&&/not-null/i.test(m)&&!(col in body)&&sm[col]!=null){body[col]=sm[col];continue}
    if(!/row-level|policy/i.test(m))throw e;
    const r=await fetch(B+"/rest/v1/masar_students",{method:"POST",headers:{apikey:K,Authorization:"Bearer "+jwt,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify(body)});
