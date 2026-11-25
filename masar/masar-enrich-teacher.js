@@ -74,9 +74,9 @@ $("enAllOff").onclick=()=>toggleLesson(E.map((e,i)=>i),false);
 /* ---------- إضافة الطلاب ---------- */
 function parseNames(){const def=$("enClass").value;let cl=def;const out=[];
  $("enNames").value.split(/\n/).forEach(line=>{const raw=line.trim().replace(/\s+/g," ");if(!raw)return;
-  const m=raw.match(/^(?:الفصل|فصل|صف)?\s*(\d+)\s*\/\s*(\d+)\s*(?:صف|فصل)?\s*:?$/);if(m){cl=m[1]+"/"+m[2];return}
+  const nr=raw.replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d));const m=nr.match(/^(?:الفصل|فصل|صف)?\s*(\d+)\s*\/\s*(\d+)\s*(?:صف|فصل)?\s*:?$/);if(m){cl=m[1]+"/"+m[2];return}
   if(/^(اسماء|أسماء)\s+الطلاب/.test(raw))return;
-  raw.split(/[،,]/).map(x=>x.replace(/^[\s\d.\-–)•]+/,"").trim()).filter(x=>x.length>2&&!/\d+\s*\/\s*\d+/.test(x)).forEach(n=>out.push({n,cl}))});return out}
+  raw.split(/[،,]/).map(x=>x.replace(/^[\s\d٠-٩.\-–_)•ـ]+/,"").trim()).filter(x=>x.length>2&&!/\d+\s*\/\s*\d+/.test(x)).forEach(n=>out.push({n,cl}))});return out}
 $("enAdd").onclick=async()=>{const items=parseNames();if(!items.length){msg("اكتب اسم طالب واحد على الأقل",false);return}
  const dup=items.filter(x=>enrStudents.some(s=>s.full_name===x.n)),add=items.filter(x=>!dup.includes(x));
  if(!add.length){msg("جميع الأسماء موجودة مسبقًا في الخطة الإثرائية",false);return}
@@ -89,7 +89,7 @@ $("enAdd").onclick=async()=>{const items=parseNames();if(!items.length){msg("ا�
   catch(e){fail=e.message;break}}
  b.disabled=false;await reload();
  if(ok)$("enNames").value="";
- msg(ok?"✓ أُضيف "+ok+" طالبًا متميزًا"+($("enIssueNew").checked?" • باركود جاهز لـ "+qr:"")+(fail?" • توقفت الإضافة: "+fail:"")+". فعّل لهم الأنشطة من الأسفل.":"تعذرت الإضافة: "+fail,ok&&!fail?true:false)};
+ if(/row-level|policy|permission/i.test(fail))fail="قاعدة البيانات لا تسمح بعد لحساب المعلم بإضافة طلاب — شغّل ملف الصلاحيات (SETUP-control-panel.sql) مرة واحدة في Supabase";msg(ok?"✓ أُضيف "+ok+" طالبًا متميزًا"+($("enIssueNew").checked?" • باركود جاهز لـ "+qr:"")+(fail?" • توقفت الإضافة: "+fail:"")+". فعّل لهم الأنشطة من الأسفل.":"تعذرت الإضافة: "+fail,ok&&!fail?true:false)};
 
 /* ---------- الحذف ---------- */
 async function delStudents(list,question){if(!list.length)return;if(!confirm(question))return;let del=0,off=0;
