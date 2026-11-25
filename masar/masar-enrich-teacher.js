@@ -92,16 +92,29 @@ $("enAdd").onclick=async()=>{const items=parseNames();if(!items.length){msg("ا�
  if(/row-level|policy|permission/i.test(fail))fail="قاعدة البيانات لا تسمح بعد لحساب المعلم بإضافة طلاب — شغّل ملف الصلاحيات (SETUP-control-panel.sql) مرة واحدة في Supabase";msg(ok?"✓ أُضيف "+ok+" طالبًا متميزًا"+($("enIssueNew").checked?" • باركود جاهز لـ "+qr:"")+(fail?" • توقفت الإضافة: "+fail:"")+". فعّل لهم الأنشطة من الأسفل.":"تعذرت الإضافة: "+fail,ok&&!fail?true:false)};
 
 /* إضافة طالب: يُربط بحساب المعلم (teacher_id) حتى يسمح له الجدول بقراءته بعد الإضافة */
-let TID=null;
-async function teacherId(){if(TID)return TID;try{const r=await api("masar_students?select=teacher_id&teacher_id=not.is.null&limit=1");if(r&&r[0]&&r[0].teacher_id)TID=r[0].teacher_id}catch(e){}return TID||uid}
-async function insertStudent(row){const tid=await teacherId(),withT=Object.assign({teacher_id:tid},row);
- try{return await api("masar_students","POST",withT)}catch(e){
-  if(/could not find|does not exist/i.test(e.message)&&/teacher_id/.test(e.message))return await api("masar_students","POST",row);
-  if(!/row-level|policy/i.test(e.message))throw e;
-  /* محاولة أخيرة: إضافة دون طلب إرجاع السجل، ثم البحث عنه */
-  const r=await fetch(B+"/rest/v1/masar_students",{method:"POST",headers:{apikey:K,Authorization:"Bearer "+jwt,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify(withT)});
-  if(!r.ok){let t="";try{t=(await r.json()).message||""}catch(x){}throw Error(t||e.message)}
-  const f=await api("masar_students?select=*&full_name=eq."+encodeURIComponent(row.full_name)+"&class_name=eq."+encodeURIComponent(row.class_name));if(!f.length)throw Error("أُضيف الطالب لكن قاعدة البيانات لا تسمح للمعلم بقراءته");return f}}
+let TID=null,SAMPLE=null;
+async function sample(){if(SAMPLE)return SAMPLE;try{const r=await api("masar_students?select=*&limit=1");SAMPLE=(r&&r[0])||{}}catch(e){SAMPLE={}}return SAMPLE}
+async function teacherId(){if(TID)return TID;const sm=await sample();if(sm.teacher_id)TID=sm.teacher_id;else{try{const r=await api("masar_students?select=teacher_id&teacher_id=not.is.null&limit=1");if(r&&r[0])TID=r[0].teacher_id}catch(e){}}return TID||uid}
+const isUuid=v=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(v||""));
+const newUuid=()=>crypto.randomUUID?crypto.randomUUID():"10000000-1000-4000-8000-100000000000".replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));
+/* يجهّز سجل الطالب كاملًا: رمز المعلم + معرّف + رمز الدخول (token_digest) لأن الجدول يشترطهما */
+async function buildRow(row){const sm=await sample(),out=Object.assign({teacher_id:await teacherId()},row);
+ const field=TOKFIELD||("token_digest" in sm?"token_digest":null)||detectField();
+ if(isUuid(sm.id)||!("id" in sm))out.id=newUuid();
+ if(field){let v;try{if(out.id&&TOKSEED){const t=await tokenFor({id:out.id});v=await SCHEMES[TOKSCHEME||"hex"](t)}}catch(e){}
+  if(!v)v=hex(await sha("pending|"+Date.now()+"|"+Math.random()));out[field]=v}
+ return out}
+async function insertStudent(row){let body=await buildRow(row);
+ const sm=await sample();for(let i=0;i<6;i++){try{return await api("masar_students","POST",body)}catch(e){const m=e.message||"";
+   const col=(m.match(/column "?([a-z_]+)"? of relation/i)||m.match(/find the '([a-z_]+)' column/i)||[])[1];
+   if(col&&/could not find|does not exist/i.test(m)&&col in body){delete body[col];continue}
+   if(/invalid input syntax for type (integer|bigint)/i.test(m)&&body.id){delete body.id;continue}
+   if(col&&/not-null/i.test(m)&&!(col in body)&&sm[col]!=null){body[col]=sm[col];continue}
+   if(!/row-level|policy/i.test(m))throw e;
+   const r=await fetch(B+"/rest/v1/masar_students",{method:"POST",headers:{apikey:K,Authorization:"Bearer "+jwt,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify(body)});
+   if(!r.ok){let t="";try{t=(await r.json()).message||""}catch(x){}throw Error(t||m)}
+   const f=await api("masar_students?select=*&full_name=eq."+encodeURIComponent(row.full_name)+"&class_name=eq."+encodeURIComponent(row.class_name));if(!f.length)throw Error("أُضيف الطالب لكن قاعدة البيانات لا تسمح للمعلم بقراءته");return f}}
+ throw Error("تعذرت إضافة الطالب")}
 window.masarInsertStudent=insertStudent;
 
 /* ---------- الحذف ---------- */
