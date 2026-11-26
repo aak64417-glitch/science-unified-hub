@@ -94,7 +94,35 @@ button{cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgb(0 0 0 / .12)}
 .search{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 12px}
 .search input{border:0;outline:0;background:transparent;font:inherit;color:var(--ink);flex:1;min-width:0}
-.count{color:var(--ink-2);font-size:.88rem;padding-bottom:6px}
+.count{color:var(--ink-2);font-size:.88rem;padding-bottom:6px;scroll-margin-top:80px}
+/* curriculum tiles & lesson groups */
+.tiles{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;margin-top:8px}
+.tcol h3{font-size:.95rem;color:var(--ink-2);margin:0 0 8px}
+.trow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tsec .trow{grid-template-columns:1fr}
+.tile{border:0;border-radius:16px;padding:14px 12px;color:#fff;text-align:start;display:flex;flex-direction:column;gap:2px;min-height:78px;justify-content:flex-end;position:relative;overflow:hidden;box-shadow:0 6px 18px rgb(0 0 0/.12);transition:transform .2s,box-shadow .2s}
+.tile::after{content:"";position:absolute;inset:auto -20px -30px auto;width:90px;height:90px;border-radius:50%;background:rgb(255 255 255/.14)}
+.tile b{font-family:var(--f-display);font-size:1.05rem}.tile span{font-size:.8rem;font-weight:600;opacity:.92}
+.tile:hover{transform:translateY(-2px)}
+.tile.on{outline:3px solid var(--accent);outline-offset:2px}
+.tile.g1,.lg-h.g1{background:linear-gradient(135deg,#0d5f56,#2a9d8f)}
+.tile.g2,.lg-h.g2{background:linear-gradient(135deg,#3557a8,#5b7fd6)}
+.tile.g3,.lg-h.g3{background:linear-gradient(135deg,#8a3b2a,#d0703f)}
+.tile.gs,.lg-h.gs{background:linear-gradient(135deg,#3d3f46,#6b6f7a)}
+.lg{margin:8px 0 26px}
+.lg-h{color:#fff;border-radius:16px;padding:12px 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.lg-h h3{font-size:1.15rem}.lg-h h3 span{font-weight:500;opacity:.9}.lg-h small{opacity:.9;font-weight:600}
+.ls h4{font-family:var(--f-display);font-size:1rem;margin:14px 2px 8px;display:flex;gap:8px;align-items:center}
+.ls h4 span{font-size:.72rem;background:var(--surface-2);color:var(--ink-2);border-radius:99px;padding:1px 9px;font-weight:600}
+.lg .grid{padding-bottom:4px;margin-top:10px}
+.card .lsn{font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:-4px}
+.chip.d3{background:var(--ink);color:var(--bg)}
+.card .thumb .chip.new{inset-inline-start:auto;inset-inline-end:10px;background:var(--accent);color:#fff}
+.s-earth .ico{background:#f4e8d8;color:#8a5a22}
+.tog{display:flex;gap:6px;align-items:center;font-weight:600;font-size:.88rem;color:var(--ink-2)}
+.empty{padding:30px;text-align:center;color:var(--ink-2)}
+@media (max-width:900px){.tiles{grid-template-columns:1fr}.tsec .trow{grid-template-columns:repeat(3,1fr)}}
+
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding-bottom:40px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;text-align:start;min-width:0;overflow:hidden}
 .card .thumb{margin:-16px -16px 2px;aspect-ratio:16/9;position:relative;background:linear-gradient(135deg,var(--surface-2),var(--line));overflow:hidden}
@@ -138,6 +166,11 @@ button{cursor:pointer}
 .zoom{position:absolute;bottom:12px;left:12px;display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px}
 .zoom button{border:0;background:transparent;width:38px;height:38px;border-radius:9px;font-size:1.2rem;font-weight:700}
 .zoom button:hover{background:var(--surface-2)}
+.zoom .z-live[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.stage.slowmo::after{content:"حركة بطيئة ×0.3";position:absolute;top:10px;right:50%;transform:translateX(50%);background:#e0703fe6;color:#fff;font-weight:700;font-size:.78rem;padding:3px 12px;border-radius:99px;pointer-events:none;z-index:3}
+.stage:fullscreen{height:100vh!important;max-height:none!important;border-radius:0}
+.stage:-webkit-full-screen{height:100vh!important;max-height:none!important;border-radius:0}
+.stage.fs-fake{position:fixed!important;inset:0;z-index:999;height:100vh!important;max-height:none!important;border-radius:0;margin:0}
 .readout{position:absolute;top:12px;right:12px;background:#0b1a18;color:#7ef0c8;font-family:var(--f-mono);border-radius:12px;padding:8px 14px;min-width:150px;border:1px solid #234;box-shadow:0 4px 14px rgb(0 0 0 / .25)}
 .readout{text-align:right;cursor:pointer}
 .readout:not(.on) .v{color:#4c6560}
@@ -391,11 +424,17 @@ footer{color:var(--ink-2);font-size:.82rem;padding-block:20px 30px;text-align:ce
   <div class="install" id="installTip" hidden><span><b>ثبّت المختبر على جهازك:</b> اضغط زر المشاركة في Safari ثم "إضافة إلى الشاشة الرئيسية".</span><button id="installX" aria-label="إخفاء">×</button></div>
   <div class="intro">
     <h2>مكتبة التجارب</h2>
-    <p>تجارب مرتبة حسب الصف الدراسي والتخصص. اختر تجربة لتشغيلها في المختبر التفاعلي.</p>
+    <p>تجارب المرحلة المتوسطة مرتبة كما في كتاب الطالب: اختر الفصل الدراسي ثم الصف، فتظهر تجارب كل درس بترتيب الكتاب.</p>
   </div>
+  <div class="tiles" id="tiles"></div>
   <div class="filters">
-    <div class="seg" role="group" aria-label="المرحلة" id="fStage">
-      <button aria-pressed="true" data-v="all">كل المراحل</button>
+    <div class="seg" role="group" aria-label="الفصل الدراسي" id="fTerm">
+      <button aria-pressed="true" data-v="all">الفصلان</button>
+      <button aria-pressed="false" data-v="1">الفصل الدراسي الأول</button>
+      <button aria-pressed="false" data-v="2">الفصل الدراسي الثاني</button>
+    </div>
+    <div class="seg" role="group" aria-label="الصف" id="fStage">
+      <button aria-pressed="true" data-v="all">كل الصفوف</button>
       <button aria-pressed="false" data-v="1">أول متوسط</button>
       <button aria-pressed="false" data-v="2">ثاني متوسط</button>
       <button aria-pressed="false" data-v="3">ثالث متوسط</button>
@@ -406,70 +445,18 @@ footer{color:var(--ink-2);font-size:.82rem;padding-block:20px 30px;text-align:ce
       <button aria-pressed="false" data-v="chem">كيمياء</button>
       <button aria-pressed="false" data-v="phys">فيزياء</button>
       <button aria-pressed="false" data-v="bio">أحياء</button>
+      <button aria-pressed="false" data-v="earth">أرض وفضاء</button>
     </div>
     <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="ابحث عن اسم التجربة…"></label>
+      <input id="q" type="search" placeholder="ابحث عن تجربة أو درس…"></label>
+    <label class="tog"><input type="checkbox" id="f3d"> ثلاثي الأبعاد فقط</label>
   </div>
   <div class="count" id="count"></div>
-  <div class="grid" id="grid"></div>
+  <div id="grid"></div>
   <div class="sheets">
     <h2>أوراق تقرير الطالب للطباعة</h2>
-    <p>كل ورقة A4 فيها نسختان، تُطبع بالوضع العمودي العادي ثم تُقص من المنتصف فيصبح كل تقرير نصف ورقة.</p>
-    <h3 class="sh-g">الصف الأول المتوسط</h3>
-    <div class="sheet-list">
-      <div class="sh"><span class="sh-t">الأحماض والقواعد وقياس pH</span><a class="sh-p" href="sheet-ph.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="ph.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">فصل المخاليط بالترشيح والتبخير</span><a class="sh-p" href="sheet-filt.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="filt.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">الآلات البسيطة: الرافعة</span><a class="sh-p" href="sheet-mach.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="mach.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">قانون نيوتن الثاني</span><a class="sh-p" href="sheet-newt.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="newt.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">الحركة: السرعة ومنحنى المسافة-الزمن</span><a class="sh-p" href="sheet-motn.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="motn.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">الشغل: البكرات والمستوى المائل</span><a class="sh-p" href="sheet-work.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="work.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">قياس الكثافة</span><a class="sh-p" href="sheet-dens.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="dens.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">تعرّف المعادن</span><a class="sh-p" href="sheet-minr.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="minr.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">التجوية الكيميائية</span><a class="sh-p" href="sheet-weat.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="weat.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">دورة الصخور</span><a class="sh-p" href="sheet-rock.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="rock.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">تيارات الحمل وحركة الصفائح</span><a class="sh-p" href="sheet-plate.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="plate.pdf" target="_blank" rel="noopener">PDF</a></div>
-    </div>
-    <h3 class="sh-g">الصف الثاني المتوسط</h3>
-    <div class="sheet-list">
-      <div class="sh"><span class="sh-t">التغيرات الفيزيائية والكيميائية</span><a class="sh-p" href="sheet-changes.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="changes.pdf" target="_blank" rel="noopener">PDF</a></div>
-    </div>
-    <h3 class="sh-g">الصف الثالث المتوسط</h3>
-    <div class="sheet-list">
-      <div class="sh"><span class="sh-t">الانتشار والخاصية الأسموزية</span><a class="sh-p" href="sheet-osmosis.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="osmosis.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">البناء الضوئي في نبات الإيلوديا</span><a class="sh-p" href="sheet-photosynthesis.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="photosynthesis.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">التنفس الخلوي والتخمر في الخميرة</span><a class="sh-p" href="sheet-yeast.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="yeast.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">النقل عبر الغشاء البلازمي</span><a class="sh-p" href="sheet-transport.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="transport.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">الدوائر الكهربائية البسيطة</span><a class="sh-p" href="sheet-circ.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="circ.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">انقسام الخلية المتساوي</span><a class="sh-p" href="sheet-mito.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="mito.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">الوراثة المندلية</span><a class="sh-p" href="sheet-mend.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="mend.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">تحديد المركز السطحي للزلزال</span><a class="sh-p" href="sheet-quake.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="quake.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">استخلاص DNA من الفراولة</span><a class="sh-p" href="sheet-dna.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="dna.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">تجربة رذرفورد</span><a class="sh-p" href="sheet-ruth.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="ruth.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">نموذج عمر النصف</span><a class="sh-p" href="sheet-half.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="half.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">الفلزات واللافلزات</span><a class="sh-p" href="sheet-elem.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="elem.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">التحليل الكهربائي للماء</span><a class="sh-p" href="sheet-elec.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="elec.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">تحضير الغازات والكشف عنها</span><a class="sh-p" href="sheet-gasp.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="gasp.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">الكشف باللهب</span><a class="sh-p" href="sheet-flame.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="flame.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">أنبوب الأشعة المهبطية</span><a class="sh-p" href="sheet-crt.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="crt.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">أنواع الإشعاع ونفاذيتها</span><a class="sh-p" href="sheet-rad.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="rad.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">الفلزات القلوية مع الماء</span><a class="sh-p" href="sheet-alk.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="alk.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">ظروف صدأ الحديد</span><a class="sh-p" href="sheet-rust.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="rust.pdf" target="_blank" rel="noopener">PDF</a></div>
-    </div>
-    <h3 class="sh-g">المرحلة المتوسطة (عام)</h3>
-    <div class="sheet-list">
-      <div class="sh"><span class="sh-t">الخلية تحت المجهر</span><a class="sh-p" href="sheet-cellm.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="cellm.pdf" target="_blank" rel="noopener">PDF</a></div>
-    </div>
-    <h3 class="sh-g">المرحلة الثانوية</h3>
-    <div class="sheet-list">
-      <div class="sh"><span class="sh-t">المعايرة</span><a class="sh-p" href="sheet-titr.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="titr.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">سرعة التفاعل الكيميائي</span><a class="sh-p" href="sheet-rate.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="rate.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">قوانين الغازات</span><a class="sh-p" href="sheet-gas.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="gas.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">قانون أوم</span><a class="sh-p" href="sheet-ohm.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="ohm.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">المقذوفات</span><a class="sh-p" href="sheet-proj.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="proj.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">انكسار الضوء</span><a class="sh-p" href="sheet-refr.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="refr.pdf" target="_blank" rel="noopener">PDF</a></div>
-      <div class="sh"><span class="sh-t">نشاط الإنزيمات</span><a class="sh-p" href="sheet-enz.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="enz.pdf" target="_blank" rel="noopener">PDF</a></div>
-    </div>
-
+    <p>كل ورقة A4 فيها نسختان، تُطبع بالوضع العمودي العادي ثم تُقص من المنتصف فيصبح كل تقرير نصف ورقة. تتبع القائمة الفصل الدراسي والصف المختارين في الأعلى.</p>
+    <div id="sheetGroups"></div>
   </div>
 </section>
 
@@ -567,7 +554,7 @@ const ICONS={
   atom:'<circle cx="12" cy="12" r="1.5"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>'
 };
 const EXPS=[
-  {id:'ph',t:'الأحماض والقواعد وقياس pH',st:'mid',gs:['1'],s:'chem',i:'flask',ready:true,gr:'أول متوسط'},
+  {id:'ph',t:'الأحماض والقواعد وقياس pH',st:'mid',gs:['1'],s:'chem',i:'flask',ready:true,d3:true,gr:'أول متوسط'},
   {id:'motn',t:'الحركة: السرعة ومنحنى المسافة-الزمن',st:'mid',gs:['1'],s:'phys',i:'run',gr:'أول متوسط',ls:'الحركة'},
   {id:'newt',t:'قوانين نيوتن للحركة',st:'mid',gs:['1'],s:'phys',i:'run',gr:'أول متوسط',ls:'قوانين نيوتن للحركة'},
   {id:'mach',t:'الآلات البسيطة: الرافعة',st:'mid',gs:['1'],s:'phys',i:'gear',gr:'أول متوسط',ls:'الشغل والآلات البسيطة'},
@@ -611,25 +598,115 @@ const EXPS=[
   {id:'refr',t:'انكسار الضوء',st:'sec',gs:['sec'],s:'phys',i:'wave'},
   {id:'enz',t:'نشاط الإنزيمات',st:'sec',gs:['sec'],s:'bio',i:'temp'}
 ];
-const SUBJ={chem:'كيمياء',phys:'فيزياء',bio:'أحياء'}, STAGE={mid:'المرحلة المتوسطة',sec:'المرحلة الثانوية'};
-const F={stage:'all',subj:'all',q:''};
-function svg(p){return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`}
-function renderLib(){
-  const list=EXPS.filter(e=>(F.stage==='all'||e.gs.includes(F.stage))&&(F.subj==='all'||e.s===F.subj)&&(!F.q||e.t.includes(F.q)));
-  const ready=list.filter(e=>e.ready).length;
-  document.getElementById('count').textContent=`${list.length} تجربة · ${ready} متاحة الآن`;
-  const g=document.getElementById('grid');
-  g.innerHTML=list.length?list.map(e=>`
-    <article class="card s-${e.s} ${e.ready?'ready':'locked'}" ${e.ready?`tabindex="0" role="button" data-open="${e.id}"`:''}>
-      <div class="thumb"><div class="ph">${svg(ICONS[e.i])}</div><img src="card-${e.id}.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="chip ${e.ready?'ready':'soon'}">${e.ready?'✓ متاح':'قيد البناء'}</span></div>
-      <div class="row"><h3>${e.t}</h3><div class="ico">${svg(ICONS[e.i])}</div></div>
-      <div class="meta">${e.d3?'<span class="chip" style="background:var(--ink);color:var(--bg)">3D</span>':''}<span class="chip">${SUBJ[e.s]}</span><span class="chip">${e.gr||STAGE[e.st]}</span>${e.ls?`<span class="chip">درس: ${e.ls}</span>`:''}</div>
+const SUBJ={chem:'كيمياء',phys:'فيزياء',bio:'أحياء',earth:'أرض وفضاء'}, STAGE={mid:'المرحلة المتوسطة',sec:'المرحلة الثانوية'};
+/* ---- منهج العلوم للمرحلة المتوسطة: دروس كل صف وفصل دراسي بترتيب كتاب الطالب ---- */
+const GR={1:'أول متوسط',2:'ثاني متوسط',3:'ثالث متوسط',sec:'الثانوي'}, TERM={1:'الفصل الدراسي الأول',2:'الفصل الدراسي الثاني'};
+const LESSONS={
+ '1-1':['العلم وعملياته','النماذج العلمية','تقويم التفسيرات العلمية','الحركة','قوانين نيوتن للحركة','الشغل والآلات البسيطة','الخواص والتغيرات الفيزيائية','الخواص والتغيرات الكيميائية','تركيب المادة','العناصر والمركبات والمخاليط','المعادن – جواهر الأرض','أنواع الصخور','صفائح الأرض المتحركة','التجوية والتعرية وأثرهما'],
+ '1-2':['الغلاف الجوي والطقس','الكتل والجبهات الهوائية','الأرض والنظام الشمسي','الفضاء والنجوم والمجرات','عالم الخلايا','وظائف الخلايا','الإسفنجيات واللاسعات والديدان','الرخويات والمفصليات وشوكيات الجلد','الحبليات ومجموعاتها','الطيور والثدييات','ما النظام البيئي؟','المخلوقات الحية والبيئة والطاقة','استخدام الموارد الطبيعية','الإنسان والبيئة'],
+ '2-1':['أسلوب العلم','حل المشكلات بطريقة علمية','المحاليل والذائبية','المحاليل الحمضية والمحاليل القاعدية','المادة','الحرارة وتحولات المادة','سلوك الموائع','ما الطاقة؟','تحولات الطاقة','جهاز الدوران','المناعة والمرض','الجهاز الهضمي والمواد الغذائية','جهازا التنفس والإخراج'],
+ '2-2':['الجلد والعضلات','الجهاز الهيكلي والجهاز العصبي','جهازا الغدد الصم والتكاثر','مراحل حياة الإنسان','النباتات اللابذرية','النباتات البذرية','موارد البيئة','التلوث وحماية البيئة','درجة الحرارة','انتقال الحرارة','المحركات والثلاجات','الموجات','موجات الصوت','الضوء'],
+ '3-1':['أسلوب العلم','عمل العلم','العلم والتقنية والمجتمع','الزلازل','البراكين','الصفائح الأرضية وعلاقتها بالزلازل والبراكين','أنشطة في الخلية','انقسام الخلية وتكاثرها','مادة الوراثة DNA','علم الوراثة','نماذج الذرة','النواة','مقدمة في الجدول الدوري','العناصر الممثلة','العناصر الانتقالية'],
+ '3-2':['اتحاد الذرات','ارتباط العناصر','الصيغ والمعادلات الكيميائية','سرعة التفاعلات الكيميائية','الحركة','التسارع','الزخم والتصادمات','القانونان الأول والثاني لنيوتن في الحركة','القانون الثالث لنيوتن','التيار الكهربائي','الدوائر الكهربائية','الخصائص العامة للمغناطيس','الكهرومغناطيسية'],
+ 'sec-0':['الكيمياء','الفيزياء','الأحياء']
+};
+/* موضع كل تجربة في المنهج: [الصف، الفصل الدراسي، الدرس] — التجربة الواحدة قد تخدم أكثر من صف */
+const CUR={
+ motn:[[1,1,'الحركة'],[3,2,'الحركة']], newt:[[1,1,'قوانين نيوتن للحركة'],[3,2,'القانونان الأول والثاني لنيوتن في الحركة']],
+ mach:[[1,1,'الشغل والآلات البسيطة']], work:[[1,1,'الشغل والآلات البسيطة']], dens:[[1,1,'الخواص والتغيرات الفيزيائية']],
+ chg:[[1,1,'الخواص والتغيرات الكيميائية'],[2,1,'المادة']], ph:[[1,1,'الخواص والتغيرات الكيميائية'],[2,1,'المحاليل الحمضية والمحاليل القاعدية']],
+ filt:[[1,1,'العناصر والمركبات والمخاليط']], minr:[[1,1,'المعادن – جواهر الأرض']], rock:[[1,1,'أنواع الصخور']],
+ plate:[[1,1,'صفائح الأرض المتحركة'],[3,1,'الصفائح الأرضية وعلاقتها بالزلازل والبراكين']], weat:[[1,1,'التجوية والتعرية وأثرهما']],
+ front7:[[1,2,'الكتل والجبهات الهوائية']], seas7:[[1,2,'الأرض والنظام الشمسي']], cellm:[[1,2,'عالم الخلايا']],
+ osmo:[[1,2,'وظائف الخلايا'],[3,1,'أنشطة في الخلية']], trans:[[1,2,'وظائف الخلايا'],[3,1,'أنشطة في الخلية']],
+ photo:[[1,2,'وظائف الخلايا'],[3,1,'أنشطة في الخلية']], yeast:[[1,2,'وظائف الخلايا'],[3,1,'أنشطة في الخلية']], eco7:[[1,2,'ما النظام البيئي؟']],
+ dig8:[[2,1,'أسلوب العلم']], plnt8:[[2,1,'حل المشكلات بطريقة علمية']], sol8:[[2,1,'المحاليل والذائبية']], cab8:[[2,1,'المحاليل الحمضية والمحاليل القاعدية']],
+ heat8:[[2,1,'الحرارة وتحولات المادة']], buoy8:[[2,1,'سلوك الموائع']], pend8:[[2,1,'تحولات الطاقة']], heart8:[[2,1,'جهاز الدوران']],
+ starch8:[[2,1,'الجهاز الهضمي والمواد الغذائية']], lung8:[[2,1,'جهازا التنفس والإخراج']],
+ cond8:[[2,2,'انتقال الحرارة']], sound8:[[2,2,'موجات الصوت']], mirr8:[[2,2,'الضوء']],
+ quake:[[3,1,'الزلازل']], volc9:[[3,1,'البراكين']], mito:[[3,1,'انقسام الخلية وتكاثرها'],['sec',0,'الأحياء']], dna:[[3,1,'مادة الوراثة DNA']],
+ mend:[[3,1,'علم الوراثة'],['sec',0,'الأحياء']], ruth:[[3,1,'نماذج الذرة']], crt:[[3,1,'نماذج الذرة']], flame:[[3,1,'نماذج الذرة'],['sec',0,'الكيمياء']],
+ half:[[3,1,'النواة']], rad:[[3,1,'النواة']], elem:[[3,1,'العناصر الممثلة']], alk:[[3,1,'العناصر الممثلة']], rust:[[3,1,'العناصر الانتقالية']],
+ bond9:[[3,2,'ارتباط العناصر']], elec:[[3,2,'الصيغ والمعادلات الكيميائية'],['sec',0,'الكيمياء']], gasp:[[3,2,'الصيغ والمعادلات الكيميائية'],['sec',0,'الكيمياء']],
+ rate:[[3,2,'سرعة التفاعلات الكيميائية'],['sec',0,'الكيمياء']], mom9:[[3,2,'الزخم والتصادمات']], ballo9:[[3,2,'القانون الثالث لنيوتن']],
+ ohm:[[3,2,'التيار الكهربائي'],['sec',0,'الفيزياء']], circ:[[3,2,'الدوائر الكهربائية']], mag9:[[3,2,'الخصائص العامة للمغناطيس']], emag9:[[3,2,'الكهرومغناطيسية']],
+ titr:[['sec',0,'الكيمياء']], gas:[['sec',0,'الكيمياء']], proj:[['sec',0,'الفيزياء']], refr:[['sec',0,'الفيزياء']], enz:[['sec',0,'الأحياء']]
+};
+/* التجارب الجديدة (حزم 3D) — تُضاف إلى المكتبة */
+EXPS.push(
+  {id:'front7',t:'لقاء الكتل الهوائية: الجبهة الباردة والدافئة',s:'earth',i:'wave'},
+  {id:'seas7',t:'الفصول الأربعة وميل محور الأرض',s:'earth',i:'atom'},
+  {id:'eco7',t:'الدورة المائية في نظام بيئي مغلق',s:'bio',i:'leaf'},
+  {id:'heat8',t:'منحنى التسخين: من الجليد إلى البخار',s:'chem',i:'temp'},
+  {id:'buoy8',t:'قاعدة أرخميدس وقوة الطفو',s:'phys',i:'drop'},
+  {id:'pend8',t:'تحولات الطاقة في البندول',s:'phys',i:'run'},
+  {id:'heart8',t:'القلب ومعدل النبض',s:'bio',i:'cell'},
+  {id:'starch8',t:'هضم النشا بإنزيم اللعاب',s:'bio',i:'flask'},
+  {id:'lung8',t:'نموذج الرئتين وآلية التنفس',s:'bio',i:'cell'},
+  {id:'cond8',t:'انتقال الحرارة بالتوصيل في الفلزات',s:'phys',i:'temp'},
+  {id:'sound8',t:'الصوت: التردد وحدّة الصوت والسعة',s:'phys',i:'wave'},
+  {id:'mirr8',t:'انعكاس الضوء في المرآة المستوية',s:'phys',i:'wave'},
+  {id:'volc9',t:'لزوجة الصهارة ونوع الثوران البركاني',s:'earth',i:'mount'},
+  {id:'bond9',t:'التوصيل الكهربائي للمركبات الأيونية والتساهمية',s:'chem',i:'bolt'},
+  {id:'mom9',t:'الزخم والتصادمات على المسار الهوائي',s:'phys',i:'run'},
+  {id:'ballo9',t:'صاروخ البالون: الفعل ورد الفعل',s:'phys',i:'run'},
+  {id:'mag9',t:'المجال المغناطيسي وبرادة الحديد',s:'phys',i:'atom'},
+  {id:'emag9',t:'المغناطيس الكهربائي: اللفات والتيار',s:'phys',i:'bolt'}
+);
+['rock','plate','weat','minr','quake'].forEach(id=>{const e=EXPS.find(x=>x.id===id);if(e)e.s='earth';});
+const SHEET_ID={osmo:'osmosis',photo:'photosynthesis',trans:'transport',chg:'changes'};
+const NEWX=new Set(['front7','seas7','eco7','heat8','buoy8','pend8','heart8','starch8','lung8','cond8','sound8','mirr8','volc9','bond9','mom9','ballo9','mag9','emag9']);
+const F={stage:'all',term:'all',subj:'all',q:'',d3:false};
+const svgI=p=>`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+function svg(p){return svgI(p)}
+const placeOf=e=>CUR[e.id]||[];
+function groups(){const out=[];[1,2,3].forEach(g=>[1,2].forEach(t=>out.push({g,t,k:g+'-'+t})));out.push({g:'sec',t:0,k:'sec-0'});return out;}
+function matchE(e){return (F.subj==='all'||e.s===F.subj)&&(!F.d3||e.d3)&&(!F.q||e.t.includes(F.q)||placeOf(e).some(p=>p[2].includes(F.q)));}
+function inGroup(G){return (F.stage==='all'||String(G.g)===F.stage)&&(F.term==='all'||(G.g==='sec'?F.stage==='sec':String(G.t)===F.term));}
+function cardHTML(e,lesson){const lessons=placeOf(e).map(p=>GR[p[0]]).filter((v,i,a)=>a.indexOf(v)===i);
+  return `<article class="card s-${e.s} ${e.ready?'ready':'locked'}" ${e.ready?`tabindex="0" role="button" data-open="${e.id}"`:''}>
+      <div class="thumb"><div class="ph">${svgI(ICONS[e.i])}</div><img src="card-${e.id}.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="chip ${e.ready?'ready':'soon'}">${e.ready?'✓ متاح':'قيد البناء'}</span>${NEWX.has(e.id)?'<span class="chip new">جديد</span>':''}</div>
+      ${lesson?`<div class="lsn">درس: ${lesson}</div>`:''}<div class="row"><h3>${e.t}</h3><div class="ico">${svgI(ICONS[e.i])}</div></div>
+      <div class="meta">${e.d3?'<span class="chip d3">3D</span>':''}<span class="chip">${SUBJ[e.s]}</span>${lessons.length>1?`<span class="chip">يخدم: ${lessons.join(' · ')}</span>`:''}</div>
       <div class="go"><span>${e.ready?'تشغيل التجربة':'ستتوفر قريباً'}</span><span>${e.ready?'←':''}</span></div>
-    </article>`).join(''):'<div class="empty">لا توجد تجارب تطابق البحث.</div>';
+    </article>`;}
+function renderTiles(){const el=document.getElementById('tiles');if(!el)return;
+  const cnt=k=>{const [g,t]=k.split('-');return EXPS.filter(e=>placeOf(e).some(p=>String(p[0])===g&&String(p[1])===t)).length;};
+  el.innerHTML=[1,2].map(t=>`<div class="tcol"><h3>${TERM[t]}</h3><div class="trow">${[1,2,3].map(g=>{const k=g+'-'+t,on=F.term===String(t)&&F.stage===String(g);
+    return `<button class="tile g${g} ${on?'on':''}" data-g="${g}" data-t="${t}"><b>${GR[g]}</b><span>${cnt(k)} تجربة</span></button>`;}).join('')}</div></div>`).join('')+
+    `<div class="tcol tsec"><h3>إثراء</h3><div class="trow"><button class="tile gs ${F.stage==='sec'?'on':''}" data-g="sec" data-t="all"><b>الثانوي</b><span>${cnt('sec-0')} تجربة</span></button></div></div>`;}
+function renderLib(){
+  renderTiles();
+  const gEl=document.getElementById('grid');let html='',seen=new Set(),nG=0;
+  groups().forEach(G=>{if(!inGroup(G))return;const order=LESSONS[G.k]||[];
+    const items=EXPS.filter(matchE).map(e=>({e,p:placeOf(e).find(p=>String(p[0])===String(G.g)&&String(p[1])===String(G.t))})).filter(x=>x.p);
+    if(!items.length)return;nG++;
+    items.sort((a,b)=>order.indexOf(a.p[2])-order.indexOf(b.p[2]));
+    const byL=[];items.forEach(x=>{let L=byL.find(l=>l.n===x.p[2]);if(!L)byL.push(L={n:x.p[2],xs:[]});L.xs.push(x.e);seen.add(x.e.id);});
+    html+=`<section class="lg"><div class="lg-h g${G.g==='sec'?'s':G.g}"><h3>${GR[G.g]}${G.t?` · <span>${TERM[G.t]}</span>`:''}</h3><small>${items.length} تجربة في ${byL.length} ${byL.length>2&&byL.length<11?'دروس':'درس'}</small></div>`+
+      `<div class="grid">${items.map(x=>cardHTML(x.e,x.p[2])).join('')}</div></section>`;});
+  const ready=[...seen].filter(id=>{const e=EXPS.find(x=>x.id===id);return e&&e.ready;}).length;
+  document.getElementById('count').textContent=seen.size?`${seen.size} تجربة · ${ready} جاهزة للتشغيل`:'';
+  gEl.innerHTML=html||'<div class="empty">لا توجد تجارب تطابق الاختيار.</div>';
+  renderSheets();
 }
+function renderSheets(){const el=document.getElementById('sheetGroups');if(!el)return;let h='';
+  groups().forEach(G=>{if(!inGroup(G))return;const order=LESSONS[G.k]||[];
+    const xs=EXPS.filter(e=>e.ready&&placeOf(e).some(p=>String(p[0])===String(G.g)&&String(p[1])===String(G.t)))
+      .sort((a,b)=>order.indexOf(placeOf(a).find(p=>String(p[0])===String(G.g)&&String(p[1])===String(G.t))[2])-order.indexOf(placeOf(b).find(p=>String(p[0])===String(G.g)&&String(p[1])===String(G.t))[2]));
+    if(!xs.length)return;
+    h+=`<h3 class="sh-g">${GR[G.g]}${G.t?' · '+TERM[G.t]:''}</h3><div class="sheet-list">`+xs.map(e=>{const sid=SHEET_ID[e.id]||e.id;
+      return `<div class="sh"><span class="sh-t">${e.t}</span><a class="sh-p" href="sheet-${sid}.html?print=1" target="_blank" rel="noopener">🖨 طباعة</a><a class="sh-d" href="${sid}.pdf" target="_blank" rel="noopener">PDF</a></div>`;}).join('')+'</div>';});
+  el.innerHTML=h;}
+function setSeg(id,v){[...document.getElementById(id).children].forEach(x=>x.setAttribute('aria-pressed',x.dataset.v===v));}
 function seg(id,key){document.getElementById(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b));F[key]=b.dataset.v;renderLib();});}
-seg('fStage','stage');seg('fSubj','subj');
+  F[key]=b.dataset.v;if(key==='stage'&&F.stage==='sec')F.term='all';if(key==='term'&&F.term!=='all'&&F.stage==='sec')F.stage='all';
+  setSeg('fStage',F.stage);setSeg('fTerm',F.term);setSeg('fSubj',F.subj);renderLib();});}
+seg('fTerm','term');seg('fStage','stage');seg('fSubj','subj');
+document.getElementById('tiles').addEventListener('click',e=>{const b=e.target.closest('.tile');if(!b)return;
+  const same=F.stage===b.dataset.g&&F.term===b.dataset.t;F.stage=same?'all':b.dataset.g;F.term=same?'all':b.dataset.t;
+  setSeg('fStage',F.stage);setSeg('fTerm',F.term);renderLib();document.getElementById('count').scrollIntoView({behavior:'smooth',block:'start'});});
+document.getElementById('f3d').addEventListener('change',e=>{F.d3=e.target.checked;renderLib();});
 document.getElementById('q').addEventListener('input',e=>{F.q=e.target.value.trim();renderLib();});
 document.getElementById('grid').addEventListener('click',e=>{const c=e.target.closest('[data-open]');if(c)openExp(c.dataset.open);});
 document.getElementById('grid').addEventListener('keydown',e=>{if(e.key==='Enter'){const c=e.target.closest('[data-open]');if(c)openExp(c.dataset.open);}});
@@ -1114,10 +1191,27 @@ class Lab{
     r.domElement.addEventListener('pointerup',e=>{if(!down)return;const m=Math.hypot(e.clientX-down.x,e.clientY-down.y);down=null;if(m<8)this.pick(e);});
     new ResizeObserver(()=>this.resize()).observe(stage);this.resize();
     section.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{const z=b.dataset.z;if(z==='home'){this.camera.position.copy(this.camHome);c.target.copy(this.tgt);}else this.zoom(+z);});
+    /* live-view engine: virtual clock (slow motion), cinematic entry, full screen, adaptive quality */
+    this.vt=performance.now();this.lastReal=this.vt;this.speed=1;this.dpr=Math.min(devicePixelRatio,2);this._fps={n:0,t:0,low:0};
+    c.addEventListener('start',()=>{this._user=1;});
+    const zb=section.querySelector('.zoom');
+    if(zb&&!zb.querySelector('.z-live')){
+      zb.insertAdjacentHTML('beforeend','<button class="z-live z-slow" aria-pressed="false" aria-label="حركة بطيئة" title="حركة بطيئة: شاهد التفاعل خطوة بخطوة">🐢</button><button class="z-live z-fs" aria-label="ملء الشاشة" title="ملء الشاشة">⛶</button>');
+      const sb=zb.querySelector('.z-slow');sb.onclick=()=>{this.speed=this.speed<1?1:0.3;sb.setAttribute('aria-pressed',this.speed<1);stage.classList.toggle('slowmo',this.speed<1);this.toast(this.speed<1?'وضع الحركة البطيئة: كل شيء يحدث أبطأ بثلاث مرات.':'عادت السرعة الطبيعية.');};
+      zb.querySelector('.z-fs').onclick=()=>{try{const fe=document.fullscreenElement||document.webkitFullscreenElement;if(fe){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return;}
+        const rq=stage.requestFullscreen||stage.webkitRequestFullscreen;if(rq){const pr=rq.call(stage);if(pr&&pr.catch)pr.catch(()=>stage.classList.toggle('fs-fake'));}else stage.classList.toggle('fs-fake');}catch(e){stage.classList.toggle('fs-fake');}setTimeout(()=>this.resize(),120);};
+    }
+    if(this.camSet)this.intro();
     const loop=()=>{requestAnimationFrame(loop);if(stage.offsetParent===null)return;this.frame();};requestAnimationFrame(loop);
   }
+  /* smooth camera move to a close-up; returns a promise */
+  focus(pos,target,ms=900){const c0=this.camera.position.clone(),t0=this.controls.target.clone(),c1=pos.clone(),t1=(target||this.controls.target).clone();
+    return this.tw(ms,q=>{const e=ease(q);this.camera.position.copy(lerpV(c0,c1,e));this.controls.target.copy(lerpV(t0,t1,e));});}
+  home(ms=900){return this.focus(this.camHome,this.tgt,ms);}
+  intro(){if(this._intro)return;this._intro=1;const h=this.camHome.clone(),t=this.tgt;const off=h.clone().sub(t);const s=V(t.x+off.x*1.0-off.z*0.55,t.y+off.y*1.9,t.z+off.z*1.45+off.x*0.3);
+    this.camera.position.copy(s);this.tw(1700,q=>{if(this._user)return;const e=1-Math.pow(1-q,3);this.camera.position.copy(lerpV(s,this.camHome,e));});}
   resize(){const w=this.stage.clientWidth,h=this.stage.clientHeight;if(!w||!h)return;this.renderer.setSize(w,h,false);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();
-    const d=this.distFn(w/h);this.camHome.set(this.tgt.x,this.tgt.y+d*0.3,this.tgt.z+d);if(!this.camSet){this.camera.position.copy(this.camHome);this.camSet=1;}}
+    const d=this.distFn(w/h);this.camHome.set(this.tgt.x,this.tgt.y+d*0.3,this.tgt.z+d);if(!this.camSet){this.camera.position.copy(this.camHome);this.camSet=1;if(this.vt)this.intro();}}
   add(...os){os.forEach(o=>{this.scene.add(o);linearizeObj(o);});return os[0];}
   remove(...os){os.forEach(o=>this.scene.remove(o));}
   label(text,pos,cls=''){const el=document.createElement('div');el.className='lbl '+cls;el.textContent=text;this.labelsEl.appendChild(el);this.labels.push({el,pos});return el;}
@@ -1126,13 +1220,15 @@ class Lab{
     this.ray.setFromCamera(this.ptr,this.camera);let best=null;
     this.picks.forEach(p=>{const o=typeof p.obj==='function'?p.obj():p.obj;if(!o)return;const h=this.ray.intersectObject(o,true)[0];if(h&&(!best||h.distance<best.d))best={d:h.distance,fn:p.fn};});
     if(best)best.fn();}
-  tween(d,fn,done){this.anims.push({t0:performance.now(),dur:d,fn,done});}
+  tween(d,fn,done){this.anims.push({t0:this.vt||performance.now(),dur:d,fn,done});}
   tw(d,fn){return new Promise(r=>this.tween(d,fn,r));}
   async move(o,to,d){const f=o.position.clone();await this.tw(d,t=>o.position.copy(lerpV(f,to,ease(t))));}
   async arc(o,to,d,lift=2.4){const f=o.position.clone(),hi=Math.max(f.y,to.y,lift);await this.move(o,V(f.x,hi,f.z),d*.3);await this.move(o,V(to.x,hi,to.z),d*.4);await this.move(o,to,d*.3);}
   zoom(f){const v=this.camera.position.clone().sub(this.controls.target).multiplyScalar(f);if(v.length()<this.controls.minDistance||v.length()>this.controls.maxDistance)return;this.camera.position.copy(this.controls.target).add(v);}
   toast(m){const t=this.stage.querySelector('.toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),4200);}
-  frame(){const now=performance.now();
+  frame(){const real=performance.now(),dR=Math.min(100,real-this.lastReal);this.lastReal=real;this.vt+=dR*this.speed;const now=this.vt;
+    /* adaptive quality: drop pixel ratio on slow tablets so motion stays smooth */
+    const F=this._fps;F.n++;F.t+=dR;if(F.t>2000){const fps=F.n*1000/F.t;if(fps<28&&this.dpr>1.1){this.dpr=Math.max(1,this.dpr-0.35);this.renderer.setPixelRatio(this.dpr);this.resize();}F.n=0;F.t=0;}
     const cur=this.anims,fin=[];this.anims=[];cur.forEach(a=>{const t=Math.min(1,(now-a.t0)/a.dur);a.fn(t);if(t>=1)fin.push(a);else this.anims.push(a);});fin.forEach(a=>a.done&&a.done());
     this.hooks.forEach(h=>h(now));this.controls.update();this.renderer.render(this.scene,this.camera);
     const w=this.stage.clientWidth,h=this.stage.clientHeight;
@@ -4275,6 +4371,9 @@ EXPS.forEach(e=>{if(EXP_MODS[e.id])e.ready=true;});renderLib();
 window.addEventListener('load',()=>{if(location.hash.length>1)openExp(location.hash.slice(1));});
 </script>
 <script src="lab3d-pro.js"></script>
+<script src="lab3d-x1.js"></script>
+<script src="lab3d-x2.js"></script>
+<script src="lab3d-x3.js"></script>
 
 <script>
 (function(){

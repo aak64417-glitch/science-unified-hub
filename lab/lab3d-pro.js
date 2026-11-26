@@ -1631,7 +1631,7 @@ function render(){const k=stepIdx();let title,html;
 function renderNB(){sec.$('.p3-nb').innerHTML=`<table class="p3-t"><thead><tr><th>#</th><th>من</th><th>العملية</th><th>إلى</th></tr></thead><tbody>`+
   (S.path.length?S.path.map((p,i)=>`<tr><td class="n">${i+1}</td><td>${R[p.a].n}</td><td>${PR[p.p].n}</td><td><b>${R[p.b].n}</b></td></tr>`).join(''):'<tr><td colspan="4" class="muted">سيظهر هنا مسار العيّنة في دورة الصخور.</td></tr>')+'</tbody></table>';}
 function sync(){sec.$$('button[data-p]').forEach(x=>{x.disabled=S.busy;x.classList.toggle('done',PR[x.dataset.p].from.includes(S.st));});sec.$('[data-a="reset"]').disabled=S.busy;}
-S._tap=tapTube;sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;if(x.dataset.p)apply(x.dataset.p);else if(x.dataset.a==='reset')reset();});
+sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.closest('button');if(!x||x.disabled)return;if(x.dataset.p)apply(x.dataset.p);else if(x.dataset.a==='reset')reset();});
 show('ignC');sync();render();renderNB();
 };
 
@@ -2401,6 +2401,9 @@ S._tap=tapTube;sec.$('.p3-side').addEventListener('click',e=>{const x=e.target.c
 sync();render();renderNB();
 };
 
+
+/* ---------- shared toolkit for the newer 3D experiment packs ---------- */
+window.P3X={P3,G,gm,TestTube,Bubbles,Splint,Flame,setCol,$lc,sleep,hex6,clamp,mixHex,show,LRI,sw};
 
 /* ---------- register in the library ---------- */
 const D3=['elec','gasp','flame','minr','weat','ruth','half','elem','rock','plate','crt','rad','alk','rust','plnt8','dig8','sol8','cab8'];
