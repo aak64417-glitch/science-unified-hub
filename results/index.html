@@ -1231,9 +1231,18 @@ function openReport(id,sec,named){
   const qc=t.questions.length&&t.questions.length<=12;
   const tb=rs=>`<table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th>${qc?t.questions.map(q=>`<th>${esc(q.label)}</th>`).join(''):''}<th>الدرجة</th><th>النسبة</th><th>المستوى</th><th>الحالة</th></tr>${rs.map((r,i)=>`<tr><td>${i+1}</td><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td>${qc?t.questions.map((q,j)=>`<td>${r.s.ans?.[j]??''}</td>`).join(''):''}<td>${fmt(r.sc)}/${t.total}</td><td><b>${fmt(r.p)}%</b></td><td style="color:${r.lv.c};font-weight:900">${r.lv.n}</td><td>${r.p>=t.pass?'ناجح':'<b style="color:#c22f34">يحتاج دعم</b>'}</td></tr>`).join('')}</table>`;
   const absent=A.absent?`<div style="font-size:11px;margin:-4px 0 8px">الغائبون: ${t.students.filter(s=>(sec==='all'||String(s.section)===String(sec))&&stPct(s,t)==null).map(s=>esc(s.name)).join('، ')}</div>`:'';
-  pages.push(`<!--dense-->${rpHeader()}<div class="rp-sec"><h3>كشف نتائج الطلاب مرتبًا حسب الأداء (${A.rows.length})</h3>${tb(A.rows)}</div>${absent}
-  <div class="two"><div class="rp-sec"><h3>الطلاب الذين يحتاجون إلى دعم (${low.length})</h3>${low.length?`<table><tr><th>الاسم</th><th>النسبة</th><th>الأولوية</th></tr>${low.slice().reverse().map(r=>`<tr><td style="text-align:right">${esc(r.s.name)}</td><td>${fmt(r.p)}%</td><td>${r.p<t.pass-15?'<b style="color:#c22f34">عاجلة</b>':'متوسطة'}</td></tr>`).join('')}</table>`:'<p>لا يوجد ✔</p>'}</div>
-  <div class="rp-sec"><h3>الطلاب المتميزون (${ex.length})</h3>${ex.length?`<table><tr><th>الاسم</th><th>النسبة</th></tr>${ex.map(r=>`<tr><td style="text-align:right">${esc(r.s.name)}</td><td>${fmt(r.p)}%</td></tr>`).join('')}</table>`:'<p>—</p>'}</div></div>${rpSign()}`);
+  // كشف الأسماء: حتى ٥٠ طالبًا في الصفحة (الاختبارات النهائية والأعداد الكبيرة تمتد لصفحات إضافية)
+  const PER=50,rws=A.rows,ch=[];for(let k=0;k<rws.length;k+=PER)ch.push(rws.slice(k,k+PER));
+  const lists=`<div class="two"><div class="rp-sec"><h3>الطلاب الذين يحتاجون إلى دعم (${low.length})</h3>${low.length?`<table><tr><th>الاسم</th><th>النسبة</th><th>الأولوية</th></tr>${low.slice().reverse().map(r=>`<tr><td style="text-align:right">${esc(r.s.name)}</td><td>${fmt(r.p)}%</td><td>${r.p<t.pass-15?'<b style="color:#c22f34">عاجلة</b>':'متوسطة'}</td></tr>`).join('')}</table>`:'<p>لا يوجد ✔</p>'}</div>
+  <div class="rp-sec"><h3>الطلاب المتميزون (${ex.length})</h3>${ex.length?`<table><tr><th>الاسم</th><th>النسبة</th></tr>${ex.map(r=>`<tr><td style="text-align:right">${esc(r.s.name)}</td><td>${fmt(r.p)}%</td></tr>`).join('')}</table>`:'<p>—</p>'}</div></div>`;
+  const tbN=(rs,st)=>tb(rs).replace(/<tr><td>(\d+)<\/td>/g,(m,n)=>`<tr><td>${+n+st}</td>`);
+  ch.forEach((c,ci)=>{const last=ci===ch.length-1;
+   let pg=`<!--dense-->${rpHeader()}<div class="rp-sec"><h3>كشف نتائج الطلاب مرتبًا حسب الأداء (${rws.length})${ch.length>1?` — الجزء ${toAr(ci+1)} من ${toAr(ch.length)}`:''}</h3>${tbN(c,ci*PER)}</div>`;
+   if(last){pg+=absent;
+    if(c.length+Math.max(low.length,ex.length)<=62)pg+=lists+rpSign();
+    else{pages.push(pg);pg=`<!--dense-->${rpHeader()}${lists}${rpSign()}`}}
+   pages.push(pg);
+  });
  }
  $('#rpTitle').textContent=`${named?'تقرير بالأسماء':'تقرير بدون أسماء'} — ${t.name}`;
  $('#rpBody').innerHTML=pages.map((p,i)=>`<div class="rp"><div class="rp-in${p.startsWith('<!--dense-->')?' dense':''}">${p}</div>${rpFoot(i+1,pages.length)}</div>`).join('');
