@@ -134,8 +134,8 @@ td.nm{text-align:right}
 /* stats grid */
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
 .stat{background:#f6f9fd;border:1px solid #e4ecf7;border-radius:14px;padding:10px;text-align:center}
-.stat small{display:block;color:var(--muted);font-size:13px}
-.stat b{font-size:22px;font-weight:900;direction:ltr;display:block}
+.stat small{display:block;color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:3px}
+.stat b{font-size:22px;font-weight:900;direction:ltr;display:block;line-height:1.3}
 .step{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:900;color:#0a2a5e;margin:16px 0 10px}
 .step:first-child{margin-top:0}
 .step .sn{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gold2),var(--gold));display:grid;place-items:center;font-size:15px;flex:none}
@@ -198,7 +198,7 @@ td.nm{text-align:right}
 #rpOv.show{display:block}
 .rp-bar{position:sticky;top:0;z-index:2;background:#0a2a5e;color:#fff;display:flex;gap:8px;align-items:center;padding:10px 14px;flex-wrap:wrap}
 .rp-bar b{margin-left:auto;font-size:16px}
-.rp{width:210mm;min-height:297mm;margin:16px auto;background:#fff;padding:12mm 12mm 10mm;box-shadow:0 10px 30px #0006;font-size:12.5px;color:#0d2346;position:relative}
+.rp{box-sizing:border-box;height:297mm;overflow:hidden;width:210mm;min-height:297mm;margin:16px auto;background:#fff;padding:12mm 12mm 10mm;box-shadow:0 10px 30px #0006;font-size:12.5px;color:#0d2346;position:relative}
 .rp-h{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:3px solid #0a2a5e;padding-bottom:8px;margin-bottom:10px}
 .rp-h .r{font-size:12.5px;line-height:1.7}
 .rp-h .l{text-align:left;font-size:12.5px;line-height:1.7}
@@ -209,11 +209,11 @@ td.nm{text-align:right}
 .rp-t .badge{position:absolute;top:8px;left:10px;background:var(--gold);color:#0a2a5e;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:900}
 .rp-info{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
 .rp-info div{background:#f3f7fc;border:1px solid #dfe7f3;border-radius:8px;padding:5px 8px;font-size:11.5px}
-.rp-info b{display:block;font-size:13px}
+.rp-info b{display:block;font-size:13px;line-height:1.5}
 .rp-k{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:10px}
 .rp-k div{border-radius:10px;padding:7px 4px;text-align:center;border:1px solid}
-.rp-k b{display:block;font-size:19px;font-weight:900;direction:ltr}
-.rp-k span{font-size:11px}
+.rp-k b{display:block;font-size:19px;font-weight:900;direction:ltr;line-height:1.3}
+.rp-k span{display:block;font-size:11px;line-height:1.5}
 .rp-sec{margin-bottom:10px;break-inside:avoid}
 .rp-sec h3{margin:0 0 6px;font-size:14px;font-weight:900;color:#0a2a5e;border-right:5px solid var(--gold);padding-right:8px;background:#f3f7fc;border-radius:6px;padding:5px 8px}
 .rp table{font-size:11.5px}
@@ -226,6 +226,9 @@ td.nm{text-align:right}
 .rp .rec .ic{font-size:16px}
 .rp .bar-row{grid-template-columns:110px 1fr 44px;font-size:11.5px;margin:4px 0}
 .rp .bar-row .tr{height:11px}
+.rp-in{transform-origin:top right;line-height:1.5}
+.rp-in.dense table{font-size:11px}.rp-in.dense td{padding:1.5px 4px;line-height:1.3}.rp-in.dense th{padding:3px 4px}.rp-in.dense .rp-sec{margin-bottom:6px}.rp-in.dense .rp-sec h3{margin-bottom:4px;padding:3px 8px}
+.rp:not(:has(.rp-in)){height:auto}
 .rp-sign{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px;text-align:center;font-size:12.5px}
 .rp-sign div{border-top:1.5px dashed #9fb1cc;padding-top:6px}
 .rp-foot{position:absolute;bottom:5mm;left:12mm;right:12mm;display:flex;justify-content:space-between;font-size:10px;color:#6b7a94;border-top:1px solid #e3eaf5;padding-top:3px}
@@ -236,7 +239,7 @@ td.nm{text-align:right}
  body>*:not(#rpOv){display:none!important}
  #rpOv{position:static;display:block!important;background:#fff;overflow:visible}
  .rp-bar{display:none!important}
- .rp{margin:0;box-shadow:none;page-break-after:always;min-height:297mm}
+ .rp{margin:0;box-shadow:none;page-break-after:always;height:297mm;min-height:297mm}
  .rp:last-child{page-break-after:auto}
  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 }
@@ -493,7 +496,8 @@ function barsSVG(items,{w=520,h=230,max=100,suffix=''}={}){
  items.forEach((it,i)=>{const x=pad.l+W/n*(n-1-i)+(W/n-bw)/2;const v=it.value==null?0:it.value;const bh=H*Math.min(v,max)/max;const y=pad.t+H-bh;
   g+=`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="4" fill="${it.c}"/>`;
   g+=`<text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="16" font-weight="900" fill="#0d2346" font-family="Tajawal">${it.value==null?'—':Math.round(it.value)+suffix}</text>`;
-  g+=`<text x="${x+bw/2}" y="${h-12}" text-anchor="middle" font-size="14" font-weight="800" fill="#0d2346" font-family="Tajawal">${esc(it.l)}</text>`});
+  const lfs=Math.max(8,Math.min(14,(W/n)/(String(it.l).length*.56)));
+  g+=`<text x="${x+bw/2}" y="${h-12}" text-anchor="middle" font-size="${lfs.toFixed(1)}" font-weight="800" fill="#0d2346" font-family="Tajawal">${esc(it.l)}</text>`});
  return `<svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:${w}px">${g}<line x1="${pad.l}" x2="${w-pad.r}" y1="${pad.t+H}" y2="${pad.t+H}" stroke="#94a3b8"/></svg>`;
 }
 const hbar=(label,v,c)=>`<div class="bar-row"><span>${label}</span><div class="tr"><div class="fl" style="width:${Math.max(0,Math.min(100,v||0))}%;background:${c}"></div></div><b>${fmt(v)}%</b></div>`;
@@ -1215,29 +1219,42 @@ function openReport(id,sec,named){
  </div>
  <div class="rp-sec"><h3>المؤشرات الإحصائية</h3><table><tr><th>عدد الطلاب</th><th>المختبَرون</th><th>الغائبون</th><th>الناجحون</th><th>دون الحد</th><th>المتوسط</th><th>متوسط الدرجة</th><th>الوسيط</th><th>الانحراف المعياري</th><th>المدى</th></tr><tr><td>${A.total}</td><td>${A.rows.length}</td><td>${A.absent}</td><td>${A.passN}</td><td>${A.failN}</td><td>${fmt(A.st.mean)}%</td><td>${fmt(A.st.mean*t.total/100)}/${t.total}</td><td>${fmt(A.st.med)}%</td><td>${fmt(A.st.sd)}</td><td>${fmt(A.st.range)}</td></tr></table></div>
  ${A.secs.length>1?`<div class="rp-sec"><h3>مقارنة الفصول</h3><div class="two" style="align-items:center">${barsSVG(A.secs.map((s,i)=>({l:'الفصل '+secLabel(s.sec,t.grade),value:s.mean,c:['#1d6fe0','#22a45d','#7c4ddb','#14a8b5','#f59e0b','#e5484d'][i%6]})),{w:360,h:180,suffix:'%'})}<table><tr><th>الفصل</th><th>العدد</th><th>المتوسط</th><th>نسبة النجاح</th></tr>${A.secs.map(s=>`<tr><td>${secLabel(s.sec,t.grade)}</td><td>${s.n}</td><td>${fmt(s.mean)}%</td><td>${fmt(s.pass)}%</td></tr>`).join('')}</table></div></div>`:''}`);
- // صفحة 2: الأسئلة والمهارات والتوصيات
+ // الأسئلة والمهارات والتوصيات (تُضاف إلى الصفحة الأولى)
  let p2='';
- if(A.items.length)p2+=`<div class="rp-sec"><h3>تحليل الأسئلة</h3>${barsSVG(A.items.map(i=>({l:i.label,value:i.p==null?null:i.p*100,c:i.p==null?'#cbd5e1':i.p>=.7?'#22a45d':i.p>=.4?'#8b5cf6':'#e5484d'})),{w:Math.max(640,A.items.length*34),h:180,suffix:''})}<table><tr><th>السؤال</th><th>المهارة</th><th>الإتقان</th><th>الصعوبة</th><th>التمييز</th><th>الحكم</th></tr>${A.items.map(i=>`<tr><td>${esc(i.label)}</td><td style="text-align:right">${esc(i.skill||'—')}</td><td>${i.p==null?'—':fmt(i.p*100)+'%'}</td><td>${itemTag(i.p)[0]}</td><td>${i.d==null?'—':fmt(i.d)+' ('+discTag(i.d)[0]+')'}</td><td>${i.p!=null&&i.p<.4?'إعادة تدريس':i.d!=null&&i.d<.2?'مراجعة الصياغة':'مناسب'}</td></tr>`).join('')}</table></div>`;
+ if(A.items.length)p2+=`<div class="rp-sec"><h3>تحليل الأسئلة</h3><table><tr><th>السؤال</th><th>المهارة</th><th>الإتقان</th><th>الصعوبة</th><th>التمييز</th><th>الحكم</th></tr>${A.items.map(i=>`<tr><td>${esc(i.label)}</td><td style="text-align:right">${esc(i.skill||'—')}</td><td>${i.p==null?'—':fmt(i.p*100)+'%'}</td><td>${itemTag(i.p)[0]}</td><td>${i.d==null?'—':fmt(i.d)+' ('+discTag(i.d)[0]+')'}</td><td>${i.p!=null&&i.p<.4?'إعادة تدريس':i.d!=null&&i.d<.2?'مراجعة الصياغة':'مناسب'}</td></tr>`).join('')}</table></div>`;
  if(A.skills.length)p2+=`<div class="rp-sec"><h3>إتقان المهارات</h3>${A.skills.map(s=>hbar(esc(s.skill),s.pct,s.pct>=80?'#22a45d':s.pct>=60?'#f59e0b':'#e5484d')).join('')}</div>`;
- let p3='';p3+=`<div class="rp-sec"><h3>التحليل والتوصيات واقتراحات التحسين</h3>${R.map(r=>`<div class="rec p-${r.p}"><span class="ic">${r.ic}</span><div><b>${r.h}</b>${r.x}</div></div>`).join('')}</div>`;
- const weak=A.skills.length?A.skills.filter(s=>s.pct<70):A.items.filter(i=>i.p!=null&&i.p<.6).map(i=>({skill:i.label+(i.skill?' — '+i.skill:''),pct:i.p*100}));
- if(weak.length)p3+=`<div class="rp-sec"><h3>الإجراءات العلاجية المقترحة</h3>${remedialTable(A,weak).replace(/<div class="note"[\s\S]*<\/div>$/,'')}</div>`;
- if(!named)p3+=rpSign();
- if(A.items.length){pages.push(`${rpHeader()}${p2}`);pages.push(`${rpHeader()}${p3}`)}else pages.push(`${rpHeader()}${p2}${p3}`);
- // صفحة 3: الأسماء
+ p2+=`<div class="rp-sec"><h3>التحليل والتوصيات واقتراحات التحسين</h3>${R.map(r=>`<div class="rec p-${r.p}"><span class="ic">${r.ic}</span><div><b>${r.h}</b>${r.x}</div></div>`).join('')}</div>`;
+ // بدون أسماء: صفحة واحدة • بالأسماء: صفحتان (الإحصاء + كشف الأسماء)
+ pages[0]+=p2+(named?'':rpSign());
  if(named){
   const low=A.rows.filter(r=>r.p<t.pass);const ex=A.rows.filter(r=>r.p>=90);
-  const chunk=(arr,n)=>{const o=[];for(let i=0;i<arr.length;i+=n)o.push(arr.slice(i,i+n));return o};
-  const tb=(rs,start)=>`<table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th>${t.questions.length&&t.questions.length<=12?t.questions.map(q=>`<th>${esc(q.label)}</th>`).join(''):''}<th>الدرجة</th><th>النسبة</th><th>المستوى</th><th>الحالة</th></tr>${rs.map((r,i)=>`<tr><td>${start+i+1}</td><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td>${t.questions.length&&t.questions.length<=12?t.questions.map((q,j)=>`<td>${r.s.ans?.[j]??''}</td>`).join(''):''}<td>${fmt(r.sc)}/${t.total}</td><td><b>${fmt(r.p)}%</b></td><td style="color:${r.lv.c};font-weight:900">${r.lv.n}</td><td>${r.p>=t.pass?'ناجح':'<b style="color:#c22f34">يحتاج دعم</b>'}</td></tr>`).join('')}</table>`;
-  const ch=chunk(A.rows,34);
-  ch.forEach((c,ci)=>pages.push(`${rpHeader()}<div class="rp-sec"><h3>كشف نتائج الطلاب مرتبًا حسب الأداء ${ch.length>1?`(${ci+1}/${ch.length})`:''}</h3>${tb(c,ci*34)}</div>${A.absent&&ci===ch.length-1?`<div class="muted" style="font-size:11px">الغائبون: ${t.students.filter(s=>(sec==='all'||String(s.section)===String(sec))&&stPct(s,t)==null).map(s=>esc(s.name)).join('، ')}</div>`:''}`));
-  pages.push(`${rpHeader()}<div class="two"><div class="rp-sec"><h3>الطلاب الذين يحتاجون إلى دعم (${low.length})</h3>${low.length?`<table><tr><th>الاسم</th><th>الفصل</th><th>النسبة</th><th>الأولوية</th></tr>${low.slice().reverse().map(r=>`<tr><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td><td>${fmt(r.p)}%</td><td>${r.p<t.pass-15?'<b style="color:#c22f34">عاجلة</b>':'متوسطة'}</td></tr>`).join('')}</table>`:'<p>لا يوجد ✔</p>'}</div>
-  <div class="rp-sec"><h3>الطلاب المتميزون (${ex.length})</h3>${ex.length?`<table><tr><th>الاسم</th><th>الفصل</th><th>النسبة</th></tr>${ex.map(r=>`<tr><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td><td>${fmt(r.p)}%</td></tr>`).join('')}</table>`:'<p>—</p>'}</div></div>${rpSign()}`);
+  const qc=t.questions.length&&t.questions.length<=12;
+  const tb=rs=>`<table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th>${qc?t.questions.map(q=>`<th>${esc(q.label)}</th>`).join(''):''}<th>الدرجة</th><th>النسبة</th><th>المستوى</th><th>الحالة</th></tr>${rs.map((r,i)=>`<tr><td>${i+1}</td><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td>${qc?t.questions.map((q,j)=>`<td>${r.s.ans?.[j]??''}</td>`).join(''):''}<td>${fmt(r.sc)}/${t.total}</td><td><b>${fmt(r.p)}%</b></td><td style="color:${r.lv.c};font-weight:900">${r.lv.n}</td><td>${r.p>=t.pass?'ناجح':'<b style="color:#c22f34">يحتاج دعم</b>'}</td></tr>`).join('')}</table>`;
+  const absent=A.absent?`<div style="font-size:11px;margin:-4px 0 8px">الغائبون: ${t.students.filter(s=>(sec==='all'||String(s.section)===String(sec))&&stPct(s,t)==null).map(s=>esc(s.name)).join('، ')}</div>`:'';
+  pages.push(`<!--dense-->${rpHeader()}<div class="rp-sec"><h3>كشف نتائج الطلاب مرتبًا حسب الأداء (${A.rows.length})</h3>${tb(A.rows)}</div>${absent}
+  <div class="two"><div class="rp-sec"><h3>الطلاب الذين يحتاجون إلى دعم (${low.length})</h3>${low.length?`<table><tr><th>الاسم</th><th>النسبة</th><th>الأولوية</th></tr>${low.slice().reverse().map(r=>`<tr><td style="text-align:right">${esc(r.s.name)}</td><td>${fmt(r.p)}%</td><td>${r.p<t.pass-15?'<b style="color:#c22f34">عاجلة</b>':'متوسطة'}</td></tr>`).join('')}</table>`:'<p>لا يوجد ✔</p>'}</div>
+  <div class="rp-sec"><h3>الطلاب المتميزون (${ex.length})</h3>${ex.length?`<table><tr><th>الاسم</th><th>النسبة</th></tr>${ex.map(r=>`<tr><td style="text-align:right">${esc(r.s.name)}</td><td>${fmt(r.p)}%</td></tr>`).join('')}</table>`:'<p>—</p>'}</div></div>${rpSign()}`);
  }
  $('#rpTitle').textContent=`${named?'تقرير بالأسماء':'تقرير بدون أسماء'} — ${t.name}`;
- $('#rpBody').innerHTML=pages.map((p,i)=>`<div class="rp">${p}${rpFoot(i+1,pages.length)}</div>`).join('');
+ $('#rpBody').innerHTML=pages.map((p,i)=>`<div class="rp"><div class="rp-in${p.startsWith('<!--dense-->')?' dense':''}">${p}</div>${rpFoot(i+1,pages.length)}</div>`).join('');
  RP_META={title:`${named?'تقرير بالأسماء':'تقرير بدون أسماء'} — ${t.name}${sec!=='all'?' — الفصل '+secLabel(sec,t.grade):''}`,kind:named?'named':'anon',test:t.id};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير في المنصة';
  $('#rpOv').classList.add('show');document.title=`${named?'تقرير بالأسماء':'تقرير إحصائي'} - ${t.name}`;
+ fitPages();
+}
+// تصغير محتوى الصفحة تلقائيًا ليتسع في صفحة A4 واحدة
+function fitPages(){
+ const run=()=>document.querySelectorAll('#rpBody .rp').forEach(rp=>{
+  const inn=rp.querySelector('.rp-in');if(!inn)return;
+  inn.style.transform='';inn.style.width='';
+  const cs=getComputedStyle(rp);const foot=rp.querySelector('.rp-foot');
+  const avail=rp.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-(foot?foot.offsetHeight+4:0);
+  let sc=1;
+  for(let k=0;k<8;k++){
+   inn.style.width=(100/sc)+'%';inn.style.transform=sc<1?`scale(${sc})`:'';
+   const h=inn.scrollHeight*sc;if(h<=avail+1)break;sc*=(avail/h)*.995;
+  }
+ });
+ run();(document.fonts&&document.fonts.ready||Promise.resolve()).then(()=>setTimeout(run,60));
 }
 function openRemedialReport(id){
  const t=S.tests.find(x=>x.id===id);const A=analyze(t);if(!A.st){toast('لا توجد درجات');return}
@@ -1247,7 +1264,7 @@ function openRemedialReport(id){
  <div class="rp-sec"><h3>المهارات المستهدفة والإجراءات</h3>${remedialTable(A,weak)}</div>
  <div class="rp-sec"><h3>الطلاب المستهدفون (${low.length})</h3>${low.length?`<table><tr><th>م</th><th>الاسم</th><th>الفصل</th><th>النسبة قبل العلاج</th><th>النسبة بعد العلاج</th><th>ملاحظات</th></tr>${low.map((r,i)=>`<tr><td>${i+1}</td><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td><td>${fmt(r.p)}%</td><td></td><td></td></tr>`).join('')}</table>`:'<p>لا يوجد طلاب دون حد النجاح.</p>'}</div>${rpSign()}`;
  $('#rpTitle').textContent='الخطة العلاجية — '+t.name;
- $('#rpBody').innerHTML=`<div class="rp">${page}${rpFoot(1,1)}</div>`;RP_META={title:'الخطة العلاجية — '+t.name,kind:'plan',test:t.id};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير في المنصة';$('#rpOv').classList.add('show');
+ $('#rpBody').innerHTML=`<div class="rp"><div class="rp-in">${page}</div>${rpFoot(1,1)}</div>`;setTimeout(fitPages,0);RP_META={title:'الخطة العلاجية — '+t.name,kind:'plan',test:t.id};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير في المنصة';$('#rpOv').classList.add('show');
 }
 function closeReport(){$('#rpOv').classList.remove('show');document.title='منصة تحليل نتائج الاختبارات | أبي الدرداء المتوسطة'}
 
