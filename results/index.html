@@ -283,7 +283,7 @@ td.nm{text-align:right}
 </div>
 
 <div class="ov" id="ov"><div class="modal" id="modal"></div></div>
-<div id="rpOv"><div class="rp-bar"><b id="rpTitle">التقرير</b><button class="btn b-green b-sm" id="rpSaveBtn" onclick="saveReportCloud()">💾 حفظ التقرير في المنصة</button><button class="btn b-gold b-sm" onclick="window.print()">🖨️ طباعة / حفظ PDF</button><button class="btn b-light b-sm" onclick="closeReport()">✕ إغلاق</button></div><div id="rpBody"></div></div>
+<div id="rpOv"><div class="rp-bar"><b id="rpTitle">التقرير</b><button class="btn b-green b-sm" id="rpSaveBtn" onclick="saveReportCloud()">💾 حفظ التقرير في المنصة</button><button class="btn b-gold b-sm" onclick="window.print()">🖨️ طباعة</button><button class="btn b-sm" style="background:#fff;color:#0a2a5e" onclick="exportReport('png')">🖼️ صورة</button><button class="btn b-sm" style="background:#e5484d;color:#fff" onclick="exportReport('pdf')">📄 PDF</button><button class="btn b-light b-sm" onclick="closeReport()">✕ إغلاق</button></div><div id="rpBody"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -749,10 +749,10 @@ function vEntry(){
  const rows=t.students.map((s,i)=>{
   const sc=stScore(s,t);const p=stPct(s,t);
   return `<tr class="${s.absent?'abs':''}" data-i="${i}"><td>${i+1}</td>
-  <td><input type="text" class="name" value="${esc(s.name)}" onchange="upd(${i},'name',this.value)"></td>
+  <td><input type="text" class="name" value="${esc(s.name)}" placeholder="اكتب اسم الطالب" onchange="upd(${i},'name',this.value)" onkeydown="entKey(event,this)"></td>
   <td><select onchange="upd(${i},'section',+this.value)">${t.sections.map(x=>`<option value="${x}" ${String(s.section)===String(x)?'selected':''}>${secLabel(x,t.grade)}</option>`).join('')}</select></td>
-  ${qn?t.questions.map((q,j)=>`<td><input type="number" class="q" min="0" max="${q.mark}" step="0.25" value="${s.ans?.[j]??''}" onchange="updQ(${i},${j},this)"></td>`).join(''):''}
-  <td>${qn?`<span class="tot" id="tot${i}">${sc==null?'—':fmt(sc)}</span>`:`<input type="number" min="0" max="${t.total}" step="0.25" value="${s.score??''}" onchange="updScore(${i},this)" style="width:80px">`}</td>
+  ${qn?t.questions.map((q,j)=>`<td><input type="number" class="q" min="0" max="${q.mark}" step="0.25" value="${s.ans?.[j]??''}" onchange="updQ(${i},${j},this)" onkeydown="entKey(event,this)"></td>`).join(''):''}
+  <td>${qn?`<span class="tot" id="tot${i}">${sc==null?'—':fmt(sc)}</span>`:`<input type="number" class="sc" inputmode="decimal" min="0" max="${t.total}" step="0.25" value="${s.score??''}" placeholder="—" onchange="updScore(${i},this)" onkeydown="entKey(event,this)" style="width:80px">`}</td>
   <td id="pc${i}">${p==null?'—':`<span class="tag" style="background:${levelOf(p).c}18;color:${levelOf(p).c};border-color:${levelOf(p).c}55">${fmt(p)}%</span>`}</td>
   <td><input type="checkbox" ${s.absent?'checked':''} onchange="upd(${i},'absent',this.checked,true)"></td>
   <td><button class="btn b-red b-sm" onclick="delSt(${i})">✕</button></td></tr>`}).join('');
@@ -764,6 +764,7 @@ function vEntry(){
   <label class="btn b-navy" style="cursor:pointer;background:linear-gradient(135deg,#e5484d,#b4232a)">${ico('file')}رفع ملف PDF<input type="file" accept=".pdf,application/pdf" class="hide" onchange="importFile(this.files[0]);this.value=''"></label>
   <button class="btn b-gold" onclick="pasteDlg()">${ico('copy')}لصق من Excel</button>
   <button class="btn b-light" onclick="downloadTemplate()">${ico('dl')}نموذج Excel فارغ</button>
+  <button class="btn b-navy" onclick="manualDlg()">${ico('edit')}إدخال يدوي للأسماء والدرجات</button>
   <button class="btn b-light" onclick="addRows(1)">${ico('plus')}إضافة طالب</button>
   <button class="btn b-light" onclick="addRows(5)">+٥ صفوف</button>
   <button class="btn b-light" onclick="sortByName()">ترتيب أبجدي</button>
@@ -776,10 +777,54 @@ function vEntry(){
   <label class="addopt" style="--c:#1b8a4b">${ico('table')}<b>ملف Excel</b><span>‎.xlsx أو ‎.csv — مثل كشف نور</span><input type="file" accept=".xlsx,.xls,.csv" class="hide" onchange="importFile(this.files[0]);this.value=''"></label>
   <label class="addopt" style="--c:#c22f34">${ico('file')}<b>ملف PDF</b><span>كشف درجات PDF (نصي أو ممسوح ضوئيًا)</span><input type="file" accept=".pdf,application/pdf" class="hide" onchange="importFile(this.files[0]);this.value=''"></label>
   <button class="addopt" style="--c:#b07d00" onclick="pasteDlg()">${ico('copy')}<b>لصق</b><span>انسخ الأعمدة والصقها</span></button>
-  <button class="addopt" style="--c:#123f8c" onclick="addRows(5)">${ico('edit')}<b>إدخال يدوي</b><span>اكتب الأسماء والدرجات</span></button>
+  <button class="addopt" style="--c:#123f8c" onclick="manualDlg()">${ico('edit')}<b>إدخال يدوي</b><span>اكتب الأسماء والدرجات بنفسك</span></button>
  </div><div class="muted" style="text-align:center;margin-top:12px;font-size:14px">أو اسحب الملف وأفلته هنا • الأعمدة المقترحة: الاسم ← الفصل ← ${t.questions.length?'س1، س2 …':'الدرجة'} — <a href="#" onclick="event.preventDefault();downloadTemplate()">تحميل نموذج Excel فارغ</a></div></div></div>`}`;
 }
 function curT(){return S.tests.find(x=>x.id===UI.test)}
+/* ---------- الإدخال اليدوي ---------- */
+// Enter ينتقل للخانة التالية في الصف، ثم إلى اسم الطالب التالي
+function entKey(e,el){
+ if(e.key!=='Enter')return;e.preventDefault();
+ const tr=el.closest('tr');const ins=[...tr.querySelectorAll('input.name,input.q,input.sc')];const k=ins.indexOf(el);
+ el.dispatchEvent(new Event('change'));
+ setTimeout(()=>{
+  const trs=[...document.querySelectorAll('.entry tr[data-i]')];const ri=trs.findIndex(r=>r.dataset.i===tr.dataset.i);
+  const row=trs[ri];const cur=row?[...row.querySelectorAll('input.name,input.q,input.sc')]:[];
+  if(k<cur.length-1){cur[k+1].focus();cur[k+1].select?.();return}
+  const nx=trs[ri+1];
+  if(nx){const f=nx.querySelector(el.classList.contains('name')?'input.name':'input.q,input.sc')||nx.querySelector('input.name');f.focus();f.select?.()}
+  else{addRows(1)}
+ },30);
+}
+function manualDlg(){
+ const t=curT();
+ modal(`${ico('edit','style="width:24px;height:24px"')}الإدخال اليدوي للأسماء والدرجات`,`
+ <div class="note blue">اكتب اسم كل طالب في سطر، ويمكنك كتابة درجته بعد الاسم في السطر نفسه (مثال: <b>محمد علي الأحمد 15</b>)، أو اكتب <b>غ</b> للغائب. اترك الدرجة لتكتبها لاحقًا في الجدول.</div>
+ <div class="form" style="margin-top:10px">
+  <div class="f">الفصل<select class="sel" id="mn_sec">${t.sections.map(x=>`<option value="${x}">الفصل ${secLabel(x,t.grade)}</option>`).join('')}</select></div>
+  <div class="f">أو أضف صفوفًا فارغة<div class="flex" style="gap:6px"><select class="sel" id="mn_n">${[5,10,15,20,25,30,35,40,45].map(n=>`<option value="${n}" ${n===40?'selected':''}>${toAr(n)} صفًا</option>`).join('')}</select><button class="btn b-light b-sm" type="button" onclick="manualEmpty()">إضافة</button></div></div>
+ </div>
+ <textarea class="inp" id="mn_txt" style="margin-top:10px;min-height:260px" placeholder="محمد علي الأحمد 15&#10;خالد سعد العمر 18&#10;فهد ناصر غ"></textarea>
+ <div class="muted" id="mn_cnt" style="font-size:13px;margin-top:4px"></div>`,
+ `<button class="btn b-gold" onclick="manualCommit()">✔ إضافة الطلاب</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+ $('#mn_txt').oninput=()=>{const n=$('#mn_txt').value.split('\n').filter(l=>l.trim()).length;$('#mn_cnt').textContent=n?`عدد الطلاب: ${toAr(n)}`:''};
+}
+function manualEmpty(){const t=curT();const n=+$('#mn_n').value,sec=+$('#mn_sec').value;for(let i=0;i<n;i++)t.students.push({id:uid(),name:'',section:sec,score:'',ans:t.questions.length?t.questions.map(()=>''):null,absent:false});save();closeModal();render();setTimeout(()=>{const ins=document.querySelectorAll('.entry input.name');ins[ins.length-n]?.focus()},60);toast(`تمت إضافة ${toAr(n)} صفًا — Enter للانتقال للخانة التالية`)}
+function manualCommit(){
+ const t=curT();const sec=+$('#mn_sec').value;
+ const lines=$('#mn_txt').value.replace(/\r/g,'').split('\n').map(l=>l.trim()).filter(Boolean);
+ if(!lines.length){toast('اكتب اسمًا واحدًا على الأقل، أو أضف صفوفًا فارغة');return}
+ let warn=0;
+ lines.forEach(l=>{
+  const m=l.replace(/\t/g,' ').match(/^(.*?)(?:[\s,،:\-]+([\d٠-٩]+(?:[.,٫][\d٠-٩]+)?|غائب|غ))?\s*$/);
+  let name=(m?m[1]:l).replace(/^[\d٠-٩]+[\s.)\-]+/,'').replace(/\s+/g,' ').trim();const raw=m&&m[2]||'';
+  if(!name)return;
+  const st={id:uid(),name,section:sec,score:'',ans:t.questions.length?t.questions.map(()=>''):null,absent:false};
+  if(/^غ/.test(raw))st.absent=true;else if(raw&&!t.questions.length){let v=num(raw.replace('٫','.'));if(v!=null){if(v>t.total){warn++;v=t.total}st.score=v}}
+  t.students.push(st);
+ });
+ save();closeModal();render();toast(`✅ تمت إضافة ${toAr(lines.length)} طالب`+(warn?` — ${toAr(warn)} درجة أكبر من ${t.total} عُدّلت`:''));
+}
 function upd(i,k,v,re){const t=curT();t.students[i][k]=k==='name'?String(v).trim():v;save();if(re)render()}
 function updScore(i,el){const t=curT();let v=num(el.value);if(v!=null&&v>t.total){toast(`الدرجة أكبر من ${t.total}`);v=t.total;el.value=v}t.students[i].score=v==null?'':v;save();refreshRow(i)}
 function updQ(i,j,el){const t=curT();const s=t.students[i];const m=t.questions[j].mark;let v=num(el.value);if(v!=null&&v>m){toast(`درجة ${t.questions[j].label} القصوى ${m}`);v=m;el.value=v}s.ans=s.ans||t.questions.map(()=>'');s.ans[j]=v==null?'':v;save();refreshRow(i)}
@@ -963,7 +1008,7 @@ function pdfRows(items){
 }
 function loadTesseract(){return window.Tesseract?Promise.resolve():loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js')}
 async function ocrPDF(pdf){
- const N=Math.min(pdf.numPages,20);
+ const N=pdf.numPages;
  modal('🔎 قراءة ضوئية لملف PDF',`<div class="note blue">الملف لا يحتوي نصًا قابلًا للقراءة المباشرة (غالبًا ممسوح ضوئيًا أو مصوَّر)، لذلك تُقرأ الأسماء والدرجات من صورة الصفحات.<br>قد تستغرق العملية دقيقة أو أكثر في أول مرة — لا تغلق الصفحة.</div><div style="margin-top:12px;background:var(--line);border-radius:10px;overflow:hidden;height:14px"><div id="ocrBar" style="height:100%;width:2%;background:linear-gradient(90deg,#22a45d,#1d6fe0);transition:width .3s"></div></div><div id="ocrTxt" class="muted" style="margin-top:6px;font-weight:700">جارٍ تجهيز القارئ الضوئي…</div>`,'');
  const bar=p=>{const e=$('#ocrBar');if(e)e.style.width=Math.max(2,Math.round(p*100))+'%'};const txt=m=>{const e=$('#ocrTxt');if(e)e.textContent=m};
  let worker;
@@ -1016,10 +1061,10 @@ function vAnalysis(){
  const head=`<div class="toolbar"><h2>التقارير والتحليلات</h2>${testPicker(t.id,"go('analysis',{test:this.value,sec:'all'})")}</div>
  <div class="panel" style="margin-bottom:14px"><div class="pb flex" style="flex-wrap:wrap;justify-content:space-between">
   <div class="chips"><button class="chip ${UI.sec==='all'?'on':''}" onclick="go('analysis',{sec:'all'})">جميع الفصول</button>${t.sections.map(s=>`<button class="chip ${String(UI.sec)===String(s)?'on':''}" onclick="go('analysis',{sec:'${s}'})">الفصل ${secLabel(s,t.grade)}</button>`).join('')}</div>
-  <div class="flex" style="flex-wrap:wrap"><button class="btn b-blue" onclick="openReport('${t.id}',UI.sec,true)">${ico('ppl')}تقرير بالأسماء</button><button class="btn b-green" onclick="openReport('${t.id}',UI.sec,false)">${ico('shield')}تقرير بدون أسماء</button><button class="btn b-light" onclick="exportCSV('${t.id}')">${ico('dl')}CSV</button></div>
+  <div class="flex" style="flex-wrap:wrap"><button class="btn b-blue" onclick="openReport('${t.id}',UI.sec,true)">${ico('ppl')}تقرير بالأسماء</button><button class="btn b-green" onclick="openReport('${t.id}',UI.sec,false)">${ico('shield')}تقرير بدون أسماء</button><button class="btn b-light" onclick="exportCSV('${t.id}')">${ico('dl')}CSV</button><button class="btn b-gold" onclick="exportView('png')">🖼️ حفظ كصورة</button><button class="btn b-navy" style="background:linear-gradient(135deg,#e5484d,#b4232a)" onclick="exportView('pdf')">📄 حفظ PDF</button></div>
  </div></div>`;
  if(!A.st)return head+`<div class="panel"><div class="empty">${ico('table')}<br>لا توجد درجات مدخلة لهذا ${UI.sec==='all'?'الاختبار':'الفصل'} بعد.<br><button class="btn b-navy" style="margin-top:10px" onclick="go('entry',{test:'${t.id}'})">إدخال الدرجات</button></div></div>`;
- return head+`
+ return head+`<div id="anaBody">
  <div class="panel" style="margin-bottom:14px"><div class="ph" style="background:${T.g}">${ico(T.i)}${esc(t.name)} <small style="opacity:.9;font-weight:700">— ${T.n} • ${esc(t.subject)} • ${gradeName(t)} • الدرجة الكلية ${t.total}</small></div>
  <div class="pb"><div class="stats">
   ${[['عدد المختبَرين',A.rows.length],['الغائبون',A.absent],['الناجحون',A.passN],['دون حد النجاح',A.failN],['نسبة النجاح',fmt(A.passRate)+'%'],['المتوسط',fmt(A.st.mean)+'%'],['متوسط الدرجة',fmt(A.st.mean*t.total/100)+' / '+t.total],['الوسيط',fmt(A.st.med)+'%'],['الانحراف المعياري',fmt(A.st.sd)],['أعلى نسبة',fmt(A.st.max)+'%'],['أدنى نسبة',fmt(A.st.min)+'%'],['المدى',fmt(A.st.range)]].map(x=>`<div class="stat"><small>${x[0]}</small><b>${x[1]}</b></div>`).join('')}
@@ -1035,7 +1080,70 @@ function vAnalysis(){
  <div class="grid2">
   <div class="panel"><div class="ph">${ico('bulb')}اقتراحات التحسين والتوصيات</div><div class="pb recs">${R.map(r=>`<div class="rec p-${r.p}"><span class="ic">${r.ic}</span><div><b>${r.h}</b>${r.x}</div></div>`).join('')}</div></div>
   <div class="panel"><div class="ph">${ico('ppl')}ترتيب الطلاب</div><div class="pb" style="padding:6px;max-height:620px;overflow:auto"><table><tr><th>م</th><th>الاسم</th><th>الفصل</th><th>الدرجة</th><th>النسبة</th><th>المستوى</th></tr>${A.rows.map((r,i)=>`<tr><td>${i+1}</td><td class="nm">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td><td>${fmt(r.sc)}</td><td><b>${fmt(r.p)}%</b></td><td><span class="tag" style="background:${r.lv.c}18;color:${r.lv.c};border-color:${r.lv.c}55">${r.lv.n}</span></td></tr>`).join('')}</table></div></div>
- </div>`;
+ </div></div>`;
+}
+/* ---------- تصدير التحليل والتقارير صورةً أو PDF ---------- */
+function loadH2I(){return window.htmlToImage?Promise.resolve():loadScript('https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js')}
+function loadJsPDF(){return window.jspdf?Promise.resolve():loadScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js')}
+const safeName=s=>String(s||'تقرير').replace(/[\\/:*?"<>|]+/g,'-').trim().slice(0,90);
+async function snap(el,opt={}){
+ await loadH2I();if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+ const o={pixelRatio:2,backgroundColor:'#ffffff',cacheBust:true,imagePlaceholder:'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',style:{margin:'0',boxShadow:'none',transform:'none'},filter:n=>!(n.classList&&n.classList.contains('no-export')),...opt};
+ try{return await htmlToImage.toCanvas(el,o)}catch(e){console.warn('font embed failed, retry without',e);return await htmlToImage.toCanvas(el,{...o,skipFonts:true})}
+}
+function dlCanvas(cv,name){return new Promise(r=>cv.toBlob(b=>{dl(b,name);r()},'image/png'))}
+async function canvasesToPDF(cvs,name,fitA4){
+ await loadJsPDF();const {jsPDF}=window.jspdf;
+ const pdf=new jsPDF({orientation:'p',unit:'mm',format:'a4',compress:true});const PW=210,PH=297,M=fitA4?0:8;
+ let first=true;
+ for(const cv of cvs){
+  if(fitA4){ // كل صفحة تقرير في صفحة A4 واحدة
+   const r=Math.min(PW/cv.width,PH/cv.height);const w=cv.width*r,h=cv.height*r;
+   if(!first)pdf.addPage();first=false;
+   pdf.addImage(cv.toDataURL('image/jpeg',.92),'JPEG',(PW-w)/2,0,w,h);continue;
+  }
+  const w=PW-2*M;const pxPerMm=cv.width/w;const pageH=Math.floor((PH-2*M)*pxPerMm);
+  for(let y=0;y<cv.height;y+=pageH){
+   const h=Math.min(pageH,cv.height-y);const c=document.createElement('canvas');c.width=cv.width;c.height=h;
+   const cx=c.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,c.width,h);cx.drawImage(cv,0,y,cv.width,h,0,0,cv.width,h);
+   if(!first)pdf.addPage();first=false;
+   pdf.addImage(c.toDataURL('image/jpeg',.92),'JPEG',M,M,w,h/pxPerMm);
+  }
+ }
+ pdf.save(name);
+}
+function busy(msg){modal('⏳ '+msg,`<div class="note blue">يتم تجهيز الملف… قد يستغرق ذلك بضع ثوانٍ.</div>`,'')}
+async function exportView(kind){
+ const el=$('#anaBody');if(!el){toast('لا يوجد تحليل لتصديره');return}
+ const t=S.tests.find(x=>x.id===UI.test);const sec=UI.sec==='all'?'':' - الفصل '+secLabel(UI.sec,t.grade);
+ const name=safeName(`تحليل ${t.name} - ${gradeName(t)}${sec}`);
+ busy(kind==='png'?'حفظ التحليل كصورة':'حفظ التحليل PDF');
+ // عنوان أعلى الصورة
+ const hd=document.createElement('div');hd.className='exp-head';hd.style.cssText='background:linear-gradient(135deg,#0b2d6b,#1553c4);color:#fff;border-radius:16px;padding:14px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;font-weight:900';
+ hd.innerHTML=`<div style="font-size:22px">منصة تحليل نتائج الاختبارات</div><div style="font-size:15px;opacity:.95">${esc(S.settings.school||'مدرسة أبي الدرداء المتوسطة')}${t.date?' • '+esc(t.date):''}</div>`;
+ el.prepend(hd);
+ const box=el.querySelectorAll('[style*="max-height"]');const keep=[...box].map(b=>b.style.maxHeight);box.forEach(b=>b.style.maxHeight='none');
+ const ow=el.style.width;el.style.width=Math.max(1100,el.offsetWidth)+'px';el.style.background='#f4f7fc';el.style.padding='16px';
+ try{
+  const cv=await snap(el,{backgroundColor:'#f4f7fc'});
+  if(kind==='png')await dlCanvas(cv,name+'.png');else await canvasesToPDF([cv],name+'.pdf',false);
+  toast('✅ تم الحفظ');
+ }catch(e){console.error(e);toast('تعذّر التصدير — تحقق من الاتصال بالإنترنت')}
+ finally{hd.remove();box.forEach((b,i)=>b.style.maxHeight=keep[i]);el.style.width=ow;el.style.background='';el.style.padding='';closeModal()}
+}
+async function exportReport(kind){
+ const pages=[...document.querySelectorAll('#rpBody .rp')];if(!pages.length)return;
+ const name=safeName($('#rpTitle').textContent);
+ const b=document.createElement('div');b.style.cssText='position:fixed;inset:0;background:#0008;color:#fff;z-index:99999;display:flex;align-items:center;justify-content:center;font:900 22px Tajawal,sans-serif';b.textContent='⏳ جارٍ تجهيز الملف…';document.body.appendChild(b);
+ try{
+  const cvs=[];for(const p of pages)cvs.push(await snap(p));
+  if(kind==='pdf')await canvasesToPDF(cvs,name+'.pdf',true);
+  else if(cvs.length===1)await dlCanvas(cvs[0],name+'.png');
+  else{ // دمج الصفحات في صورة واحدة طويلة
+   const W=Math.max(...cvs.map(c=>c.width)),gap=24,H=cvs.reduce((a,c)=>a+c.height+gap,-gap);const c=document.createElement('canvas');c.width=W;c.height=H;const cx=c.getContext('2d');cx.fillStyle='#dfe5ef';cx.fillRect(0,0,W,H);let y=0;cvs.forEach(k=>{cx.drawImage(k,0,y);y+=k.height+gap});await dlCanvas(c,name+'.png')}
+  toast('✅ تم الحفظ');
+ }catch(e){console.error(e);toast('تعذّر التصدير — تحقق من الاتصال بالإنترنت')}
+ finally{b.remove()}
 }
 function itemsPanel(A){
  return `<div class="panel" style="margin-bottom:14px"><div class="ph">${ico('search')}تحليل الأسئلة (معامل الصعوبة والتمييز)</div><div class="pb" style="overflow:auto">
@@ -1315,8 +1423,8 @@ function demo(){
 function vHelp(){return `<div class="toolbar"><h2>المساعدة والدعم</h2></div><div class="panel"><div class="pb help">
  <h3>١) إنشاء اختبار</h3><p>من <b>إدارة الاختبارات ← اختبار جديد</b>: حدّد النوع (فتري، تشخيصي، قصير، نافس، نهائي)، والمرحلة والصف، والمادة، و<b>الدرجة الكلية</b> وحد النجاح، والفصول المختبَرة. تُحسب النسب المئوية دائمًا من الدرجة الكلية لكل اختبار، لذلك يمكن مقارنة اختبار من ١٠ باختبار من ٤٠.</p>
  <h3>٢) تحليل الأسئلة (اختياري)</h3><p>أدخل عدد الأسئلة ودرجة كل سؤال واكتب المهارة أو ناتج التعلم لكل سؤال؛ تحصل حينها على معامل الصعوبة والتمييز، وإتقان المهارات، وخطة علاجية حسب المهارة.</p>
- <h3>٣) إضافة الدرجات</h3><p>من الرئيسية اضغط <b>إضافة درجات اختبار</b> واختر الاختبار (أو من بطاقة الاختبار ← <b>إدخال الدرجات</b>)، ثم اختر إحدى الطرق:</p><ul><li><b>ملف Excel</b> ‎(.xlsx / .csv): مثل كشف الدرجات المصدَّر من نظام نور، أو <b>نموذج Excel الفارغ</b> من المنصة بعد تعبئته.</li><li><b>ملف PDF:</b> كشف درجات نصي أو ممسوح ضوئيًا. تُقرأ الأسماء والأرقام تلقائيًا، وفي الملفات الممسوحة تُستخدم القراءة الضوئية (راجع الأسماء في شاشة المعاينة).</li><li><b>لصق:</b> انسخ الأعمدة من Excel أو جداول Google والصقها.</li><li><b>يدويًا:</b> أضف صفوفًا واكتب مباشرة.</li></ul><p>بعد رفع الملف تظهر <b>شاشة معاينة</b>: تأكد من عمود الاسم والفصل والدرجة (تُحدَّد تلقائيًا ويمكن تغييرها)، واختر: إضافة، أو استبدال الكل، أو <b>تحديث حسب الاسم</b> (لإكمال درجات طلاب موجودين). الدرجة الأكبر من الدرجة الكلية تظهر بتنبيه أحمر.</p>
- <h3>٤) التقارير</h3><p><b>بالأسماء:</b> للمعلم وولي الأمر والإرشاد — يتضمن كشف النتائج وقوائم الدعم والتميز. <b>بدون أسماء:</b> إحصائي للإدارة وملف الإنجاز. اضغط «طباعة / حفظ PDF» واختر «حفظ بتنسيق PDF» من نافذة الطباعة.</p>
+ <h3>٣) إضافة الدرجات</h3><p>من الرئيسية اضغط <b>إضافة درجات اختبار</b> واختر الاختبار (أو من بطاقة الاختبار ← <b>إدخال الدرجات</b>)، ثم اختر إحدى الطرق:</p><ul><li><b>ملف Excel</b> ‎(.xlsx / .csv): مثل كشف الدرجات المصدَّر من نظام نور، أو <b>نموذج Excel الفارغ</b> من المنصة بعد تعبئته.</li><li><b>ملف PDF:</b> كشف درجات نصي أو ممسوح ضوئيًا. تُقرأ الأسماء والأرقام تلقائيًا، وفي الملفات الممسوحة تُستخدم القراءة الضوئية (راجع الأسماء في شاشة المعاينة).</li><li><b>لصق:</b> انسخ الأعمدة من Excel أو جداول Google والصقها.</li><li><b>يدويًا:</b> زر «إدخال يدوي للأسماء والدرجات»: اكتب كل اسم في سطر ودرجته بعده، أو أضف صفوفًا فارغة (حتى ٤٥) واكتب في الجدول — مفتاح Enter ينقلك للخانة التالية.</li></ul><p>بعد رفع الملف تظهر <b>شاشة معاينة</b>: تأكد من عمود الاسم والفصل والدرجة (تُحدَّد تلقائيًا ويمكن تغييرها)، واختر: إضافة، أو استبدال الكل، أو <b>تحديث حسب الاسم</b> (لإكمال درجات طلاب موجودين). الدرجة الأكبر من الدرجة الكلية تظهر بتنبيه أحمر.</p>
+ <h3>٤) التقارير</h3><p><b>بالأسماء:</b> للمعلم وولي الأمر والإرشاد — يتضمن كشف النتائج وقوائم الدعم والتميز. <b>بدون أسماء:</b> إحصائي للإدارة وملف الإنجاز. من التقرير أو صفحة التحليل اضغط «🖼️ صورة» أو «📄 PDF» لتنزيل الملف مباشرة، أو «طباعة».</p>
  <h3>٥) قراءة المؤشرات</h3><ul><li><b>الوسيط:</b> الدرجة التي يقع نصف الطلاب تحتها — أدق من المتوسط عند وجود درجات متطرفة.</li><li><b>الانحراف المعياري:</b> كلما ارتفع زاد تفاوت الطلاب (فوق ١٨ يستدعي تعليمًا متمايزًا).</li><li><b>معامل الصعوبة:</b> نسبة الإتقان؛ أقل من ٤٠٪ صعب ويحتاج إعادة تدريس.</li><li><b>معامل التمييز:</b> أقل من ٠٫٢ يعني أن السؤال لا يفرّق بين المتفوق والضعيف.</li></ul>
  <h3>٦) حفظ البيانات والتقارير</h3><p>من <b>الإعدادات ← الحفظ في المنصة</b> اكتب كلمة مرور للتشفير واضغط «تفعيل» (يُستخدم رمز الوصول نفسه المحفوظ لملف الإنجاز). بعدها تُحفظ الاختبارات والدرجات تلقائيًا في مستودع المنصة مشفّرة، وتظهر على أي جهاز تفعّل فيه الحفظ بالرمز وكلمة المرور نفسيهما. لحفظ تقرير افتحه واضغط <b>«💾 حفظ التقرير في المنصة»</b>، وتجده في <b>التقارير المحفوظة</b>. ويبقى «تصدير نسخة احتياطية» متاحًا كاحتياط إضافي.</p>
 </div></div>`}
