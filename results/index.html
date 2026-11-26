@@ -147,6 +147,7 @@ td.nm{text-align:right}
 .tp input:focus-visible+span{outline:3px solid #1d6fe055}
 .attach{display:flex;align-items:center;justify-content:center;gap:10px;border:2px dashed #9fb8de;background:#f5f9ff;border-radius:16px;padding:18px;cursor:pointer;color:#1d4f9e;font-weight:900;font-size:16px}
 .attach svg{width:28px;height:28px}.attach.on{border-color:#22a45d;background:#ecf8ef;color:#1b8a4b}
+.attach2{display:grid;grid-template-columns:1fr 1fr;gap:12px}button.attach{font-family:inherit;width:100%}@media(max-width:700px){.attach2{grid-template-columns:1fr}}
 .qdet{margin-top:16px;border:1px solid var(--line);border-radius:14px;padding:10px 14px;background:#fbfdff}
 .qdet summary{cursor:pointer;font-weight:900;color:#24395e}
 .form small{font-weight:700}
@@ -634,13 +635,16 @@ function testForm(id,preset={}){
   <div class="f w2">التاريخ (هجري)<div class="flex" style="gap:6px">${dateSelects(t.date)}</div></div>
   <div class="f w2">الفصل الدراسي / الفترة<select class="sel" id="f_termSel" onchange="$('#f_term').classList.toggle('hide',this.value!=='__o')">${termOpts(t.term||'')}</select><input class="inp ${TERMS.includes(t.term||'')||!t.term?'hide':''}" id="f_term" value="${esc(TERMS.includes(t.term||'')?'':t.term||'')}" placeholder="اكتب الفصل الدراسي / الفترة"></div>
  </div>
- ${id?'':`<div class="step"><span class="sn">٤</span>إرفاق درجات الطلاب <small style="font-weight:700;color:var(--muted)">(Excel أو PDF — اختياري، ويمكن إضافتها لاحقًا)</small></div>
- <label class="attach" id="f_attachLbl">${ico('up')}<span id="f_attachTxt">اضغط لاختيار ملف الدرجات (‎.xlsx ‎.csv ‎.pdf)</span><input type="file" accept=".xlsx,.xls,.csv,.pdf,application/pdf" class="hide" onchange="window._pend=this.files[0]||null;$('#f_attachTxt').textContent=_pend?('📎 '+_pend.name):'اضغط لاختيار ملف الدرجات';$('#f_attachLbl').classList.toggle('on',!!_pend)"></label>`}
+ ${id?'':`<div class="step"><span class="sn">٤</span>إضافة أسماء الطلاب ودرجاتهم <small style="font-weight:700;color:var(--muted)">(اختياري، ويمكن إضافتها لاحقًا)</small></div>
+ <div class="attach2">
+ <label class="attach" id="f_attachLbl">${ico('up')}<span id="f_attachTxt">إرفاق ملف الدرجات (‎.xlsx ‎.csv ‎.pdf)</span><input type="file" accept=".xlsx,.xls,.csv,.pdf,application/pdf" class="hide" onchange="pickPend(this.files[0]||null)"></label>
+ <button type="button" class="attach" id="f_manualBtn" onclick="pickManual()">${ico('edit')}<span id="f_manualTxt">إدخال الأسماء والدرجات يدويًا</span></button>
+ </div>`}
  <details class="qdet" ${t.questions.length?'open':''}><summary>تحليل الأسئلة والمهارات (اختياري) — لمؤشرات الصعوبة والتمييز والخطة العلاجية حسب المهارة</summary>
   <div class="flex" style="flex-wrap:wrap;margin:8px 0"><input class="inp" id="q_n" type="number" min="0" max="80" style="width:110px" value="${t.questions.length||''}" placeholder="عدد الأسئلة"><input class="inp" id="q_m" type="number" min="0.25" step="0.25" style="width:120px" placeholder="درجة السؤال" value="${t.questions[0]?.mark||1}"><button class="btn b-light b-sm" type="button" onclick="genQs()">توليد الأسئلة</button></div>
   <div id="qWrap"></div></details>`;
  modal(`${ico(id?'edit':'plus','style="width:24px;height:24px"')}${id?'تعديل الاختبار':'اختبار جديد'}`,body,`<button class="btn b-gold" onclick="saveTest('${id||''}')">💾 ${id?'حفظ':'حفظ ومتابعة'}</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
- window._pend=null;window._qs=JSON.parse(JSON.stringify(t.questions));window._grade=t.grade;
+ window._pend=null;window._manual=false;window._qs=JSON.parse(JSON.stringify(t.questions));window._grade=t.grade;
  window._secs=t.sections?[...t.sections]:[...classesOf(t.stage,t.grade)];
  window._fname=t.name||'';fillGrades();fillNames();drawQs();
 }
@@ -722,6 +726,13 @@ function drawQs(){
  <div class="muted" id="qsumBox" style="margin-top:6px;font-size:14px">مجموع درجات الأسئلة: <b>${tot}</b> — <a href="#" onclick="event.preventDefault();$('#f_total').value=_qs.reduce((a,q)=>a+(num(q.mark)||0),0)">اجعلها الدرجة الكلية</a></div>`;
 }
 function qsum(){const b=$('#qsumBox b');if(b)b.textContent=window._qs.reduce((a,q)=>a+(num(q.mark)||0),0)}
+function pickPend(f){window._pend=f;if(f)window._manual=false;syncAdd()}
+function pickManual(){window._manual=!window._manual;if(window._manual){window._pend=null;const i=document.querySelector('#f_attachLbl input');if(i)i.value=''}syncAdd()}
+function syncAdd(){
+ const a=$('#f_attachLbl'),m=$('#f_manualBtn');if(!a||!m)return;
+ a.classList.toggle('on',!!window._pend);$('#f_attachTxt').textContent=window._pend?('📎 '+window._pend.name):'إرفاق ملف الدرجات (‎.xlsx ‎.csv ‎.pdf)';
+ m.classList.toggle('on',!!window._manual);$('#f_manualTxt').textContent=window._manual?'✔ إدخال يدوي — تُفتح نافذة كتابة الأسماء بعد الحفظ':'إدخال الأسماء والدرجات يدويًا';
+}
 function saveTest(id){
  const type=(document.querySelector('input[name=f_type]:checked')||{}).value;
  if(!type){toast('اختر نوع الاختبار');return}
@@ -740,8 +751,8 @@ function saveTest(id){
  if(data.sections.length)rememberClasses(stage,grade,data.sections);
  if(id){const t=S.tests.find(x=>x.id===id);if(!data.sections.length)data.sections=t.sections;Object.assign(t,data);t.students.forEach(s=>{if(Array.isArray(s.ans)){s.ans=qs.map((_,i)=>s.ans[i]??'')}})}
  else{if(!data.sections.length)data.sections=[1];data._auto=!window._secs.length;S.tests.push({id:uid(),created:Date.now(),students:[],...data});}
- const pend=window._pend;save();closeModal();toast('✅ تم حفظ الاختبار');
- if(!id){const nt=S.tests[S.tests.length-1];go('entry',{test:nt.id});if(pend)setTimeout(()=>importFile(pend),150)}else render();
+ const pend=window._pend,man=window._manual;save();closeModal();toast('✅ تم حفظ الاختبار');
+ if(!id){const nt=S.tests[S.tests.length-1];go('entry',{test:nt.id});if(pend)setTimeout(()=>importFile(pend),150);else if(man)setTimeout(manualDlg,150)}else render();
 }
 function dupTest(id){const t=S.tests.find(x=>x.id===id);const c=JSON.parse(JSON.stringify(t));c.id=uid();c.created=Date.now();c.name=t.name+' (نسخة)';c.students=[];S.tests.push(c);save();render();toast('تم نسخ الاختبار بدون درجات')}
 function delTest(id){const t=S.tests.find(x=>x.id===id);if(!confirm(`حذف «${t.name}» وجميع درجاته نهائيًا؟`))return;S.tests=S.tests.filter(x=>x.id!==id);save();render();toast('تم الحذف')}
