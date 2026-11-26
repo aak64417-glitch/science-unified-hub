@@ -614,7 +614,7 @@ function testForm(id,preset={}){
  const known=SUBJECTS.includes(t.subject)&&t.subject!=='أخرى';
  const body=`
  <div class="step"><span class="sn">١</span>نوع الاختبار</div>
- <div class="typepick">${Object.entries(TYPES).map(([k,v])=>`<label class="tp" style="--g:${v.g}"><input type="radio" name="f_type" value="${k}" ${t.type===k?'checked':''}><span>${ico(v.i)}${v.n.replace('الاختبارات ','').replace('اختبارات ','')}</span></label>`).join('')}</div>
+ <div class="typepick">${Object.entries(TYPES).map(([k,v])=>`<label class="tp" style="--g:${v.g}"><input type="radio" name="f_type" onchange="fillNames()" value="${k}" ${t.type===k?'checked':''}><span>${ico(v.i)}${v.n.replace('الاختبارات ','').replace('اختبارات ','')}</span></label>`).join('')}</div>
  <div class="step"><span class="sn">٢</span>المادة والصف والفصول</div>
  <div class="form">
   <div class="f">المادة *<select class="sel" id="f_subjSel" onchange="$('#f_subjOther').classList.toggle('hide',this.value!=='أخرى')">${SUBJECTS.map(s=>`<option ${(known?t.subject===s:s==='أخرى')?'selected':''}>${s}</option>`).join('')}</select><input class="inp ${known?'hide':''}" id="f_subjOther" placeholder="اكتب اسم المادة" value="${known?'':esc(t.subject)}"></div>
@@ -624,11 +624,11 @@ function testForm(id,preset={}){
  </div>
  <div class="step"><span class="sn">٣</span>بيانات الاختبار</div>
  <div class="form">
-  <div class="f w2">اسم الاختبار <small>(يُكتب تلقائيًا إن تُرك فارغًا)</small><input class="inp" id="f_name" value="${esc(t.name)}" placeholder="مثال: الاختبار الفتري الأول"></div>
+  <div class="f w2">عنوان الاختبار<select class="sel" id="f_nameSel" onchange="$('#f_name').classList.toggle('hide',this.value!=='__o')"></select><input class="inp hide" id="f_name" value="${esc(t.name)}" placeholder="اكتب عنوان الاختبار"></div>
   <div class="f">الدرجة الكلية للاختبار *<input class="inp" id="f_total" type="number" min="1" step="0.5" value="${t.total}" placeholder="مثال: 20"></div>
   <div class="f">حد النجاح (٪)<input class="inp" id="f_pass" type="number" min="1" max="100" value="${t.pass??50}"></div>
-  <div class="f w2">التاريخ<input class="inp" id="f_date" value="${esc(t.date)}" placeholder="مثال: ١٤٤٨/٥/١٠"></div>
-  <div class="f w2">الفصل الدراسي / الفترة<input class="inp" id="f_term" value="${esc(t.term||'')}" placeholder="مثال: الفصل الدراسي الأول"></div>
+  <div class="f w2">التاريخ (هجري)<div class="flex" style="gap:6px">${dateSelects(t.date)}</div></div>
+  <div class="f w2">الفصل الدراسي / الفترة<select class="sel" id="f_termSel" onchange="$('#f_term').classList.toggle('hide',this.value!=='__o')">${termOpts(t.term||'')}</select><input class="inp ${TERMS.includes(t.term||'')||!t.term?'hide':''}" id="f_term" value="${esc(TERMS.includes(t.term||'')?'':t.term||'')}" placeholder="اكتب الفصل الدراسي / الفترة"></div>
  </div>
  ${id?'':`<div class="step"><span class="sn">٤</span>إرفاق درجات الطلاب <small style="font-weight:700;color:var(--muted)">(Excel أو PDF — اختياري، ويمكن إضافتها لاحقًا)</small></div>
  <label class="attach" id="f_attachLbl">${ico('up')}<span id="f_attachTxt">اضغط لاختيار ملف الدرجات (‎.xlsx ‎.csv ‎.pdf)</span><input type="file" accept=".xlsx,.xls,.csv,.pdf,application/pdf" class="hide" onchange="window._pend=this.files[0]||null;$('#f_attachTxt').textContent=_pend?('📎 '+_pend.name):'اضغط لاختيار ملف الدرجات';$('#f_attachLbl').classList.toggle('on',!!_pend)"></label>`}
@@ -638,8 +638,55 @@ function testForm(id,preset={}){
  modal(`${ico(id?'edit':'plus','style="width:24px;height:24px"')}${id?'تعديل الاختبار':'اختبار جديد'}`,body,`<button class="btn b-gold" onclick="saveTest('${id||''}')">💾 ${id?'حفظ':'حفظ ومتابعة'}</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
  window._pend=null;window._qs=JSON.parse(JSON.stringify(t.questions));window._grade=t.grade;
  window._secs=t.sections?[...t.sections]:[...classesOf(t.stage,t.grade)];
- fillGrades();drawQs();
+ window._fname=t.name||'';fillGrades();fillNames();drawQs();
 }
+/* ---------- القوائم المنسدلة: العنوان والتاريخ والفصل الدراسي ---------- */
+const ORD=['الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر'];
+const TERMS=['الفصل الدراسي الأول','الفصل الدراسي الثاني','الفصل الدراسي الثالث','الفترة الأولى','الفترة الثانية','الفترة الثالثة'];
+const HMONTHS=['محرم','صفر','ربيع الأول','ربيع الآخر','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+function nameOptions(type){
+ const T=TYPES[type]||TYPES.other;
+ const M={
+  periodic:['الاختبار الفتري الأول','الاختبار الفتري الثاني','الاختبار الفتري الثالث'],
+  diagnostic:['اختبار تشخيصي','الاختبار التشخيصي القبلي','الاختبار التشخيصي البعدي','اختبار تشخيصي لمهارات نافس'],
+  short:ORD.map(o=>'الاختبار القصير '+o),
+  nafs:['اختبار نافس التجريبي الأول','اختبار نافس التجريبي الثاني','اختبار نافس التجريبي الثالث','اختبار نافس التجريبي الرابع','اختبار نافس النهائي'],
+  final:['الاختبار النهائي — الفصل الدراسي الأول','الاختبار النهائي — الفصل الدراسي الثاني','الاختبار النهائي — الفصل الدراسي الثالث','اختبار الدور الثاني'],
+  other:['اختبار عملي','اختبار شفهي','تقويم مستمر','واجب منزلي','مشروع','نشاط صفي']
+ };
+ return M[type]||[T.one];
+}
+function fillNames(){
+ const sel=$('#f_nameSel');if(!sel)return;
+ const type=(document.querySelector('input[name=f_type]:checked')||{}).value||'periodic';
+ const opts=nameOptions(type);
+ const first=!sel.options.length;
+ const cur=first?window._fname:(sel.value==='__o'?'__o':'');
+ const custom=first&&cur&&!opts.includes(cur);
+ sel.innerHTML=opts.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join('')+`<option value="__o">✏️ عنوان آخر (اكتبه)…</option>`;
+ if(cur==='__o'||custom){sel.value='__o';if(custom&&!$('#f_name').value)$('#f_name').value=cur}
+ else if(opts.includes(cur))sel.value=cur;
+ $('#f_name').classList.toggle('hide',sel.value!=='__o');
+}
+function hijriToday(){
+ try{const p=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(new Date());const g=k=>parseInt((p.find(x=>x.type===k)||{}).value);const r={d:g('day'),m:g('month'),y:g('year')};if(r.d&&r.m&&r.y)return r}catch(e){}
+ return{d:1,m:1,y:1448};
+}
+function parseHDate(v){
+ const n=(toEn(String(v||'')).match(/\d+/g)||[]).map(Number);if(n.length<3)return null;
+ const y=n.find(x=>x>1300);if(!y)return null;const o=n.filter(x=>x!==y);
+ // يقبل: يوم/شهر/سنة أو سنة/شهر/يوم
+ const iy=n.indexOf(y);return iy===0?{y,m:o[0],d:o[1]}:{y,m:o[1],d:o[0]};
+}
+function dateSelects(v){
+ const t=parseHDate(v)||(v?null:hijriToday())||{d:'',m:'',y:''};const now=hijriToday();
+ const ys=[];for(let y=now.y-3;y<=now.y+2;y++)ys.push(y);if(t.y&&!ys.includes(t.y))ys.unshift(t.y);
+ return `<select class="sel" id="f_dd" style="flex:1" title="اليوم"><option value="">اليوم</option>${Array.from({length:30},(_,i)=>`<option value="${i+1}" ${t.d===i+1?'selected':''}>${toAr(i+1)}</option>`).join('')}</select>
+ <select class="sel" id="f_dm" style="flex:1.6" title="الشهر"><option value="">الشهر</option>${HMONTHS.map((m,i)=>`<option value="${i+1}" ${t.m===i+1?'selected':''}>${toAr(i+1)} - ${m}</option>`).join('')}</select>
+ <select class="sel" id="f_dy" style="flex:1.2" title="السنة"><option value="">السنة</option>${ys.map(y=>`<option value="${y}" ${t.y===y?'selected':''}>${toAr(y)}هـ</option>`).join('')}</select>`;
+}
+function readDate(){const d=$('#f_dd').value,m=$('#f_dm').value,y=$('#f_dy').value;if(!d||!m||!y)return'';return `${toAr(+d)}/${toAr(+m)}/${toAr(+y)}هـ`}
+function termOpts(cur){const custom=cur&&!TERMS.includes(cur);return `<option value="">— اختر —</option>`+TERMS.map(x=>`<option ${cur===x?'selected':''}>${x}</option>`).join('')+`<option value="__o" ${custom?'selected':''}>✏️ أخرى (اكتبها)…</option>`}
 function classesOf(st,gr){return (S.settings.classes&&S.settings.classes[st+'-'+gr])||[]}
 function rememberClasses(st,gr,list){S.settings.classes=S.settings.classes||{};const k=st+'-'+gr;S.settings.classes[k]=[...new Set([...(S.settings.classes[k]||[]),...list])].sort((a,b)=>a-b);save()}
 function fillGrades(){
@@ -654,7 +701,7 @@ function drawSecs(){
  const st=$('#f_stage').value,gr=window._grade||1;
  const all=[...new Set([...classesOf(st,gr),...window._secs])].sort((a,b)=>a-b);
  $('#f_secs').innerHTML=(all.length?all.map(n=>`<label><input type="checkbox" value="${n}" ${window._secs.includes(n)?'checked':''} onchange="window._secs=[...document.querySelectorAll('#f_secs input:checked')].map(x=>+x.value)">الفصل ${secLabel(n,gr)}</label>`).join(''):`<span class="muted" style="font-size:14px">لم تُسجَّل فصول لهذا الصف بعد — أضف رقم الفصل، أو أرفق ملف الدرجات وتُستخرج الفصول منه تلقائيًا.</span>`)+
- `<span class="flex" style="gap:6px"><input class="inp" id="f_newSec" type="number" min="1" max="30" placeholder="رقم الفصل" style="width:110px"><button class="btn b-light b-sm" type="button" onclick="addSec()">${ico('plus')}إضافة فصل</button></span>`;
+ `<span class="flex" style="gap:6px"><select class="sel" id="f_newSec" style="width:150px"><option value="">رقم الفصل</option>${Array.from({length:15},(_,i)=>i+1).filter(n=>!all.includes(n)).map(n=>`<option value="${n}">الفصل ${secLabel(n,gr)}</option>`).join('')}</select><button class="btn b-light b-sm" type="button" onclick="addSec()">${ico('plus')}إضافة فصل</button></span>`;
 }
 function addSec(){const v=parseInt(toEn($('#f_newSec').value));if(!v||v<1){toast('اكتب رقم الفصل، مثل 1 أو 2');return}const st=$('#f_stage').value;rememberClasses(st,window._grade,[v]);if(!window._secs.includes(v))window._secs.push(v);drawSecs()}
 function genQs(){
@@ -680,12 +727,12 @@ function saveTest(id){
  if(!total||total<=0){toast('أدخل الدرجة الكلية للاختبار');$('#f_total').focus();return}
  const stage=$('#f_stage').value,grade=+$('#f_grade').value;
  if(!window._secs.length&&!window._pend&&!id){toast('أضف فصلًا واحدًا على الأقل، أو أرفق ملف الدرجات');return}
- let name=$('#f_name').value.trim();
+ const nsel=$('#f_nameSel').value;let name=nsel==='__o'?$('#f_name').value.trim():nsel;
  if(!name){const T=TYPES[type];name=`${T.one} — ${subject}`;const same=S.tests.filter(x=>x.id!==id&&x.name.startsWith(name)&&x.stage===stage&&x.grade===grade).length;if(same)name+=` (${toAr(same+1)})`}
  const qs=window._qs.map(q=>({label:String(q.label||'').trim()||'س',mark:num(q.mark)||1,skill:String(q.skill||'').trim()}));
  const qt=qs.reduce((a,q)=>a+q.mark,0);
  if(qs.length&&Math.abs(qt-total)>0.001&&!confirm(`مجموع درجات الأسئلة (${qt}) لا يساوي الدرجة الكلية (${total}). هل تريد المتابعة؟`))return;
- const data={name,type,subject,stage,grade,total,pass:num($('#f_pass').value)||50,date:$('#f_date').value.trim(),term:$('#f_term').value.trim(),sections:[...window._secs].sort((a,b)=>a-b),questions:qs};
+ const data={name,type,subject,stage,grade,total,pass:num($('#f_pass').value)||50,date:readDate(),term:$('#f_termSel').value==='__o'?$('#f_term').value.trim():$('#f_termSel').value,sections:[...window._secs].sort((a,b)=>a-b),questions:qs};
  if(data.sections.length)rememberClasses(stage,grade,data.sections);
  if(id){const t=S.tests.find(x=>x.id===id);if(!data.sections.length)data.sections=t.sections;Object.assign(t,data);t.students.forEach(s=>{if(Array.isArray(s.ans)){s.ans=qs.map((_,i)=>s.ans[i]??'')}})}
  else{if(!data.sections.length)data.sections=[1];data._auto=!window._secs.length;S.tests.push({id:uid(),created:Date.now(),students:[],...data});}
@@ -727,7 +774,7 @@ function vEntry(){
  ${t.students.length?`<div class="entry-wrap"><table class="entry"><tr><th>#</th><th>اسم الطالب</th><th>الفصل</th>${t.questions.map(q=>`<th title="${esc(q.skill||'')}">${esc(q.label)}<br><small style="font-weight:700;color:#64748b">/${q.mark}</small></th>`).join('')}<th>الدرجة<br><small style="font-weight:700;color:#64748b">/${t.total}</small></th><th>النسبة</th><th>غائب</th><th></th></tr>${rows}</table></div>`
  :`<div class="panel" id="dropZone"><div class="pb"><div class="addopts">
   <label class="addopt" style="--c:#1b8a4b">${ico('table')}<b>ملف Excel</b><span>‎.xlsx أو ‎.csv — مثل كشف نور</span><input type="file" accept=".xlsx,.xls,.csv" class="hide" onchange="importFile(this.files[0]);this.value=''"></label>
-  <label class="addopt" style="--c:#c22f34">${ico('file')}<b>ملف PDF</b><span>كشف درجات PDF يحتوي نصًا</span><input type="file" accept=".pdf,application/pdf" class="hide" onchange="importFile(this.files[0]);this.value=''"></label>
+  <label class="addopt" style="--c:#c22f34">${ico('file')}<b>ملف PDF</b><span>كشف درجات PDF (نصي أو ممسوح ضوئيًا)</span><input type="file" accept=".pdf,application/pdf" class="hide" onchange="importFile(this.files[0]);this.value=''"></label>
   <button class="addopt" style="--c:#b07d00" onclick="pasteDlg()">${ico('copy')}<b>لصق</b><span>انسخ الأعمدة والصقها</span></button>
   <button class="addopt" style="--c:#123f8c" onclick="addRows(5)">${ico('edit')}<b>إدخال يدوي</b><span>اكتب الأسماء والدرجات</span></button>
  </div><div class="muted" style="text-align:center;margin-top:12px;font-size:14px">أو اسحب الملف وأفلته هنا • الأعمدة المقترحة: الاسم ← الفصل ← ${t.questions.length?'س1، س2 …':'الدرجة'} — <a href="#" onclick="event.preventDefault();downloadTemplate()">تحميل نموذج Excel فارغ</a></div></div></div>`}`;
@@ -816,7 +863,7 @@ function impParse(){
  const out=[],skip=[];
  I.rows.slice(I.map.hi+1).forEach(r=>{
   const name=String(r[mN]||'').replace(/\s+/g,' ').trim();
-  if(!name||!isArText(name)&&!/[a-z]{2}/i.test(name)||/اسم الطالب|^الاسم$|^اسم$/.test(name)){if(r.some(Boolean))skip.push(r);return}
+  if(!name||!isArText(name)&&!/[a-z]{2}/i.test(name)||/اسم الطالب|^الاسم$|^اسم$|متوسط|مدرسة|وزارة|اختبار|تقرير|كشف درجات/.test(name)){if(r.some(Boolean))skip.push(r);return}
   let sec=def;if(mS>=0){const ps=parseSection(r[mS],t);if(ps)sec=ps}
   const st={id:uid(),name,section:sec,score:'',ans:t.questions.length?t.questions.map(()=>''):null,absent:false,warn:''};
   if(t.questions.length&&mQ>=0){t.questions.forEach((q,j)=>{const v=num(r[mQ+j]);if(v!=null&&v>q.mark)st.warn='درجة سؤال أكبر من المسموح';st.ans[j]=v==null?'':Math.min(v,q.mark)})}
@@ -863,45 +910,82 @@ async function importFile(f){
   importWizard(rows,f.name);
  }catch(e){console.error(e);toast('تعذّرت قراءة الملف — تحقق من الاتصال بالإنترنت أو استخدم اللصق')}
 }
+// كلمات العناوين التي لا تكون أسماء طلاب (اسم المدرسة، الصف، المادة…)
+const NOT_NAME=/متوسط|ابتدائ|ثانوي|مدرس|وزار|[اإ]دار|تعليم|اختبار|تقرير|كشف|الماد|المعلم|الدراسي|الصف|المملك|السعودي|الفصل|درجات|نتائج|المرحل|العلوم|الرياضيات|توقيع|مدير/;
+const isStudentName=c=>isArText(c)&&String(c).trim().split(/\s+/).length>=2&&!NOT_NAME.test(String(c).replace(/\s/g,''));
 async function importPDF(f){
- toast('جارٍ قراءة ملف PDF…');
- await loadPDFJS();
- const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
- let items=[];
- for(let p=1;p<=pdf.numPages;p++){
-  const pg=await pdf.getPage(p);const tc=await pg.getTextContent();
-  tc.items.forEach(it=>{const s=(it.str||'').normalize('NFKC');if(!s.trim())return;items.push({p,s,x:it.transform[4],y:it.transform[5],w:it.width||0,h:Math.abs(it.transform[3])||10})});
- }
- if(!items.length){
-  modal('⚠️ ملف PDF بدون نص',`<div class="note">هذا الملف صورة ممسوحة ضوئيًا ولا يحتوي نصًا يمكن قراءته.<br>الحلول: صدّر الكشف من نظام نور بصيغة <b>Excel</b>، أو افتح الملف وانسخ الجدول ثم استخدم <b>لصق من Excel</b>، أو أدخل الدرجات يدويًا.</div>`,`<button class="btn b-light" onclick="closeModal()">حسنًا</button>`);return;
- }
- // كشف النص العربي المقلوب في بعض ملفات PDF
- let fw=0,rv=0;items.forEach(it=>it.s.split(/\s+/).forEach(w=>{if(/^ال[ء-ي]{2,}/.test(w))fw++;if(/[ء-ي]{2,}لا$/.test(w))rv++}));
- if(rv>fw*1.5&&rv>3)items.forEach(it=>{if(/[؀-ۿ]/.test(it.s))it.s=[...it.s].reverse().join('')});
- // تجميع العناصر في صفوف حسب الموضع الرأسي ثم خلايا من اليمين لليسار
- items.sort((a,b)=>a.p-b.p||b.y-a.y||b.x-a.x);
+ try{
+  toast('جارٍ قراءة ملف PDF…');
+  await loadPDFJS();
+  const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
+  let items=[];
+  for(let p=1;p<=pdf.numPages;p++){
+   const pg=await pdf.getPage(p);const tc=await pg.getTextContent();
+   tc.items.forEach(it=>{const s=(it.str||'').normalize('NFKC');if(!s.trim())return;items.push({p,s,x:it.transform[4],y:it.transform[5],w:it.width||0,h:Math.abs(it.transform[3])||10})});
+  }
+  // كشف النص العربي المقلوب في بعض ملفات PDF
+  let fw=0,rv=0;items.forEach(it=>it.s.split(/\s+/).forEach(w=>{if(/^ال[ء-ي]{2,}/.test(w))fw++;if(/[ء-ي]{2,}لا$/.test(w))rv++}));
+  if(rv>fw*1.5&&rv>3)items.forEach(it=>{if(/[؀-ۿ]/.test(it.s))it.s=[...it.s].reverse().join('')});
+  let res=pdfRows(items);
+  // إذا لم تُستخرج أسماء كافية (ملف ممسوح ضوئيًا أو خطوط بلا ترميز) → قراءة ضوئية OCR
+  if(res.body.length<3){
+   const ocr=await ocrPDF(pdf);
+   if(ocr){const r2=pdfRows(ocr);if(r2.body.length>res.body.length){res=r2;res.ocr=true}}
+  }
+  if(!res.body.length){
+   if(!res.rows.length){modal('⚠️ تعذّرت قراءة ملف PDF',`<div class="note">لم يُتعرَّف على أسماء أو درجات في الملف.<br>الحلول: صدّر الكشف من نظام نور بصيغة <b>Excel</b>، أو استخدم <b>لصق من Excel</b>، أو أدخل الدرجات يدويًا.</div>`,`<button class="btn b-light" onclick="closeModal()">حسنًا</button>`);return}
+   importWizard(res.rows,f.name);return;
+  }
+  const W=Math.max(...res.body.map(r=>r.length));
+  const head=['الاسم',...Array.from({length:W-1},(_,i)=>'خانة '+(i+1))];
+  importWizard([head,...res.body],f.name+(res.ocr?' (PDF — قراءة ضوئية: راجع الأسماء والدرجات)':' (PDF)'));
+ }catch(e){console.error(e);closeModal();toast('تعذّرت قراءة ملف PDF — تحقق من الاتصال بالإنترنت')}
+}
+// تحويل عناصر النص (من PDF أو من OCR) إلى صفوف وخلايا
+function pdfRows(items){
+ items=items.slice().sort((a,b)=>a.p-b.p||b.y-a.y||b.x-a.x);
  const lines=[];
  items.forEach(it=>{const L=lines.find(l=>l.p===it.p&&Math.abs(l.y-it.y)<=Math.max(2.5,it.h*.45));if(L)L.items.push(it);else lines.push({p:it.p,y:it.y,items:[it]})});
  lines.sort((a,b)=>a.p-b.p||b.y-a.y);
  const rows=lines.map(l=>{
   const its=l.items.sort((a,b)=>(b.x+b.w)-(a.x+a.w));
-  // 1) تجميع الحروف المتلاصقة في كلمات
   const words=[];let g=null;
-  its.forEach(it=>{const gap=g?g.left-(it.x+it.w):1e9;if(g&&gap<it.h*.18){g.parts.push(it);g.left=Math.min(g.left,it.x)}else{g={parts:[it],left:it.x,right:it.x+it.w,h:it.h};words.push(g)}});
-  words.forEach(w=>{const ar=w.parts.some(x=>/[\u0600-\u06FF]/.test(x.s));const ps=ar?w.parts:[...w.parts].sort((a,b)=>a.x-b.x);w.s=ps.map(x=>x.s).join('').trim();w.num=num(w.s)!=null});
-  // 2) تجميع الكلمات في خلايا
+  its.forEach(it=>{const gap=g?g.left-(it.x+it.w):1e9;if(g&&!it.ocr&&gap<it.h*.18){g.parts.push(it);g.left=Math.min(g.left,it.x)}else{g={parts:[it],left:it.x,right:it.x+it.w,h:it.h};words.push(g)}});
+  words.forEach(w=>{const ar=w.parts.some(x=>/[؀-ۿ]/.test(x.s));const ps=ar?w.parts:[...w.parts].sort((a,b)=>a.x-b.x);w.s=ps.map(x=>x.s).join('').trim();w.num=num(w.s)!=null});
   const cells=[];let cur=null;
   words.filter(w=>w.s).forEach(w=>{if(cur&&!w.num&&!cur.num&&(cur.left-w.right)<w.h*1.1){cur.s+=' '+w.s;cur.left=w.left}else{cur={s:w.s,left:w.left,num:w.num};cells.push(cur)}});
-  return cells.map(c=>c.s.replace(/\s+/g,' ').trim());
+  return cells.map(c=>c.s.replace(/\s+/g,' ').trim()).filter(Boolean);
  }).filter(r=>r.length);
- // توحيد الصفوف: الاسم ثم بقية الخلايا بالترتيب
- const norm=rows.map(r=>{const ni=r.reduce((b,c,i)=>isArText(c)&&c.split(' ').length>=2&&(b<0||c.length>r[b].length)?i:b,-1);if(ni<0)return r;return [r[ni],...r.filter((_,i)=>i!==ni)]});
- const W=Math.max(...norm.map(r=>r.length));
- // صف عناوين صناعي ليسهل الاختيار
- const head=['الاسم',...Array.from({length:W-1},(_,i)=>'خانة '+(i+1))];
- const body=norm.filter(r=>isArText(r[0])&&r[0].split(' ').length>=2&&r.slice(1).some(c=>num(c)!=null||/غ/.test(c)));
- if(!body.length){importWizard(rows,f.name);return}
- importWizard([head,...body],f.name+' (PDF)');
+ // الاسم أولًا ثم بقية الخلايا بالترتيب
+ const norm=rows.map(r=>{const ni=r.reduce((b,c,i)=>isStudentName(c)&&(b<0||c.length>r[b].length)?i:b,-1);if(ni<0)return null;return [r[ni],...r.filter((_,i)=>i!==ni)]}).filter(Boolean);
+ const body=norm.filter(r=>r.slice(1).some(c=>num(c)!=null||/^غ|غائب/.test(c)));
+ return{rows,body};
+}
+function loadTesseract(){return window.Tesseract?Promise.resolve():loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js')}
+async function ocrPDF(pdf){
+ const N=Math.min(pdf.numPages,20);
+ modal('🔎 قراءة ضوئية لملف PDF',`<div class="note blue">الملف لا يحتوي نصًا قابلًا للقراءة المباشرة (غالبًا ممسوح ضوئيًا أو مصوَّر)، لذلك تُقرأ الأسماء والدرجات من صورة الصفحات.<br>قد تستغرق العملية دقيقة أو أكثر في أول مرة — لا تغلق الصفحة.</div><div style="margin-top:12px;background:var(--line);border-radius:10px;overflow:hidden;height:14px"><div id="ocrBar" style="height:100%;width:2%;background:linear-gradient(90deg,#22a45d,#1d6fe0);transition:width .3s"></div></div><div id="ocrTxt" class="muted" style="margin-top:6px;font-weight:700">جارٍ تجهيز القارئ الضوئي…</div>`,'');
+ const bar=p=>{const e=$('#ocrBar');if(e)e.style.width=Math.max(2,Math.round(p*100))+'%'};const txt=m=>{const e=$('#ocrTxt');if(e)e.textContent=m};
+ let worker;
+ try{
+  await loadTesseract();
+  let page=1;
+  worker=await Tesseract.createWorker('ara+eng',1,{logger:m=>{if(m.status==='recognizing text')bar(((page-1)+m.progress)/N);else if(/loading|initializ/.test(m.status||''))txt('جارٍ تحميل بيانات اللغة العربية…')}});
+  await worker.setParameters({preserve_interword_spaces:'1'});
+  const items=[];
+  for(page=1;page<=N;page++){
+   txt(`قراءة الصفحة ${toAr(page)} من ${toAr(N)}…`);
+   const pg=await pdf.getPage(page);const vp=pg.getViewport({scale:2.6});
+   const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;
+   const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);
+   await pg.render({canvasContext:cx,viewport:vp}).promise;
+   const {data}=await worker.recognize(cv);
+   (data.words||[]).forEach(w=>{const s=(w.text||'').normalize('NFKC').replace(/[|_—–\[\]{}()"'`]+/g,'').trim();if(!s||w.confidence<25)return;const b=w.bbox;const h=Math.max(8,b.y1-b.y0);items.push({p:page,s,x:b.x0,y:-((b.y0+b.y1)/2),w:b.x1-b.x0,h,ocr:1})});
+   cv.width=cv.height=0;
+  }
+  bar(1);await worker.terminate();closeModal();
+  return items;
+ }catch(e){console.error(e);try{worker&&await worker.terminate()}catch(_){}closeModal();toast('تعذّرت القراءة الضوئية — تحقق من الاتصال بالإنترنت');return null}
 }
 async function downloadTemplate(){
  const t=curT();
@@ -1231,7 +1315,7 @@ function demo(){
 function vHelp(){return `<div class="toolbar"><h2>المساعدة والدعم</h2></div><div class="panel"><div class="pb help">
  <h3>١) إنشاء اختبار</h3><p>من <b>إدارة الاختبارات ← اختبار جديد</b>: حدّد النوع (فتري، تشخيصي، قصير، نافس، نهائي)، والمرحلة والصف، والمادة، و<b>الدرجة الكلية</b> وحد النجاح، والفصول المختبَرة. تُحسب النسب المئوية دائمًا من الدرجة الكلية لكل اختبار، لذلك يمكن مقارنة اختبار من ١٠ باختبار من ٤٠.</p>
  <h3>٢) تحليل الأسئلة (اختياري)</h3><p>أدخل عدد الأسئلة ودرجة كل سؤال واكتب المهارة أو ناتج التعلم لكل سؤال؛ تحصل حينها على معامل الصعوبة والتمييز، وإتقان المهارات، وخطة علاجية حسب المهارة.</p>
- <h3>٣) إضافة الدرجات</h3><p>من الرئيسية اضغط <b>إضافة درجات اختبار</b> واختر الاختبار (أو من بطاقة الاختبار ← <b>إدخال الدرجات</b>)، ثم اختر إحدى الطرق:</p><ul><li><b>ملف Excel</b> ‎(.xlsx / .csv): مثل كشف الدرجات المصدَّر من نظام نور، أو <b>نموذج Excel الفارغ</b> من المنصة بعد تعبئته.</li><li><b>ملف PDF:</b> كشف درجات يحتوي نصًا (غير ممسوح ضوئيًا). تُقرأ الأسماء والأرقام تلقائيًا.</li><li><b>لصق:</b> انسخ الأعمدة من Excel أو جداول Google والصقها.</li><li><b>يدويًا:</b> أضف صفوفًا واكتب مباشرة.</li></ul><p>بعد رفع الملف تظهر <b>شاشة معاينة</b>: تأكد من عمود الاسم والفصل والدرجة (تُحدَّد تلقائيًا ويمكن تغييرها)، واختر: إضافة، أو استبدال الكل، أو <b>تحديث حسب الاسم</b> (لإكمال درجات طلاب موجودين). الدرجة الأكبر من الدرجة الكلية تظهر بتنبيه أحمر.</p>
+ <h3>٣) إضافة الدرجات</h3><p>من الرئيسية اضغط <b>إضافة درجات اختبار</b> واختر الاختبار (أو من بطاقة الاختبار ← <b>إدخال الدرجات</b>)، ثم اختر إحدى الطرق:</p><ul><li><b>ملف Excel</b> ‎(.xlsx / .csv): مثل كشف الدرجات المصدَّر من نظام نور، أو <b>نموذج Excel الفارغ</b> من المنصة بعد تعبئته.</li><li><b>ملف PDF:</b> كشف درجات نصي أو ممسوح ضوئيًا. تُقرأ الأسماء والأرقام تلقائيًا، وفي الملفات الممسوحة تُستخدم القراءة الضوئية (راجع الأسماء في شاشة المعاينة).</li><li><b>لصق:</b> انسخ الأعمدة من Excel أو جداول Google والصقها.</li><li><b>يدويًا:</b> أضف صفوفًا واكتب مباشرة.</li></ul><p>بعد رفع الملف تظهر <b>شاشة معاينة</b>: تأكد من عمود الاسم والفصل والدرجة (تُحدَّد تلقائيًا ويمكن تغييرها)، واختر: إضافة، أو استبدال الكل، أو <b>تحديث حسب الاسم</b> (لإكمال درجات طلاب موجودين). الدرجة الأكبر من الدرجة الكلية تظهر بتنبيه أحمر.</p>
  <h3>٤) التقارير</h3><p><b>بالأسماء:</b> للمعلم وولي الأمر والإرشاد — يتضمن كشف النتائج وقوائم الدعم والتميز. <b>بدون أسماء:</b> إحصائي للإدارة وملف الإنجاز. اضغط «طباعة / حفظ PDF» واختر «حفظ بتنسيق PDF» من نافذة الطباعة.</p>
  <h3>٥) قراءة المؤشرات</h3><ul><li><b>الوسيط:</b> الدرجة التي يقع نصف الطلاب تحتها — أدق من المتوسط عند وجود درجات متطرفة.</li><li><b>الانحراف المعياري:</b> كلما ارتفع زاد تفاوت الطلاب (فوق ١٨ يستدعي تعليمًا متمايزًا).</li><li><b>معامل الصعوبة:</b> نسبة الإتقان؛ أقل من ٤٠٪ صعب ويحتاج إعادة تدريس.</li><li><b>معامل التمييز:</b> أقل من ٠٫٢ يعني أن السؤال لا يفرّق بين المتفوق والضعيف.</li></ul>
  <h3>٦) حفظ البيانات والتقارير</h3><p>من <b>الإعدادات ← الحفظ في المنصة</b> اكتب كلمة مرور للتشفير واضغط «تفعيل» (يُستخدم رمز الوصول نفسه المحفوظ لملف الإنجاز). بعدها تُحفظ الاختبارات والدرجات تلقائيًا في مستودع المنصة مشفّرة، وتظهر على أي جهاز تفعّل فيه الحفظ بالرمز وكلمة المرور نفسيهما. لحفظ تقرير افتحه واضغط <b>«💾 حفظ التقرير في المنصة»</b>، وتجده في <b>التقارير المحفوظة</b>. ويبقى «تصدير نسخة احتياطية» متاحًا كاحتياط إضافي.</p>
