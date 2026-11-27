@@ -1773,7 +1773,41 @@ function vSettings(){
    <button class="btn b-light" onclick="demo()">تحميل بيانات تجريبية للتجربة</button>
    ${S.tests.some(t=>t.demo)?`<button class="btn b-red" onclick="S.tests=S.tests.filter(t=>!t.demo);save();render();toast('حُذفت البيانات التجريبية')">حذف البيانات التجريبية</button>`:''}
    <button class="btn b-red" onclick="if(confirm('حذف جميع الاختبارات والدرجات نهائيًا؟ صدّر نسخة احتياطية أولًا.')){S.tests=[];save();render()}">${ico('trash')}حذف كل البيانات</button>
-  </div></div></div>`;
+  </div></div></div>
+ <div class="panel" style="margin-top:16px"><div class="ph" style="background:linear-gradient(135deg,#b4232a,#7a1218)">🗓️ بدء عام دراسي جديد</div><div class="pb">
+  <div class="note">في نهاية العام: يحذف <b>نهائيًا</b> جميع اختبارات العام الحالي ودرجات الطلاب وأسماءهم وكل التقارير المحفوظة (من هذا الجهاز ومن المنصة)، ويبقي إعدادات المدرسة والفصول ومستويات الأداء، لتبدأ العام القادم بتقارير جديدة. صدّر نسخة احتياطية أولًا إن أردت الاحتفاظ بأرشيف.</div>
+  <div class="flex" style="flex-wrap:wrap;margin-top:12px"><button class="btn b-gold" onclick="backup()">${ico('dl')}نسخة احتياطية أولًا</button><button class="btn b-red" onclick="newYearDlg()">🗓️ بدء عام دراسي جديد</button></div>
+ </div></div>`;
+}
+function nextYear(y){const n=parseInt(toEn(y||''));return n?String(n+1)+'هـ':''}
+function newYearDlg(){
+ const nT=S.tests.length,nS=S.tests.reduce((a,t)=>a+t.students.length,0),nR=(S.reports||[]).length,nP=(S.papers||[]).length;
+ modal('🗓️ بدء عام دراسي جديد',`<div class="note">سيُحذف نهائيًا: <b>${toAr(nT)}</b> اختبار، و<b>${toAr(nS)}</b> نتيجة طالب، و<b>${toAr(nR)}</b> تقرير محفوظ${cloudOn()?' (من الجهاز ومن المنصة)':''}. لا يمكن التراجع.</div>
+ <div class="form" style="margin-top:12px">
+  <div class="f w2">العام الدراسي الجديد<input class="inp" id="ny_y" value="${esc(nextYear(S.settings.year))}" placeholder="مثال: 1449هـ"></div>
+  <div class="f w2">تحليلات أوراق الاختبار (${toAr(nP)}) — لا تحتوي أسماء طلاب<label style="font-weight:800"><input type="checkbox" id="ny_keep" checked> الإبقاء عليها للاستفادة منها العام القادم</label></div>
+  <div class="f w4">للتأكيد اكتب كلمة <b>حذف</b><input class="inp" id="ny_ok" placeholder="حذف"></div>
+ </div>`,`<button class="btn b-red" onclick="newYearGo()">حذف وبدء العام الجديد</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+}
+async function newYearGo(){
+ if($('#ny_ok').value.trim()!=='حذف'){toast('اكتب كلمة «حذف» للتأكيد');return}
+ const year=$('#ny_y').value.trim(),keep=$('#ny_keep').checked;
+ modal('⏳ جارٍ بدء العام الجديد',`<div class="note blue" id="ny_msg">جارٍ حذف بيانات العام الحالي…</div>`,'');
+ const now=Date.now();S.deleted=S.deleted||{};
+ if(cloudOn()){try{await cloudPull()}catch(e){}}
+ const reps=(S.reports||[]).slice();let fail=0;
+ for(let i=0;i<reps.length;i++){const r=reps[i];const m=$('#ny_msg');if(m)m.textContent=`حذف التقارير ${toAr(i+1)} من ${toAr(reps.length)}…`;
+  if(r.file&&cloudOn()){try{await ghDelete(r.file,'تحليل النتائج: حذف تقارير العام السابق')}catch(e){fail++}}
+  await repDelLocal(r.id);S.deleted[r.id]=now}
+ S.tests.forEach(t=>S.deleted[t.id]=now);S.tests=[];S.reports=[];
+ if(!keep){(S.papers||[]).forEach(p=>S.deleted[p.id]=now);S.papers=[]}else(S.papers||[]).forEach(p=>{p.testId='';p.upd=now});
+ try{await idbOp('readwrite',st=>st.clear())}catch(e){}
+ Object.keys(localStorage).filter(k=>k.startsWith('resultsHub.rep.')).forEach(k=>localStorage.removeItem(k));
+ if(year)S.settings.year=year;S.settings.term='';S.settings.lastBackup=null;S.settings.upd=now;
+ UI.test=null;UI.rtest=null;UI.paper=null;
+ save();if(cloudOn()){clearTimeout(Cloud.timer);Cloud.timer=null;await cloudPush()}
+ closeModal();go('home');
+ toast(fail?`⚠️ بدأ العام الجديد، وتعذّر حذف ${toAr(fail)} تقرير من المنصة — أعد المحاولة لاحقًا`:`✅ بدأ العام الدراسي ${year||'الجديد'} — حُذفت بيانات العام السابق نهائيًا`);
 }
 function setLogo(f){if(!f)return;const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');const k=Math.min(1,240/Math.max(img.width,img.height));c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);S.settings.logo=c.toDataURL('image/png');save();render()};img.src=r.result};r.readAsDataURL(f)}
 function backup(){S.settings.lastBackup=Date.now();save();const d=new Date();dl(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),`نسخة-تحليل-النتائج-${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}.json`);toast('✅ تم تصدير النسخة الاحتياطية')}
