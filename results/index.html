@@ -824,8 +824,9 @@ function linkPaper(tid){
 }
 
 /* ---------- التقرير المستقل لتحليل ورقة الاختبار ---------- */
-function openPaperReport(){
+async function openPaperReport(){
  const p=curP();if(!p){toast('اختر تحليلًا');return}if(!p.items.length){toast('لا توجد أسئلة في التحليل');return}
+ if((p.pages||[]).some(x=>!PIMG[x.id])){toast('جارٍ تجهيز صور ورقة الأسئلة…');await loadPaperImgs(p)}
  const P=paperStats(p);const R=paperRecs(p,P);const T=TYPES[p.type]||TYPES.other;const gname=`${STAGES[p.stage].g[p.grade-1]} ${STAGES[p.stage].s}`;
  const pages=[];
  pages.push(`${rpHeader()}
@@ -852,6 +853,7 @@ function openPaperReport(){
  if(p.items.length<=FIRST)pages.push(`<!--dense-->${rpHeader()}${spec}${det(p.items,0)}${recs}${rpSign()}`);
  else{pages.push(`<!--dense-->${rpHeader()}${spec}${det(p.items.slice(0,FIRST),0,' — الجزء ١')}`);
   for(let c=FIRST;c<p.items.length;c+=34){const last=c+34>=p.items.length;pages.push(`<!--dense-->${rpHeader()}${det(p.items.slice(c,c+34),c,' — تابع')}${last?recs+rpSign():''}`)}}
+ pages.push(...pgImgs(p));
  const title='تقرير تحليل ورقة الاختبار — '+p.name;
  $('#rpTitle').textContent=title;
  $('#rpBody').innerHTML=pages.map((x,i)=>`<div class="rp"><div class="rp-in${x.startsWith('<!--dense-->')?' dense':''}">${x}</div>${rpFoot(i+1,pages.length)}</div>`).join('');
@@ -2084,7 +2086,8 @@ function pagesGallery(p){
  return `<div class="pg-gal">${pg.map((x,i)=>`<div class="pg-th">${PIMG[x.id]?`<img src="${PIMG[x.id]}" onclick="viewPage('${x.id}')">`:`<div class="pg-ld">⏳</div>`}<div class="pg-b"><span>صفحة ${toAr(i+1)}</span><button class="btn b-red b-sm" onclick="delPaperPage('${p.id}','${x.id}')">✕</button></div></div>`).join('')}
  <label class="pg-add">${ico('up')}<b>رفع صفحات الأسئلة</b><span>صور أو PDF</span><input type="file" accept="image/*,.pdf,application/pdf" multiple class="hide" onchange="addPaperPages('${p.id}',this.files);this.value=''"></label></div>`;
 }
-function paperImgPages(t){const p=paperFor(t);if(!p||!(p.pages||[]).length)return[];return p.pages.filter(x=>PIMG[x.id]).map((x,i,a)=>`${rpHeader()}<div class="rp-sec"><h3>صورة ورقة أسئلة الاختبار${a.length>1?' — صفحة '+toAr(i+1):''}</h3><div style="text-align:center"><img src="${PIMG[x.id]}" style="max-width:100%;max-height:235mm;border:1px solid #cbd5e1;border-radius:6px"></div></div>`)}
+function paperImgPages(t){return pgImgs(paperFor(t))}
+function pgImgs(p){if(!p||!(p.pages||[]).length)return[];return p.pages.filter(x=>PIMG[x.id]).map((x,i,a)=>`${rpHeader()}<div class="rp-sec"><h3>صورة ورقة أسئلة الاختبار${a.length>1?' — صفحة '+toAr(i+1):''}</h3><div style="text-align:center"><img src="${PIMG[x.id]}" style="max-width:100%;max-height:235mm;border:1px solid #cbd5e1;border-radius:6px"></div></div>`)}
 
 /* ---------- ورقة الأسئلة داخل التحليل والتقرير ---------- */
 function paperFor(t){return (S.papers||[]).find(p=>p.testId===t.id)}
