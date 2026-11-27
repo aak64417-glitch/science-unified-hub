@@ -1,0 +1,38 @@
+[
+ {
+  "id": "diag-g7-1448",
+  "file": "presets/diag-g7-1448.json",
+  "name": "الاختبار التشخيصي",
+  "group": "الاختبارات التشخيصية — أول متوسط",
+  "stage": "m",
+  "grade": 1,
+  "type": "diagnostic"
+ },
+ {
+  "id": "short-g9-nucleus",
+  "file": "presets/short-g9-nucleus.json",
+  "name": "اختبار قصير – درس النواة",
+  "group": "الاختبارات القصيرة — ثالث متوسط",
+  "stage": "m",
+  "grade": 3,
+  "type": "short"
+ },
+ {
+  "id": "short-g9-representative",
+  "file": "presets/short-g9-representative.json",
+  "name": "اختبار قصير – درس العناصر الممثلة",
+  "group": "الاختبارات القصيرة — ثالث متوسط",
+  "stage": "m",
+  "grade": 3,
+  "type": "short"
+ },
+ {
+  "id": "short-g9-transition",
+  "file": "presets/short-g9-transition.json",
+  "name": "اختبار قصير – درس العناصر الانتقالية",
+  "group": "الاختبارات القصيرة — ثالث متوسط",
+  "stage": "m",
+  "grade": 3,
+  "type": "short"
+ }
+]

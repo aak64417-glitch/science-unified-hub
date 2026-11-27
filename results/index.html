@@ -701,7 +701,7 @@ function vPaper(){
     <label class="addopt" style="--c:#7c4ddb">${ico('up')}<b>صور الاختبار</b><span>صورة لكل صفحة — يمكن اختيار عدة صور</span><input type="file" accept="image/*" multiple class="hide" onchange="newPaper(this.files);this.value=''"></label>
     <label class="addopt" style="--c:#c22f34">${ico('file')}<b>ملف PDF</b><span>نصي أو ممسوح ضوئيًا</span><input type="file" accept=".pdf,application/pdf" class="hide" onchange="newPaper(this.files);this.value=''"></label>
     <button class="addopt" style="--c:#123f8c" onclick="pasteQs()">${ico('copy')}<b>لصق نص الأسئلة</b><span>من ملف Word أو غيره</span></button>
-    <button class="addopt" style="--c:#b07d00" onclick="presetDlg()">${ico('star')}<b>اختباراتي الجاهزة</b><span>الاختبار التشخيصي — أول متوسط (٤ نماذج)</span></button>
+    <button class="addopt" style="--c:#b07d00" onclick="presetDlg()">${ico('star')}<b>اختباراتي الجاهزة</b><span>التشخيصي والقصيرة — بنصها ومفتاحها</span></button>
    </div></div></div>
   ${list.length?`<div class="tests">${list.map(x=>`<div class="tcard"><div class="tt" style="background:linear-gradient(135deg,#7c4ddb,#4b2a9e)">${ico('search')}<div><b>${esc(x.name)}</b><small>${esc(x.subject)} • ${STAGES[x.stage].g[x.grade-1]} ${STAGES[x.stage].s} • ${toAr(x.items.length)} سؤال</small></div></div><div class="tf" style="padding-top:12px">${x.testId&&S.tests.some(t=>t.id===x.testId)?'<span class="tag t-grn">مربوط باختبار</span>':''}<span style="flex:1"></span><button class="btn b-blue b-sm" onclick="go('paper',{paper:'${x.id}'})">${ico('edit')}فتح</button><button class="btn b-gold b-sm" onclick="UI.paper='${x.id}';openPaperReport()">${ico('print')}التقرير</button><button class="btn b-red b-sm" onclick="delPaper('${x.id}')">${ico('trash')}</button></div></div>`).join('')}</div>`:''}`;
  }
@@ -753,28 +753,32 @@ function pasteQs(){modal('📋 لصق نص أسئلة الاختبار',`<textar
 function pasteQsGo(){const t=$('#pq_t').value.trim();if(!t){toast('الصق نص الأسئلة أولًا');return}closeModal();const p={id:uid(),created:Date.now(),upd:Date.now(),name:'اختبار (نص ملصق)',subject:'العلوم',stage:'m',grade:1,type:'periodic',files:[],text:t,outcomes:'',items:parsePaper(t),testId:''};S.papers.push(p);save();go('paper',{paper:p.id});toast(`✅ تم تحديد ${toAr(p.items.length)} سؤالًا`)}
 
 /* ---------- اختباراتي الجاهزة (نص الأسئلة ومفتاح الإجابة الأصلي — بدون قراءة ضوئية) ---------- */
-const PRESETS=[{id:'diag-g7-1448',file:'presets/diag-g7-1448.json',name:'الاختبار التشخيصي — علوم أول متوسط ١٤٤٨هـ',stage:'m',grade:1,type:'diagnostic'}];
 async function presetDlg(){
- const P=PRESETS[0];let d;
- try{const r=await fetch(P.file+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;d=await r.json()}catch(e){toast('تعذّر تحميل النماذج — تحقق من الاتصال بالإنترنت');return}
- window._preset={P,d};
- const have=m=>(S.papers||[]).some(x=>x.preset===P.id+'-'+m);
- modal('⭐ اختباراتي الجاهزة',`<div class="note blue"><b>${esc(d.title)}</b><br>تُضاف النماذج بنصها الأصلي ومفتاح إجابتها والمهارة المقيسة لكل سؤال كما في صفحة المعلم — بدون قراءة ضوئية. كل نموذج ١٥ سؤالًا: ١٠ اختيار من متعدد و٥ صواب وخطأ.</div>
- <div class="secs" style="margin-top:12px">${d.models.map(m=>`<label><input type="checkbox" class="pr_m" value="${esc(m.model)}" ${have(m.model)?'':'checked'}>النموذج (${esc(m.model)})${have(m.model)?' <small class="muted">— مضاف سابقًا</small>':''}</label>`).join('')}</div>`,
- `<button class="btn b-gold" onclick="presetImport()">إضافة النماذج المختارة</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+ let idx,data=[];
+ try{
+  const r=await fetch('presets/index.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;idx=await r.json();
+  data=await Promise.all(idx.map(P=>fetch(P.file+'?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(d=>({P,d}))));
+ }catch(e){toast('تعذّر تحميل الاختبارات الجاهزة — تحقق من الاتصال بالإنترنت');return}
+ window._presets=data;
+ const have=(P,m)=>(S.papers||[]).some(x=>x.preset===P.id+'-'+m);
+ const groups=[...new Set(data.map(x=>x.P.group))];
+ modal('⭐ اختباراتي الجاهزة',`<div class="note blue">تُضاف الاختبارات بنصها الأصلي ومفتاح إجابتها — بدون قراءة ضوئية. كل نموذج يُضاف تحليلًا مستقلًا، والنموذج المضاف سابقًا يُستبدل إن اخترته مرة أخرى.</div>
+ ${groups.map(g=>`<h4 style="margin:14px 0 6px;color:#0a2a5e">${esc(g)}</h4>${data.map((x,pi)=>x.P.group!==g?'':`<div style="margin:4px 0 8px"><b style="font-size:15px">${esc(x.P.name)}</b> <small class="muted">(${toAr(x.d.models[0].items.length)} سؤالًا)</small><div class="secs" style="margin-top:4px">${x.d.models.map(m=>`<label><input type="checkbox" class="pr_m" data-p="${pi}" value="${esc(m.model)}" ${have(x.P,m.model)?'':'checked'}>النموذج (${esc(m.model)})${have(x.P,m.model)?' <small class="muted">— مضاف</small>':''}</label>`).join('')}</div></div>`).join('')}`).join('')}`,
+ `<button class="btn b-gold" onclick="presetImport()">إضافة المختار</button><button class="btn b-light" onclick="document.querySelectorAll('.pr_m').forEach(x=>x.checked=!x.checked)">عكس التحديد</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
 }
 function presetImport(){
- const {P,d}=window._preset||{};if(!d)return;
- const sel=[...document.querySelectorAll('.pr_m:checked')].map(x=>x.value);if(!sel.length){toast('اختر نموذجًا واحدًا على الأقل');return}
+ const data=window._presets||[];
+ const sel=[...document.querySelectorAll('.pr_m:checked')].map(x=>({pi:+x.dataset.p,m:x.value}));if(!sel.length){toast('اختر نموذجًا واحدًا على الأقل');return}
  let first=null;
- d.models.filter(m=>sel.includes(m.model)).forEach(m=>{
+ sel.forEach(({pi,m:ml})=>{
+  const {P,d}=data[pi];const m=d.models.find(x=>x.model===ml);if(!m)return;
   const pid=P.id+'-'+m.model;S.papers=(S.papers||[]).filter(x=>{if(x.preset===pid){S.deleted=S.deleted||{};S.deleted[x.id]=Date.now();return false}return true});
   const items=m.items.map((it,i)=>{const text=it.type==='mcq'?it.q+' | '+it.choices.map((c,j)=>['أ','ب','ج','د'][j]+'- '+c).join(' | '):it.q;
-   return{n:i+1,text,sec:it.type==='mcq'?'السؤال الأول: اختر الإجابة الصحيحة':'السؤال الثاني: صواب وخطأ',type:it.type,level:qLevel(it.q),skill:qSkill(it.q),topic:qTopic(it.q),outcome:it.skill,mark:1,key:it.key,diff:it.diff}});
-  const p={id:uid(),created:Date.now(),upd:Date.now(),preset:pid,name:`الاختبار التشخيصي — النموذج (${m.model})`,subject:'العلوم',stage:P.stage,grade:P.grade,type:P.type,files:[],text:items.map((x,i)=>`${i+1}- ${x.text.replace(/ \| /g,'\n')}`).join('\n'),outcomes:[...new Set(m.items.map(x=>x.skill))].join('\n'),items,testId:''};
+   return{n:i+1,text,sec:it.type==='mcq'?'اختر الإجابة الصحيحة':'صواب وخطأ',type:it.type,level:qLevel(it.q),skill:qSkill(it.q),topic:qTopic(it.q),outcome:it.skill||'',mark:1,key:it.key||'',diff:it.diff||''}});
+  const p={id:uid(),created:Date.now(),upd:Date.now(),preset:pid,name:`${P.name} — النموذج (${m.model})`,subject:'العلوم',stage:P.stage,grade:P.grade,type:P.type,files:[],text:items.map((x,i)=>`${i+1}- ${x.text.replace(/ \| /g,'\n')}`).join('\n'),outcomes:[...new Set(m.items.map(x=>x.skill).filter(Boolean))].join('\n'),items,testId:''};
   S.papers.push(p);first=first||p;
  });
- save();closeModal();go('paper',{paper:first.id});toast(`✅ أُضيف ${toAr(sel.length)} نموذج بنصه الأصلي ومفتاح إجابته`);
+ save();closeModal();if(sel.length===1)go('paper',{paper:first.id});else go('paper',{paper:null});toast(`✅ أُضيف ${toAr(sel.length)} نموذج بنصه الأصلي ومفتاح إجابته`);
 }
 
 /* ---------- ربط التحليل بنتائج اختبار (لتحليل الإتقان حسب ناتج التعلم) ---------- */
