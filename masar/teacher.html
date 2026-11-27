@@ -90,6 +90,13 @@ $("signin").onclick=async()=>{const btn=$("signin"),old=btn.textContent;let box=
    box.style.display="block";box.style.background="#e7f6ed";box.style.color="#16653a";box.textContent="✅ أُرسل رابط تعيين كلمة مرور جديدة إلى "+em+". افتح بريدك (وتحقق من مجلد الرسائل غير المرغوبة)، واضغط الرابط من هذا الجهاز، فتظهر خانة كلمة المرور الجديدة."}
   catch(e){box.style.display="block";box.style.background="#fdecec";box.style.color="#9f1d22";box.textContent="⚠️ تعذّر إرسال رابط الاستعادة: "+e.message}};
  login.appendChild(f);
+ /* لصق عنوان صفحة «localhost» التي فتحها رابط البريد */
+ const pz=document.createElement("details");pz.style.cssText="margin-top:10px;border:1px dashed #c9b88a;border-radius:12px;padding:8px 12px;background:#fffdf5";
+ pz.innerHTML='<summary style="cursor:pointer;font-weight:800;color:#7a5a12">فتح رابط البريد صفحة لا تعمل (localhost)؟ الصق عنوانها هنا</summary><div style="margin-top:8px;line-height:1.8;font-size:14px">من الصفحة التي ظهر فيها «localhost»: اضغط مطولًا على شريط العنوان ← نسخ، ثم الصقه هنا. (الرابط صالح لمدة ساعة)</div><input id="rcvUrl" placeholder="http://localhost:3000/#access_token=..." style="margin-top:8px;width:100%;direction:ltr"><button id="rcvGo" type="button" style="margin-top:8px;width:100%">متابعة</button><div id="rcvMsg" style="margin-top:6px;font-weight:700;color:#9f1d22"></div>';
+ login.appendChild(pz);
+ $("rcvGo").onclick=()=>{const v=($("rcvUrl").value||"").trim();const m=v.match(/access_token=([^&\s]+)/);const ty=v.match(/[#&?]type=([^&\s]+)/);
+  if(!m){$("rcvMsg").textContent=/error_code=otp_expired|expired/i.test(v)?"⚠️ انتهت صلاحية الرابط — اضغط «نسيت كلمة المرور؟» لإرسال رابط جديد ثم افتحه خلال ساعة.":"⚠️ لم أجد رمز الاستعادة في العنوان. انسخ العنوان كاملًا من شريط العنوان.";return}
+  location.hash="access_token="+m[1]+"&type="+(ty?ty[1]:"recovery");location.reload()};
  const h=new URLSearchParams(location.hash.slice(1));
  if(h.get("type")==="recovery"&&h.get("access_token")){const tok=h.get("access_token");history.replaceState(null,"",location.pathname+location.search);
   const card=document.createElement("div");card.style.cssText="margin-top:14px;padding:14px;border-radius:14px;background:#fff7e6;border:2px solid #f2c14e";
