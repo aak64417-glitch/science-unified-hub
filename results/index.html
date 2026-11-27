@@ -274,6 +274,7 @@ td.nm{text-align:right}
   <button class="nav-btn" data-v="analysis"></button>
   <button class="nav-btn" data-v="paper"></button>
   <button class="nav-btn" data-v="remedial"></button>
+  <button class="nav-btn" data-v="portfolio"></button>
   <button class="nav-btn" data-v="settings"></button>
   <button class="nav-btn" data-v="saved"></button>
   <button class="nav-btn" data-v="help"></button>
@@ -840,8 +841,244 @@ function openPaperReport(){
  $('#rpOv').classList.add('show');document.title=title;fitPages();
 }
 
+/* =========================================================
+   تقارير ملف الإنجاز — بند «تحليل نتائج المتعلمين» (٧ تقارير)
+   ========================================================= */
+const PF=[
+ {k:'skills',code:'2-2-1-1',t:'تحديد المهارات ونواتج التعلم المتقنة وغير المتقنة',d:'إتقان كل مهارة/ناتج تعلم وتصنيفها: متقنة، تحتاج تعزيزًا، غير متقنة.',need:'one'},
+ {k:'needs',code:'2-1-1-1',t:'تحديد احتياجات الطلاب وفق نتائج فعلية',d:'تصنيف الطلاب حسب احتياجهم (علاجي، دعم وقائي، إثرائي) والمهارات التي يحتاجها كل طالب.',need:'one'},
+ {k:'causes',code:'2-2-1-3',t:'تحديد أسباب التعثر الدراسي قدر الإمكان',d:'أسباب تعثر الطلاب دون حد النجاح كما يحددها المعلم، وتكرار كل سبب والإجراء المناسب له.',need:'one'},
+ {k:'compare',code:'',t:'مقارنة نتائج الطلاب عبر فترات زمنية مناسبة',d:'مقارنة نتائج اختبارين أو أكثر بالترتيب الزمني، وتقدم كل طالب بين الاختبارات.',need:'multi'},
+ {k:'plans',code:'2-2-1-3',t:'إعداد خطط علاجية وإثرائية بناءً على التحليل',d:'خطة علاجية للمهارات غير المتقنة والطلاب المتعثرين، وخطة إثرائية للطلاب المتميزين.',need:'one'},
+ {k:'impact',code:'2-2-1-3',t:'متابعة أثر الإجراءات التصحيحية وإعادة القياس',d:'مقارنة نتائج الطلاب المستهدفين قبل العلاج (الاختبار القبلي) وبعده (إعادة القياس).',need:'pair'},
+ {k:'tool',code:'',t:'تحليل نتائج الاختبارات وأدوات التقويم',d:'تحليل شامل للنتائج وجودة أداة التقويم: الصعوبة والتمييز والثبات وتوازن المستويات المعرفية.',need:'one'}
+];
+const CAUSES=['كثرة الغياب أو التأخر الصباحي','ضعف المهارات والمتطلبات السابقة','ضعف القراءة والفهم القرائي','قلة المتابعة والمذاكرة في المنزل','ضعف الدافعية والمشاركة الصفية','عدم أداء الواجبات والتكاليف','صعوبة المفاهيم المجردة والمسائل الحسابية','قلق الاختبار وسوء إدارة الوقت','ظروف صحية أو أسرية'];
+const CAUSE_FIX=['التواصل مع ولي الأمر والموجّه الطلابي ومتابعة الحضور، وتعويض الدروس الفائتة بملخصات وأوراق عمل','مراجعة المتطلبات السابقة بأنشطة تأسيسية قصيرة قبل الدرس الجديد','تبسيط صياغة الأسئلة وتدريب الطالب على قراءة السؤال وتحديد المطلوب منه','إشراك ولي الأمر بخطة مذاكرة أسبوعية وواجبات قصيرة متابَعة','التعزيز والتحفيز وتكليف الطالب بأدوار نشطة في المجموعات','متابعة الواجبات يوميًا وتجزئتها وتقديم تغذية راجعة فورية','استخدام النماذج والمحسوسات والتجارب والأمثلة المحلولة المتدرجة','تدريبات قصيرة متكررة على نمط الاختبار وتعليم استراتيجيات إدارة الوقت','التنسيق مع الموجّه الطلابي ومراعاة ظروف الطالب في التكليفات والتقويم'];
+const ENR=['مشروعات بحثية قصيرة وعروض تقديمية','مسائل وأنشطة تفكير عليا (تحليل، تقويم، إبداع)','قيادة مجموعات التعلم التعاوني ومساعدة الأقران','مسابقات علمية وأنشطة نافس متقدمة','تجارب استقصائية مفتوحة وتصميم تجارب','قراءات إثرائية ومصادر رقمية متقدمة'];
+const nk=s=>nAr(s).replace(/\s+/g,' ').trim();
+const tOpt=(cur,blank)=>(blank?`<option value="">— اختر —</option>`:'')+S.tests.slice().sort((a,b)=>(b.created||0)-(a.created||0)).map(t=>`<option value="${t.id}" ${t.id===cur?'selected':''}>${esc(t.name)} — ${gradeName(t)}</option>`).join('');
+function pfSel(){UI.pfs=UI.pfs||{};PF.forEach(p=>{UI.pfs[p.k]=UI.pfs[p.k]||{test:'',sec:'all',tests:[],pre:'',post:''}});return UI.pfs}
+function stSkills(s,t){
+ if(!t.questions.length||s.absent||!Array.isArray(s.ans)||!s.ans.some(v=>v!==''&&v!=null))return null;
+ const m={};t.questions.forEach((q,i)=>{const k=(q.skill||'').trim()||q.label;(m[k]=m[k]||{a:0,b:0});m[k].a+=num(s.ans[i])||0;m[k].b+=num(q.mark)||1});
+ return Object.entries(m).map(([k,v])=>({skill:k,pct:v.b?v.a/v.b*100:0}));
+}
+function testSkills(A){
+ if(A.skills.length)return A.skills;
+ return A.items.filter(i=>i.p!=null).map(i=>({skill:i.label,pct:i.p*100})).sort((a,b)=>a.pct-b.pct);
+}
+const skCls=p=>p>=80?['متقنة','t-grn','#22a45d']:p>=60?['تحتاج تعزيزًا','t-org','#f59e0b']:['غير متقنة','t-red','#e5484d'];
+const kbox=(v,l,c)=>`<div style="background:${c}12;border-color:${c}44;color:${c}"><b>${v}</b><span>${l}</span></div>`;
+function pfTitle(P,t,sub){return `<div class="rp-t"><span class="badge">ملف الإنجاز${P.code?' • '+P.code:''}</span><h2>${esc(P.t)}</h2><p>${sub||''}</p></div>`}
+function pfInfo(t,sec,extra){return `<div class="rp-info"><div>الاختبار<b>${esc(t.name)}</b></div><div>المادة / الصف<b>${esc(t.subject)} — ${gradeName(t)}</b></div><div>الفصول<b>${sec==='all'?t.sections.map(x=>secLabel(x,t.grade)).join('، '):secLabel(sec,t.grade)}</b></div><div>${extra?extra[0]:'التاريخ'}<b>${extra?extra[1]:(esc(t.date)||'—')}</b></div></div>`}
+function pfShow(P,title,pages){
+ $('#rpTitle').textContent=title;
+ $('#rpBody').innerHTML=pages.map((x,i)=>`<div class="rp"><div class="rp-in dense">${x}</div>${rpFoot(i+1,pages.length)}</div>`).join('');
+ RP_META={title,kind:'pf',test:''};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير';
+ $('#rpOv').classList.add('show');document.title=title;fitPages();
+}
+const chunk=(a,n)=>{const r=[];for(let i=0;i<a.length;i+=n)r.push(a.slice(i,i+n));return r.length?r:[[]]};
+
+/* ---------- الواجهة ---------- */
+function vPortfolio(){
+ const U=pfSel();
+ if(!S.tests.length)return `<div class="toolbar"><h2>تقارير ملف الإنجاز</h2></div><div class="panel"><div class="empty">${ico('file')}<br>أضف اختبارًا وأدخل درجاته أولًا.<br><button class="btn b-gold" style="margin-top:10px" onclick="go('tests')">إدارة الاختبارات</button></div></div>`;
+ const card=(P,i)=>{const u=U[P.k];const t=S.tests.find(x=>x.id===u.test);
+  let ctl='';
+  if(P.need==='one')ctl=`<div class="f w2">الاختبار<select class="sel" onchange="UI.pfs.${P.k}.test=this.value;UI.pfs.${P.k}.sec='all';render()">${tOpt(u.test,1)}</select></div>
+   <div class="f">الفصل<select class="sel" onchange="UI.pfs.${P.k}.sec=this.value">${t?`<option value="all">جميع الفصول</option>`+t.sections.map(s=>`<option value="${s}" ${String(u.sec)===String(s)?'selected':''}>الفصل ${secLabel(s,t.grade)}</option>`).join(''):'<option>—</option>'}</select></div>`;
+  if(P.need==='multi')ctl=`<div class="f w4">الاختبارات المراد مقارنتها <small>(اختر اثنين فأكثر — تُرتَّب زمنيًا حسب تاريخ الإضافة)</small><div class="secs">${S.tests.slice().sort((a,b)=>(a.created||0)-(b.created||0)).map(x=>`<label><input type="checkbox" ${u.tests.includes(x.id)?'checked':''} onchange="pfToggle('${x.id}',this.checked)">${esc(x.name)} — ${gradeName(x)}</label>`).join('')}</div></div>`;
+  if(P.need==='pair')ctl=`<div class="f w2">الاختبار قبل العلاج (القبلي)<select class="sel" onchange="UI.pfs.impact.pre=this.value">${tOpt(u.pre,1)}</select></div><div class="f w2">إعادة القياس بعد العلاج (البعدي)<select class="sel" onchange="UI.pfs.impact.post=this.value">${tOpt(u.post,1)}</select></div>`;
+  return `<div class="panel" style="margin-bottom:14px"><div class="ph">${toAr(i+1)}) ${esc(P.t)} ${P.code?`<span class="tag" style="margin-right:auto;background:#fff;color:#0a2a5e" dir="ltr">${P.code}</span>`:''}</div><div class="pb">
+   <div class="muted" style="font-size:14px;margin-bottom:8px">${P.d}</div>
+   <div class="form" style="grid-template-columns:1fr 1fr 1fr 1fr">${ctl}</div>
+   <div class="flex" style="flex-wrap:wrap;margin-top:10px">${P.k==='causes'?`<button class="btn b-navy" onclick="causesDlg()">${ico('edit')}تحديد أسباب تعثر الطلاب</button>`:''}<button class="btn b-gold" onclick="pfMake('${P.k}')">${ico('print')}إنشاء التقرير</button></div>
+  </div></div>`};
+ return `<div class="toolbar"><h2>تقارير ملف الإنجاز — تحليل نتائج المتعلمين</h2></div>
+ <div class="note blue" style="margin-bottom:14px">كل تقرير يُنشأ من درجات الطلاب المدخلة في المنصة، بالترويسة والتوقيعات، ويُحفظ PDF لرفعه في خانة الشاهد. تقارير المهارات والاحتياجات والثبات تحتاج <b>درجة كل سؤال</b> مع مهارته (اربط ورقة الاختبار بنتائجه من «تحليل ورقة الاختبار»).</div>
+ ${PF.map(card).join('')}`;
+}
+function pfToggle(id,on){const u=pfSel().compare;u.tests=u.tests.filter(x=>x!==id);if(on)u.tests.push(id)}
+function pfMake(k){
+ const U=pfSel()[k],P=PF.find(x=>x.k===k);
+ if(P.need==='one'){const t=S.tests.find(x=>x.id===U.test);if(!t){toast('اختر الاختبار أولًا');return}const A=analyze(t,U.sec);if(!A.st){toast('لا توجد درجات لهذا الاختبار/الفصل');return}
+  return ({skills:pfSkills,needs:pfNeeds,causes:pfCauses,plans:pfPlans,tool:pfTool})[k](P,t,A,U.sec)}
+ if(k==='compare')return pfCompare(P,U);
+ if(k==='impact')return pfImpact(P,U);
+}
+
+/* ---------- ١) المهارات المتقنة وغير المتقنة ---------- */
+function pfSkills(P,t,A,sec){
+ const sk=testSkills(A);if(!sk.length){toast('يحتاج التقرير درجة كل سؤال ومهارته — اربط ورقة الاختبار بالنتائج وأدخل درجات الأسئلة');return}
+ const per=A.rows.map(r=>({r,sk:stSkills(r.s,t)})).filter(x=>x.sk);
+ const mastN=s=>per.filter(x=>{const f=x.sk.find(y=>y.skill===s);return f&&f.pct>=80}).length;
+ const c=[0,0,0];sk.forEach(s=>{c[s.pct>=80?0:s.pct>=60?1:2]++});
+ const avg=sk.reduce((a,s)=>a+s.pct,0)/sk.length;
+ const p1=`${rpHeader()}${pfTitle(P,t,`${esc(t.name)} • ${gradeName(t)}`)}${pfInfo(t,sec,['عدد الطلاب المختبَرين',toAr(A.rows.length)])}
+ <div class="rp-k">${kbox(toAr(sk.length),'مهارة / ناتج مقيس','#1d6fe0')}${kbox(toAr(c[0]),'متقنة (٨٠٪ فأكثر)','#22a45d')}${kbox(toAr(c[1]),'تحتاج تعزيزًا (٦٠–٧٩٪)','#f59e0b')}${kbox(toAr(c[2]),'غير متقنة (أقل من ٦٠٪)','#e5484d')}${kbox(fmt(avg)+'%','متوسط الإتقان','#7c4ddb')}${kbox(fmt(A.passRate)+'%','نسبة النجاح','#0f8f9d')}</div>
+ <div class="rp-sec"><h3>نسبة إتقان كل مهارة / ناتج تعلم</h3>${sk.slice().sort((a,b)=>b.pct-a.pct).map(s=>hbar(esc(s.skill),s.pct,skCls(s.pct)[2])).join('')}</div>
+ <div class="rp-sec"><h3>تصنيف المهارات ونواتج التعلم</h3><table><tr><th>م</th><th>المهارة / ناتج التعلم</th><th>نسبة الإتقان</th><th>التصنيف</th><th>الطلاب المتقنون</th><th>الإجراء</th></tr>${sk.slice().sort((a,b)=>a.pct-b.pct).map((s,i)=>{const k=skCls(s.pct);return `<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(s.skill)}</td><td><b>${fmt(s.pct)}%</b></td><td><span class="tag ${k[1]}">${k[0]}</span></td><td>${per.length?toAr(mastN(s.skill))+' / '+toAr(per.length):'—'}</td><td style="font-size:11px">${s.pct>=80?'إثراء وتوسيع':s.pct>=60?'تعزيز وتدريب إضافي':'إعادة تدريس وخطة علاجية'}</td></tr>`}).join('')}</table>
+ <div class="muted" style="font-size:10.5px;margin-top:4px">نسبة الإتقان = مجموع درجات الطلاب في أسئلة المهارة ÷ الدرجة الكاملة لتلك الأسئلة. «الطلاب المتقنون» من حصلوا على ٨٠٪ فأكثر في أسئلة المهارة.</div></div>${rpSign()}`;
+ pfShow(P,P.t+' — '+t.name,[p1]);
+}
+
+/* ---------- ٢) احتياجات الطلاب ---------- */
+function pfNeeds(P,t,A,sec){
+ const top=levels()[0].min,pass=t.pass??50;
+ const grp=r=>r.p<pass?0:r.p<pass+15?1:r.p>=top?3:2;
+ const G=[['علاجي — دون حد النجاح','#e5484d','خطة علاجية فردية في المهارات الضعيفة'],['دعم وقائي — قريب من الحد','#f59e0b','تعزيز وتدريبات إضافية ومتابعة'],['متابعة عادية','#1d6fe0','استمرار التعلم مع تنويع الأنشطة'],['إثرائي — متميز','#22a45d','برنامج إثرائي وأنشطة تفكير عليا']];
+ const rows=A.rows.map(r=>{const sk=stSkills(r.s,t);return{r,g:grp(r),weak:sk?sk.filter(x=>x.pct<60).map(x=>x.skill):null}});
+ const cnt=G.map((_,i)=>rows.filter(x=>x.g===i).length);
+ const hasSk=rows.some(x=>x.weak);
+ const wc={};rows.forEach(x=>(x.weak||[]).forEach(w=>wc[w]=(wc[w]||0)+1));
+ const common=Object.entries(wc).sort((a,b)=>b[1]-a[1]);
+ const need=rows.filter(x=>x.g<=1).sort((a,b)=>a.r.p-b.r.p);
+ const p1=`${rpHeader()}${pfTitle(P,t,`${esc(t.name)} • ${gradeName(t)}`)}${pfInfo(t,sec,['عدد الطلاب المختبَرين',toAr(A.rows.length)])}
+ <div class="rp-k">${G.map((g,i)=>kbox(toAr(cnt[i]),g[0],g[1])).join('')}${kbox(fmt(A.st.mean)+'%','متوسط الأداء','#7c4ddb')}${kbox(toAr(A.absent),'غائبون','#64748b')}</div>
+ <div class="two"><div class="rp-sec"><h3>توزيع الطلاب حسب نوع الاحتياج</h3><div class="center" style="gap:8px">${pieSVG(G.map((g,i)=>({value:cnt[i],c:g[1]})),140)}<table style="width:auto;min-width:200px"><tr><th>الاحتياج</th><th>العدد</th><th>النسبة</th><th>الإجراء</th></tr>${G.map((g,i)=>`<tr><td style="text-align:right"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${g[1]};margin-left:4px"></span>${g[0]}</td><td>${toAr(cnt[i])}</td><td>${fmt(cnt[i]/A.rows.length*100)}%</td><td style="font-size:10.5px">${g[2]}</td></tr>`).join('')}</table></div></div>
+ <div class="rp-sec"><h3>الاحتياجات المشتركة (مهارات يضعف فيها الطلاب)</h3>${hasSk?(common.length?`<table><tr><th>المهارة / الناتج</th><th>عدد الطلاب الضعاف فيها (أقل من ٦٠٪)</th></tr>${common.slice(0,10).map(([k,v])=>`<tr><td style="text-align:right">${esc(k)}</td><td><b>${toAr(v)}</b> من ${toAr(rows.filter(x=>x.weak).length)}</td></tr>`).join('')}</table>`:'<p>لا توجد مهارات يقل فيها أداء الطلاب عن ٦٠٪.</p>'):'<p class="muted">تظهر الاحتياجات حسب المهارة عند إدخال درجة كل سؤال مع مهارته.</p>'}</div></div>
+ <div class="rp-sec"><h3>الطلاب ذوو الاحتياج (علاجي ودعم وقائي) — ${toAr(need.length)}</h3><table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th><th>النسبة</th><th>نوع الاحتياج</th>${hasSk?'<th>المهارات التي يحتاجها</th>':''}</tr>${need.slice(0,14).map((x,i)=>`<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(x.r.s.name)}</td><td>${secLabel(x.r.s.section,t.grade)}</td><td><b>${fmt(x.r.p)}%</b></td><td><span class="tag" style="background:${G[x.g][1]}18;color:${G[x.g][1]};border-color:${G[x.g][1]}55">${G[x.g][0].split(' — ')[0]}</span></td>${hasSk?`<td style="text-align:right;font-size:10.5px">${esc((x.weak||[]).join('، ')||'—')}</td>`:''}</tr>`).join('')||`<tr><td colspan="6">لا يوجد طلاب يحتاجون علاجًا أو دعمًا 🎉</td></tr>`}</table></div>`;
+ const pages=[p1];
+ const rest=need.slice(14);
+ const ex=rows.filter(x=>x.g===3);
+ pages.push(`${rpHeader()}${rest.length?`<div class="rp-sec"><h3>تابع: الطلاب ذوو الاحتياج</h3><table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th><th>النسبة</th><th>نوع الاحتياج</th>${hasSk?'<th>المهارات التي يحتاجها</th>':''}</tr>${rest.map((x,i)=>`<tr><td>${toAr(i+15)}</td><td style="text-align:right">${esc(x.r.s.name)}</td><td>${secLabel(x.r.s.section,t.grade)}</td><td>${fmt(x.r.p)}%</td><td>${G[x.g][0].split(' — ')[0]}</td>${hasSk?`<td style="text-align:right;font-size:10.5px">${esc((x.weak||[]).join('، ')||'—')}</td>`:''}</tr>`).join('')}</table></div>`:''}
+ <div class="rp-sec"><h3>الطلاب المتميزون — احتياج إثرائي (${toAr(ex.length)})</h3>${ex.length?`<table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th><th>النسبة</th></tr>${ex.map((x,i)=>`<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(x.r.s.name)}</td><td>${secLabel(x.r.s.section,t.grade)}</td><td>${fmt(x.r.p)}%</td></tr>`).join('')}</table>`:'<p>لا يوجد.</p>'}</div>
+ <div class="rp-sec"><h3>معايير التصنيف</h3><p style="font-size:11.5px">علاجي: أقل من حد النجاح (${toAr(pass)}٪) • دعم وقائي: من ${toAr(pass)}٪ إلى أقل من ${toAr(pass+15)}٪ • إثرائي: ${toAr(top)}٪ فأكثر • المهارة التي يحتاجها الطالب: أداؤه فيها أقل من ٦٠٪.</p></div>${rpSign()}`);
+ pfShow(P,P.t+' — '+t.name,pages);
+}
+
+/* ---------- ٣) أسباب التعثر ---------- */
+function causesDlg(){
+ const u=pfSel().causes;const t=S.tests.find(x=>x.id===u.test);if(!t){toast('اختر الاختبار أولًا');return}
+ const A=analyze(t,u.sec);const low=A.rows.filter(r=>r.p<(t.pass??50)).sort((a,b)=>a.p-b.p);
+ if(!low.length){toast('لا يوجد طلاب دون حد النجاح في هذا الاختبار');return}
+ t.causes=t.causes||{};
+ modal('📝 تحديد أسباب تعثر الطلاب',`<div class="note blue">اختر لكل طالب الأسباب التي تعرفها عنه (من متابعتك أو الموجّه الطلابي أو ولي الأمر)، ويمكنك كتابة سبب آخر. لا يُكتب في التقرير إلا ما تحدده.</div>
+ <div style="max-height:56vh;overflow:auto;margin-top:10px">${low.map(r=>{const c=t.causes[r.s.id]||{c:[],o:''};return `<div style="border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px"><b>${esc(r.s.name)}</b> <small class="muted">— ${secLabel(r.s.section,t.grade)} • ${fmt(r.p)}%</small>
+  <div class="secs" style="margin-top:6px">${CAUSES.map((x,i)=>`<label style="font-size:13px"><input type="checkbox" class="cz" data-s="${r.s.id}" value="${i}" ${c.c.includes(i)?'checked':''}>${x}</label>`).join('')}</div>
+  <input class="inp czo" data-s="${r.s.id}" style="margin-top:6px;width:100%" placeholder="سبب آخر (اختياري)" value="${esc(c.o||'')}"></div>`}).join('')}</div>`,
+ `<button class="btn b-gold" onclick="causesSave('${t.id}')">💾 حفظ الأسباب</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+}
+function causesSave(tid){
+ const t=S.tests.find(x=>x.id===tid);const m={};
+ document.querySelectorAll('.cz').forEach(x=>{m[x.dataset.s]=m[x.dataset.s]||{c:[],o:''};if(x.checked)m[x.dataset.s].c.push(+x.value)});
+ document.querySelectorAll('.czo').forEach(x=>{m[x.dataset.s]=m[x.dataset.s]||{c:[],o:''};m[x.dataset.s].o=x.value.trim()});
+ t.causes=Object.assign(t.causes||{},m);save();closeModal();toast('✅ حُفظت أسباب التعثر');
+}
+function pfCauses(P,t,A,sec){
+ const low=A.rows.filter(r=>r.p<(t.pass??50)).sort((a,b)=>a.p-b.p);
+ if(!low.length){toast('لا يوجد طلاب دون حد النجاح');return}
+ const C=t.causes||{};const marked=low.filter(r=>C[r.s.id]&&(C[r.s.id].c.length||C[r.s.id].o));
+ if(!marked.length){toast('حدّد أسباب تعثر الطلاب أولًا من زر «تحديد أسباب تعثر الطلاب»');causesDlg();return}
+ const cnt=CAUSES.map((_,i)=>marked.filter(r=>C[r.s.id].c.includes(i)).length);
+ const others=marked.filter(r=>C[r.s.id].o).map(r=>C[r.s.id].o);
+ const ord=CAUSES.map((x,i)=>({x,i,n:cnt[i]})).filter(z=>z.n).sort((a,b)=>b.n-a.n);
+ const p1=`${rpHeader()}${pfTitle(P,t,`${esc(t.name)} • ${gradeName(t)}`)}${pfInfo(t,sec,['حد النجاح',toAr(t.pass??50)+'٪'])}
+ <div class="rp-k">${kbox(toAr(A.rows.length),'المختبَرون','#1d6fe0')}${kbox(toAr(low.length),'دون حد النجاح','#e5484d')}${kbox(toAr(marked.length),'حُددت أسبابهم','#7c4ddb')}${kbox(ord[0]?toAr(ord[0].n):'—','أكثر سبب تكرارًا','#f59e0b')}</div>
+ <div class="rp-sec"><h3>تكرار أسباب التعثر (من ${toAr(marked.length)} طالبًا)</h3>${ord.map(z=>hbar(esc(z.x)+` (${toAr(z.n)})`,z.n/marked.length*100,'#e5484d')).join('')}${others.length?`<p style="font-size:11.5px;margin-top:6px"><b>أسباب أخرى ذكرها المعلم:</b> ${esc([...new Set(others)].join('، '))}</p>`:''}</div>
+ <div class="rp-sec"><h3>الأسباب والإجراءات المقترحة لمعالجتها</h3><table><tr><th>السبب</th><th>عدد الطلاب</th><th>الإجراء المقترح</th></tr>${ord.map(z=>`<tr><td style="text-align:right"><b>${esc(z.x)}</b></td><td>${toAr(z.n)}</td><td style="text-align:right;font-size:11px">${CAUSE_FIX[z.i]}</td></tr>`).join('')}</table></div>
+ <div class="rp-sec"><h3>الطلاب المتعثرون وأسباب تعثرهم</h3><table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th><th>النسبة</th><th>أسباب التعثر</th></tr>${low.map((r,i)=>{const c=C[r.s.id];return `<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td><td>${fmt(r.p)}%</td><td style="text-align:right;font-size:10.5px">${c?esc([...c.c.map(i=>CAUSES[i]),c.o].filter(Boolean).join('، ')):''}</td></tr>`}).join('')}</table>
+ <div class="muted" style="font-size:10.5px;margin-top:4px">الأسباب حدّدها المعلم من متابعته للطلاب، والخانة الفارغة تعني أن السبب لم يُحدَّد بعد.</div></div>${rpSign()}`;
+ pfShow(P,P.t+' — '+t.name,[p1]);
+}
+
+/* ---------- ٤) المقارنة عبر الفترات ---------- */
+function pfCompare(P,U){
+ const ts=U.tests.map(id=>S.tests.find(x=>x.id===id)).filter(Boolean).sort((a,b)=>(a.created||0)-(b.created||0));
+ if(ts.length<2){toast('اختر اختبارين على الأقل');return}
+ const As=ts.map(t=>analyze(t));if(As.some(A=>!A.st)){toast('أحد الاختبارات المختارة بلا درجات');return}
+ const map={};As.forEach((A,j)=>A.rows.forEach(r=>{const k=nk(r.s.name);if(!k)return;(map[k]=map[k]||{name:r.s.name,v:Array(ts.length).fill(null)}).v[j]=r.p}));
+ const st=Object.values(map).filter(x=>x.v.filter(v=>v!=null).length>=2).map(x=>{const f=x.v.find(v=>v!=null),l=[...x.v].reverse().find(v=>v!=null);return{...x,ch:l-f}}).sort((a,b)=>b.ch-a.ch);
+ const up=st.filter(x=>x.ch>5).length,dn=st.filter(x=>x.ch<-5).length,eq=st.length-up-dn;
+ const cl=['#1d6fe0','#22a45d','#7c4ddb','#14a8b5','#f59e0b','#e5484d'];
+ const L=ts.map((t,j)=>`ا${toAr(j+1)}`);
+ const p1=`${rpHeader()}<div class="rp-t"><span class="badge">ملف الإنجاز</span><h2>${esc(P.t)}</h2><p>${toAr(ts.length)} اختبارات • ${[...new Set(ts.map(gradeName))].join('، ')}</p></div>
+ <div class="rp-k">${kbox(toAr(st.length),'طالب في أكثر من اختبار','#1d6fe0')}${kbox(toAr(up),'تحسّن (+٥٪ فأكثر)','#22a45d')}${kbox(toAr(eq),'ثابت تقريبًا','#64748b')}${kbox(toAr(dn),'تراجع (−٥٪ فأكثر)','#e5484d')}${kbox((As[As.length-1].st.mean-As[0].st.mean>=0?'+':'')+fmt(As[As.length-1].st.mean-As[0].st.mean)+'%','تغير المتوسط','#7c4ddb')}${kbox((As[As.length-1].passRate-As[0].passRate>=0?'+':'')+fmt(As[As.length-1].passRate-As[0].passRate)+'%','تغير نسبة النجاح','#0f8f9d')}</div>
+ <div class="rp-sec"><h3>نتائج الاختبارات بالترتيب الزمني</h3><table><tr><th>الرمز</th><th>الاختبار</th><th>الصف</th><th>التاريخ</th><th>المختبَرون</th><th>المتوسط</th><th>نسبة النجاح</th><th>أعلى</th><th>أدنى</th></tr>${ts.map((t,j)=>`<tr><td><b>${L[j]}</b></td><td style="text-align:right">${esc(t.name)}</td><td>${gradeName(t)}</td><td>${esc(t.date)||'—'}</td><td>${toAr(As[j].rows.length)}</td><td><b>${fmt(As[j].st.mean)}%</b></td><td>${fmt(As[j].passRate)}%</td><td>${fmt(As[j].st.max)}%</td><td>${fmt(As[j].st.min)}%</td></tr>`).join('')}</table></div>
+ <div class="two"><div class="rp-sec"><h3>تطور متوسط الأداء</h3>${barsSVG(ts.map((t,j)=>({l:L[j],value:As[j].st.mean,c:cl[j%6]})),{w:340,h:180,suffix:'%'})}</div><div class="rp-sec"><h3>تطور نسبة النجاح</h3>${barsSVG(ts.map((t,j)=>({l:L[j],value:As[j].passRate,c:cl[j%6]})),{w:340,h:180,suffix:'%'})}</div></div>
+ <div class="rp-sec"><h3>قراءة النتائج</h3><p style="font-size:11.5px">${st.length?`من ${toAr(st.length)} طالبًا ظهروا في أكثر من اختبار: تحسّن ${toAr(up)} (${fmt(up/st.length*100)}٪)، وثبت ${toAr(eq)}، وتراجع ${toAr(dn)}. `:'لم تتطابق أسماء الطلاب بين الاختبارات المختارة. '}يُقارن كل طالب بين أول اختبار وآخر اختبار ظهر فيه، ويُطابَق الطالب بالاسم.</p></div>`;
+ const head=`<tr><th>م</th><th>اسم الطالب</th>${L.map(l=>`<th>${l}</th>`).join('')}<th>التغير</th><th>الاتجاه</th></tr>`;
+ const row=(x,i)=>`<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(x.name)}</td>${x.v.map(v=>`<td>${v==null?'—':fmt(v)+'%'}</td>`).join('')}<td><b style="color:${x.ch>5?'#1b8a4b':x.ch<-5?'#c22f34':'#475569'}">${x.ch>=0?'+':''}${fmt(x.ch)}%</b></td><td>${x.ch>5?'⬆️ تحسّن':x.ch<-5?'⬇️ تراجع':'➖ ثابت'}</td></tr>`;
+ const pages=[p1];
+ chunk(st,34).forEach((c,ci,arr)=>{const last=ci===arr.length-1;pages.push(`${rpHeader()}<div class="rp-sec rp-qd"><h3>تقدم الطلاب بين الاختبارات${arr.length>1?' — '+toAr(ci+1):''}</h3><table>${head}${c.map((x,i)=>row(x,ci*34+i)).join('')||`<tr><td colspan="${L.length+4}">لا توجد بيانات مشتركة</td></tr>`}</table><div class="muted" style="font-size:10px;margin-top:4px">${ts.map((t,j)=>`${L[j]}: ${esc(t.name)}`).join(' • ')}</div></div>${last?rpSign():''}`)});
+ pfShow(P,P.t,pages);
+}
+
+/* ---------- ٥) الخطط العلاجية والإثرائية ---------- */
+function pfPlans(P,t,A,sec){
+ const pass=t.pass??50,top=levels()[0].min;
+ const sk=testSkills(A);
+ const weak=sk.filter(s=>s.pct<70);const strong=sk.filter(s=>s.pct>=80);
+ const low=A.rows.filter(r=>r.p<pass).sort((a,b)=>a.p-b.p);const ex=A.rows.filter(r=>r.p>=top);
+ const wk=r=>{const s=stSkills(r.s,t);return s?s.filter(x=>x.pct<60).map(x=>x.skill).join('، '):''};
+ const p1=`${rpHeader()}${pfTitle(P,t,`${esc(t.name)} • ${gradeName(t)}`)}${pfInfo(t,sec,['نسبة النجاح',fmt(A.passRate)+'%'])}
+ <div class="rp-k">${kbox(toAr(low.length),'طالب يحتاج علاجًا','#e5484d')}${kbox(toAr(weak.length),'مهارة تحتاج علاجًا','#f59e0b')}${kbox(toAr(ex.length),'طالب متميز (إثراء)','#22a45d')}${kbox(toAr(strong.length),'مهارة متقنة','#1d6fe0')}</div>
+ <div class="rp-sec"><h3>أولًا: الخطة العلاجية</h3>${remedialTable(A,weak.length?weak:[])}</div>
+ <div class="rp-sec"><h3>الطلاب المستهدفون بالعلاج (${toAr(low.length)})</h3>${low.length?`<table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th><th>النسبة قبل العلاج</th><th>المهارات الضعيفة</th><th>النسبة بعد العلاج</th></tr>${low.slice(0,22).map((r,i)=>`<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td><td>${fmt(r.p)}%</td><td style="text-align:right;font-size:10.5px">${esc(wk(r))}</td><td></td></tr>`).join('')}</table>${low.length>22?`<p class="muted" style="font-size:10.5px">يتبع في الصفحة التالية.</p>`:''}`:'<p>لا يوجد طلاب دون حد النجاح.</p>'}</div>`;
+ const p2=`${rpHeader()}${low.length>22?`<div class="rp-sec"><h3>تابع: الطلاب المستهدفون بالعلاج</h3><table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th><th>النسبة قبل العلاج</th><th>المهارات الضعيفة</th><th>النسبة بعد العلاج</th></tr>${low.slice(22).map((r,i)=>`<tr><td>${toAr(i+23)}</td><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td><td>${fmt(r.p)}%</td><td style="text-align:right;font-size:10.5px">${esc(wk(r))}</td><td></td></tr>`).join('')}</table></div>`:''}
+ <div class="rp-sec"><h3>ثانيًا: الخطة الإثرائية</h3><table><tr><th>م</th><th>المجال / المهارة${strong.length?'':' (الأعلى أداءً)'}</th><th>نسبة الإتقان</th><th>النشاط الإثرائي المقترح</th><th>المدة</th><th>أداة التقويم</th></tr>${(strong.length?strong:(sk.length?sk.slice().sort((x,y)=>y.pct-x.pct).slice(0,2):[{skill:'أعلى المهارات أداءً في الاختبار',pct:A.st.mean}])).map((s,i)=>`<tr><td>${toAr(i+1)}</td><td style="text-align:right"><b>${esc(s.skill)}</b></td><td><span class="tag t-grn">${fmt(s.pct)}%</span></td><td style="text-align:right">${ENR[i%ENR.length]}</td><td>أسبوع</td><td>منتج / عرض تقديمي</td></tr>`).join('')}</table></div>
+ <div class="rp-sec"><h3>الطلاب المستهدفون بالإثراء (${toAr(ex.length)}) — ${toAr(top)}٪ فأكثر</h3>${ex.length?`<table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th><th>النسبة</th><th>البرنامج الإثرائي</th><th>ملاحظات</th></tr>${ex.map((r,i)=>`<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td><td>${fmt(r.p)}%</td><td style="text-align:right;font-size:10.5px">${ENR[i%ENR.length]}</td><td></td></tr>`).join('')}</table>`:'<p>لا يوجد طلاب في هذا المستوى.</p>'}
+ <div class="muted" style="font-size:10.5px;margin-top:4px">الخطتان مقترحتان من نتائج التحليل ويعدّلهما المعلم عند التنفيذ. خانتا «النسبة بعد العلاج» و«ملاحظات» تُعبّآن بعد التنفيذ.</div></div>${rpSign()}`;
+ pfShow(P,P.t+' — '+t.name,[p1,p2]);
+}
+
+/* ---------- ٦) أثر الإجراءات وإعادة القياس ---------- */
+function pfImpact(P,U){
+ const a=S.tests.find(x=>x.id===U.pre),b=S.tests.find(x=>x.id===U.post);
+ if(!a||!b){toast('اختر الاختبار القبلي واختبار إعادة القياس');return}if(a.id===b.id){toast('اختر اختبارين مختلفين');return}
+ const A=analyze(a),B=analyze(b);if(!A.st||!B.st){toast('أحد الاختبارين بلا درجات');return}
+ const pass=a.pass??50;const bm={};B.rows.forEach(r=>bm[nk(r.s.name)]=r);
+ const tg=A.rows.filter(r=>r.p<pass).map(r=>({r,b:bm[nk(r.s.name)]})).sort((x,y)=>x.r.p-y.r.p);
+ const meas=tg.filter(x=>x.b);
+ const passed=meas.filter(x=>x.b.p>=(b.pass??50)).length,imp=meas.filter(x=>x.b.p-x.r.p>5).length;
+ const m1=meas.length?meas.reduce((s,x)=>s+x.r.p,0)/meas.length:null,m2=meas.length?meas.reduce((s,x)=>s+x.b.p,0)/meas.length:null;
+ const sa=testSkills(A),sb=testSkills(B);const skc=sa.map(s=>({s:s.skill,a:s.pct,b:(sb.find(x=>x.skill===s.skill)||{}).pct})).filter(x=>x.b!=null);
+ const p1=`${rpHeader()}<div class="rp-t"><span class="badge">ملف الإنجاز • ${P.code}</span><h2>${esc(P.t)}</h2><p>${gradeName(a)} • ${esc(a.subject)}</p></div>
+ <div class="rp-info"><div>القياس القبلي<b>${esc(a.name)}</b></div><div>إعادة القياس<b>${esc(b.name)}</b></div><div>حد النجاح<b>${toAr(pass)}٪</b></div><div>الطلاب المستهدفون<b>${toAr(tg.length)}</b></div></div>
+ <div class="rp-k">${kbox(toAr(meas.length),'أُعيد قياسهم','#1d6fe0')}${kbox(toAr(passed),'تجاوزوا حد النجاح','#22a45d')}${kbox(toAr(imp),'تحسّنوا (+٥٪ فأكثر)','#14a8b5')}${kbox(m1==null?'—':fmt(m1)+'%','متوسطهم قبل العلاج','#e5484d')}${kbox(m2==null?'—':fmt(m2)+'%','متوسطهم بعد العلاج','#7c4ddb')}${kbox(meas.length?fmt(passed/meas.length*100)+'%':'—','نسبة نجاح العلاج','#f59e0b')}</div>
+ <div class="two"><div class="rp-sec"><h3>متوسط الطلاب المستهدفين قبل العلاج وبعده</h3>${barsSVG([{l:'قبل العلاج',value:m1||0,c:'#e5484d'},{l:'بعد العلاج',value:m2||0,c:'#22a45d'}],{w:320,h:180,suffix:'%'})}</div>
+ <div class="rp-sec"><h3>جميع الطلاب: القبلي مقابل البعدي</h3><table><tr><th>المؤشر</th><th>القبلي</th><th>البعدي</th><th>التغير</th></tr><tr><td>المتوسط</td><td>${fmt(A.st.mean)}%</td><td>${fmt(B.st.mean)}%</td><td><b>${B.st.mean-A.st.mean>=0?'+':''}${fmt(B.st.mean-A.st.mean)}%</b></td></tr><tr><td>نسبة النجاح</td><td>${fmt(A.passRate)}%</td><td>${fmt(B.passRate)}%</td><td><b>${B.passRate-A.passRate>=0?'+':''}${fmt(B.passRate-A.passRate)}%</b></td></tr><tr><td>دون حد النجاح</td><td>${toAr(A.failN)}</td><td>${toAr(B.failN)}</td><td>${toAr(B.failN-A.failN)}</td></tr></table></div></div>
+ ${skc.length?`<div class="rp-sec"><h3>إتقان المهارات قبل العلاج وبعده</h3><table><tr><th>المهارة / الناتج</th><th>قبل</th><th>بعد</th><th>التغير</th></tr>${skc.map(x=>`<tr><td style="text-align:right">${esc(x.s)}</td><td>${fmt(x.a)}%</td><td>${fmt(x.b)}%</td><td><b style="color:${x.b-x.a>=0?'#1b8a4b':'#c22f34'}">${x.b-x.a>=0?'+':''}${fmt(x.b-x.a)}%</b></td></tr>`).join('')}</table></div>`:''}
+ <div class="rp-sec rp-qd"><h3>نتائج الطلاب المستهدفين</h3><table><tr><th>م</th><th>اسم الطالب</th><th>الفصل</th><th>قبل العلاج</th><th>بعد العلاج</th><th>التغير</th><th>الحالة</th></tr>${tg.map((x,i)=>`<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(x.r.s.name)}</td><td>${secLabel(x.r.s.section,a.grade)}</td><td>${fmt(x.r.p)}%</td><td>${x.b?fmt(x.b.p)+'%':'—'}</td><td>${x.b?`<b>${x.b.p-x.r.p>=0?'+':''}${fmt(x.b.p-x.r.p)}%</b>`:'—'}</td><td>${!x.b?'لم يُعَد قياسه':x.b.p>=(b.pass??50)?'<span class="tag t-grn">تجاوز الحد</span>':x.b.p-x.r.p>5?'<span class="tag t-blu">تحسّن</span>':'<span class="tag t-red">يحتاج متابعة</span>'}</td></tr>`).join('')||'<tr><td colspan="7">لا يوجد طلاب دون حد النجاح في القياس القبلي</td></tr>'}</table>
+ <div class="muted" style="font-size:10px;margin-top:4px">المستهدفون: من كانوا دون حد النجاح في القياس القبلي. يُطابَق الطالب بين الاختبارين بالاسم.</div></div>${rpSign()}`;
+ pfShow(P,P.t,[p1]);
+}
+
+/* ---------- ٧) تحليل النتائج وأدوات التقويم ---------- */
+function cronbach(t,A){
+ const k=t.questions.length;const rs=A.rows.filter(r=>Array.isArray(r.s.ans)&&r.s.ans.some(v=>v!==''&&v!=null));
+ if(k<2||rs.length<5)return null;
+ const v=a=>{const m=a.reduce((x,y)=>x+y,0)/a.length;return a.reduce((x,y)=>x+(y-m)**2,0)/(a.length-1)};
+ const iv=t.questions.map((_,i)=>v(rs.map(r=>num(r.s.ans[i])||0)));const tv=v(rs.map(r=>t.questions.reduce((s,_,i)=>s+(num(r.s.ans[i])||0),0)));
+ if(!tv)return null;return k/(k-1)*(1-iv.reduce((a,b)=>a+b,0)/tv);
+}
+function pfTool(P,t,A,sec){
+ const R=recommend(A);const al=cronbach(t,A);const pp=(S.papers||[]).find(p=>p.testId===t.id);
+ const alT=al==null?['—','t-gry']:al>=.8?['مرتفع','t-grn']:al>=.7?['جيد','t-blu']:al>=.6?['مقبول','t-org']:['منخفض — يُراجع','t-red'];
+ const it=A.items.filter(i=>i.p!=null);
+ const easy=it.filter(i=>i.p>=.85).length,hard=it.filter(i=>i.p<.25).length,good=it.filter(i=>i.p>=.25&&i.p<.85).length,poor=it.filter(i=>i.d!=null&&i.d<.2).length;
+ const p1=`${rpHeader()}${pfTitle(P,t,`${esc(t.name)} • ${gradeName(t)}`)}${pfInfo(t,sec,['الدرجة الكلية / حد النجاح',`${t.total} / ${t.pass}%`])}
+ <div class="rp-k">${kbox(toAr(A.rows.length),'المختبَرون','#1d6fe0')}${kbox(fmt(A.passRate)+'%','نسبة النجاح','#22a45d')}${kbox(fmt(A.st.mean)+'%','المتوسط','#7c4ddb')}${kbox(fmt(A.st.sd),'الانحراف المعياري','#0f8f9d')}${kbox(al==null?'—':fmt(al),'معامل الثبات (ألفا)','#f59e0b')}${kbox(toAr(it.length||t.questions.length||0),'عدد الأسئلة','#64748b')}</div>
+ <div class="two"><div class="rp-sec"><h3>مستويات الأداء</h3><div class="center" style="gap:8px">${pieSVG(A.lv.map(l=>({value:l.count,c:l.c})),130)}<table style="width:auto;min-width:160px"><tr><th>المستوى</th><th>العدد</th><th>النسبة</th></tr>${A.lv.map(l=>`<tr><td style="text-align:right">${l.n}</td><td>${toAr(l.count)}</td><td>${fmt(l.count/A.rows.length*100)}%</td></tr>`).join('')}</table></div></div>
+ <div class="rp-sec"><h3>التوزيع التكراري للنسب</h3>${barsSVG(A.bins.map((b,i)=>({l:b.l,value:b.count,c:['#e5484d','#f08c00','#f5b301','#8b5cf6','#22a45d','#1f6fe5'][i]})),{w:340,h:170,max:Math.max(5,Math.ceil(Math.max(...A.bins.map(b=>b.count))/5)*5)})}</div></div>
+ ${A.secs.length>1?`<div class="rp-sec"><h3>مقارنة الفصول</h3><table><tr><th>الفصل</th><th>العدد</th><th>المتوسط</th><th>نسبة النجاح</th><th>أعلى</th><th>أدنى</th></tr>${A.secs.map(s=>`<tr><td>${secLabel(s.sec,t.grade)}</td><td>${toAr(s.n)}</td><td>${fmt(s.mean)}%</td><td>${fmt(s.pass)}%</td><td>${fmt(s.max)}%</td><td>${fmt(s.min)}%</td></tr>`).join('')}</table></div>`:''}
+ <div class="rp-sec"><h3>جودة أداة التقويم</h3><table><tr><th>المؤشر</th><th>القيمة</th><th>الحكم</th></tr>
+  <tr><td style="text-align:right">معامل الثبات (ألفا كرونباخ)</td><td>${al==null?'يحتاج درجات الأسئلة (٥ طلاب فأكثر)':fmt(al)}</td><td><span class="tag ${alT[1]}">${alT[0]}</span></td></tr>
+  <tr><td style="text-align:right">أسئلة مناسبة الصعوبة (٢٥–٨٥٪)</td><td>${it.length?toAr(good)+' من '+toAr(it.length):'—'}</td><td>${it.length?(good/it.length>=.7?'<span class="tag t-grn">جيد</span>':'<span class="tag t-org">يُراجع</span>'):'—'}</td></tr>
+  <tr><td style="text-align:right">أسئلة سهلة جدًا / صعبة جدًا</td><td>${it.length?toAr(easy)+' / '+toAr(hard):'—'}</td><td>—</td></tr>
+  <tr><td style="text-align:right">أسئلة ضعيفة التمييز (أقل من ٠٫٢)</td><td>${it.some(i=>i.d!=null)?toAr(poor):'—'}</td><td>${it.some(i=>i.d!=null)?(poor?'<span class="tag t-org">تُراجع صياغتها</span>':'<span class="tag t-grn">جيد</span>'):'—'}</td></tr>
+  ${pp?(()=>{const Q=paperStats(pp);return Q.dom.map(d=>`<tr><td style="text-align:right">أسئلة ${d.k} (المرجع ${DOM_REF[d.k]}٪)</td><td>${fmt(Q.pct(d.n))}%</td><td>${Math.abs(Q.pct(d.n)-DOM_REF[d.k])<=10?'<span class="tag t-grn">متوازن</span>':'<span class="tag t-org">غير متوازن</span>'}</td></tr>`).join('')})():''}
+ </table>${pp?'':'<div class="muted" style="font-size:10.5px;margin-top:4px">لإظهار توازن المستويات المعرفية: اربط ورقة الاختبار بهذا الاختبار من «تحليل ورقة الاختبار».</div>'}</div>`;
+ const pages=[p1];
+ const p2=`${rpHeader()}${it.length?`<div class="rp-sec rp-qd"><h3>تحليل الأسئلة: معامل الصعوبة والتمييز</h3><table><tr><th>السؤال</th><th>المهارة</th><th>الدرجة</th><th>نسبة الإتقان</th><th>الصعوبة</th><th>معامل التمييز</th><th>الحكم</th></tr>${A.items.map(i=>{const a=itemTag(i.p),b=discTag(i.d);return `<tr><td><b>${esc(i.label)}</b></td><td style="text-align:right">${esc(i.skill||'—')}</td><td>${i.mark}</td><td>${i.p==null?'—':fmt(i.p*100)+'%'}</td><td><span class="tag ${a[1]}">${a[0]}</span></td><td>${i.d==null?'—':fmt(i.d)} <span class="tag ${b[1]}">${b[0]}</span></td><td>${i.p!=null&&i.p<.4?'إعادة تدريس':i.d!=null&&i.d<.2?'مراجعة الصياغة':'مناسب'}</td></tr>`}).join('')}</table></div>`:'<div class="rp-sec"><h3>تحليل الأسئلة</h3><p class="muted">يظهر تحليل الأسئلة (الصعوبة والتمييز والثبات) عند إدخال درجة كل سؤال.</p></div>'}
+ <div class="rp-sec"><h3>التوصيات</h3>${R.map(r=>`<p style="margin:3px 0;font-size:11.5px"><b>${r.ic} ${r.h}:</b> ${r.x}</p>`).join('')}<div class="muted" style="font-size:10px;margin-top:4px">الصعوبة = متوسط درجات الطلاب في السؤال ÷ درجته • التمييز = الفرق بين أعلى ٢٧٪ وأدنى ٢٧٪ • الثبات: ألفا كرونباخ (٠٫٧ فأكثر جيد).</div></div>${rpSign()}`;
+ pages.push(p2);
+ pfShow(P,P.t+' — '+t.name,pages);
+}
+
 /* ---------- navigation ---------- */
-const NAV={home:['الرئيسية','home'],tests:['إدارة الاختبارات','clip'],analysis:['التقارير والتحليلات','chart'],paper:['تحليل ورقة الاختبار','search'],remedial:['الخطط العلاجية','heal'],settings:['إعدادات المنصة','gear'],saved:['التقارير المحفوظة','file'],help:['المساعدة والدعم','help']};
+const NAV={home:['الرئيسية','home'],tests:['إدارة الاختبارات','clip'],analysis:['التقارير والتحليلات','chart'],paper:['تحليل ورقة الاختبار','search'],remedial:['الخطط العلاجية','heal'],portfolio:['تقارير ملف الإنجاز','trophy'],settings:['إعدادات المنصة','gear'],saved:['التقارير المحفوظة','file'],help:['المساعدة والدعم','help']};
 document.querySelectorAll('.nav-btn').forEach(b=>{
  const v=b.dataset.v;
  if(v){b.innerHTML=`${ico(NAV[v][1])}<span>${NAV[v][0]}</span>`;b.onclick=()=>go(v)}
@@ -857,7 +1094,7 @@ function header(){
 function render(){
  header();storeInfo();
  document.querySelectorAll('.nav-btn[data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===UI.view||(UI.view==='entry'&&b.dataset.v==='tests')));
- const V={home:vHome,tests:vTests,entry:vEntry,analysis:vAnalysis,remedial:vRemedial,settings:vSettings,saved:vSaved,help:vHelp,paper:vPaper};
+ const V={home:vHome,tests:vTests,entry:vEntry,analysis:vAnalysis,remedial:vRemedial,settings:vSettings,saved:vSaved,help:vHelp,paper:vPaper,portfolio:vPortfolio};
  $('#view').innerHTML=(V[UI.view]||vHome)();
  afterRender();
 }
@@ -1795,7 +2032,7 @@ async function delSaved(id){
  await repDelLocal(id);
  S.reports=S.reports.filter(x=>x.id!==id);S.deleted=S.deleted||{};S.deleted[id]=Date.now();save();render();toast('تم حذف التقرير');
 }
-const RKIND={named:['بالأسماء','t-blu'],anon:['بدون أسماء','t-grn'],plan:['خطة علاجية','t-org'],paper:['تحليل ورقة اختبار','t-pur']};
+const RKIND={named:['بالأسماء','t-blu'],anon:['بدون أسماء','t-grn'],plan:['خطة علاجية','t-org'],pf:['ملف الإنجاز','t-blu'],paper:['تحليل ورقة اختبار','t-pur']};
 function vSaved(){
  const list=(S.reports||[]).slice().sort((a,b)=>b.date-a.date);
  return `<div class="toolbar"><h2>التقارير المحفوظة</h2>${cloudOn()?`<button class="btn b-light" onclick="cloudSyncNow()">🔄 مزامنة</button>`:''}</div>
