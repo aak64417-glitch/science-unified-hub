@@ -1810,7 +1810,7 @@ function vAnalysis(){
  const head=`<div class="toolbar"><h2>التقارير والتحليلات</h2>${testPicker(t.id,"go('analysis',{test:this.value,sec:'all'})")}</div>
  <div class="panel" style="margin-bottom:14px"><div class="pb flex" style="flex-wrap:wrap;justify-content:space-between">
   <div class="chips"><button class="chip ${UI.sec==='all'?'on':''}" onclick="go('analysis',{sec:'all'})">جميع الفصول</button>${t.sections.map(s=>`<button class="chip ${String(UI.sec)===String(s)?'on':''}" onclick="go('analysis',{sec:'${s}'})">الفصل ${secLabel(s,t.grade)}</button>`).join('')}</div>
-  <div class="flex" style="flex-wrap:wrap"><button class="btn b-blue" onclick="openReport('${t.id}',UI.sec,true)">${ico('ppl')}تقرير بالأسماء</button><button class="btn b-green" onclick="openReport('${t.id}',UI.sec,false)">${ico('shield')}تقرير بدون أسماء</button><button class="btn b-light" onclick="exportCSV('${t.id}')">${ico('dl')}CSV</button><button class="btn b-gold" onclick="exportView('png')">🖼️ حفظ كصورة</button><button class="btn b-navy" style="background:linear-gradient(135deg,#e5484d,#b4232a)" onclick="exportView('pdf')">📄 حفظ PDF</button></div>
+  <div class="flex" style="flex-wrap:wrap"><button class="btn b-gold" style="background:linear-gradient(135deg,#22a45d,#157a42);color:#fff" onclick="quickSaveDlg('${t.id}')">💾 حفظ في التقارير المحفوظة</button><button class="btn b-blue" onclick="openReport('${t.id}',UI.sec,true)">${ico('ppl')}تقرير بالأسماء</button><button class="btn b-green" onclick="openReport('${t.id}',UI.sec,false)">${ico('shield')}تقرير بدون أسماء</button><button class="btn b-light" onclick="exportCSV('${t.id}')">${ico('dl')}CSV</button><button class="btn b-gold" onclick="exportView('png')">🖼️ حفظ كصورة</button><button class="btn b-navy" style="background:linear-gradient(135deg,#e5484d,#b4232a)" onclick="exportView('pdf')">📄 حفظ PDF</button></div>
  </div></div>`;
  if(!A.st)return head+`<div class="panel"><div class="empty">${ico('table')}<br>لا توجد درجات مدخلة لهذا ${UI.sec==='all'?'الاختبار':'الفصل'} بعد.<br><button class="btn b-navy" style="margin-top:10px" onclick="go('entry',{test:'${t.id}'})">إدخال الدرجات</button></div></div>`;
  return head+`<div id="anaBody">
@@ -2048,6 +2048,16 @@ async function rpSaveEdits(){
 async function rpDelOpen(){const id=RP_SAVED;if(!id)return;const r=(S.reports||[]).find(x=>x.id===id);if(!r||!confirm(`حذف التقرير «${r.title}» نهائيًا؟`))return;closeReport();
  if(r.file&&cloudOn()){try{await ghDelete(r.file,'تحليل النتائج: حذف تقرير')}catch(e){toast('⚠️ '+e.message);return}}
  await repDelLocal(id);S.reports=S.reports.filter(x=>x.id!==id);S.deleted=S.deleted||{};S.deleted[id]=Date.now();save();render();toast('تم حذف التقرير')}
+function quickSaveDlg(id){
+ modal('💾 حفظ التقرير في المنصة',`<div class="note blue">الدرجات نفسها محفوظة تلقائيًا${cloudOn()?' في الجهاز والمنصة':' في هذا الجهاز'}. اختر نوع التقرير الذي تريد حفظه في «التقارير المحفوظة»${UI.sec!=='all'?' (للفصل المختار فقط)':''}:</div>
+ <div class="addopts" style="margin-top:12px"><button class="addopt" style="--c:#1d6fe0" onclick="quickSave('${id}',true)">${ico('ppl')}<b>تقرير بالأسماء</b><span>الطلاب ودرجاتهم ومستوياتهم</span></button><button class="addopt" style="--c:#1b8a4b" onclick="quickSave('${id}',false)">${ico('shield')}<b>تقرير بدون أسماء</b><span>إحصائي لملف الإنجاز</span></button><button class="addopt" style="--c:#b07d00" onclick="quickSave('${id}','both')">${ico('file')}<b>الاثنان معًا</b><span>يُحفظ تقريران</span></button></div>`,
+ `<button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+}
+async function quickSave(id,named){
+ closeModal();const kinds=named==='both'?[true,false]:[named];
+ for(const k of kinds){openReport(id,UI.sec,k);await new Promise(r=>setTimeout(r,700));await saveReportCloud();await new Promise(r=>setTimeout(r,300));if($('#ov').classList.contains('show'))break}
+ if(!$('#ov').classList.contains('show')){closeReport();go('saved');toast(kinds.length>1?'✅ حُفظ التقريران — تجدهما هنا':'✅ حُفظ التقرير — تجده هنا')}
+}
 function closeReport(){const b=$('#rpBody');if(b){b.removeAttribute('contenteditable');b.classList.remove('editing')}['rpEditBtn','rpDelBtn'].forEach(i=>$('#'+i)&&$('#'+i).classList.add('hide'));RP_SAVED=null;$('#rpOv').classList.remove('show');document.title='منصة تحليل نتائج الاختبارات | أبي الدرداء المتوسطة'}
 
 /* ---------- الحفظ السحابي في مستودع المنصة (بطريقة ملف الإنجاز) ----------
