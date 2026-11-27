@@ -187,6 +187,8 @@ td.nm{text-align:right}
 .secs input{accent-color:#0a2a5e}
 .note{background:#fff8e6;border:1px solid #f6dea0;border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.8;color:#6d5208}
 .note.blue{background:#eef5ff;border-color:#cbdcf8;color:#1f3f75}
+.name-fixed{display:block;text-align:right;font-weight:800;padding:6px 8px;color:#0d2346}
+.absbtn{border:1.5px solid #cbd5e1;background:#fff;border-radius:10px;padding:5px 10px;font:inherit;font-weight:800;font-size:13px;color:#64748b;cursor:pointer;white-space:nowrap}.absbtn.on{background:#fdecec;border-color:#e5484d;color:#c22f34}
 .qtbl input{width:100%;border:1px solid #e3eaf5;border-radius:8px;padding:6px;text-align:center}
 .ptbl td{vertical-align:top}.ptbl select,.ptbl textarea{width:100%;border:1px solid #e3eaf5;border-radius:8px;padding:6px;font:inherit;font-weight:700;font-size:14px;background:#fff}.ptbl textarea{min-height:64px;text-align:right;line-height:1.7;resize:vertical}.ptbl select{min-width:120px}.ptbl input{min-width:60px}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(30px);background:#0a2a5e;color:#fff;padding:12px 20px;border-radius:14px;font-weight:800;opacity:0;transition:.25s;z-index:99;box-shadow:0 10px 30px #0006}
@@ -271,6 +273,7 @@ td.nm{text-align:right}
   <div class="moe"><div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i></div><b>وزارة التعليم</b><small>Ministry of Education</small></div>
   <button class="nav-btn" data-v="home"></button>
   <button class="nav-btn" data-v="tests"></button>
+  <button class="nav-btn" data-v="students"></button>
   <button class="nav-btn" data-v="analysis"></button>
   <button class="nav-btn" data-v="paper"></button>
   <button class="nav-btn" data-v="remedial"></button>
@@ -373,7 +376,7 @@ let UI={paper:null,view:'home',f:{type:'all',stage:'all',grade:'all',subject:'al
 function load(){let o={};try{const r=localStorage.getItem(LS);if(r)o=JSON.parse(r)||{}}catch(e){}return migrate(o)}
 function migrate(o){
  o.settings=Object.assign({school:'مدرسة أبي الدرداء المتوسطة',slogan:'معًا .. نصنع التميز',admin:'إدارة التعليم بمحافظة الأحساء',teacher:'علي طاهر البقاشي',principal:'فوزي محمد الهلال',counselor:'',year:'1448هـ',term:'',logo:'',levels:JSON.parse(JSON.stringify(DEFAULT_LEVELS)),lastBackup:null,classes:{'m-2':[1],'m-3':[1,2]}},o.settings||{});
- o.tests=Array.isArray(o.tests)?o.tests:[];o.reports=Array.isArray(o.reports)?o.reports:[];o.papers=Array.isArray(o.papers)?o.papers:[];o.deleted=o.deleted||{};
+ o.tests=Array.isArray(o.tests)?o.tests:[];o.reports=Array.isArray(o.reports)?o.reports:[];o.papers=Array.isArray(o.papers)?o.papers:[];o.roster=Array.isArray(o.roster)?o.roster:[];o.deleted=o.deleted||{};
  o.tests.forEach(t=>{t.students=t.students||[];t.questions=t.questions||[];t.sections=t.sections||[1]});
  return o;
 }
@@ -1087,8 +1090,96 @@ function pfTool(P,t,A,sec){
  pfShow(P,P.t+' — '+t.name,pages);
 }
 
+/* =========================================================
+   إدارة الطلاب — قائمة ثابتة لكل صف وفصل، تُستخدم عند إدخال الدرجات
+   ========================================================= */
+function R_(){S.roster=S.roster||[];return S.roster}
+function rsel(){UI.rs=UI.rs||{stage:'m',grade:1,sec:'all',q:''};return UI.rs}
+function rosterSecs(st,gr){return [...new Set([...classesOf(st,gr),...R_().filter(r=>r.stage===st&&r.grade===gr).map(r=>r.sec)])].sort((a,b)=>a-b)}
+function rosterOf(st,gr,secs){return R_().filter(r=>r.stage===st&&r.grade===gr&&(!secs||secs.includes(r.sec))).sort((a,b)=>(a.sec-b.sec)||a.name.localeCompare(b.name,'ar'))}
+function rTouch(r){r.upd=Date.now()}
+function vStudents(){
+ const U=rsel();const secs=rosterSecs(U.stage,U.grade);
+ let list=rosterOf(U.stage,U.grade,U.sec==='all'?null:[+U.sec]);
+ if(U.q)list=list.filter(r=>nk(r.name).includes(nk(U.q)));
+ const stOpts=Object.entries(STAGES).map(([k,s])=>`<option value="${k}" ${U.stage===k?'selected':''}>${s.n}</option>`).join('');
+ const grOpts=STAGES[U.stage].g.map((g,i)=>`<option value="${i+1}" ${U.grade===i+1?'selected':''}>${g} ${STAGES[U.stage].s}</option>`).join('');
+ const cnt=s=>R_().filter(r=>r.stage===U.stage&&r.grade===U.grade&&r.sec===s).length;
+ return `<div class="toolbar"><h2>إدارة الطلاب</h2><button class="btn b-gold" onclick="rAddDlg()">${ico('plus')}إضافة طلاب</button><label class="btn b-green" style="cursor:pointer">${ico('table')}استيراد من Excel<input type="file" accept=".xlsx,.xls,.csv" class="hide" onchange="rImportFile(this.files[0]);this.value=''"></label><button class="btn b-light" onclick="rFromTestDlg()">${ico('copy')}نسخ من اختبار سابق</button></div>
+ <div class="note blue" style="margin-bottom:14px">أضف أسماء طلاب كل فصل مرة واحدة، ثم عند كل اختبار تُضاف الأسماء تلقائيًا وتكتفي بكتابة الدرجة أو اختيار «غائب». تعديل اسم الطالب هنا يُحدَّث في كل اختباراته.</div>
+ <div class="filters"><label>المرحلة</label><select class="sel" onchange="rsel().stage=this.value;rsel().grade=1;rsel().sec='all';render()">${stOpts}</select>
+  <label>الصف</label><select class="sel" onchange="rsel().grade=+this.value;rsel().sec='all';render()">${grOpts}</select>
+  <input class="inp" style="max-width:220px" placeholder="🔍 بحث بالاسم" value="${esc(U.q)}" oninput="rsel().q=this.value;clearTimeout(window._rq);window._rq=setTimeout(()=>{render();const i=document.querySelector('.filters input.inp');if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}},350)"></div>
+ <div class="chips" style="margin:10px 0"><button class="chip ${U.sec==='all'?'on':''}" onclick="rsel().sec='all';render()">جميع الفصول (${toAr(R_().filter(r=>r.stage===U.stage&&r.grade===U.grade).length)})</button>${secs.map(s=>`<button class="chip ${String(U.sec)===String(s)?'on':''}" onclick="rsel().sec='${s}';render()">الفصل ${secLabel(s,U.grade)} (${toAr(cnt(s))})</button>`).join('')}<button class="chip" onclick="rNewSec()">＋ فصل</button></div>
+ ${list.length?`<div class="panel"><div class="pb" style="overflow:auto;padding:8px">
+  <div class="flex" style="flex-wrap:wrap;margin-bottom:8px"><label style="font-weight:800"><input type="checkbox" onchange="document.querySelectorAll('.rck').forEach(x=>x.checked=this.checked)"> تحديد الكل</label><span style="flex:1"></span>
+   <select class="sel" id="r_to" style="width:auto">${secs.map(s=>`<option value="${s}">الفصل ${secLabel(s,U.grade)}</option>`).join('')}</select><button class="btn b-navy b-sm" onclick="rMoveSel()">نقل المحدَّدين</button>
+   <select class="sel" id="r_tog" style="width:auto">${STAGES[U.stage].g.map((g,i)=>`<option value="${i+1}">${g} ${STAGES[U.stage].s}</option>`).join('')}</select><button class="btn b-light b-sm" onclick="rGradeSel()">نقل إلى صف آخر</button>
+   <button class="btn b-red b-sm" onclick="rDelSel()">${ico('trash')}حذف المحدَّدين</button></div>
+  <table class="qtbl"><tr><th style="width:36px"></th><th style="width:44px">م</th><th>اسم الطالب</th><th style="width:150px">الفصل</th><th style="width:60px"></th></tr>
+  ${list.map((r,i)=>`<tr><td><input type="checkbox" class="rck" value="${r.id}"></td><td>${toAr(i+1)}</td><td><input style="text-align:right;font-weight:800" value="${esc(r.name)}" onchange="rRename('${r.id}',this.value)"></td>
+   <td><select class="sel" onchange="rMove(['${r.id}'],+this.value)">${secs.map(s=>`<option value="${s}" ${r.sec===s?'selected':''}>الفصل ${secLabel(s,U.grade)}</option>`).join('')}</select></td>
+   <td><button class="btn b-red b-sm" onclick="rDel(['${r.id}'])">✕</button></td></tr>`).join('')}</table></div></div>`
+ :`<div class="panel"><div class="empty">${ico('users')}<br>لا يوجد طلاب في ${STAGES[U.stage].g[U.grade-1]} ${STAGES[U.stage].s}${U.sec!=='all'?' — الفصل '+secLabel(U.sec,U.grade):''} بعد.<br><button class="btn b-gold" style="margin-top:10px" onclick="rAddDlg()">${ico('plus')}إضافة طلاب</button></div></div>`}`;
+}
+function rNewSec(){const U=rsel();const used=rosterSecs(U.stage,U.grade);const n=Array.from({length:15},(_,i)=>i+1).find(x=>!used.includes(x));rememberClasses(U.stage,U.grade,[n]);U.sec=String(n);render();toast(`أُضيف الفصل ${secLabel(n,U.grade)}`)}
+function rAddDlg(){
+ const U=rsel();const secs=rosterSecs(U.stage,U.grade);const cur=U.sec!=='all'?+U.sec:(secs[0]||1);
+ modal('➕ إضافة طلاب',`<div class="note blue">${STAGES[U.stage].g[U.grade-1]} ${STAGES[U.stage].s} — اكتب اسم كل طالب في سطر، أو الصق عمود الأسماء من Excel أو من كشف نور.</div>
+ <div class="form" style="margin-top:10px"><div class="f">الفصل<select class="sel" id="ra_sec">${[...new Set([...secs,cur])].sort((a,b)=>a-b).map(s=>`<option value="${s}" ${s===cur?'selected':''}>الفصل ${secLabel(s,U.grade)}</option>`).join('')}${Array.from({length:15},(_,i)=>i+1).filter(n=>!secs.includes(n)&&n!==cur).map(n=>`<option value="${n}">الفصل ${secLabel(n,U.grade)} (جديد)</option>`).join('')}</select></div></div>
+ <textarea class="inp" id="ra_txt" style="margin-top:10px;min-height:280px;width:100%" placeholder="محمد علي الأحمد&#10;خالد سعد العمر"></textarea><div class="muted" id="ra_n" style="font-size:13px"></div>`,
+ `<button class="btn b-gold" onclick="rAddCommit()">✔ إضافة</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+ $('#ra_txt').oninput=()=>{const n=rParse($('#ra_txt').value).length;$('#ra_n').textContent=n?`عدد الأسماء: ${toAr(n)}`:''};
+}
+function rParse(txt){return String(txt||'').replace(/\r/g,'').split('\n').map(l=>l.split('\t').map(c=>c.trim()).filter(c=>isArText(c)).sort((a,b)=>b.length-a.length)[0]||l.replace(/^[\d٠-٩]+[\s.)\-]+/,'').trim()).map(l=>l.replace(/[\d٠-٩]+(\.\d+)?$/,'').replace(/\s+/g,' ').trim()).filter(l=>l.length>1&&/[؀-ۿa-zA-Z]/.test(l))}
+function rAdd(names,st,gr,sec){
+ const ex=new Set(R_().filter(r=>r.stage===st&&r.grade===gr).map(r=>nk(r.name)));let n=0,d=0;
+ names.forEach(nm=>{if(ex.has(nk(nm))){d++;return}ex.add(nk(nm));R_().push({id:uid(),name:nm,stage:st,grade:gr,sec,upd:Date.now()});n++});
+ rememberClasses(st,gr,[sec]);save();return[n,d];
+}
+function rAddCommit(){const U=rsel();const names=rParse($('#ra_txt').value);if(!names.length){toast('اكتب اسمًا واحدًا على الأقل');return}const sec=+$('#ra_sec').value;const[n,d]=rAdd(names,U.stage,U.grade,sec);U.sec=String(sec);closeModal();render();toast(`✅ أُضيف ${toAr(n)} طالب`+(d?` — تُجوهل ${toAr(d)} اسم مكرر`:''))}
+async function rImportFile(f){
+ if(!f)return;const U=rsel();let rows=[];
+ try{if(/\.csv$/i.test(f.name)){rows=(await f.text()).replace(/^﻿/,'').split(/\r?\n/).map(l=>l.split(/[,;\t]/))}else{toast('جارٍ قراءة الملف…');await loadXLSX();const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});for(const n of wb.SheetNames){const r=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,defval:'',raw:false});if(r.length>1){rows=r;break}}}}catch(e){toast('تعذّرت قراءة الملف');return}
+ const W=Math.max(0,...rows.map(r=>r.length));let best=-1,bc=0;for(let c=0;c<W;c++){const k=rows.filter(r=>isStudentName(r[c])).length;if(k>bc){bc=k;best=c}}
+ if(best<0||!bc){toast('لم أجد عمود أسماء في الملف');return}
+ const names=rows.map(r=>String(r[best]||'').replace(/\s+/g,' ').trim()).filter(isStudentName);
+ const secs=rosterSecs(U.stage,U.grade);const cur=U.sec!=='all'?+U.sec:(secs[0]||1);
+ modal('📥 استيراد أسماء الطلاب',`<div class="note blue">وُجد <b>${toAr(names.length)}</b> اسمًا في «${esc(f.name)}». اختر الفصل الذي تُضاف إليه.</div>
+ <div class="form" style="margin-top:10px"><div class="f">الفصل<select class="sel" id="ri_sec">${Array.from({length:15},(_,i)=>i+1).map(n=>`<option value="${n}" ${n===cur?'selected':''}>الفصل ${secLabel(n,U.grade)}${secs.includes(n)?'':' (جديد)'}</option>`).join('')}</select></div></div>
+ <div style="max-height:40vh;overflow:auto;margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:6px 10px">${names.map((n,i)=>`<div style="font-size:14px">${toAr(i+1)}. ${esc(n)}</div>`).join('')}</div>`,
+ `<button class="btn b-gold" id="ri_go">✔ إضافة</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+ $('#ri_go').onclick=()=>{const sec=+$('#ri_sec').value;const[n,d]=rAdd(names,U.stage,U.grade,sec);U.sec=String(sec);closeModal();render();toast(`✅ أُضيف ${toAr(n)} طالب`+(d?` — تُجوهل ${toAr(d)} مكرر`:''))};
+}
+function rFromTestDlg(){
+ const ts=S.tests.filter(t=>t.students.some(s=>s.name));if(!ts.length){toast('لا توجد اختبارات فيها أسماء');return}
+ modal('📋 نسخ الأسماء من اختبار سابق',`<div class="form"><div class="f w4">الاختبار<select class="sel" id="rf_t">${ts.map(t=>`<option value="${t.id}">${esc(t.name)} — ${gradeName(t)} (${toAr(t.students.length)})</option>`).join('')}</select></div></div><div class="muted" style="font-size:13px">تُنسخ الأسماء مع فصولها إلى قائمة طلاب صف الاختبار، ويُتجاهل المكرر، ويُربط الطلاب بالاختبار.</div>`,
+ `<button class="btn b-gold" onclick="rFromTest($('#rf_t').value)">✔ نسخ</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+}
+function rFromTest(tid){
+ const t=S.tests.find(x=>x.id===tid);let n=0;const map={};R_().filter(r=>r.stage===t.stage&&r.grade===t.grade).forEach(r=>map[nk(r.name)]=r);
+ t.students.forEach(s=>{if(!s.name)return;let r=map[nk(s.name)];if(!r){r={id:uid(),name:s.name,stage:t.stage,grade:t.grade,sec:+s.section||1,upd:Date.now()};R_().push(r);map[nk(s.name)]=r;n++}s.rid=r.id});
+ rememberClasses(t.stage,t.grade,[...new Set(t.students.map(s=>+s.section||1))]);
+ const U=rsel();U.stage=t.stage;U.grade=t.grade;U.sec='all';save();closeModal();render();toast(`✅ أُضيف ${toAr(n)} طالب إلى القائمة`);
+}
+function rRename(id,v){const r=R_().find(x=>x.id===id);v=String(v).replace(/\s+/g,' ').trim();if(!r||!v)return;r.name=v;rTouch(r);S.tests.forEach(t=>t.students.forEach(s=>{if(s.rid===id)s.name=v}));save();toast('✅ عُدّل الاسم في القائمة وفي كل الاختبارات')}
+function rMove(ids,sec){ids.forEach(id=>{const r=R_().find(x=>x.id===id);if(r){r.sec=sec;rTouch(r)}});save();render();toast(`✅ نُقل ${toAr(ids.length)} طالب إلى الفصل ${secLabel(sec,rsel().grade)}`)}
+const rChecked=()=>[...document.querySelectorAll('.rck:checked')].map(x=>x.value);
+function rMoveSel(){const ids=rChecked();if(!ids.length){toast('حدّد طالبًا واحدًا على الأقل');return}rMove(ids,+$('#r_to').value)}
+function rGradeSel(){const ids=rChecked();if(!ids.length){toast('حدّد طالبًا واحدًا على الأقل');return}const g=+$('#r_tog').value;ids.forEach(id=>{const r=R_().find(x=>x.id===id);if(r){r.grade=g;rTouch(r)}});rememberClasses(rsel().stage,g,[...new Set(ids.map(id=>R_().find(x=>x.id===id).sec))]);save();render();toast(`✅ نُقل ${toAr(ids.length)} طالب إلى ${STAGES[rsel().stage].g[g-1]} ${STAGES[rsel().stage].s}`)}
+function rDel(ids){if(!confirm(ids.length>1?`حذف ${ids.length} طالب من القائمة؟ (تبقى درجاتهم في الاختبارات السابقة)`:'حذف الطالب من القائمة؟ (تبقى درجاته في الاختبارات السابقة)'))return;S.deleted=S.deleted||{};const now=Date.now();S.roster=R_().filter(r=>{if(ids.includes(r.id)){S.deleted[r.id]=now;return false}return true});save();render();toast('تم الحذف')}
+function rDelSel(){const ids=rChecked();if(!ids.length){toast('حدّد طالبًا واحدًا على الأقل');return}rDel(ids)}
+/* ربط القائمة بالاختبار */
+function fillFromRoster(t,silent){
+ const L=rosterOf(t.stage,t.grade,t.sections);if(!L.length){if(!silent)toast(`لا يوجد طلاب في قائمة ${gradeName(t)} لهذه الفصول — أضفهم من «إدارة الطلاب»`);return 0}
+ const have=new Set(t.students.map(s=>s.rid).filter(Boolean)),names=new Set(t.students.map(s=>nk(s.name)));let n=0;
+ L.forEach(r=>{if(have.has(r.id))return;const ex=t.students.find(s=>!s.rid&&nk(s.name)===nk(r.name));if(ex){ex.rid=r.id;return}t.students.push({id:uid(),rid:r.id,name:r.name,section:r.sec,score:'',ans:t.questions.length?t.questions.map(()=>''):null,absent:false});n++});
+ t.students.sort((a,b)=>(a.section-b.section)||a.name.localeCompare(b.name,'ar'));save();
+ if(!silent)toast(n?`✅ أُضيف ${toAr(n)} طالب من القائمة — اكتب الدرجات فقط`:'كل طلاب القائمة موجودون في الاختبار');return n;
+}
+
 /* ---------- navigation ---------- */
-const NAV={home:['الرئيسية','home'],tests:['إدارة الاختبارات','clip'],analysis:['التقارير والتحليلات','chart'],paper:['تحليل ورقة الاختبار','search'],remedial:['الخطط العلاجية','heal'],portfolio:['تقارير ملف الإنجاز','trophy'],settings:['إعدادات المنصة','gear'],saved:['التقارير المحفوظة','file'],help:['المساعدة والدعم','help']};
+const NAV={home:['الرئيسية','home'],tests:['إدارة الاختبارات','clip'],students:['إدارة الطلاب','users'],analysis:['التقارير والتحليلات','chart'],paper:['تحليل ورقة الاختبار','search'],remedial:['الخطط العلاجية','heal'],portfolio:['تقارير ملف الإنجاز','trophy'],settings:['إعدادات المنصة','gear'],saved:['التقارير المحفوظة','file'],help:['المساعدة والدعم','help']};
 document.querySelectorAll('.nav-btn').forEach(b=>{
  const v=b.dataset.v;
  if(v){b.innerHTML=`${ico(NAV[v][1])}<span>${NAV[v][0]}</span>`;b.onclick=()=>go(v)}
@@ -1105,7 +1196,7 @@ function cloudBanner(){if(cloudOn()||UI.view==='settings')return'';return `<div 
 function render(){
  header();storeInfo();
  document.querySelectorAll('.nav-btn[data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===UI.view||(UI.view==='entry'&&b.dataset.v==='tests')));
- const V={home:vHome,tests:vTests,entry:vEntry,analysis:vAnalysis,remedial:vRemedial,settings:vSettings,saved:vSaved,help:vHelp,paper:vPaper,portfolio:vPortfolio};
+ const V={home:vHome,tests:vTests,entry:vEntry,analysis:vAnalysis,remedial:vRemedial,settings:vSettings,saved:vSaved,help:vHelp,paper:vPaper,portfolio:vPortfolio,students:vStudents};
  $('#view').innerHTML=cloudBanner()+(V[UI.view]||vHome)();
  afterRender();
 }
@@ -1223,7 +1314,7 @@ function testForm(id,preset={}){
  ${id?'':`<div class="step"><span class="sn">٤</span>إضافة أسماء الطلاب ودرجاتهم <small style="font-weight:700;color:var(--muted)">(اختياري، ويمكن إضافتها لاحقًا)</small></div>
  <div class="attach2">
  <label class="attach" id="f_attachLbl">${ico('up')}<span id="f_attachTxt">إرفاق ملف الدرجات (‎.xlsx ‎.csv ‎.pdf أو صورة)</span><input type="file" accept=".xlsx,.xls,.csv,.pdf,application/pdf,image/*" multiple class="hide" onchange="pickPend(this.files.length>1?[...this.files]:(this.files[0]||null))"></label>
- <button type="button" class="attach" id="f_manualBtn" onclick="pickManual()">${ico('edit')}<span id="f_manualTxt">إدخال الأسماء والدرجات يدويًا</span></button>
+ <button type="button" class="attach" id="f_manualBtn" onclick="pickManual()">${ico('edit')}<span id="f_manualTxt"><span id="f_rosterTxt">إدخال الأسماء والدرجات يدويًا</span></span></button>
  </div>`}
  <details class="qdet" ${t.questions.length?'open':''}><summary>تحليل الأسئلة والمهارات (اختياري) — لمؤشرات الصعوبة والتمييز والخطة العلاجية حسب المهارة</summary>
   <div class="flex" style="flex-wrap:wrap;margin:8px 0"><input class="inp" id="q_n" type="number" min="0" max="80" style="width:110px" value="${t.questions.length||''}" placeholder="عدد الأسئلة"><input class="inp" id="q_m" type="number" min="0.25" step="0.25" style="width:120px" placeholder="درجة السؤال" value="${t.questions[0]?.mark||1}"><button class="btn b-light b-sm" type="button" onclick="genQs()">توليد الأسئلة</button></div>
@@ -1231,7 +1322,7 @@ function testForm(id,preset={}){
  modal(`${ico(id?'edit':'plus','style="width:24px;height:24px"')}${id?'تعديل الاختبار':'اختبار جديد'}`,body,`<button class="btn b-gold" onclick="saveTest('${id||''}')">💾 ${id?'حفظ':'حفظ ومتابعة'}</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
  window._pend=null;window._manual=false;window._qs=JSON.parse(JSON.stringify(t.questions));window._grade=t.grade;
  window._secs=t.sections?[...t.sections]:[...classesOf(t.stage,t.grade)];
- window._fname=t.name||'';fillGrades();fillNames();drawQs();
+ window._fname=t.name||'';fillGrades();fillNames();drawQs();syncAdd();
 }
 /* ---------- القوائم المنسدلة: العنوان والتاريخ والفصل الدراسي ---------- */
 const ORD=['الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر'];
@@ -1288,12 +1379,12 @@ function fillGrades(){
  const upd=()=>{window._grade=+g.value;window._secs=[...classesOf(st,window._grade)];drawSecs()};
  g.onchange=upd;window._grade=+g.value;
  if(window._secs==null)window._secs=[...classesOf(st,window._grade)];
- drawSecs();
+ drawSecs();syncAdd();
 }
 function drawSecs(){
  const st=$('#f_stage').value,gr=window._grade||1;
  const all=[...new Set([...classesOf(st,gr),...window._secs])].sort((a,b)=>a-b);
- $('#f_secs').innerHTML=(all.length?all.map(n=>`<label><input type="checkbox" value="${n}" ${window._secs.includes(n)?'checked':''} onchange="window._secs=[...document.querySelectorAll('#f_secs input:checked')].map(x=>+x.value)">الفصل ${secLabel(n,gr)}</label>`).join(''):`<span class="muted" style="font-size:14px">لم تُسجَّل فصول لهذا الصف بعد — أضف رقم الفصل، أو أرفق ملف الدرجات وتُستخرج الفصول منه تلقائيًا.</span>`)+
+ $('#f_secs').innerHTML=(all.length?all.map(n=>`<label><input type="checkbox" value="${n}" ${window._secs.includes(n)?'checked':''} onchange="window._secs=[...document.querySelectorAll('#f_secs input:checked')].map(x=>+x.value);syncAdd()">الفصل ${secLabel(n,gr)}</label>`).join(''):`<span class="muted" style="font-size:14px">لم تُسجَّل فصول لهذا الصف بعد — أضف رقم الفصل، أو أرفق ملف الدرجات وتُستخرج الفصول منه تلقائيًا.</span>`)+
  `<span class="flex" style="gap:6px"><select class="sel" id="f_newSec" style="width:150px"><option value="">رقم الفصل</option>${Array.from({length:15},(_,i)=>i+1).filter(n=>!all.includes(n)).map(n=>`<option value="${n}">الفصل ${secLabel(n,gr)}</option>`).join('')}</select><button class="btn b-light b-sm" type="button" onclick="addSec()">${ico('plus')}إضافة فصل</button></span>`;
 }
 function addSec(){const v=parseInt(toEn($('#f_newSec').value));if(!v||v<1){toast('اكتب رقم الفصل، مثل 1 أو 2');return}const st=$('#f_stage').value;rememberClasses(st,window._grade,[v]);if(!window._secs.includes(v))window._secs.push(v);drawSecs()}
@@ -1316,8 +1407,9 @@ function pickManual(){window._manual=!window._manual;if(window._manual){window._
 function syncAdd(){
  const a=$('#f_attachLbl'),m=$('#f_manualBtn');if(!a||!m)return;
  a.classList.toggle('on',!!window._pend);$('#f_attachTxt').textContent=window._pend?('📎 '+(Array.isArray(window._pend)?toAr(window._pend.length)+' صور':window._pend.name)):'إرفاق ملف الدرجات (‎.xlsx ‎.csv ‎.pdf أو صورة)';
- m.classList.toggle('on',!!window._manual);$('#f_manualTxt').textContent=window._manual?'✔ إدخال يدوي — تُفتح نافذة كتابة الأسماء بعد الحفظ':'إدخال الأسماء والدرجات يدويًا';
+ m.classList.toggle('on',!!window._manual);const rn=rosterHint();$('#f_manualTxt').textContent=window._manual?(rn?`✔ الأسماء من القائمة (${toAr(rn)} طالبًا) — اكتب الدرجات بعد الحفظ`:'✔ إدخال يدوي — تُفتح نافذة كتابة الأسماء بعد الحفظ'):(rn?`إدخال الدرجات فقط — الأسماء من القائمة (${toAr(rn)} طالبًا)`:'إدخال الأسماء والدرجات يدويًا');
 }
+function rosterHint(){const st=$('#f_stage')?.value,gr=window._grade;const n=st?rosterOf(st,gr,window._secs&&window._secs.length?window._secs:null).length:0;const e=$('#f_rosterTxt');if(e)e.textContent=n?`إدخال الدرجات فقط — أسماء الطلاب تُضاف تلقائيًا من القائمة (${toAr(n)} طالبًا)`:'إدخال الأسماء والدرجات يدويًا';return n}
 function saveTest(id){
  const type=(document.querySelector('input[name=f_type]:checked')||{}).value;
  if(!type){toast('اختر نوع الاختبار');return}
@@ -1337,7 +1429,7 @@ function saveTest(id){
  if(id){const t=S.tests.find(x=>x.id===id);if(!data.sections.length)data.sections=t.sections;Object.assign(t,data);t.students.forEach(s=>{if(Array.isArray(s.ans)){s.ans=qs.map((_,i)=>s.ans[i]??'')}})}
  else{if(!data.sections.length)data.sections=[1];data._auto=!window._secs.length;S.tests.push({id:uid(),created:Date.now(),students:[],...data});}
  const pend=window._pend,man=window._manual;save();closeModal();toast('✅ تم حفظ الاختبار');
- if(!id){const nt=S.tests[S.tests.length-1];go('entry',{test:nt.id});if(pend)setTimeout(()=>importFile(pend),150);else if(man)setTimeout(manualDlg,150)}else render();
+ if(!id){const nt=S.tests[S.tests.length-1];let fromR=0;if(man||(!pend))fromR=fillFromRoster(nt,true);go('entry',{test:nt.id});if(pend)setTimeout(()=>importFile(pend),150);else if(fromR)setTimeout(()=>{toast(`✅ أُضيف ${toAr(fromR)} طالب من القائمة — اكتب الدرجات فقط`);document.querySelector('.entry input.sc,.entry input.q')?.focus()},150);else if(man)setTimeout(manualDlg,150)}else render();
 }
 function dupTest(id){const t=S.tests.find(x=>x.id===id);const c=JSON.parse(JSON.stringify(t));c.id=uid();c.created=Date.now();c.name=t.name+' (نسخة)';c.students=[];S.tests.push(c);save();render();toast('تم نسخ الاختبار بدون درجات')}
 function delTest(id){const t=S.tests.find(x=>x.id===id);if(!confirm(`حذف «${t.name}» وجميع درجاته نهائيًا؟`))return;S.tests=S.tests.filter(x=>x.id!==id);save();render();toast('تم الحذف')}
@@ -1349,12 +1441,12 @@ function vEntry(){
  const rows=t.students.map((s,i)=>{
   const sc=stScore(s,t);const p=stPct(s,t);
   return `<tr class="${s.absent?'abs':''}" data-i="${i}"><td>${i+1}</td>
-  <td><input type="text" class="name" value="${esc(s.name)}" placeholder="اكتب اسم الطالب" onchange="upd(${i},'name',this.value)" onkeydown="entKey(event,this)"></td>
+  <td>${s.rid?`<span class="name-fixed" title="من قائمة الطلاب">${esc(s.name)}</span>`:`<input type="text" class="name" value="${esc(s.name)}" placeholder="اكتب اسم الطالب" onchange="upd(${i},'name',this.value)" onkeydown="entKey(event,this)">`}</td>
   <td><select onchange="upd(${i},'section',+this.value)">${t.sections.map(x=>`<option value="${x}" ${String(s.section)===String(x)?'selected':''}>${secLabel(x,t.grade)}</option>`).join('')}</select></td>
   ${qn?t.questions.map((q,j)=>`<td><input type="number" class="q" min="0" max="${q.mark}" step="0.25" value="${s.ans?.[j]??''}" onchange="updQ(${i},${j},this)" onkeydown="entKey(event,this)"></td>`).join(''):''}
   <td>${qn?`<span class="tot" id="tot${i}">${sc==null?'—':fmt(sc)}</span>`:`<input type="number" class="sc" inputmode="decimal" min="0" max="${t.total}" step="0.25" value="${s.score??''}" placeholder="—" onchange="updScore(${i},this)" onkeydown="entKey(event,this)" style="width:80px">`}</td>
   <td id="pc${i}">${p==null?'—':`<span class="tag" style="background:${levelOf(p).c}18;color:${levelOf(p).c};border-color:${levelOf(p).c}55">${fmt(p)}%</span>`}</td>
-  <td><input type="checkbox" ${s.absent?'checked':''} onchange="upd(${i},'absent',this.checked,true)"></td>
+  <td><button type="button" class="absbtn ${s.absent?'on':''}" onclick="upd(${i},'absent',${s.absent?'false':'true'},true)">${s.absent?'غائب ✓':'غائب'}</button></td>
   <td><button class="btn b-red b-sm" onclick="delSt(${i})">✕</button></td></tr>`}).join('');
  return `<div class="toolbar"><h2>${esc(t.name)} <small class="muted" style="font-size:15px">— ${gradeName(t)} • من ${t.total} • حد النجاح ${t.pass}٪</small></h2>
   <button class="btn b-light" onclick="go('tests')">${ico('back')}رجوع</button>
@@ -1365,6 +1457,7 @@ function vEntry(){
   <label class="btn b-navy" style="cursor:pointer;background:linear-gradient(135deg,#7c4ddb,#5a2fb0)">${ico('up')}رفع صورة الكشف<input type="file" accept="image/*" multiple class="hide" onchange="importFile([...this.files]);this.value=''"></label>
   <button class="btn b-gold" onclick="pasteDlg()">${ico('copy')}لصق من Excel</button>
   <button class="btn b-light" onclick="downloadTemplate()">${ico('dl')}نموذج Excel فارغ</button>
+  <button class="btn b-gold" onclick="fillFromRoster(curT());render()">${ico('users')}إضافة الطلاب من القائمة</button>
   <button class="btn b-navy" onclick="manualDlg()">${ico('edit')}إدخال يدوي للأسماء والدرجات</button>
   <button class="btn b-light" onclick="addRows(1)">${ico('plus')}إضافة طالب</button>
   <button class="btn b-light" onclick="addRows(5)">+٥ صفوف</button>
@@ -1380,6 +1473,7 @@ function vEntry(){
   <label class="addopt" style="--c:#7c4ddb">${ico('up')}<b>صورة الكشف</b><span>صورة أو أكثر (تصوير بالجوال)</span><input type="file" accept="image/*" multiple class="hide" onchange="importFile([...this.files]);this.value=''"></label>
   <button class="addopt" style="--c:#b07d00" onclick="pasteDlg()">${ico('copy')}<b>لصق</b><span>انسخ الأعمدة والصقها</span></button>
   <button class="addopt" style="--c:#123f8c" onclick="manualDlg()">${ico('edit')}<b>إدخال يدوي</b><span>اكتب الأسماء والدرجات بنفسك</span></button>
+  <button class="addopt" style="--c:#0f8f9d" onclick="fillFromRoster(curT());render()">${ico('users')}<b>من قائمة الطلاب</b><span>${toAr(rosterOf(t.stage,t.grade,t.sections).length)} طالبًا — اكتب الدرجة فقط</span></button>
  </div><div class="muted" style="text-align:center;margin-top:12px;font-size:14px">أو اسحب الملف وأفلته هنا • الأعمدة المقترحة: الاسم ← الفصل ← ${t.questions.length?'س1، س2 …':'الدرجة'} — <a href="#" onclick="event.preventDefault();downloadTemplate()">تحميل نموذج Excel فارغ</a></div></div></div>`}`;
 }
 function curT(){return S.tests.find(x=>x.id===UI.test)}
@@ -1964,9 +2058,10 @@ function mergeState(L,R){
  R=migrate(R);const del=Object.assign({},R.deleted||{},L.deleted||{});
  const map={};[...R.tests,...L.tests].forEach(t=>{if(del[t.id])return;const c=map[t.id];if(!c||(t.upd||0)>(c.upd||0))map[t.id]=t});
  const rep={};[...(R.reports||[]),...(L.reports||[])].forEach(r=>{if(del[r.id])return;const c=rep[r.id];if(!c||!c.file||r.file)rep[r.id]=r});
+ const ros={};[...(R.roster||[]),...(L.roster||[])].forEach(r=>{if(del[r.id])return;const c=ros[r.id];if(!c||(r.upd||0)>=(c.upd||0))ros[r.id]=r});
  const pap={};[...(R.papers||[]),...(L.papers||[])].forEach(p=>{if(del[p.id])return;const c=pap[p.id];if(!c||(p.upd||0)>=(c.upd||0))pap[p.id]=p});
  const settings=(R.settings.upd||0)>(L.settings.upd||0)?R.settings:L.settings;
- return Object.assign({},L,{settings,tests:Object.values(map).sort((a,b)=>(a.created||0)-(b.created||0)),reports:Object.values(rep),papers:Object.values(pap).sort((a,b)=>(a.created||0)-(b.created||0)),deleted:del});
+ return Object.assign({},L,{settings,tests:Object.values(map).sort((a,b)=>(a.created||0)-(b.created||0)),reports:Object.values(rep),roster:Object.values(ros),papers:Object.values(pap).sort((a,b)=>(a.created||0)-(b.created||0)),deleted:del});
 }
 async function cloudPull(){
  const f=await ghRead(CLOUD.dir+'data.enc');
@@ -2112,7 +2207,7 @@ function vSettings(){
 function nextYear(y){const n=parseInt(toEn(y||''));return n?String(n+1)+'هـ':''}
 function newYearDlg(){
  const nT=S.tests.length,nS=S.tests.reduce((a,t)=>a+t.students.length,0),nR=(S.reports||[]).length,nP=(S.papers||[]).length;
- modal('🗓️ بدء عام دراسي جديد',`<div class="note">سيُحذف نهائيًا: <b>${toAr(nT)}</b> اختبار، و<b>${toAr(nS)}</b> نتيجة طالب، و<b>${toAr(nR)}</b> تقرير محفوظ${cloudOn()?' (من الجهاز ومن المنصة)':''}. لا يمكن التراجع.</div>
+ modal('🗓️ بدء عام دراسي جديد',`<div class="note">سيُحذف نهائيًا: <b>${toAr(nT)}</b> اختبار، و<b>${toAr(nS)}</b> نتيجة طالب، و<b>${toAr((S.roster||[]).length)}</b> اسمًا من قائمة الطلاب، و<b>${toAr(nR)}</b> تقرير محفوظ${cloudOn()?' (من الجهاز ومن المنصة)':''}. لا يمكن التراجع.</div>
  <div class="form" style="margin-top:12px">
   <div class="f w2">العام الدراسي الجديد<input class="inp" id="ny_y" value="${esc(nextYear(S.settings.year))}" placeholder="مثال: 1449هـ"></div>
   <div class="f w2">تحليلات أوراق الاختبار (${toAr(nP)}) — لا تحتوي أسماء طلاب<label style="font-weight:800"><input type="checkbox" id="ny_keep" checked> الإبقاء عليها للاستفادة منها العام القادم</label></div>
@@ -2129,7 +2224,7 @@ async function newYearGo(){
  for(let i=0;i<reps.length;i++){const r=reps[i];const m=$('#ny_msg');if(m)m.textContent=`حذف التقارير ${toAr(i+1)} من ${toAr(reps.length)}…`;
   if(r.file&&cloudOn()){try{await ghDelete(r.file,'تحليل النتائج: حذف تقارير العام السابق')}catch(e){fail++}}
   await repDelLocal(r.id);S.deleted[r.id]=now}
- S.tests.forEach(t=>S.deleted[t.id]=now);S.tests=[];S.reports=[];
+ S.tests.forEach(t=>S.deleted[t.id]=now);S.tests=[];S.reports=[];(S.roster||[]).forEach(r=>S.deleted[r.id]=now);S.roster=[];
  if(!keep){(S.papers||[]).forEach(p=>S.deleted[p.id]=now);S.papers=[]}else(S.papers||[]).forEach(p=>{p.testId='';p.upd=now});
  try{await idbOp('readwrite',st=>st.clear())}catch(e){}
  Object.keys(localStorage).filter(k=>k.startsWith('resultsHub.rep.')).forEach(k=>localStorage.removeItem(k));
