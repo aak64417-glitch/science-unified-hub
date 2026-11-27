@@ -174,8 +174,8 @@ function renderHome(){const list=mine(),pts=totalPts();let lv=0;LEVELS.forEach((
 /* ===== المهمة (الإصدار الثاني): اعرف أكثر ← العالِم والمهنة ← المختبر ← التحديات ← المشروع ورفع الملف ===== */
 const SK_L="إثراء — المختبر الافتراضي",BUCKET="masar-uploads";
 let M=null;
-const STEPS=E=>["read","sci","lab",...E.q.map((q,i)=>"q"+i),"task","fin"];
-function openMission(m){const E=ENRICH[m.idx];M={m,E,st:STEPS(E),step:0,ans:[],pick:[],labOk:false,labNote:"",up:[],t0:Date.now()};{const d=me.done[m.idx]||{};M.pj=d.pj!=null?d.pj:null;M.own=Object.assign({h:"",d:""},d.own||{})}$("mTitle").textContent=E.ic+" "+E.t;$("home").classList.add("hide");$("mission").classList.remove("hide");draw()}
+const STEPS=E=>["read","sci","lab",...(E.lab?["lrep"]:[]),...E.q.map((q,i)=>"q"+i),"task","fin"];
+function openMission(m){const E=ENRICH[m.idx];M={m,E,st:STEPS(E),step:0,ans:[],pick:[],labOk:false,labNote:"",up:[],t0:Date.now()};{const d=me.done[m.idx]||{};M.lrep=Object.assign({},d.lrep||{});M.pj=d.pj!=null?d.pj:null;M.own=Object.assign({h:"",d:""},d.own||{})}$("mTitle").textContent=E.ic+" "+E.t;$("home").classList.add("hide");$("mission").classList.remove("hide");draw()}
 $("mBack").onclick=()=>{if(M&&M.step>0&&M.st[M.step]!=="fin"&&!confirm("الخروج من المهمة؟ لن تُحفظ هذه المحاولة."))return;closeMission()};
 function closeMission(){M=null;$("mission").classList.add("hide");$("home").classList.remove("hide");renderHome();window.scrollTo(0,0)}
 function dots(){$("dots").innerHTML=M.st.slice(0,-1).map((k,i)=>{let c=i===M.step?"on":i<M.step?"ok":"";if(k[0]==="q"&&k!=="q"&&M.ans[+k.slice(1)]!=null)c=M.ans[+k.slice(1)]?"ok":"no";return `<i class="${c}"></i>`}).join("")}
@@ -185,8 +185,12 @@ function draw(){dots();const s=$("stage"),E=M.E,k=M.st[M.step];s.scrollTop=0;
  if(k==="read"){const R=E.read||{h:"هل تعلم؟",p:[E.idea]};s.innerHTML=`<div class="pane"><span class="tag g">📖 اعرف أكثر</span><h3>${esc(R.h)}</h3><ul class="pts">${R.p.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>${E.read?`<div class="note">💡 ${esc(E.idea)}</div>`:""}</div>`;foot([["التالي: العالِم والمهنة ←","g",next]]);return}
  if(k==="sci"){if(!E.sci){next();return}s.innerHTML=`<div class="pane"><span class="tag">🧑‍🔬 عالِم ومهنة</span><div class="card2"><div class="ic">🧑‍🔬</div><div><b>${esc(E.sci.n)}</b><small>${esc(E.sci.y)}</small><p>${esc(E.sci.t)}</p></div></div><div class="card2 job"><div class="ic">💼</div><div><b>مهنة: ${esc(E.job.n)}</b><p>${esc(E.job.t)}</p></div></div></div>`;foot([["التالي: المختبر الافتراضي ←","g",next]]);return}
  if(k==="lab"){if(!E.lab){next();return}s.innerHTML=`<div class="pane lab"><span class="tag g">🧪 المختبر الافتراضي</span><h3>${esc(E.lab.title)}</h3><div id="labHost"></div><div id="labMsg" class="labmsg"></div></div>`;
-  const ok=note=>{if(M.labOk)return;M.labOk=true;M.labNote=note||"";$("labMsg").innerHTML="✅ أحسنت! أنجزت المختبر"+(note?" — "+esc(note):"");foot([["التالي: تحديات التفكير ←","g",next]])};
+  const ok=note=>{if(M.labOk)return;M.labOk=true;M.labNote=note||"";$("labMsg").innerHTML="✅ أحسنت! أنجزت المختبر"+(note?" — "+esc(note):"");foot([["التالي: تقرير التجربة ←","g",next]])};
   LABS[E.lab.type]($("labHost"),E.lab,ok,t=>{$("labMsg").innerHTML=t});foot([["أكمل المختبر أولًا","",null,true],["تخطَّ","s",next]]);if(M.labOk)ok(M.labNote);return}
+ if(k==="lrep"){const F=[["goal","🎯 هدف التجربة","ما الذي أردت معرفته من التجربة؟",0],["vars","🔧 الأدوات والمتغيرات","الأدوات التي استخدمتها، وما الذي غيّرته وما الذي ثبّتّه",0],["steps","📝 خطوات التنفيذ","ماذا فعلت خطوة بخطوة؟",0],["res","👀 الملاحظات والنتائج","ماذا لاحظت؟ اكتب القيم أو النتائج التي حصلت عليها",1],["conc","💡 الاستنتاج","ماذا تعلمت؟ وبماذا تفسر النتائج؟",1]];
+  const R=M.lrep;s.innerHTML=`<div class="pane"><span class="tag g">🧾 تقرير التجربة الافتراضية</span><h3>${esc(E.lab.title)}</h3><p>اكتب تقريرًا مختصرًا عن تجربتك في المختبر الافتراضي، وسيصل إلى معلمك.</p><div class="ownf">${F.map(([id,l,ph,req])=>`<label style="font-weight:800;font-size:15px">${l}${req?' <span style="color:var(--bad)">*</span>':''}</label><textarea id="lr_${id}" maxlength="500" placeholder="${ph}" style="min-height:64px">${esc(R[id]||"")}</textarea>`).join("")}</div>${R.sent?'<div class="why ok" style="margin-top:10px">✓ وصل تقريرك إلى معلمك — يمكنك تعديله وإرساله مرة أخرى</div>':''}</div>`;
+  const ft=()=>{const okR=F.every(([id,,,req])=>!req||(R[id]||"").trim().length>=3);foot([["تخطَّ","s",next],[okR?"📤 احفظ التقرير وأرسله ←":"أكمل النتائج والاستنتاج","g",async()=>{const b=document.querySelector("#foot .g");b.disabled=true;b.textContent="⏳ جارٍ الإرسال…";const ok=await sendLabRep();toast(ok?"✓ أُرسل تقرير التجربة لمعلمك":"⏳ حُفظ التقرير، وسيُرسل عند توفر الإنترنت");next()},!okR]])};
+  F.forEach(([id])=>{$("lr_"+id).oninput=e=>{R[id]=e.target.value;R.sent=false;const d=me.done[M.m.idx]=me.done[M.m.idx]||{};d.lrep=Object.assign({},R);save();ft()}});ft();return}
  if(k[0]==="q"){const qi=+k.slice(1),q=E.q[qi],a=M.ans[qi],n=E.q.length;
   s.innerHTML=`<div class="pane"><span class="tag">🧠 تحدٍّ ${AR(qi+1)} من ${AR(n)} • ${esc(q[4])}</span><h3>${esc(q[0])}</h3><div class="opts">${q[1].map((o,i)=>`<button type="button" class="opt" data-i="${i}"><span>${"أبجد"[i]}</span>${esc(o)}</button>`).join("")}</div><div id="why"></div></div>`;
   const nx=qi<n-1?"التحدي التالي ←":"إلى المشروع ←";
@@ -203,7 +207,7 @@ function draw(){dots();const s=$("stage"),E=M.E,k=M.st[M.step];s.scrollTop=0;
   if(own){const sv=()=>{M.own.h=$("ownH").value;M.own.d=$("ownD").value;renderUps()};$("ownH").oninput=sv;$("ownD").oninput=sv}
   ["upCam","upImg","upFile"].forEach(id=>$(id).onchange=e=>{const f=e.target.files&&e.target.files[0];e.target.value="";if(f)doUpload(f)});
   renderUps();return}
- const r=M.res,n=E.q.length;s.innerHTML=`<div class="pane fin"><div class="big">${r.c===n?"🏆":r.c>=n-1?"🌟":"💪"}</div><h3>${r.c===n?"أداء عبقري!":r.c>=n-1?"أحسنت يا متميز!":"محاولة جيدة، تستطيع أفضل!"}</h3><div class="row"><div><b>${r.lab?"✓":"—"}</b><span>المختبر</span></div><div><b>${AR(r.c)}/${AR(n)}</b><span>التحديات</span></div><div><b>${r.up?"📎 "+AR(r.up):r.task?"✓":"—"}</b><span>المشروع</span></div></div><p style="font-size:15px;margin-top:10px">+${AR(r.pts)} نقطة تميّز</p><p style="font-size:14px;color:var(--muted)">${r.sent?"✓ وصلت نتيجتك إلى معلمك":"⏳ ستُرسل نتيجتك لمعلمك تلقائيًا عند توفر الإنترنت"}</p></div>`;
+ const r=M.res,n=E.q.length;s.innerHTML=`<div class="pane fin"><div class="big">${r.c===n?"🏆":r.c>=n-1?"🌟":"💪"}</div><h3>${r.c===n?"أداء عبقري!":r.c>=n-1?"أحسنت يا متميز!":"محاولة جيدة، تستطيع أفضل!"}</h3><div class="row"><div><b>${r.lab?"✓":"—"}</b><span>المختبر</span></div>${M.E.lab?`<div><b>${M.lrep&&M.lrep.conc?"✓":"—"}</b><span>تقرير التجربة</span></div>`:""}<div><b>${AR(r.c)}/${AR(n)}</b><span>التحديات</span></div><div><b>${r.up?"📎 "+AR(r.up):r.task?"✓":"—"}</b><span>المشروع</span></div></div><p style="font-size:15px;margin-top:10px">+${AR(r.pts)} نقطة تميّز</p><p style="font-size:14px;color:var(--muted)">${r.sent?"✓ وصلت نتيجتك إلى معلمك":"⏳ ستُرسل نتيجتك لمعلمك تلقائيًا عند توفر الإنترنت"}</p></div>`;
  foot([["إعادة المحاولة","s",()=>openMission(M.m)],["العودة للمهمات","",closeMission]])}
 function renderUps(){const box=$("upList");if(!box)return;box.innerHTML=M.up.map(u=>`<div class="upit ${u.err?"err":u.done?"ok":""}">${u.err?"✗":u.done?"✓":"⏳"} ${esc(u.name)}${u.err?" — "+esc(u.err):u.done?"":" … جارٍ الرفع"}</div>`).join("");
  const any=M.up.some(u=>u.done),busy=M.up.some(u=>!u.done&&!u.err),noT=M.pj===2&&!M.own.h.trim();foot([["لاحقًا","s",()=>finish(false)],[noT?"اكتب عنوان مشروعك أولًا":any?"✓ أنهيت المشروع ورفعته":"✓ أنجزت المشروع","g",()=>finish(true),busy||noT]])}
@@ -218,15 +222,20 @@ async function doUpload(f0){if(M.up.filter(u=>u.done).length>=5){toast("يكفي
   u.done=true;u.path=path;const d=me.done[M.m.idx]=me.done[M.m.idx]||{};(d.up=d.up||[]).push({n:f0.name,p:path,at:Date.now()});save();toast("✓ رُفع الملف")}
  catch(e){u.err=e.message||"تعذر الرفع"}renderUps()}
 /* بطاقة فكرة المشروع الخاص: صورة تصل إلى المعلم مع أعمال الطالب */
+/* بطاقة صورة تصل إلى المعلم مع أعمال الطالب (فكرة المشروع الخاص / تقرير التجربة) */
+async function cardUpload(head,title,secs,pn){const W=1000,cv=document.createElement("canvas"),c=cv.getContext("2d");
+ const wrap=(t,w)=>{const L=[];String(t||"—").split(/\n/).forEach(p=>{let l="";p.split(/\s+/).forEach(x=>{const y=l?l+" "+x:x;if(c.measureText(y).width>w&&l){L.push(l);l=x}else l=y});L.push(l)});return L};
+ c.font="600 32px Tajawal,Arial";const blocks=secs.map(([l,t])=>[l,wrap(t,W-120)]);const H=200+blocks.reduce((a,[l,L])=>a+(l?50:0)+L.length*48+22,0);
+ cv.width=W;cv.height=H;c.fillStyle="#fffaf0";c.fillRect(0,0,W,H);c.fillStyle="#5b2fb3";c.fillRect(0,0,W,90);c.direction="rtl";c.textAlign="right";
+ c.fillStyle="#fff";c.font="800 36px Tajawal,Arial";c.fillText(head,W-50,58);c.fillStyle="#24164a";c.font="800 42px Tajawal,Arial";c.fillText(title,W-50,160);
+ let y=220;blocks.forEach(([l,L])=>{if(l){c.fillStyle="#c98a07";c.font="800 32px Tajawal,Arial";c.fillText(l,W-50,y);y+=50}c.fillStyle="#3b1f6e";c.font="600 32px Tajawal,Arial";L.forEach(x=>{c.fillText(x,W-60,y);y+=48});y+=22});
+ const b=await new Promise(r=>cv.toBlob(r,"image/jpeg",.9));if(!b)return false;const path=(await folder())+"/"+M.m.idx+"-p"+pn+"-"+Date.now()+".jpg";
+ if(!DEMO){const r=await fetch(BASE+"/storage/v1/object/"+BUCKET+"/"+path,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"image/jpeg","x-upsert":"false"},body:b});if(!r.ok)return false}return true}
 async function ideaCard(){const h=M.own.h.trim(),dd=M.own.d.trim(),sig=h+"|"+dd,pd=me.done[M.m.idx]||{};if(!h||pd.ownSig===sig)return;
- try{const W=1000,cv=document.createElement("canvas"),c=cv.getContext("2d");c.font="600 34px Tajawal,Arial";const wrap=(t,w)=>{const L=[];t.split(/\n/).forEach(p=>{let l="";p.split(/\s+/).forEach(x=>{const y=l?l+" "+x:x;if(c.measureText(y).width>w&&l){L.push(l);l=x}else l=y});L.push(l)});return L};
-  const lines=wrap(dd||"—",W-120);cv.width=W;cv.height=300+lines.length*52;c.fillStyle="#fffaf0";c.fillRect(0,0,W,cv.height);c.fillStyle="#5b2fb3";c.fillRect(0,0,W,90);c.direction="rtl";c.textAlign="right";
-  c.fillStyle="#fff";c.font="800 38px Tajawal,Arial";c.fillText("💡 مشروع من اختيار الطالب — "+M.E.t,W-50,58);c.fillStyle="#24164a";c.font="800 44px Tajawal,Arial";c.fillText(h,W-50,165);
-  c.font="600 34px Tajawal,Arial";c.fillStyle="#3b1f6e";lines.forEach((l,i)=>c.fillText(l,W-60,240+i*52));
-  const b=await new Promise(r=>cv.toBlob(r,"image/jpeg",.9));if(!b)return;const path=(await folder())+"/"+M.m.idx+"-p3-"+Date.now()+".jpg";
-  if(!DEMO){const r=await fetch(BASE+"/storage/v1/object/"+BUCKET+"/"+path,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"image/jpeg","x-upsert":"false"},body:b});if(!r.ok)return}
-  const d=me.done[M.m.idx]=me.done[M.m.idx]||{};d.ownSig=sig;save()}catch(e){console.warn(e)}}
-async function finish(task){if(task&&M.pj===2)await ideaCard();const n=M.E.q.length,c=M.ans.filter(Boolean).length,secs=(Date.now()-M.t0)/1000,idx=M.m.idx,key=M.m.l.key,ups=M.up.filter(u=>u.done).length;
+ try{if(await cardUpload("💡 مشروع من اختيار الطالب — "+M.E.t,h,[["",dd]],3)){const d=me.done[M.m.idx]=me.done[M.m.idx]||{};d.ownSig=sig;save()}}catch(e){console.warn(e)}}
+async function sendLabRep(){const R=M.lrep;try{const ok=await cardUpload("🧾 تقرير التجربة الافتراضية — "+M.E.t,M.E.lab.title,[["🎯 هدف التجربة",R.goal],["🔧 الأدوات والمتغيرات",R.vars],["📝 خطوات التنفيذ",R.steps],["👀 الملاحظات والنتائج",R.res],["💡 الاستنتاج",R.conc]].filter(x=>(x[1]||"").trim()),4);
+ R.sent=ok;const d=me.done[M.m.idx]=me.done[M.m.idx]||{};d.lrep=Object.assign({},R);save();return ok}catch(e){console.warn(e);return false}}
+async function finish(task){if(task&&M.pj===2)await ideaCard();if(M.lrep&&M.lrep.conc&&!M.lrep.sent)await sendLabRep();const n=M.E.q.length,c=M.ans.filter(Boolean).length,secs=(Date.now()-M.t0)/1000,idx=M.m.idx,key=M.m.l.key,ups=M.up.filter(u=>u.done).length;
  const prev=me.done[idx]||{},before=ptsOf(me.done[idx]);const pjv=M.pj!=null?{pj:M.pj,own:M.pj===2?{h:M.own.h.trim(),d:M.own.d.trim()}:undefined}:{};
  const d=Object.assign({},prev,pjv,{best:Math.max(prev.best??-1,c),n,task:!!(prev.task||task),lab:!!(prev.lab||M.labOk),tries:(prev.tries||0)+1,last:Date.now()});me.done[idx]=d;save();
  M.res={c,task,lab:M.labOk,up:ups,pts:Math.max(0,ptsOf(d)-before),sent:true};M.step=M.st.length-1;draw();
