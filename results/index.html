@@ -171,7 +171,7 @@ td.nm{text-align:right}
 .chip{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:6px 14px;font-weight:800;font-size:14px}
 .chip.on{background:#0a2a5e;color:#fff;border-color:#0a2a5e}
 /* modal */
-.ov{position:fixed;inset:0;background:#06173acc;z-index:50;display:none;align-items:flex-start;justify-content:center;padding:24px 12px;overflow:auto}
+.ov{position:fixed;inset:0;background:#06173acc;z-index:70;display:none;align-items:flex-start;justify-content:center;padding:24px 12px;overflow:auto}
 .ov.show{display:flex}
 .modal{background:#fff;border-radius:22px;width:min(860px,100%);box-shadow:0 30px 70px #0008;overflow:hidden}
 .modal .mh{background:linear-gradient(135deg,#0b3170,#143f8b);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px;font-size:19px;font-weight:900}
@@ -289,7 +289,7 @@ td.nm{text-align:right}
 </div>
 
 <div class="ov" id="ov"><div class="modal" id="modal"></div></div>
-<div id="rpOv"><div class="rp-bar"><b id="rpTitle">التقرير</b><button class="btn b-green b-sm" id="rpSaveBtn" onclick="saveReportCloud()">💾 حفظ التقرير</button><button class="btn b-gold b-sm" onclick="window.print()">🖨️ طباعة</button><button class="btn b-sm" style="background:#fff;color:#0a2a5e" onclick="exportReport('png')">🖼️ صورة</button><button class="btn b-sm" style="background:#e5484d;color:#fff" onclick="exportReport('pdf')">📄 PDF</button><button class="btn b-light b-sm" onclick="closeReport()">✕ إغلاق</button></div><div id="rpBody"></div></div>
+<div id="rpOv"><div class="rp-bar"><b id="rpTitle">التقرير</b><button class="btn b-green b-sm" id="rpSaveBtn" onclick="saveReportCloud()">💾 حفظ التقرير</button><button class="btn b-sm" style="background:#e8f0ff;color:#0a2a5e" onclick="rpDateDlg()">📅 تاريخ التقرير</button><button class="btn b-gold b-sm" onclick="window.print()">🖨️ طباعة</button><button class="btn b-sm" style="background:#fff;color:#0a2a5e" onclick="exportReport('png')">🖼️ صورة</button><button class="btn b-sm" style="background:#e5484d;color:#fff" onclick="exportReport('pdf')">📄 PDF</button><button class="btn b-light b-sm" onclick="closeReport()">✕ إغلاق</button></div><div id="rpBody"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1517,7 +1517,22 @@ function remedialTable(A,weak){
 /* ---------- REPORTS ---------- */
 function rpHeader(){
  const s=S.settings;
- return `<div class="rp-h"><div class="r"><b>المملكة العربية السعودية</b><br>وزارة التعليم<br>${esc(s.admin)}<br>${esc(s.school)}</div><img src="${s.logo||'../icon-512.png'}" alt=""><div class="l">العام الدراسي: ${esc(s.year)}<br>${s.term?esc(s.term)+'<br>':''}تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'})}</div></div>`;
+ return `<div class="rp-h"><div class="r"><b>المملكة العربية السعودية</b><br>وزارة التعليم<br>${esc(s.admin)}<br>${esc(s.school)}</div><img src="${s.logo||'../icon-512.png'}" alt=""><div class="l">العام الدراسي: ${esc(s.year)}<br>${s.term?esc(s.term)+'<br>':''}تاريخ التقرير: <span class="rp-date">${rpDateTxt()}</span></div></div>`;
+}
+/* تاريخ التقرير: افتراضيًا تاريخ اليوم الهجري، ويمكن تعديله من زر «📅 تاريخ التقرير» */
+let RP_DATE=null;
+function rpDateTxt(d){d=d||RP_DATE||hijriToday();return `${toAr(d.d)} ${HMONTHS[d.m-1]} ${toAr(d.y)} هـ`}
+function rpDateDlg(){
+ const cur=RP_DATE||hijriToday();
+ modal('📅 تعديل تاريخ التقرير',`<div class="flex" style="gap:6px">${dateSelects(`${cur.d}/${cur.m}/${cur.y}`)}</div><div class="muted" style="font-size:13px;margin-top:8px">يتغيّر التاريخ في ترويسة جميع صفحات التقرير، وفي الطباعة والصورة وPDF والتقرير المحفوظ.</div>`,
+ `<button class="btn b-gold" onclick="rpDateSet()">تطبيق</button><button class="btn b-light" onclick="RP_DATE=null;rpDateApply();closeModal()">تاريخ اليوم</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+}
+function rpDateSet(){const d=+$('#f_dd').value,m=+$('#f_dm').value,y=+$('#f_dy').value;if(!d||!m||!y){toast('اختر اليوم والشهر والسنة');return}RP_DATE={d,m,y};rpDateApply();closeModal();toast('✅ تم تعديل تاريخ التقرير')}
+function rpDateApply(){
+ const t=rpDateTxt();let n=document.querySelectorAll('#rpBody .rp-date').length;
+ document.querySelectorAll('#rpBody .rp-date').forEach(e=>e.textContent=t);
+ if(!n)document.querySelectorAll('#rpBody .rp-h .l').forEach(e=>{e.innerHTML=e.innerHTML.replace(/تاريخ التقرير:\s*[^<]*/,'تاريخ التقرير: <span class="rp-date">'+t+'</span>')});
+ const sb=$('#rpSaveBtn');if(sb&&!sb.classList.contains('hide')&&sb.disabled){sb.disabled=false;sb.textContent='💾 حفظ التقرير (بالتاريخ الجديد)'}
 }
 function rpFoot(p,n){return `<div class="rp-foot"><span>منصة تحليل نتائج الاختبارات — ${esc(S.settings.school)}</span><span>صفحة ${p} من ${n}</span></div>`}
 function rpSign(){const s=S.settings;return `<div class="rp-sign"><div>معلم المادة<br><b>${esc(s.teacher)}</b><br>التوقيع: ............</div><div>${s.counselor?'الموجّه الطلابي<br><b>'+esc(s.counselor)+'</b>':'وكيل الشؤون التعليمية<br><b>&nbsp;</b>'}<br>التوقيع: ............</div><div>مدير المدرسة<br><b>${esc(s.principal)}</b><br>التوقيع: ............</div></div>`}
