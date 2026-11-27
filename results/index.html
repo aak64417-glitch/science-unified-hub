@@ -1976,7 +1976,7 @@ async function cloudPush(){
  try{
   try{await put()}catch(e){if(e.status===409||e.status===422){await cloudPull();await put();render()}else throw e}
   Cloud.last=Date.now();setCloud('ok');
- }catch(e){setCloud('err',e.message)}
+ }catch(e){Cloud.lastErr=e;setCloud('err',e.message)}
  finally{Cloud.busy=false;if(Cloud.dirty){Cloud.dirty=false;schedulePush()}}
 }
 function schedulePush(){
@@ -1985,15 +1985,19 @@ function schedulePush(){
  Cloud.timer=setTimeout(()=>{Cloud.timer=null;Cloud.pending=false;cloudPush()},wait);
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&Cloud.timer){clearTimeout(Cloud.timer);Cloud.timer=null;cloudPush()}});
+function cloudErr(e){const m=e&&e.message||String(e);modal('⚠️ تعذّر الحفظ في المنصة',`<div class="note"><b>${esc(m)}</b></div><div class="note blue" style="margin-top:10px">${e&&e.badPass?'كلمة المرور لا تطابق البيانات المحفوظة سابقًا في المنصة. اكتب كلمة المرور نفسها التي استخدمتها أول مرة.':(e&&(e.status===401||e.status===403||e.status===404))?'رمز الوصول المحفوظ على هذا الجهاز لا يسمح بالكتابة. أنشئ رمزًا جديدًا من GitHub بصلاحية <b>Contents: Read and write</b> على مستودع science-unified-hub، ثم الصقه في الإعدادات.':'تحقق من اتصال الإنترنت ثم أعد المحاولة.'}</div>
+${(e&&(e.status===401||e.status===403||e.status===404))?`<div class="form" style="margin-top:10px"><div class="f w4">رمز وصول جديد (github_pat_…)<input class="inp" id="c_tok2" type="password" autocomplete="off" placeholder="github_pat_..."></div></div>`:''}`,
+ `${(e&&(e.status===401||e.status===403||e.status===404))?`<button class="btn b-gold" onclick="const v=$('#c_tok2').value.trim();if(!/^(github_pat_|ghp_)/.test(v)){toast('الرمز يبدأ بـ github_pat_');return}lsSet(CLOUD.tk,v);closeModal();cloudRetry()">حفظ الرمز وإعادة المحاولة</button>`:`<button class="btn b-gold" onclick="closeModal();cloudRetry()">إعادة المحاولة</button>`}<button class="btn b-light" onclick="closeModal()">إغلاق</button>`)}
+async function cloudRetry(){if(!lsGet(CLOUD.pk)){go('settings');return}Cloud.key=null;Cloud.salt=null;setCloud('saving');try{const had=await cloudPull();await cloudPush();if(Cloud.st==='err')throw (Cloud.lastErr||new Error(Cloud.msg));const up=await uploadPendingReports();render();toast('✅ تم الحفظ في المنصة'+(up?` — ورُفع ${toAr(up)} تقرير`:''))}catch(e){setCloud('err',e.message);render();cloudErr(e)}}
 async function cloudEnable(){
  const tok=($('#c_tok')?.value||'').trim();
  if(tok){if(!/^(github_pat_|ghp_)/.test(tok)){toast('رمز الوصول يجب أن يبدأ بـ github_pat_');return}lsSet(CLOUD.tk,tok)}
  if(!lsGet(CLOUD.tk)){toast('أدخل رمز الوصول (نفس رمز ملف الإنجاز)');return}
  const p=$('#c_pass').value;if(p.length<6){toast('كلمة المرور ٦ أحرف على الأقل');return}
  lsSet(CLOUD.pk,p);Cloud.key=null;Cloud.salt=null;Cloud.sha=null;setCloud('saving','جارٍ الاتصال…');
- try{const had=await cloudPull();await cloudPush();if(Cloud.st==='err')throw new Error(Cloud.msg);
+ try{const had=await cloudPull();await cloudPush();if(Cloud.st==='err')throw (Cloud.lastErr||new Error(Cloud.msg));
   const up=await uploadPendingReports();toast((had?'✅ تم الربط ودمج البيانات المحفوظة':'✅ تم تفعيل الحفظ في المنصة')+(up?` — ورُفع ${toAr(up)} تقرير`:''));render()}
- catch(e){if(e.badPass)lsSet(CLOUD.pk,null);setCloud(cloudOn()?'err':'off',e.message);toast('⚠️ '+e.message);render()}
+ catch(e){if(e.badPass)lsSet(CLOUD.pk,null);setCloud(cloudOn()?'err':'off',e.message);render();cloudErr(e)}
 }
 function cloudDisable(){if(!confirm('إيقاف الحفظ السحابي على هذا الجهاز؟ تبقى البيانات المحفوظة في المنصة كما هي.'))return;lsSet(CLOUD.pk,null);Cloud.key=null;setCloud('off');render()}
 async function cloudSyncNow(){if(!cloudOn())return;setCloud('saving');try{await cloudPull();await uploadPendingReports();render();await cloudPush();toast(Cloud.st==='ok'?'✅ تمت المزامنة':'⚠️ '+Cloud.msg)}catch(e){setCloud('err',e.message);toast('⚠️ '+e.message)}}
@@ -2021,9 +2025,18 @@ async function saveReportCloud(){
  S.reports=S.reports||[];S.reports.push(r);save();
  if(cloudOn()){
   try{await repUpload(r,obj);save();b.textContent='✓ محفوظ في الجهاز والمنصة';toast('✅ حُفظ التقرير في الجهاز والمنصة — تجده في «التقارير المحفوظة»')}
-  catch(e){b.textContent='✓ محفوظ في هذا الجهاز';toast('⚠️ حُفظ في الجهاز، وتعذّر رفعه للمنصة: '+e.message)}
- }else{b.textContent='✓ محفوظ في هذا الجهاز';toast('✅ حُفظ التقرير — تجده في «التقارير المحفوظة»')}
+  catch(e){b.textContent='✓ محفوظ في هذا الجهاز';cloudErr(e)}
+ }else{b.textContent='✓ محفوظ في هذا الجهاز';cloudAsk()}
 }
+function cloudAsk(){
+ const hasTok=!!lsGet(CLOUD.tk);
+ modal('💾 حُفظ التقرير في هذا الجهاز فقط',`<div class="note">التقرير محفوظ الآن في هذا المتصفح فقط، وقد يضيع إذا مُسح المتصفح. فعّل «الحفظ في المنصة» ليُحفظ هذا التقرير وكل تقاريرك ودرجاتك في المنصة نفسها.</div>
+ <div class="form" style="margin-top:12px">${hasTok?`<div class="f w4">رمز الوصول<div class="tag t-grn" style="align-self:flex-start">✓ موجود على هذا الجهاز (من ملف الإنجاز)</div></div>`:`<div class="f w4">رمز الوصول (github_pat_…)<input class="inp" id="c_tok" type="password" autocomplete="off" placeholder="github_pat_..."></div>`}
+ <div class="f w4">كلمة مرور التشفير (٦ أحرف على الأقل — احفظها جيدًا)<input class="inp" id="c_pass" type="password" autocomplete="new-password"></div></div>`,
+ `<button class="btn b-gold" onclick="closeAndEnable()">☁️ تفعيل والحفظ في المنصة</button><button class="btn b-light" onclick="closeModal()">لاحقًا</button>`);
+}
+async function closeAndEnable(){const tok=($('#c_tok')?.value||'').trim(),pass=$('#c_pass').value;if(tok){if(!/^(github_pat_|ghp_)/.test(tok)){toast('رمز الوصول يبدأ بـ github_pat_');return}lsSet(CLOUD.tk,tok)}if(!lsGet(CLOUD.tk)){toast('أدخل رمز الوصول');return}if(pass.length<6){toast('كلمة المرور ٦ أحرف على الأقل');return}lsSet(CLOUD.pk,pass);closeModal();toast('⏳ جارٍ الحفظ في المنصة…');await cloudRetry()}
+async function uploadOne(id){const r=(S.reports||[]).find(x=>x.id===id);if(!r)return;if(!cloudOn()){cloudAsk();return}const o=await repGetLocal(id);if(!o){toast('التقرير غير موجود على هذا الجهاز');return}try{await repUpload(r,o);save();render();toast('✅ رُفع التقرير للمنصة')}catch(e){cloudErr(e)}}
 async function openSaved(id){
  const r=(S.reports||[]).find(x=>x.id===id);if(!r)return;toast('جارٍ فتح التقرير…');
  try{let o=await repGetLocal(id);
@@ -2043,14 +2056,14 @@ function vSaved(){
  const list=(S.reports||[]).slice().sort((a,b)=>b.date-a.date);
  return `<div class="toolbar"><h2>التقارير المحفوظة</h2>${cloudOn()?`<button class="btn b-light" onclick="cloudSyncNow()">🔄 مزامنة</button>`:''}</div>
  ${!cloudOn()?`<div class="note" style="margin-bottom:14px">💾 التقارير تُحفظ في هذا الجهاز. لتظهر على أجهزتك الأخرى وتُحفظ بأمان في المنصة فعّل «الحفظ في المنصة» من <a href="#" onclick="event.preventDefault();go('settings')">الإعدادات</a> — وتُرفع التقارير الحالية تلقائيًا.</div>`:''}
- ${list.length?`<div class="tests">${list.map(r=>`<div class="tcard"><div class="tt" style="background:linear-gradient(135deg,#143f8b,#0a2a5e)">${ico('file')}<div><b>${esc(r.title)}</b><small>${new Date(r.date).toLocaleDateString('ar-SA-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'})}</small></div></div><div class="tf" style="padding-top:12px"><span class="tag ${(RKIND[r.kind]||RKIND.anon)[1]}">${(RKIND[r.kind]||RKIND.anon)[0]}</span><span class="tag ${r.file?'t-grn':'t-gry'}">${r.file?'☁️ في المنصة':'💾 في الجهاز'}</span><span style="flex:1"></span><button class="btn b-blue b-sm" onclick="openSaved('${r.id}')">${ico('eye')}فتح</button><button class="btn b-red b-sm" onclick="delSaved('${r.id}')">${ico('trash')}</button></div></div>`).join('')}</div>`
+ ${list.length?`<div class="tests">${list.map(r=>`<div class="tcard"><div class="tt" style="background:linear-gradient(135deg,#143f8b,#0a2a5e)">${ico('file')}<div><b>${esc(r.title)}</b><small>${new Date(r.date).toLocaleDateString('ar-SA-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'})}</small></div></div><div class="tf" style="padding-top:12px"><span class="tag ${(RKIND[r.kind]||RKIND.anon)[1]}">${(RKIND[r.kind]||RKIND.anon)[0]}</span><span class="tag ${r.file?'t-grn':'t-gry'}">${r.file?'☁️ في المنصة':'💾 في الجهاز'}</span>${r.file?'':`<button class="btn b-gold b-sm" onclick="uploadOne('${r.id}')">☁️ رفع للمنصة</button>`}<span style="flex:1"></span><button class="btn b-blue b-sm" onclick="openSaved('${r.id}')">${ico('eye')}فتح</button><button class="btn b-red b-sm" onclick="delSaved('${r.id}')">${ico('trash')}</button></div></div>`).join('')}</div>`
  :`<div class="panel"><div class="empty">${ico('file')}<br>لا توجد تقارير محفوظة بعد. افتح أي تقرير (نتائج اختبار، خطة علاجية، تحليل ورقة اختبار) واضغط «💾 حفظ التقرير».</div></div>`}`;
 }
 function cloudPanel(){
  const hasTok=!!lsGet(CLOUD.tk),on=cloudOn();
  const st={ok:'✅ متصل — آخر حفظ '+(Cloud.last?new Date(Cloud.last).toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'}):''),saving:'⏳ جارٍ الحفظ…',wait:'⏳ سيُحفظ خلال ثوانٍ',err:'⚠️ '+esc(Cloud.msg),off:'غير مفعّل'}[Cloud.st]||'';
  return `<div class="panel" style="margin-bottom:16px"><div class="ph">☁️ الحفظ في المنصة (مثل ملف الإنجاز)</div><div class="pb">
- ${on?`<div class="note blue"><b>${st}</b><br>تُحفظ الاختبارات والدرجات والتقارير تلقائيًا في مستودع المنصة، مشفّرة بكلمة المرور، وتظهر على أي جهاز تفعّل فيه الحفظ بالرمز وكلمة المرور نفسيهما.</div>
+ ${on?`${Cloud.st==='err'?`<div class="note" style="margin-bottom:8px">⚠️ <b>آخر محاولة حفظ فشلت:</b> ${esc(Cloud.msg)} <button class="btn b-gold b-sm" onclick="cloudRetry()">إعادة المحاولة</button></div>`:''}<div class="note blue"><b>${st}</b><br>تُحفظ الاختبارات والدرجات والتقارير تلقائيًا في مستودع المنصة، مشفّرة بكلمة المرور، وتظهر على أي جهاز تفعّل فيه الحفظ بالرمز وكلمة المرور نفسيهما.</div>
   <div class="flex" style="flex-wrap:wrap;margin-top:10px"><button class="btn b-gold" onclick="cloudSyncNow()">🔄 مزامنة الآن</button><button class="btn b-light" onclick="go('saved')">${ico('file')}التقارير المحفوظة</button><button class="btn b-red" onclick="cloudDisable()">إيقاف على هذا الجهاز</button></div>`
  :`<div class="note">المستودع عام، لذلك تُشفَّر أسماء الطلاب ودرجاتهم بكلمة مرور قبل رفعها فلا يقرؤها غيرك. <b>احفظ كلمة المرور جيدًا</b>: بدونها لا يمكن فتح البيانات على جهاز آخر.</div>
   <div class="form" style="margin-top:12px">
