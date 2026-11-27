@@ -378,7 +378,12 @@ function migrate(o){
  return o;
 }
 let saveH;
-function save(){clearTimeout(saveH);saveH=setTimeout(()=>{track();try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){toast('⚠️ تعذّر الحفظ في المتصفح — صدّر نسخة احتياطية')}schedulePush();storeInfo()},250)}
+function saveNow(){clearTimeout(saveH);saveH=null;track();try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){toast('⚠️ تعذّر الحفظ في المتصفح — صدّر نسخة احتياطية')}schedulePush();storeInfo()}
+function save(){clearTimeout(saveH);saveH=setTimeout(saveNow,120)}
+// حفظ فوري عند إغلاق الصفحة أو الخروج منها، وطلب تخزين دائم من المتصفح
+['pagehide','beforeunload'].forEach(ev=>addEventListener(ev,()=>{if(saveH)saveNow()}));
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&saveH)saveNow()});
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 function storeInfo(){
  const n=S.tests.reduce((a,t)=>a+t.students.length,0);
  const lb=S.settings.lastBackup?new Date(S.settings.lastBackup).toLocaleDateString('ar-SA-u-ca-gregory'):'لم تُصدَّر بعد';
@@ -1091,11 +1096,12 @@ function header(){
  $('#schoolSlogan').textContent=S.settings.slogan;
  $('#schoolLogo').src=S.settings.logo||'../icon-512.png';
 }
+function cloudBanner(){if(cloudOn()||UI.view==='settings')return'';return `<div class="note" style="margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="flex:1">⚠️ <b>بياناتك وتقاريرك محفوظة في هذا المتصفح فقط</b>، وقد تُمسح إذا فُتحت المنصة في التصفح الخاص أو من رابط داخل تطبيق آخر (واتساب مثلًا). فعّل «الحفظ في المنصة» لتبقى محفوظة دائمًا وتظهر على أي جهاز.</span><button class="btn b-gold b-sm" onclick="go('settings')">☁️ تفعيل الحفظ في المنصة</button></div>`}
 function render(){
  header();storeInfo();
  document.querySelectorAll('.nav-btn[data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===UI.view||(UI.view==='entry'&&b.dataset.v==='tests')));
  const V={home:vHome,tests:vTests,entry:vEntry,analysis:vAnalysis,remedial:vRemedial,settings:vSettings,saved:vSaved,help:vHelp,paper:vPaper,portfolio:vPortfolio};
- $('#view').innerHTML=(V[UI.view]||vHome)();
+ $('#view').innerHTML=cloudBanner()+(V[UI.view]||vHome)();
  afterRender();
 }
 let afterFns=[];function after(f){afterFns.push(f)}
