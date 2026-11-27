@@ -72,7 +72,14 @@ $("activate").onclick=()=>assign(true);$("deactivate").onclick=()=>assign(false)
 
 $("previewToggle").onclick=()=>{const v=$("previewPanel");v.classList.toggle("hide");if(!v.classList.contains("hide"))$("studentPreview").src="student.html?demo=1"};
 
-$("signin").onclick=()=>auth().catch(e=>note(e.message));$("refresh").onclick=()=>reload().catch(e=>note(e.message));$("logout").onclick=()=>{jwt="";location.reload()};
+$("signin").onclick=async()=>{const btn=$("signin"),old=btn.textContent;let box=$("loginErr");if(!box){box=document.createElement("div");box.id="loginErr";box.style.cssText="margin-top:12px;padding:12px 14px;border-radius:12px;background:#fdecec;color:#9f1d22;font-weight:700;line-height:1.8;display:none";$("login").appendChild(box)}box.style.display="none";btn.disabled=true;btn.textContent="جارٍ الدخول…";
+ try{await auth()}catch(e){let m=e&&e.message||String(e);
+  if(/Failed to fetch|Load failed|NetworkError|network/i.test(m))m="تعذّر الاتصال بخادم مسار التقدم. تحقق من الإنترنت. وإن استمرت المشكلة فقد يكون مشروع قاعدة البيانات (Supabase) متوقفًا مؤقتًا بسبب عدم الاستخدام: افتح supabase.com ← المشروع ← Restore project، ثم أعد المحاولة بعد دقيقتين.";
+  else if(/Invalid login credentials/i.test(m))m="البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+  else if(/Email not confirmed/i.test(m))m="البريد الإلكتروني غير مؤكد في حساب Supabase.";
+  box.textContent="⚠️ "+m;box.style.display="block";try{note(m)}catch(_){}}
+ finally{btn.disabled=false;btn.textContent=old}};
+["email","password"].forEach(id=>$(id)&&$(id).addEventListener("keydown",e=>{if(e.key==="Enter")$("signin").click()}));$("refresh").onclick=()=>reload().catch(e=>note(e.message));$("logout").onclick=()=>{jwt="";location.reload()};
 
 
 /* ===== تكليف الدروس: عدة دروس × عدة فصول ===== */
