@@ -521,9 +521,10 @@ const wre=list=>new RegExp('(^|[\\s(\\-:،,.؟?/«"])(و|ف)?('+list.join('|')+'
 const LV_RE=[
  ['cre',wre(['صمم','اقترح','ابتكر','خطط','كون فرضيه','صغ فرضيه','تنبا','اكتب خطه','ركب'])],
  ['eva',wre(['قيم','احكم','برر','انقد','ما رايك','دافع','اثبت','ايهما افضل','هل توافق'])],
- ['ana',wre(['قارن','حلل','ميز','استنتج','ما العلاقه','فرق','صنف','ما الذي تستنتجه','ماذا تستنتج','ما المتغير','حدد المتغير'])],
+ ['eva',wre(['الاسلوب العلمي السليم','الطريقه الافضل'])],
+ ['ana',wre(['قارن','حلل','ميز','استنتج','ما العلاقه','فرق','صنف','الفرق','فرضيه','المتغير','تصنيفه','تصنيف','العلاقه بين','ما الذي تستنتجه','ماذا تستنتج','ما المتغير','حدد المتغير'])],
  ['app',wre(['احسب','طبق','استخدم','حل','اوجد','ارسم','ما مقدار','كم','اذا كانت','اذا كان','عين'])],
- ['und',wre(['فسر','وضح','اشرح','صف','لماذا','علل','بين','لخص','ما المقصود','ما سبب','ما وظيفه','ما اهميه','ماذا يحدث','عبر','ما دور','كيف'])]
+ ['und',wre(['التفسير','تفسير','فسر','وضح','اشرح','صف','لماذا','علل','بين','لخص','ما المقصود','ما سبب','ما وظيفه','ما اهميه','ماذا يحدث','عبر','ما دور','كيف'])]
 ];
 const SK_RE=[
  ['تفسير البيانات والرسوم البيانية',/جدول(?! الدوري)|الرسم البياني|الشكل البياني|منحني|البيانات|مخطط|التمثيل البياني/],
@@ -531,7 +532,7 @@ const SK_RE=[
  ['القياس واستخدام الأرقام',/احسب|قياس|مقدار|وحده قياس|كتلته|حجمه|سرعته|كثافته|م\/ث|نيوتن|جول|واط|اوم|فولت|امبير|كجم|سم|كم\/س/],
  ['التصنيف',/صنف|تصنيف|ينتمي|تنتمي|المجموعه/],
  ['المقارنة',/قارن|الفرق بين|يختلف|تختلف|يتشابه|تتشابه|اوجه الشبه/],
- ['الاستنتاج',/استنتج|نستنتج|تستنتج|يستدل/],
+ ['الاستنتاج',/استنتاج|استنتج|نستنتج|تستنتج|يستدل/],
  ['التنبؤ',/تنبا|توقع|ماذا يحدث|ماذا سيحدث|ماذا تتوقع/],
  ['التفسير والتعليل',/علل|فسر|لماذا|ما سبب|بسبب/],
  ['الملاحظة',/لاحظ|الشكل المجاور|الصوره|الشكل التالي|الشكل الاتي|الرسم المجاور/]
@@ -549,22 +550,30 @@ const TOPICS=[
  ['الحركة والقوى',/حركه|سرعه|تسارع|قوه|قوي|احتكاك|جاذبيه|نيوتن|زخم|ازاحه|الاله البسيطه|الشغل|الروافع/],
  ['الطاقة والحرارة',/طاقه|حراره|درجه الحراره|حركيه|الوضع|تحولات|التوصيل|الحمل|الاشعاع/],
  ['الكهرباء والمغناطيسية',/كهرب|تيار|الجهد|مقاومه|الدائره|مغناط|شحنه/],
- ['الموجات والصوت والضوء',/موج|صوت|ضوء|انعكاس|انكسار|عدسه|مرآه|مراه|الطول الموجي|تردد/],
+ ['الموجات والصوت والضوء',/موجه|موجات|الموجي|صوت|ضوء|انعكاس|انكسار|عدسه|مرآه|مراه|الطول الموجي|تردد/],
  ['الأرض: الصخور والمعادن',/صخر|معادن|المعدن|تجويه|تعريه|تربه|القشره|زلزال|بركان|الصفائح/],
  ['الطقس والمناخ والغلاف الجوي',/طقس|مناخ|الغلاف الجوي|الضغط الجوي|رياح|امطار|سحب|رطوبه/],
  ['الفضاء والفلك',/الشمس|القمر|كوكب|كواكب|نجم|مجره|الفضاء|مدار|كسوف|خسوف|المجموعه الشمسيه/]
 ];
+// توحيد كتابة الكلمات المفتاحية مع النص المطبَّع (ئ←ي، أ←ا …)
+[SK_RE,TOPICS].forEach(L=>L.forEach(e=>{e[1]=new RegExp(nAr(e[1].source),e[1].flags)}));
 function qLevel(t){const x=' '+nAr(t)+' ';for(const[k,r]of LV_RE)if(r.test(x))return k;return 'rem'}
 function qSkill(t){const x=nAr(t);for(const[k,r]of SK_RE)if(r.test(x))return k;return QSKILLS[QSKILLS.length-1]}
 function qTopic(t){const x=nAr(t).toLowerCase();let best='',bn=0;TOPICS.forEach(([k,r])=>{const n=(x.match(new RegExp(r.source,'g'))||[]).length;if(n>bn){bn=n;best=k}});return best}
+function secType(sec){
+ const a=nAr(sec||'');if(!a)return'';
+ if(/اختر|ظلل|ضع دائره|الاجابه الصحيحه|البديل/.test(a))return'mcq';
+ if(/صواب|خطا|علامه|✓|×|\(\s*x\s*\)/i.test(a))return'tf';
+ if(/صل |صلي|العمود|التوصيل|زاوج/.test(a))return'match';
+ if(/اكمل|الفراغ|املا/.test(a))return'fill';
+ return'';
+}
 function qType(sec,it){
- const a=nAr(sec||''),x=nAr(it.text);
- if(it.choices>=2||(x.match(/(^|\s)[ابجد]\s*[)\-]/g)||[]).length>=2)return 'mcq';
- const h=a+' '+x.slice(0,60);
- if(/صل |صلي|العمود|التوصيل|زاوج/.test(h))return 'match';
- if(/صح|خطا|صواب|علامه|✓|×/.test(h))return 'tf';
- if(/اكمل|الفراغ|املا|\.{4,}|_{3,}|…{2,}/.test(h)||/\.{4,}|_{3,}/.test(it.text))return 'fill';
- if(/اختر|ظلل|ضع دائره|الاجابه الصحيحه/.test(a))return 'mcq';
+ const x=nAr(it.text);
+ if(it.choices>=2||(x.match(/(^|[\s|])[ابجد]\s*[)\-|]/g)||[]).length>=2)return 'mcq';
+ const st=secType(sec);if(st)return st;
+ if(/\(\s*\)|\)\s*\(/.test(it.text)&&!/[؟?]/.test(it.text))return 'tf';
+ if(/\.{4,}|_{3,}|…{2,}/.test(it.text)||/^اكمل/.test(x))return 'fill';
  return 'essay';
 }
 function qMark(t){const x=nAr(t);let m=x.match(/\(\s*(\d+(?:\.\d+)?)\s*(?:درج|د\b)/);if(m)return +m[1];if(/درجتان|درجتين/.test(x))return 2;return ''}
@@ -575,24 +584,37 @@ function matchOutcome(text,outs){
  outs.forEach(o=>{const ot=toks(o);if(!ot.length)return;const c=ot.filter(w=>T.has(w)||[...T].some(x=>x.length>=4&&(x.includes(w)||w.includes(x)))).length;const sc=c/Math.sqrt(ot.length);if(c>=1&&sc>bs){bs=sc;best=o}});
  return best;
 }
+const BIDI=/[‎‏‪-‮⁦-⁩﻿]/g;
 function parsePaper(text){
- const lines=String(text||'').split(/\r?\n+/).map(l=>l.replace(/[ \t ]+/g,' ').trim()).filter(l=>l.length>1);
- const items=[];let sec='';let cur=null;
- const secRe=/^(السوال|السؤال|س)\s*(ال)?(اول|ثاني|ثالث|رابع|خامس|سادس|سابع|ثامن|تاسع|عاشر|\d{1,2})(?![\u0621-\u064A])/;
- const itemRe=/^[\(\[]?\s*(\d{1,2})\s*[\)\]\-\.ـ:\/]\s*(.+)$/;
- const chRe=/^[\(\[]?\s*([أابجده]|[a-dA-D])\s*[\)\]\-\.ـ:]\s*/;
+ const lines=String(text||'').replace(BIDI,'').split(/\r?\n+/).map(l=>l.replace(/[ \t ]+/g,' ').trim()).filter(l=>l.replace(/[\s|]/g,'').length>1);
+ const items=[];let sec='',stype='',cur=null,last=0,stop=false;
+ const secRe=/(^|[\s:])(السوال|س)\s*(ال)?(اول|ثاني|ثالث|رابع|خامس|سادس|سابع|ثامن|تاسع|عاشر|\d{1,2})(?![ء-ي])/;
+ const numD=/^[\(\[]?\s*(\d{1,2})\s*[\)\]\-\.ـ:\/]\s*(.*)$/;   // 1- نص
+ const numR=/^[-–]\s*(\d{1,2})\s+(.*)$/;                       // -12 نص (مقلوب)
+ const numN=/^(\d{1,2})\s*([ء-ي].*)$/;               // 9نص بلا فاصل
+ const chRe=/^[\(\[]?\s*([أابجده]|[a-dA-D])\s*[\)\]\-\.ـ:|]/;
+ const closed=t=>/\(\s*\)|\)\s*\(/.test(t);
+ const push=(t)=>{cur={text:t,sec,choices:0};items.push(cur)};
  lines.forEach(l=>{
-  const n=nAr(l);
-  if(secRe.test(n)&&l.length<160){sec=l;cur=null;
-   const rest=l.replace(/^[^:\/\-]*[:\/\-]\s*/,'');const m=toEn(rest).match(itemRe);if(m){cur={text:m[2],sec,choices:0};items.push(cur)}return}
-  const m=toEn(l).match(itemRe);
-  if(m&&!/^\d{3,}/.test(toEn(l))){cur={text:l.replace(/^[\(\[]?\s*[\d٠-٩]{1,2}\s*[\)\]\-\.ـ:\/]\s*/,''),sec,choices:0};items.push(cur);return}
-  if(cur&&chRe.test(l)){cur.choices++;cur.text+=' | '+l;return}
-  if(cur&&cur.text.length<600)cur.text+=' '+l;
+  if(stop)return;const c=toEn(l).replace(/^[\s|]+/,'');const n=nAr(c);
+  if(/^(انتهت|انتهي|مع تمنياتي|تمنياتي|بالتوفيق|مع خالص)/.test(n.replace(/\s+/g,' '))){stop=true;return}
+  if(secRe.test(n)&&l.length<170&&!/^\d/.test(c)){sec=l;stype=secType(l);cur=null;last=0;return}
+  if(stype==='tf'&&sec&&(!cur||closed(cur.text))&&!numD.test(c)&&!numR.test(c)&&!/^[.,،]/.test(c)&&!(c.match(numN)&&+c.match(numN)[1]===last+1)){last++;push(c.replace(/^\d{1,2}\s+/,''));return}
+  let m=c.match(numD)||c.match(numR),num=m?+m[1]:0,rest=m?m[2]:'';
+  if(!m){const k=c.match(numN);if(k&&+k[1]===last+1){m=k;num=+k[1];rest=k[2]}}
+  if(m){
+   if(cur&&/^[.,،]/.test(rest)&&!closed(cur.text)){cur.text+=' '+rest;return}   // بقية السطر السابق
+   if(rest.replace(/[\s|.,،]/g,'').length<2&&cur){return}
+   last=num;push(rest.replace(/^[.,،\s]+/,''));return;
+  }
+  if(cur&&/^[.,،]/.test(c)){cur.text+=' '+c.replace(/^[.,،\s]+/,'');return}         // نهاية جملة عربية تظهر في أول السطر
+  if(cur&&(chRe.test(c)||/\|/.test(l))){cur.choices+=Math.max(1,(c.match(/(^|[\s|])[أابجد]\s*[)\-|]/g)||[]).length);cur.text+=' | '+c.replace(/^\|\s*/,'');return}
+  if(stype==='tf'&&(!cur||closed(cur.text))&&sec){last++;push(c);return}          // عبارة صح/خطأ بلا رقم
+  if(cur&&cur.text.length<700)cur.text+=' '+c;
  });
  let out=items;
  if(!out.length){out=lines.filter(l=>/[؟?]|\.{4,}|_{3,}/.test(l)).map(l=>({text:l,sec:'',choices:0}))}
- return out.map((it,i)=>{const full=(it.sec?it.sec+' ':'')+it.text;return{n:i+1,text:it.text.trim(),sec:it.sec,type:qType(it.sec,it),level:qLevel(it.text),skill:qSkill(full),topic:qTopic(full),outcome:'',mark:qMark(full)}});
+ return out.map((it,i)=>{const stem=it.text.split(' | ')[0];const full=(it.sec?it.sec+' ':'')+stem;return{n:i+1,text:it.text.replace(/\s+/g,' ').trim(),sec:it.sec,type:qType(it.sec,it),level:qLevel(stem),skill:qSkill(full),topic:qTopic(stem)||qTopic(it.text),outcome:'',mark:qMark(stem)}});
 }
 function applyOutcomes(p,force){const outs=String(p.outcomes||'').split(/\n+/).map(x=>x.trim()).filter(Boolean);p.items.forEach(it=>{if(force||!it.outcome)it.outcome=matchOutcome(it.text+' '+(it.sec||''),outs)})}
 
