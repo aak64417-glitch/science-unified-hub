@@ -206,8 +206,9 @@ td.nm{text-align:right}
 .rp-h .l{text-align:left;font-size:12.5px;line-height:1.7}
 .rp-h img{width:64px;height:64px;object-fit:contain}
 .rp-t{background:linear-gradient(135deg,#0b3170,#143f8b);color:#fff;border-radius:12px;padding:9px 14px;text-align:center;margin-bottom:10px;position:relative;overflow:hidden}
-.rp-t h2{margin:0;font-size:19px;font-weight:900}
+.rp-t h2{margin:0;font-size:19px;font-weight:900;padding:0 140px}
 .rp-t p{margin:2px 0 0;font-size:12.5px;color:#dbe7ff}
+.rp-qd td,.rp-qd th{font-size:10.5px!important;padding:3px 4px!important;line-height:1.45}
 .rp-t .badge{position:absolute;top:8px;left:10px;background:var(--gold);color:#0a2a5e;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:900}
 .rp-info{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
 .rp-info div{background:#f3f7fc;border:1px solid #dfe7f3;border-radius:8px;padding:5px 8px;font-size:11.5px}
@@ -805,7 +806,7 @@ function openPaperReport(){
  const P=paperStats(p);const R=paperRecs(p,P);const T=TYPES[p.type]||TYPES.other;const gname=`${STAGES[p.stage].g[p.grade-1]} ${STAGES[p.stage].s}`;
  const pages=[];
  pages.push(`${rpHeader()}
- <div class="rp-t"><span class="badge">تقرير تحليل ورقة الاختبار</span><h2>تحليل ${esc(p.name)} ونواتج التعلم والمهارات</h2><p>${T.one} • مادة ${esc(p.subject)} • ${gname}</p></div>
+ <div class="rp-t"><span class="badge">تقرير تحليل ورقة الاختبار</span><h2>تحليل ${esc(p.name)}</h2><p>نواتج التعلم والمهارات والمستويات المعرفية • مادة ${esc(p.subject)} • ${gname}</p></div>
  <div class="rp-info"><div>نوع الاختبار<b>${T.one}</b></div><div>الصف<b>${gname}</b></div><div>عدد الأسئلة<b>${toAr(P.N)}</b></div><div>مجموع الدرجات<b>${P.marks?fmt(P.marks):'—'}</b></div></div>
  <div class="rp-k">${P.dom.map(d=>`<div style="background:${DOMC[d.k]}12;border-color:${DOMC[d.k]}44;color:${DOMC[d.k]}"><b>${fmt(P.pct(d.n))}%</b><span>${d.k} (${toAr(d.n)})</span></div>`).join('')}
   <div style="background:#e8fafa;border-color:#bdeaea;color:#0f8f9d"><b>${toAr(P.sk.length)}</b><span>مهارة علمية</span></div>
@@ -817,19 +818,17 @@ function openPaperReport(){
   <h3 style="margin-top:10px">أنماط الأسئلة</h3><table><tr><th>النمط</th><th>العدد</th><th>النسبة</th></tr>${P.ty.map(t=>`<tr><td>${QTYPES[t.k]}</td><td>${toAr(t.n)}</td><td>${fmt(P.pct(t.n))}%</td></tr>`).join('')}</table></div>
  </div>
  <div class="rp-sec"><h3>المهارات العلمية المقيسة</h3>${P.sk.map(s=>hbar(esc(s.k)+` (${toAr(s.n)})`,P.pct(s.n),'#14a8b5')).join('')}</div>`);
- // جدول المواصفات
- const lk=Object.keys(QLEVELS);
- pages.push(`<!--dense-->${rpHeader()}<div class="rp-sec"><h3>جدول المواصفات: نواتج التعلم / الموضوعات × المستويات المعرفية</h3><table><tr><th>م</th><th>ناتج التعلم / الموضوع</th>${lk.map(k=>`<th>${QLEVELS[k]}</th>`).join('')}<th>المجموع</th><th>الوزن</th></tr>${P.tp.map((t,i)=>`<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(t.k)}</td>${t.lv.map(v=>`<td>${v?toAr(v):''}</td>`).join('')}<td><b>${toAr(t.n)}</b></td><td>${fmt(P.pct(t.n))}%</td></tr>`).join('')}<tr><th></th><th>المجموع</th>${lk.map(k=>`<th>${toAr(P.lv.find(l=>l.k===k).n)}</th>`).join('')}<th>${toAr(P.N)}</th><th>١٠٠%</th></tr></table></div>
- <div class="rp-sec"><h3>ملاحظات وتوصيات على ورقة الاختبار</h3>${R.map(r=>`<p style="margin:4px 0"><b>${r.ic} ${r.h}:</b> ${r.x}</p>`).join('')}</div>
-`);
- // تفاصيل الأسئلة
- const hasKey=p.items.some(q=>q.key);
- const PER=20;const short=s=>{s=String(s||'').replace(/\s*\|\s*/g,' ');return s.length>110?s.slice(0,108)+'…':s};
- for(let c=0;c<p.items.length;c+=PER){const part=p.items.slice(c,c+PER);const last=c+PER>=p.items.length;
-  pages.push(`<!--dense-->${rpHeader()}<div class="rp-sec"><h3>تحليل أسئلة الاختبار سؤالًا سؤالًا${p.items.length>PER?` — الجزء ${toAr(c/PER+1)}`:''}</h3><table><tr><th>م</th><th>نص السؤال</th><th>النمط</th><th>المستوى</th><th>المجال</th><th>المهارة</th><th>ناتج التعلم / الموضوع</th><th>الدرجة</th>${hasKey?'<th>الإجابة</th>':''}</tr>${part.map((q,i)=>`<tr><td>${toAr(c+i+1)}</td><td style="text-align:right;font-size:11px">${esc(short(q.text))}</td><td style="font-size:11px">${QTYPES[q.type]}</td><td style="color:${QLC[q.level]};font-weight:900">${QLEVELS[q.level]}</td><td>${QDOM[q.level]}</td><td style="font-size:11px">${esc(q.skill)}</td><td style="text-align:right;font-size:11px">${esc(q.outcome||q.topic||'—')}</td><td>${q.mark===''?'—':fmt(num(q.mark))}</td>${hasKey?`<td><b>${esc(q.key||'—')}</b></td>`:''}</tr>`).join('')}</table>
-  ${last?'<div class="muted" style="font-size:11px;margin-top:4px">التصنيف مقترح آليًا من صياغة الأسئلة وراجعه المعلم. المجالات: المعرفة (تذكّر، فهم) — التطبيق — الاستدلال (تحليل، تقويم، إبداع).</div>':''}</div>`);
- }
- pages[pages.length-1]+=rpSign();
+ // الصفحة الثانية: جدول المواصفات + تحليل الأسئلة + التوصيات + التوقيعات (تُصغَّر تلقائيًا لتتسع في صفحة واحدة)
+ const lk=Object.keys(QLEVELS);const hasKey=p.items.some(q=>q.key);
+ const short=s=>{s=String(s||'').split(' | ')[0].replace(/\s+/g,' ').trim();return s.length>85?s.slice(0,83)+'…':s};
+ const spec=`<div class="rp-sec"><h3>جدول المواصفات: نواتج التعلم / الموضوعات × المستويات المعرفية</h3><table><tr><th>م</th><th>ناتج التعلم / الموضوع</th>${lk.map(k=>`<th>${QLEVELS[k]}</th>`).join('')}<th>المجموع</th><th>الوزن</th></tr>${P.tp.map((t,i)=>`<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(t.k)}</td>${t.lv.map(v=>`<td>${v?toAr(v):''}</td>`).join('')}<td><b>${toAr(t.n)}</b></td><td>${fmt(P.pct(t.n))}%</td></tr>`).join('')}<tr><th></th><th>المجموع</th>${lk.map(k=>`<th>${toAr(P.lv.find(l=>l.k===k).n)}</th>`).join('')}<th>${toAr(P.N)}</th><th>١٠٠%</th></tr></table></div>`;
+ const rows=(part,off)=>part.map((q,i)=>`<tr><td>${toAr(off+i+1)}</td><td style="text-align:right">${esc(short(q.text))}</td><td>${QTYPES[q.type].split(' /')[0]}</td><td style="color:${QLC[q.level]};font-weight:900">${QLEVELS[q.level]}</td><td>${QDOM[q.level]}</td><td>${esc(q.skill)}</td><td style="text-align:right">${esc(q.outcome||q.topic||'—')}</td>${hasKey?`<td><b>${esc(q.key||'—')}</b></td>`:''}</tr>`).join('');
+ const det=(part,off,lbl)=>`<div class="rp-sec rp-qd"><h3>تحليل أسئلة الاختبار سؤالًا سؤالًا${lbl||''}</h3><table><tr><th>م</th><th>نص السؤال</th><th>النمط</th><th>المستوى</th><th>المجال</th><th>المهارة</th><th>ناتج التعلم / الموضوع</th>${hasKey?'<th>الإجابة</th>':''}</tr>${rows(part,off)}</table></div>`;
+ const recs=`<div class="rp-sec"><h3>ملاحظات وتوصيات على ورقة الاختبار</h3>${R.map(r=>`<p style="margin:3px 0"><b>${r.ic} ${r.h}:</b> ${r.x}</p>`).join('')}<div class="muted" style="font-size:10.5px;margin-top:4px">التصنيف مقترح آليًا من صياغة الأسئلة وراجعه المعلم. المجالات: المعرفة (تذكّر، فهم) — التطبيق — الاستدلال (تحليل، تقويم، إبداع).</div></div>`;
+ const FIRST=26; // ما يزيد على ذلك ينتقل إلى صفحة ثالثة حتى لا يصغر الخط كثيرًا
+ if(p.items.length<=FIRST)pages.push(`<!--dense-->${rpHeader()}${spec}${det(p.items,0)}${recs}${rpSign()}`);
+ else{pages.push(`<!--dense-->${rpHeader()}${spec}${det(p.items.slice(0,FIRST),0,' — الجزء ١')}`);
+  for(let c=FIRST;c<p.items.length;c+=34){const last=c+34>=p.items.length;pages.push(`<!--dense-->${rpHeader()}${det(p.items.slice(c,c+34),c,' — تابع')}${last?recs+rpSign():''}`)}}
  const title='تقرير تحليل ورقة الاختبار — '+p.name;
  $('#rpTitle').textContent=title;
  $('#rpBody').innerHTML=pages.map((x,i)=>`<div class="rp"><div class="rp-in${x.startsWith('<!--dense-->')?' dense':''}">${x}</div>${rpFoot(i+1,pages.length)}</div>`).join('');
