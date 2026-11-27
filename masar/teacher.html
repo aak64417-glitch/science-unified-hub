@@ -79,7 +79,26 @@ $("signin").onclick=async()=>{const btn=$("signin"),old=btn.textContent;let box=
   else if(/Email not confirmed/i.test(m))m="البريد الإلكتروني غير مؤكد في حساب Supabase.";
   box.textContent="⚠️ "+m;box.style.display="block";try{note(m)}catch(_){}}
  finally{btn.disabled=false;btn.textContent=old}};
-["email","password"].forEach(id=>$(id)&&$(id).addEventListener("keydown",e=>{if(e.key==="Enter")$("signin").click()}));$("refresh").onclick=()=>reload().catch(e=>note(e.message));$("logout").onclick=()=>{jwt="";location.reload()};
+["email","password"].forEach(id=>$(id)&&$(id).addEventListener("keydown",e=>{if(e.key==="Enter")$("signin").click()}));
+/* نسيت كلمة المرور + تعيين كلمة مرور جديدة عبر رابط البريد */
+(function(){const login=$("login");if(!login)return;
+ const pw=$("password");if(pw){pw.setAttribute("autocomplete","current-password");const sh=document.createElement("button");sh.type="button";sh.textContent="👁 إظهار كلمة المرور";sh.style.cssText="background:none;border:0;color:#2a5c50;font-weight:800;cursor:pointer;margin-top:6px;font-family:inherit";sh.onclick=()=>{pw.type=pw.type==="password"?"text":"password";sh.textContent=pw.type==="password"?"👁 إظهار كلمة المرور":"🙈 إخفاء كلمة المرور"};pw.insertAdjacentElement("afterend",sh)}
+ const f=document.createElement("button");f.type="button";f.textContent="نسيت كلمة المرور؟";f.style.cssText="display:block;margin:12px auto 0;background:none;border:0;color:#b4532a;font-weight:800;cursor:pointer;text-decoration:underline;font-family:inherit;font-size:15px";
+ f.onclick=async()=>{const em=($("email").value||"").trim();let box=$("loginErr");if(!box){box=document.createElement("div");box.id="loginErr";box.style.cssText="margin-top:12px;padding:12px 14px;border-radius:12px;font-weight:700;line-height:1.8";login.appendChild(box)}
+  if(!/@/.test(em)){box.style.display="block";box.style.background="#fdecec";box.style.color="#9f1d22";box.textContent="⚠️ اكتب بريدك الإلكتروني أولًا ثم اضغط «نسيت كلمة المرور؟»";return}
+  try{const r=await fetch(B+"/auth/v1/recover?redirect_to="+encodeURIComponent(location.origin+location.pathname),{method:"POST",headers:{apikey:K,"Content-Type":"application/json"},body:JSON.stringify({email:em})});if(!r.ok){const j=await r.json().catch(()=>({}));throw Error(j.msg||j.error_description||("رمز "+r.status))}
+   box.style.display="block";box.style.background="#e7f6ed";box.style.color="#16653a";box.textContent="✅ أُرسل رابط تعيين كلمة مرور جديدة إلى "+em+". افتح بريدك (وتحقق من مجلد الرسائل غير المرغوبة)، واضغط الرابط من هذا الجهاز، فتظهر خانة كلمة المرور الجديدة."}
+  catch(e){box.style.display="block";box.style.background="#fdecec";box.style.color="#9f1d22";box.textContent="⚠️ تعذّر إرسال رابط الاستعادة: "+e.message}};
+ login.appendChild(f);
+ const h=new URLSearchParams(location.hash.slice(1));
+ if(h.get("type")==="recovery"&&h.get("access_token")){const tok=h.get("access_token");history.replaceState(null,"",location.pathname+location.search);
+  const card=document.createElement("div");card.style.cssText="margin-top:14px;padding:14px;border-radius:14px;background:#fff7e6;border:2px solid #f2c14e";
+  card.innerHTML='<b style="font-size:17px">🔑 تعيين كلمة مرور جديدة</b><input id="newPw" type="password" autocomplete="new-password" placeholder="كلمة المرور الجديدة (٦ أحرف على الأقل)" style="margin-top:10px;width:100%"><input id="newPw2" type="password" autocomplete="new-password" placeholder="أعد كتابة كلمة المرور" style="margin-top:8px;width:100%"><button id="newPwBtn" type="button" style="margin-top:10px;width:100%">حفظ كلمة المرور الجديدة</button><div id="newPwMsg" style="margin-top:8px;font-weight:700"></div>';
+  login.insertBefore(card,login.children[1]||null);
+  $("newPwBtn").onclick=async()=>{const a=$("newPw").value,b2=$("newPw2").value,m=$("newPwMsg");if(a.length<6){m.textContent="⚠️ كلمة المرور ٦ أحرف على الأقل";return}if(a!==b2){m.textContent="⚠️ كلمتا المرور غير متطابقتين";return}
+   try{const r=await fetch(B+"/auth/v1/user",{method:"PUT",headers:{apikey:K,Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({password:a})});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.msg||j.error_description||("رمز "+r.status));
+    m.style.color="#16653a";m.textContent="✅ تم حفظ كلمة المرور الجديدة. اكتبها الآن في خانة كلمة المرور واضغط «دخول».";$("password").value=a;if(j.email)$("email").value=j.email}catch(e){m.style.color="#9f1d22";m.textContent="⚠️ "+e.message+" — اطلب رابطًا جديدًا"}}}
+})();$("refresh").onclick=()=>reload().catch(e=>note(e.message));$("logout").onclick=()=>{jwt="";location.reload()};
 
 
 /* ===== تكليف الدروس: عدة دروس × عدة فصول ===== */
