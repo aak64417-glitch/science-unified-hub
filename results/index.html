@@ -378,7 +378,12 @@ function migrate(o){
  return o;
 }
 let saveH;
-function saveNow(){clearTimeout(saveH);saveH=null;track();try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){toast('⚠️ تعذّر الحفظ في المتصفح — صدّر نسخة احتياطية')}schedulePush();storeInfo()}
+function saveNow(){clearTimeout(saveH);saveH=null;track();S._ts=Date.now();
+ let lsOk=true;try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){lsOk=false}
+ const snap=JSON.parse(JSON.stringify(S));
+ try{idbOp('readwrite',st=>st.put(snap,'__state__')).then(()=>{Store.ok=true;Store.err='';storeInfo()}).catch(e=>{Store.ok=false;Store.err=String(e&&e.message||e);if(!lsOk)toast('⚠️ تعذّر الحفظ في المتصفح — فعّل الحفظ في المنصة أو صدّر نسخة احتياطية');storeInfo()})}catch(e){if(!lsOk)toast('⚠️ تعذّر الحفظ في المتصفح')}
+ schedulePush();storeInfo()}
+const Store={ok:null,err:''};
 function save(){clearTimeout(saveH);saveH=setTimeout(saveNow,120)}
 // حفظ فوري عند إغلاق الصفحة أو الخروج منها، وطلب تخزين دائم من المتصفح
 ['pagehide','beforeunload'].forEach(ev=>addEventListener(ev,()=>{if(saveH)saveNow()}));
@@ -1918,8 +1923,10 @@ function closeReport(){$('#rpOv').classList.remove('show');document.title='من�
    المستودع عام، لذلك تُشفَّر البيانات (AES-256) بكلمة مرور لا يعرفها غيرك. */
 const CLOUD={tk:'pf1448.control.ghtoken',pk:'results.cloud.pass',repo:'aak64417-glitch/science-unified-hub',dir:'results-data/'};
 const Cloud={key:null,salt:null,sha:null,busy:false,dirty:false,last:0,timer:null,st:'off',msg:''};
-const lsGet=k=>{try{return localStorage.getItem(k)||''}catch(e){return''}};
-const lsSet=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+/* المفاتيح المهمة (كلمة المرور ورمز الوصول) تُحفظ أيضًا في IndexedDB لأن مساحة localStorage مشتركة بين كل تطبيقات الموقع وقد تمتلئ */
+const PKEYS={'results.cloud.pass':'__pk__','pf1448.control.ghtoken':'__tk__'};const MEMK={};
+const lsGet=k=>{if(MEMK[k])return MEMK[k];try{return localStorage.getItem(k)||''}catch(e){return''}};
+const lsSet=(k,v)=>{if(PKEYS[k]){MEMK[k]=v||'';try{idbOp('readwrite',st=>v==null?st.delete(PKEYS[k]):st.put(v,PKEYS[k])).catch(()=>{})}catch(e){}}try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
 const cloudOn=()=>!!(lsGet(CLOUD.tk)&&lsGet(CLOUD.pk));
 const b64ToBytes=s=>Uint8Array.from(atob(String(s).replace(/\s/g,'')),c=>c.charCodeAt(0));
 const bytesToB64=b=>{let s='';for(let i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s)};
@@ -2165,9 +2172,17 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeR
 document.addEventListener('dragover',e=>{if(UI.view==='entry'){e.preventDefault();document.body.classList.add('drag')}});
 document.addEventListener('dragleave',e=>{if(!e.relatedTarget)document.body.classList.remove('drag')});
 document.addEventListener('drop',e=>{if(UI.view!=='entry')return;e.preventDefault();document.body.classList.remove('drag');const f=e.dataTransfer.files[0];if(f)importFile(f)});
-window.addEventListener('beforeunload',()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}});
+
 track(false);render();
-if(cloudOn()){setCloud('saving','جارٍ تحميل البيانات من المنصة…');cloudPull().then(h=>{setCloud('ok');Cloud.last=Date.now();render()}).catch(e=>{if(e.badPass)lsSet(CLOUD.pk,null);setCloud(cloudOn()?'err':'off',e.message);toast('⚠️ '+e.message)})}
+(async()=>{try{
+ for(const [k,ik] of Object.entries(PKEYS)){const v=await idbOp('readonly',st=>st.get(ik));if(v)MEMK[k]=v;else{const l=(()=>{try{return localStorage.getItem(k)}catch(e){return null}})();if(l)lsSet(k,l)}}
+ const d=await idbOp('readonly',st=>st.get('__state__'));
+ if(d&&(!S._ts||(d._ts||0)>(S._ts||0)||(!S.tests.length&&(d.tests||[]).length))){S=migrate(d);track(false)}
+ else if(!d&&(S.tests.length||(S.papers||[]).length))saveNow();
+ Store.ok=true;render();
+ bootCloud();
+}catch(e){Store.ok=false;Store.err=String(e&&e.message||e);render();bootCloud()}})();
+function bootCloud(){if(cloudOn()){setCloud('saving','جارٍ تحميل البيانات من المنصة…');cloudPull().then(h=>{setCloud('ok');Cloud.last=Date.now();render()}).catch(e=>{if(e.badPass)lsSet(CLOUD.pk,null);setCloud(cloudOn()?'err':'off',e.message);toast('⚠️ '+e.message)})}}
 </script>
 </body>
 </html>
