@@ -517,12 +517,12 @@ const DOMC={'المعرفة':'#1d6fe0','التطبيق':'#22a45d','الاستد�
 const DOM_REF={'المعرفة':35,'التطبيق':35,'الاستدلال':30}; // توزيع TIMSS لعلوم الصف الثامن
 const QSKILLS=['تفسير البيانات والرسوم البيانية','التجريب وضبط المتغيرات','القياس واستخدام الأرقام','التصنيف','المقارنة','الاستنتاج','التنبؤ','التفسير والتعليل','الملاحظة','المعرفة العلمية (المفاهيم والحقائق)'];
 const nAr=s=>toEn(String(s||'')).replace(/[ً-ْـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
-const wre=list=>new RegExp('(^|[\\s(\\-:،,.؟?/«"])(و|ف)?('+list.join('|')+')(?=$|[\\s)\\-:،,.؟?/»":])');
+const wre=list=>{const L=list.filter(w=>w.replace(/\s/g,'').length>=4),Sh=list.filter(w=>w.replace(/\s/g,'').length<4);return new RegExp('(^|[\\s(\\-:،,.؟?/«"])(و|ف)?((ال)?('+L.join('|')+')'+(Sh.length?'|'+Sh.join('|'):'')+')(?=$|[\\s)\\-:،,.؟?/»":])')};
 const LV_RE=[
  ['cre',wre(['صمم','اقترح','ابتكر','خطط','كون فرضيه','صغ فرضيه','تنبا','اكتب خطه','ركب'])],
  ['eva',wre(['قيم','احكم','برر','انقد','ما رايك','دافع','اثبت','ايهما افضل','هل توافق'])],
- ['eva',wre(['الاسلوب العلمي السليم','الطريقه الافضل'])],
- ['ana',wre(['قارن','حلل','ميز','استنتج','ما العلاقه','فرق','صنف','الفرق','فرضيه','المتغير','تصنيفه','تصنيف','العلاقه بين','ما الذي تستنتجه','ماذا تستنتج','ما المتغير','حدد المتغير'])],
+ ['eva',wre(['الاسلوب العلمي السليم','الطريقه الافضل','ما افضل طريقه','افضل طريقه','ما افضل وسيله','افضل وسيله'])],
+ ['ana',wre(['قارن','حلل','ميز','استنتج','ما العلاقه','فرق','صنف','الفرق','فرضيه','المتغير','تصنيفه','تصنيف','تصنف','يصنف','العلاقه بين','متوقع','يتوقع','تتوقع','سؤال بحثي','نستنتج','الخطوه الاولي','ما الذي تستنتجه','ماذا تستنتج','ما المتغير','حدد المتغير'])],
  ['app',wre(['احسب','طبق','استخدم','حل','اوجد','ارسم','ما مقدار','كم','اذا كانت','اذا كان','عين'])],
  ['und',wre(['التفسير','تفسير','فسر','وضح','اشرح','صف','لماذا','علل','بين','لخص','ما المقصود','ما سبب','ما وظيفه','ما اهميه','ماذا يحدث','عبر','ما دور','كيف'])]
 ];
@@ -700,6 +700,7 @@ function vPaper(){
     <label class="addopt" style="--c:#7c4ddb">${ico('up')}<b>صور الاختبار</b><span>صورة لكل صفحة — يمكن اختيار عدة صور</span><input type="file" accept="image/*" multiple class="hide" onchange="newPaper(this.files);this.value=''"></label>
     <label class="addopt" style="--c:#c22f34">${ico('file')}<b>ملف PDF</b><span>نصي أو ممسوح ضوئيًا</span><input type="file" accept=".pdf,application/pdf" class="hide" onchange="newPaper(this.files);this.value=''"></label>
     <button class="addopt" style="--c:#123f8c" onclick="pasteQs()">${ico('copy')}<b>لصق نص الأسئلة</b><span>من ملف Word أو غيره</span></button>
+    <button class="addopt" style="--c:#b07d00" onclick="presetDlg()">${ico('star')}<b>اختباراتي الجاهزة</b><span>الاختبار التشخيصي — أول متوسط (٤ نماذج)</span></button>
    </div></div></div>
   ${list.length?`<div class="tests">${list.map(x=>`<div class="tcard"><div class="tt" style="background:linear-gradient(135deg,#7c4ddb,#4b2a9e)">${ico('search')}<div><b>${esc(x.name)}</b><small>${esc(x.subject)} • ${STAGES[x.stage].g[x.grade-1]} ${STAGES[x.stage].s} • ${toAr(x.items.length)} سؤال</small></div></div><div class="tf" style="padding-top:12px">${x.testId&&S.tests.some(t=>t.id===x.testId)?'<span class="tag t-grn">مربوط باختبار</span>':''}<span style="flex:1"></span><button class="btn b-blue b-sm" onclick="go('paper',{paper:'${x.id}'})">${ico('edit')}فتح</button><button class="btn b-gold b-sm" onclick="UI.paper='${x.id}';openPaperReport()">${ico('print')}التقرير</button><button class="btn b-red b-sm" onclick="delPaper('${x.id}')">${ico('trash')}</button></div></div>`).join('')}</div>`:''}`;
  }
@@ -728,14 +729,14 @@ function vPaper(){
  </div>
  <div class="stats" style="margin:14px 0">${[['عدد الأسئلة',toAr(P.N)],['مجموع الدرجات',P.marks?fmt(P.marks):'—'],...P.dom.map(d=>[d.k,fmt(P.pct(d.n))+'%']),['المهارات المقيسة',toAr(P.sk.length)],['الموضوعات / النواتج',toAr(P.tp.filter(t=>t.k!=='غير محدد').length)]].map(x=>`<div class="stat"><small>${x[0]}</small><b>${x[1]}</b></div>`).join('')}</div>
  <div class="panel" style="margin-bottom:14px"><div class="ph">${ico('table')}أسئلة الاختبار وتصنيفها (${toAr(P.N)})</div><div class="pb" style="overflow:auto;padding:8px">
-  <table class="qtbl ptbl"><tr><th style="width:44px">م</th><th style="min-width:260px">نص السؤال</th><th>النوع</th><th>المستوى المعرفي</th><th>المجال</th><th>المهارة</th><th style="min-width:200px">ناتج التعلم / الموضوع</th><th style="width:70px">الدرجة</th><th></th></tr>
+  <table class="qtbl ptbl"><tr><th style="width:44px">م</th><th style="min-width:260px">نص السؤال</th><th>النوع</th><th>المستوى المعرفي</th><th>المجال</th><th>المهارة</th><th style="min-width:200px">ناتج التعلم / الموضوع</th><th style="width:70px">الدرجة</th>${p.items.some(q=>q.key)?'<th style="width:80px">الإجابة</th>':''}<th></th></tr>
   ${p.items.map((q,i)=>`<tr><td><b>${toAr(i+1)}</b></td><td><textarea onchange="pItem(${i},'text',this.value)">${esc(q.text)}</textarea></td>
    <td><select onchange="pItem(${i},'type',this.value)">${opt(QTYPES,q.type)}</select></td>
    <td><select style="color:${QLC[q.level]};font-weight:900" onchange="pItem(${i},'level',this.value)">${opt(QLEVELS,q.level)}</select></td>
    <td><span class="tag" style="background:${DOMC[QDOM[q.level]]}18;color:${DOMC[QDOM[q.level]]};border-color:${DOMC[QDOM[q.level]]}55">${QDOM[q.level]}</span></td>
    <td><select onchange="pItem(${i},'skill',this.value)">${QSKILLS.map(s=>`<option ${q.skill===s?'selected':''}>${s}</option>`).join('')}</select></td>
    <td>${outs.length?`<select onchange="pItem(${i},'outcome',this.value)"><option value="">— ${esc(q.topic||'اختر الناتج')} —</option>${outs.map(o=>`<option ${q.outcome===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`:`<input value="${esc(q.outcome||q.topic)}" placeholder="اكتب ناتج التعلم" onchange="pItem(${i},'outcome',this.value.trim())">`}</td>
-   <td><input type="number" min="0" step="0.25" value="${q.mark}" onchange="pItem(${i},'mark',this.value)"></td>
+   <td><input type="number" min="0" step="0.25" value="${q.mark}" onchange="pItem(${i},'mark',this.value)"></td>${p.items.some(x=>x.key)?`<td><input value="${esc(q.key||'')}" onchange="pItem(${i},'key',this.value.trim())" style="font-weight:900;color:#1b8a4b"></td>`:''}
    <td><button class="btn b-red b-sm" onclick="pDelItem(${i})">${ico('trash')}</button></td></tr>`).join('')}
   </table>
   <div class="flex" style="flex-wrap:wrap;margin-top:8px"><button class="btn b-light b-sm" onclick="pAdd()">${ico('plus')}إضافة سؤال</button><button class="btn b-red b-sm" onclick="delPaper('${p.id}')">${ico('trash')}حذف هذا التحليل</button></div>
@@ -749,6 +750,31 @@ function vPaper(){
 }
 function pasteQs(){modal('📋 لصق نص أسئلة الاختبار',`<textarea class="inp" id="pq_t" style="width:100%;min-height:260px;line-height:1.8" placeholder="الصق أسئلة الاختبار هنا كما هي (مع الترقيم والخيارات)"></textarea>`,`<button class="btn b-gold" onclick="pasteQsGo()">تحليل الأسئلة</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`)}
 function pasteQsGo(){const t=$('#pq_t').value.trim();if(!t){toast('الصق نص الأسئلة أولًا');return}closeModal();const p={id:uid(),created:Date.now(),upd:Date.now(),name:'اختبار (نص ملصق)',subject:'العلوم',stage:'m',grade:1,type:'periodic',files:[],text:t,outcomes:'',items:parsePaper(t),testId:''};S.papers.push(p);save();go('paper',{paper:p.id});toast(`✅ تم تحديد ${toAr(p.items.length)} سؤالًا`)}
+
+/* ---------- اختباراتي الجاهزة (نص الأسئلة ومفتاح الإجابة الأصلي — بدون قراءة ضوئية) ---------- */
+const PRESETS=[{id:'diag-g7-1448',file:'presets/diag-g7-1448.json',name:'الاختبار التشخيصي — علوم أول متوسط ١٤٤٨هـ',stage:'m',grade:1,type:'diagnostic'}];
+async function presetDlg(){
+ const P=PRESETS[0];let d;
+ try{const r=await fetch(P.file+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;d=await r.json()}catch(e){toast('تعذّر تحميل النماذج — تحقق من الاتصال بالإنترنت');return}
+ window._preset={P,d};
+ const have=m=>(S.papers||[]).some(x=>x.preset===P.id+'-'+m);
+ modal('⭐ اختباراتي الجاهزة',`<div class="note blue"><b>${esc(d.title)}</b><br>تُضاف النماذج بنصها الأصلي ومفتاح إجابتها والمهارة المقيسة لكل سؤال كما في صفحة المعلم — بدون قراءة ضوئية. كل نموذج ١٥ سؤالًا: ١٠ اختيار من متعدد و٥ صواب وخطأ.</div>
+ <div class="secs" style="margin-top:12px">${d.models.map(m=>`<label><input type="checkbox" class="pr_m" value="${esc(m.model)}" ${have(m.model)?'':'checked'}>النموذج (${esc(m.model)})${have(m.model)?' <small class="muted">— مضاف سابقًا</small>':''}</label>`).join('')}</div>`,
+ `<button class="btn b-gold" onclick="presetImport()">إضافة النماذج المختارة</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+}
+function presetImport(){
+ const {P,d}=window._preset||{};if(!d)return;
+ const sel=[...document.querySelectorAll('.pr_m:checked')].map(x=>x.value);if(!sel.length){toast('اختر نموذجًا واحدًا على الأقل');return}
+ let first=null;
+ d.models.filter(m=>sel.includes(m.model)).forEach(m=>{
+  const pid=P.id+'-'+m.model;S.papers=(S.papers||[]).filter(x=>{if(x.preset===pid){S.deleted=S.deleted||{};S.deleted[x.id]=Date.now();return false}return true});
+  const items=m.items.map((it,i)=>{const text=it.type==='mcq'?it.q+' | '+it.choices.map((c,j)=>['أ','ب','ج','د'][j]+'- '+c).join(' | '):it.q;
+   return{n:i+1,text,sec:it.type==='mcq'?'السؤال الأول: اختر الإجابة الصحيحة':'السؤال الثاني: صواب وخطأ',type:it.type,level:qLevel(it.q),skill:qSkill(it.q),topic:qTopic(it.q),outcome:it.skill,mark:1,key:it.key,diff:it.diff}});
+  const p={id:uid(),created:Date.now(),upd:Date.now(),preset:pid,name:`الاختبار التشخيصي — النموذج (${m.model})`,subject:'العلوم',stage:P.stage,grade:P.grade,type:P.type,files:[],text:items.map((x,i)=>`${i+1}- ${x.text.replace(/ \| /g,'\n')}`).join('\n'),outcomes:[...new Set(m.items.map(x=>x.skill))].join('\n'),items,testId:''};
+  S.papers.push(p);first=first||p;
+ });
+ save();closeModal();go('paper',{paper:first.id});toast(`✅ أُضيف ${toAr(sel.length)} نموذج بنصه الأصلي ومفتاح إجابته`);
+}
 
 /* ---------- ربط التحليل بنتائج اختبار (لتحليل الإتقان حسب ناتج التعلم) ---------- */
 function linkPaperDlg(){
@@ -797,9 +823,10 @@ function openPaperReport(){
  <div class="rp-sec"><h3>ملاحظات وتوصيات على ورقة الاختبار</h3>${R.map(r=>`<p style="margin:4px 0"><b>${r.ic} ${r.h}:</b> ${r.x}</p>`).join('')}</div>
 `);
  // تفاصيل الأسئلة
+ const hasKey=p.items.some(q=>q.key);
  const PER=20;const short=s=>{s=String(s||'').replace(/\s*\|\s*/g,' ');return s.length>110?s.slice(0,108)+'…':s};
  for(let c=0;c<p.items.length;c+=PER){const part=p.items.slice(c,c+PER);const last=c+PER>=p.items.length;
-  pages.push(`<!--dense-->${rpHeader()}<div class="rp-sec"><h3>تحليل أسئلة الاختبار سؤالًا سؤالًا${p.items.length>PER?` — الجزء ${toAr(c/PER+1)}`:''}</h3><table><tr><th>م</th><th>نص السؤال</th><th>النمط</th><th>المستوى</th><th>المجال</th><th>المهارة</th><th>ناتج التعلم / الموضوع</th><th>الدرجة</th></tr>${part.map((q,i)=>`<tr><td>${toAr(c+i+1)}</td><td style="text-align:right;font-size:11px">${esc(short(q.text))}</td><td style="font-size:11px">${QTYPES[q.type]}</td><td style="color:${QLC[q.level]};font-weight:900">${QLEVELS[q.level]}</td><td>${QDOM[q.level]}</td><td style="font-size:11px">${esc(q.skill)}</td><td style="text-align:right;font-size:11px">${esc(q.outcome||q.topic||'—')}</td><td>${q.mark===''?'—':fmt(num(q.mark))}</td></tr>`).join('')}</table>
+  pages.push(`<!--dense-->${rpHeader()}<div class="rp-sec"><h3>تحليل أسئلة الاختبار سؤالًا سؤالًا${p.items.length>PER?` — الجزء ${toAr(c/PER+1)}`:''}</h3><table><tr><th>م</th><th>نص السؤال</th><th>النمط</th><th>المستوى</th><th>المجال</th><th>المهارة</th><th>ناتج التعلم / الموضوع</th><th>الدرجة</th>${hasKey?'<th>الإجابة</th>':''}</tr>${part.map((q,i)=>`<tr><td>${toAr(c+i+1)}</td><td style="text-align:right;font-size:11px">${esc(short(q.text))}</td><td style="font-size:11px">${QTYPES[q.type]}</td><td style="color:${QLC[q.level]};font-weight:900">${QLEVELS[q.level]}</td><td>${QDOM[q.level]}</td><td style="font-size:11px">${esc(q.skill)}</td><td style="text-align:right;font-size:11px">${esc(q.outcome||q.topic||'—')}</td><td>${q.mark===''?'—':fmt(num(q.mark))}</td>${hasKey?`<td><b>${esc(q.key||'—')}</b></td>`:''}</tr>`).join('')}</table>
   ${last?'<div class="muted" style="font-size:11px;margin-top:4px">التصنيف مقترح آليًا من صياغة الأسئلة وراجعه المعلم. المجالات: المعرفة (تذكّر، فهم) — التطبيق — الاستدلال (تحليل، تقويم، إبداع).</div>':''}</div>`);
  }
  pages[pages.length-1]+=rpSign();
