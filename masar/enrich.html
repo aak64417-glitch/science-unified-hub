@@ -66,6 +66,9 @@ h2.sec{font-size:17px;margin:14px 2px 8px;color:var(--v2)}
 .opt:disabled{cursor:default}
 .why{margin-top:10px;border-radius:14px;padding:10px 12px;font-size:15px;line-height:1.75}
 .why.ok{background:var(--okbg)}.why.no{background:var(--badbg)}
+.pjs{display:grid;gap:10px;margin-top:12px}.pjc{display:flex;gap:12px;align-items:flex-start;text-align:right;width:100%;background:#fff;border:2px solid var(--line);border-radius:18px;padding:14px;font:inherit;color:inherit;cursor:pointer}.pjc:hover,.pjc:active{border-color:var(--gold);background:#fffaf0}.pjc .n{width:36px;height:36px;border-radius:11px;background:var(--gold);color:#3a2600;display:grid;place-items:center;font-weight:900;font-size:18px;flex:none}.pjc.own .n{background:var(--v);color:#fff}.pjc b{display:block;font-size:17px;margin-bottom:3px}.pjc small{display:block;font-size:14.5px;color:var(--muted);line-height:1.7}
+.pjtop{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}.pjchg{border:1px solid var(--line);background:var(--soft);color:var(--v);border-radius:10px;padding:5px 10px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.ownf{display:grid;gap:8px;margin-top:10px}.ownf input,.ownf textarea{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-size:16px;color:var(--ink);background:#fff}.ownf textarea{min-height:84px;resize:vertical}.ownf input:focus,.ownf textarea:focus{outline:none;border-color:var(--v)}
 .steps{margin:10px 0 0;padding:0;list-style:none;counter-reset:s;display:grid;gap:7px}
 .steps li{counter-increment:s;display:flex;gap:10px;align-items:flex-start;font-size:15.5px;line-height:1.7}
 .steps li:before{content:counter(s);width:26px;height:26px;border-radius:8px;background:var(--gold);color:#3a2600;display:grid;place-items:center;flex:none;font-size:14px;margin-top:2px}
@@ -121,7 +124,7 @@ h2.sec{font-size:17px;margin:14px 2px 8px;color:var(--v2)}
  </div>
 </div>
 
-<script src="enrich-data.js?v=20261125b"></script>
+<script src="enrich-data.js?v=20261127a"></script>
 <script>
 const BASE="https://yqoleecldcvnfdmkqgeq.supabase.co",KEY="sb_publishable_P-wXPFs08V6kTx5FkFZXsA_x-ElUhhd",
 Q=new URLSearchParams(location.search),token=Q.get("t")||"",DEMO=!token&&Q.has("demo"),
@@ -172,7 +175,7 @@ function renderHome(){const list=mine(),pts=totalPts();let lv=0;LEVELS.forEach((
 const SK_L="إثراء — المختبر الافتراضي",BUCKET="masar-uploads";
 let M=null;
 const STEPS=E=>["read","sci","lab",...E.q.map((q,i)=>"q"+i),"task","fin"];
-function openMission(m){const E=ENRICH[m.idx];M={m,E,st:STEPS(E),step:0,ans:[],pick:[],labOk:false,labNote:"",up:[],t0:Date.now()};$("mTitle").textContent=E.ic+" "+E.t;$("home").classList.add("hide");$("mission").classList.remove("hide");draw()}
+function openMission(m){const E=ENRICH[m.idx];M={m,E,st:STEPS(E),step:0,ans:[],pick:[],labOk:false,labNote:"",up:[],t0:Date.now()};{const d=me.done[m.idx]||{};M.pj=d.pj!=null?d.pj:null;M.own=Object.assign({h:"",d:""},d.own||{})}$("mTitle").textContent=E.ic+" "+E.t;$("home").classList.add("hide");$("mission").classList.remove("hide");draw()}
 $("mBack").onclick=()=>{if(M&&M.step>0&&M.st[M.step]!=="fin"&&!confirm("الخروج من المهمة؟ لن تُحفظ هذه المحاولة."))return;closeMission()};
 function closeMission(){M=null;$("mission").classList.add("hide");$("home").classList.remove("hide");renderHome();window.scrollTo(0,0)}
 function dots(){$("dots").innerHTML=M.st.slice(0,-1).map((k,i)=>{let c=i===M.step?"on":i<M.step?"ok":"";if(k[0]==="q"&&k!=="q"&&M.ans[+k.slice(1)]!=null)c=M.ans[+k.slice(1)]?"ok":"no";return `<i class="${c}"></i>`}).join("")}
@@ -190,26 +193,42 @@ function draw(){dots();const s=$("stage"),E=M.E,k=M.st[M.step];s.scrollTop=0;
   const show=pick=>{s.querySelectorAll(".opt").forEach(b=>{const i=+b.dataset.i;b.disabled=true;if(i===q[2])b.classList.add("ok");else if(i===pick)b.classList.add("no")});$("why").innerHTML=`<div class="why ${pick===q[2]?"ok":"no"}">${pick===q[2]?"✅ إجابة متميزة! ":"💡 الإجابة الصحيحة: «"+esc(q[1][q[2]])+"». "}${esc(q[3])}</div>`;foot([[nx,"",next]])};
   if(a!=null)show(M.pick[qi]);else foot([["اختر إجابة أولًا","",null,true]]);
   s.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(M.ans[qi]!=null)return;const i=+b.dataset.i;M.ans[qi]=i===q[2];M.pick[qi]=i;show(i);dots()});return}
- if(k==="task"){const T=E.task;s.innerHTML=`<div class="pane"><span class="tag g">🛠️ المشروع / التحدي البحثي</span><h3>${esc(T.h)}</h3><p>${esc(T.p)}</p><ul class="steps">${T.steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+ if(k==="task"){const PJ=[E.task,E.task2].filter(Boolean);
+  if(M.pj==null||!(M.pj===2||PJ[M.pj])){s.innerHTML=`<div class="pane"><span class="tag g">🛠️ المشروع / التحدي البحثي</span><h3>اختر مشروعك</h3><p>نفّذ مشروعًا واحدًا فقط: أحد المشروعين المقترحين، أو مشروعًا من اختيارك.</p><div class="pjs">${PJ.map((T,i)=>`<button type="button" class="pjc" data-p="${i}"><span class="n">${AR(i+1)}</span><span><b>${esc(T.h)}</b><small>${esc(T.p)}</small></span></button>`).join("")}<button type="button" class="pjc own" data-p="2"><span class="n">💡</span><span><b>مشروع من اختياري</b><small>اقترح فكرة علمية تخص درس «${esc(E.t)}» ونفّذها بنفسك.</small></span></button></div></div>`;
+   s.querySelectorAll(".pjc").forEach(b=>b.onclick=()=>{M.pj=+b.dataset.p;draw()});foot([["لاحقًا","s",()=>finish(false)],["اختر مشروعًا أولًا","",null,true]]);return}
+  const own=M.pj===2,T=own?null:PJ[M.pj];
+  s.innerHTML=`<div class="pane"><div class="pjtop"><span class="tag g">🛠️ ${own?"مشروع من اختيارك":"المشروع "+AR(M.pj+1)}</span><button type="button" class="pjchg" id="pjChg">↺ تغيير المشروع</button></div>${own?`<h3>مشروعي الخاص</h3><p>اكتب عنوان مشروعك وفكرته، ثم نفّذه وارفع صوره أو ملفه.</p><div class="ownf"><input id="ownH" maxlength="80" placeholder="عنوان المشروع" value="${esc(M.own.h)}"><textarea id="ownD" maxlength="400" placeholder="فكرة المشروع: ماذا ستصنع أو تبحث؟ وما علاقته بالدرس؟">${esc(M.own.d)}</textarea></div><ul class="steps"><li>نفّذ مشروعك وصوّره أو اكتبه في ملف</li><li>اكتب ما تعلمته منه في جملتين</li></ul>`:`<h3>${esc(T.h)}</h3><p>${esc(T.p)}</p><ul class="steps">${T.steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`}
    <div class="upbox"><b>📎 ارفع عملك لمعلمك</b><small>صورة لعملك أو ملف (PDF / Word / PowerPoint) — حتى 10 م.ب</small><div class="uprow"><label class="upbtn">📷 تصوير<input type="file" accept="image/*" capture="environment" id="upCam" hidden></label><label class="upbtn">🖼️ صورة من الجهاز<input type="file" accept="image/*" id="upImg" hidden></label><label class="upbtn">📄 إرفاق ملف<input type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,image/*" id="upFile" hidden></label></div><div id="upList" class="uplist"></div></div></div>`;
+  $("pjChg").onclick=()=>{M.pj=null;draw()};
+  if(own){const sv=()=>{M.own.h=$("ownH").value;M.own.d=$("ownD").value;renderUps()};$("ownH").oninput=sv;$("ownD").oninput=sv}
   ["upCam","upImg","upFile"].forEach(id=>$(id).onchange=e=>{const f=e.target.files&&e.target.files[0];e.target.value="";if(f)doUpload(f)});
   renderUps();return}
  const r=M.res,n=E.q.length;s.innerHTML=`<div class="pane fin"><div class="big">${r.c===n?"🏆":r.c>=n-1?"🌟":"💪"}</div><h3>${r.c===n?"أداء عبقري!":r.c>=n-1?"أحسنت يا متميز!":"محاولة جيدة، تستطيع أفضل!"}</h3><div class="row"><div><b>${r.lab?"✓":"—"}</b><span>المختبر</span></div><div><b>${AR(r.c)}/${AR(n)}</b><span>التحديات</span></div><div><b>${r.up?"📎 "+AR(r.up):r.task?"✓":"—"}</b><span>المشروع</span></div></div><p style="font-size:15px;margin-top:10px">+${AR(r.pts)} نقطة تميّز</p><p style="font-size:14px;color:var(--muted)">${r.sent?"✓ وصلت نتيجتك إلى معلمك":"⏳ ستُرسل نتيجتك لمعلمك تلقائيًا عند توفر الإنترنت"}</p></div>`;
  foot([["إعادة المحاولة","s",()=>openMission(M.m)],["العودة للمهمات","",closeMission]])}
 function renderUps(){const box=$("upList");if(!box)return;box.innerHTML=M.up.map(u=>`<div class="upit ${u.err?"err":u.done?"ok":""}">${u.err?"✗":u.done?"✓":"⏳"} ${esc(u.name)}${u.err?" — "+esc(u.err):u.done?"":" … جارٍ الرفع"}</div>`).join("");
- const any=M.up.some(u=>u.done),busy=M.up.some(u=>!u.done&&!u.err);foot([["لاحقًا","s",()=>finish(false)],[any?"✓ أنهيت المشروع ورفعته":"✓ أنجزت المشروع","g",()=>finish(true),busy]])}
+ const any=M.up.some(u=>u.done),busy=M.up.some(u=>!u.done&&!u.err),noT=M.pj===2&&!M.own.h.trim();foot([["لاحقًا","s",()=>finish(false)],[noT?"اكتب عنوان مشروعك أولًا":any?"✓ أنهيت المشروع ورفعته":"✓ أنجزت المشروع","g",()=>finish(true),busy||noT]])}
 /* ضغط الصور قبل الرفع (أسرع على الجوال) */
 async function shrink(f){if(!/^image\//.test(f.type)||/gif|svg/.test(f.type))return f;try{const url=URL.createObjectURL(f),img=new Image();await new Promise((r,j)=>{img.onload=r;img.onerror=j;img.src=url});const k=Math.min(1,1600/Math.max(img.width,img.height)),cv=document.createElement("canvas");cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);URL.revokeObjectURL(url);const b=await new Promise(r=>cv.toBlob(r,"image/jpeg",.82));return b?new File([b],f.name.replace(/\.[^.]+$/,"")+".jpg",{type:"image/jpeg"}):f}catch(e){return f}}
 async function folder(){const h=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(token||"demo"));return "t/"+[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,"0")).join("").slice(0,16)}
 async function doUpload(f0){if(M.up.filter(u=>u.done).length>=5){toast("يكفي 5 ملفات لكل مشروع");return}const u={name:f0.name};M.up.push(u);renderUps();
  try{const f=await shrink(f0);if(f.size>10*1024*1024)throw Error("الملف أكبر من 10 م.ب");const ext=(f.name.split(".").pop()||"bin").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,5)||"bin";
-  const path=(await folder())+"/"+M.m.idx+"-"+Date.now()+"."+ext;
+  const path=(await folder())+"/"+M.m.idx+"-p"+((M.pj??0)+1)+"-"+Date.now()+"."+ext;
   if(!DEMO){const r=await fetch(BASE+"/storage/v1/object/"+BUCKET+"/"+path,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":f.type||"application/octet-stream","x-upsert":"false"},body:f});
    if(!r.ok){let t="";try{t=(await r.json()).message||""}catch(e){}throw Error(/bucket|not found/i.test(t)?"خدمة الرفع غير مفعّلة بعد — أخبر معلمك":/policy|row-level|denied|Unauthorized/i.test(t)?"خدمة الرفع غير مفعّلة بعد — أخبر معلمك":t||"تعذر الرفع")}}
   u.done=true;u.path=path;const d=me.done[M.m.idx]=me.done[M.m.idx]||{};(d.up=d.up||[]).push({n:f0.name,p:path,at:Date.now()});save();toast("✓ رُفع الملف")}
  catch(e){u.err=e.message||"تعذر الرفع"}renderUps()}
-async function finish(task){const n=M.E.q.length,c=M.ans.filter(Boolean).length,secs=(Date.now()-M.t0)/1000,idx=M.m.idx,key=M.m.l.key,ups=M.up.filter(u=>u.done).length;
- const prev=me.done[idx]||{},before=ptsOf(me.done[idx]);const d=Object.assign({},prev,{best:Math.max(prev.best??-1,c),n,task:!!(prev.task||task),lab:!!(prev.lab||M.labOk),tries:(prev.tries||0)+1,last:Date.now()});me.done[idx]=d;save();
+/* بطاقة فكرة المشروع الخاص: صورة تصل إلى المعلم مع أعمال الطالب */
+async function ideaCard(){const h=M.own.h.trim(),dd=M.own.d.trim(),sig=h+"|"+dd,pd=me.done[M.m.idx]||{};if(!h||pd.ownSig===sig)return;
+ try{const W=1000,cv=document.createElement("canvas"),c=cv.getContext("2d");c.font="600 34px Tajawal,Arial";const wrap=(t,w)=>{const L=[];t.split(/\n/).forEach(p=>{let l="";p.split(/\s+/).forEach(x=>{const y=l?l+" "+x:x;if(c.measureText(y).width>w&&l){L.push(l);l=x}else l=y});L.push(l)});return L};
+  const lines=wrap(dd||"—",W-120);cv.width=W;cv.height=300+lines.length*52;c.fillStyle="#fffaf0";c.fillRect(0,0,W,cv.height);c.fillStyle="#5b2fb3";c.fillRect(0,0,W,90);c.direction="rtl";c.textAlign="right";
+  c.fillStyle="#fff";c.font="800 38px Tajawal,Arial";c.fillText("💡 مشروع من اختيار الطالب — "+M.E.t,W-50,58);c.fillStyle="#24164a";c.font="800 44px Tajawal,Arial";c.fillText(h,W-50,165);
+  c.font="600 34px Tajawal,Arial";c.fillStyle="#3b1f6e";lines.forEach((l,i)=>c.fillText(l,W-60,240+i*52));
+  const b=await new Promise(r=>cv.toBlob(r,"image/jpeg",.9));if(!b)return;const path=(await folder())+"/"+M.m.idx+"-p3-"+Date.now()+".jpg";
+  if(!DEMO){const r=await fetch(BASE+"/storage/v1/object/"+BUCKET+"/"+path,{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"image/jpeg","x-upsert":"false"},body:b});if(!r.ok)return}
+  const d=me.done[M.m.idx]=me.done[M.m.idx]||{};d.ownSig=sig;save()}catch(e){console.warn(e)}}
+async function finish(task){if(task&&M.pj===2)await ideaCard();const n=M.E.q.length,c=M.ans.filter(Boolean).length,secs=(Date.now()-M.t0)/1000,idx=M.m.idx,key=M.m.l.key,ups=M.up.filter(u=>u.done).length;
+ const prev=me.done[idx]||{},before=ptsOf(me.done[idx]);const pjv=M.pj!=null?{pj:M.pj,own:M.pj===2?{h:M.own.h.trim(),d:M.own.d.trim()}:undefined}:{};
+ const d=Object.assign({},prev,pjv,{best:Math.max(prev.best??-1,c),n,task:!!(prev.task||task),lab:!!(prev.lab||M.labOk),tries:(prev.tries||0)+1,last:Date.now()});me.done[idx]=d;save();
  M.res={c,task,lab:M.labOk,up:ups,pts:Math.max(0,ptsOf(d)-before),sent:true};M.step=M.st.length-1;draw();
  let ok=await submit(sub(key,SK_Q,c,n,secs));if(M.labOk&&!prev.lab)ok=await submit(sub(key,SK_L,1,1,secs))&&ok;if(task&&(!prev.task||ups))ok=await submit(sub(key,SK_T,ups?1:1,1,secs))&&ok;
  if(M){M.res.sent=ok;if(M.st[M.step]==="fin")draw()}if(c===n)confetti();toastBadges()}
