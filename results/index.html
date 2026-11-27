@@ -152,7 +152,7 @@ td.nm{text-align:right}
 .qdet summary{cursor:pointer;font-weight:900;color:#24395e}
 .form small{font-weight:700}
 @media(max-width:700px){.typepick{grid-template-columns:repeat(3,1fr)}}
-.addopts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.addopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 .addopt{border:2px dashed color-mix(in srgb,var(--c) 45%,#fff);background:color-mix(in srgb,var(--c) 7%,#fff);border-radius:18px;padding:20px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:var(--c);transition:.15s;text-align:center}
 .addopt:hover{transform:translateY(-2px);background:color-mix(in srgb,var(--c) 13%,#fff)}
 .addopt svg{width:44px;height:44px}.addopt b{font-size:18px;font-weight:900}.addopt span{font-size:13px;color:var(--muted)}
@@ -188,6 +188,7 @@ td.nm{text-align:right}
 .note{background:#fff8e6;border:1px solid #f6dea0;border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.8;color:#6d5208}
 .note.blue{background:#eef5ff;border-color:#cbdcf8;color:#1f3f75}
 .qtbl input{width:100%;border:1px solid #e3eaf5;border-radius:8px;padding:6px;text-align:center}
+.ptbl td{vertical-align:top}.ptbl select,.ptbl textarea{width:100%;border:1px solid #e3eaf5;border-radius:8px;padding:6px;font:inherit;font-weight:700;font-size:14px;background:#fff}.ptbl textarea{min-height:64px;text-align:right;line-height:1.7;resize:vertical}.ptbl select{min-width:120px}.ptbl input{min-width:60px}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(30px);background:#0a2a5e;color:#fff;padding:12px 20px;border-radius:14px;font-weight:800;opacity:0;transition:.25s;z-index:99;box-shadow:0 10px 30px #0006}
 .toast.show{opacity:1;transform:translateX(-50%)}
 .hide{display:none!important}
@@ -270,6 +271,7 @@ td.nm{text-align:right}
   <button class="nav-btn" data-v="home"></button>
   <button class="nav-btn" data-v="tests"></button>
   <button class="nav-btn" data-v="analysis"></button>
+  <button class="nav-btn" data-v="paper"></button>
   <button class="nav-btn" data-v="remedial"></button>
   <button class="nav-btn" data-v="settings"></button>
   <button class="nav-btn" data-v="saved"></button>
@@ -287,7 +289,7 @@ td.nm{text-align:right}
 </div>
 
 <div class="ov" id="ov"><div class="modal" id="modal"></div></div>
-<div id="rpOv"><div class="rp-bar"><b id="rpTitle">التقرير</b><button class="btn b-green b-sm" id="rpSaveBtn" onclick="saveReportCloud()">💾 حفظ التقرير في المنصة</button><button class="btn b-gold b-sm" onclick="window.print()">🖨️ طباعة</button><button class="btn b-sm" style="background:#fff;color:#0a2a5e" onclick="exportReport('png')">🖼️ صورة</button><button class="btn b-sm" style="background:#e5484d;color:#fff" onclick="exportReport('pdf')">📄 PDF</button><button class="btn b-light b-sm" onclick="closeReport()">✕ إغلاق</button></div><div id="rpBody"></div></div>
+<div id="rpOv"><div class="rp-bar"><b id="rpTitle">التقرير</b><button class="btn b-green b-sm" id="rpSaveBtn" onclick="saveReportCloud()">💾 حفظ التقرير</button><button class="btn b-gold b-sm" onclick="window.print()">🖨️ طباعة</button><button class="btn b-sm" style="background:#fff;color:#0a2a5e" onclick="exportReport('png')">🖼️ صورة</button><button class="btn b-sm" style="background:#e5484d;color:#fff" onclick="exportReport('pdf')">📄 PDF</button><button class="btn b-light b-sm" onclick="closeReport()">✕ إغلاق</button></div><div id="rpBody"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -365,11 +367,11 @@ function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');cl
 
 /* ---------- state ---------- */
 let S=load();
-let UI={view:'home',f:{type:'all',stage:'all',grade:'all',subject:'all'},test:null,sec:'all',rtest:null};
+let UI={paper:null,view:'home',f:{type:'all',stage:'all',grade:'all',subject:'all'},test:null,sec:'all',rtest:null};
 function load(){let o={};try{const r=localStorage.getItem(LS);if(r)o=JSON.parse(r)||{}}catch(e){}return migrate(o)}
 function migrate(o){
  o.settings=Object.assign({school:'مدرسة أبي الدرداء المتوسطة',slogan:'معًا .. نصنع التميز',admin:'إدارة التعليم بمحافظة الأحساء',teacher:'علي طاهر البقاشي',principal:'فوزي محمد الهلال',counselor:'',year:'1448هـ',term:'',logo:'',levels:JSON.parse(JSON.stringify(DEFAULT_LEVELS)),lastBackup:null,classes:{'m-2':[1],'m-3':[1,2]}},o.settings||{});
- o.tests=Array.isArray(o.tests)?o.tests:[];o.reports=Array.isArray(o.reports)?o.reports:[];o.deleted=o.deleted||{};
+ o.tests=Array.isArray(o.tests)?o.tests:[];o.reports=Array.isArray(o.reports)?o.reports:[];o.papers=Array.isArray(o.papers)?o.papers:[];o.deleted=o.deleted||{};
  o.tests.forEach(t=>{t.students=t.students||[];t.questions=t.questions||[];t.sections=t.sections||[1]});
  return o;
 }
@@ -503,8 +505,291 @@ function barsSVG(items,{w=520,h=230,max=100,suffix=''}={}){
 }
 const hbar=(label,v,c)=>`<div class="bar-row"><span>${label}</span><div class="tr"><div class="fl" style="width:${Math.max(0,Math.min(100,v||0))}%;background:${c}"></div></div><b>${fmt(v)}%</b></div>`;
 
+/* =========================================================
+   تحليل ورقة الاختبار — رفع الاختبار (صورة أو PDF) وتحديد
+   نوع كل سؤال ومستواه المعرفي ومهارته وناتج التعلم المقيس
+   ========================================================= */
+const QTYPES={mcq:'اختيار من متعدد',tf:'صواب وخطأ',fill:'أكمل الفراغ',match:'مزاوجة / توصيل',essay:'مقالي / إجابة قصيرة'};
+const QLEVELS={rem:'تذكّر',und:'فهم',app:'تطبيق',ana:'تحليل',eva:'تقويم',cre:'إبداع'};
+const QLC={rem:'#64748b',und:'#1d6fe0',app:'#22a45d',ana:'#7c4ddb',eva:'#f59e0b',cre:'#e5484d'};
+const QDOM={rem:'المعرفة',und:'المعرفة',app:'التطبيق',ana:'الاستدلال',eva:'الاستدلال',cre:'الاستدلال'};
+const DOMC={'المعرفة':'#1d6fe0','التطبيق':'#22a45d','الاستدلال':'#7c4ddb'};
+const DOM_REF={'المعرفة':35,'التطبيق':35,'الاستدلال':30}; // توزيع TIMSS لعلوم الصف الثامن
+const QSKILLS=['تفسير البيانات والرسوم البيانية','التجريب وضبط المتغيرات','القياس واستخدام الأرقام','التصنيف','المقارنة','الاستنتاج','التنبؤ','التفسير والتعليل','الملاحظة','المعرفة العلمية (المفاهيم والحقائق)'];
+const nAr=s=>toEn(String(s||'')).replace(/[ً-ْـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
+const wre=list=>new RegExp('(^|[\\s(\\-:،,.؟?/«"])(و|ف)?('+list.join('|')+')(?=$|[\\s)\\-:،,.؟?/»":])');
+const LV_RE=[
+ ['cre',wre(['صمم','اقترح','ابتكر','خطط','كون فرضيه','صغ فرضيه','تنبا','اكتب خطه','ركب'])],
+ ['eva',wre(['قيم','احكم','برر','انقد','ما رايك','دافع','اثبت','ايهما افضل','هل توافق'])],
+ ['ana',wre(['قارن','حلل','ميز','استنتج','ما العلاقه','فرق','صنف','ما الذي تستنتجه','ماذا تستنتج','ما المتغير','حدد المتغير'])],
+ ['app',wre(['احسب','طبق','استخدم','حل','اوجد','ارسم','ما مقدار','كم','اذا كانت','اذا كان','عين'])],
+ ['und',wre(['فسر','وضح','اشرح','صف','لماذا','علل','بين','لخص','ما المقصود','ما سبب','ما وظيفه','ما اهميه','ماذا يحدث','عبر','ما دور','كيف'])]
+];
+const SK_RE=[
+ ['تفسير البيانات والرسوم البيانية',/جدول(?! الدوري)|الرسم البياني|الشكل البياني|منحني|البيانات|مخطط|التمثيل البياني/],
+ ['التجريب وضبط المتغيرات',/المتغير|فرضيه|تجرب|الضابط|العينه الضابطه|الثابت|استقصاء/],
+ ['القياس واستخدام الأرقام',/احسب|قياس|مقدار|وحده قياس|كتلته|حجمه|سرعته|كثافته|م\/ث|نيوتن|جول|واط|اوم|فولت|امبير|كجم|سم|كم\/س/],
+ ['التصنيف',/صنف|تصنيف|ينتمي|تنتمي|المجموعه/],
+ ['المقارنة',/قارن|الفرق بين|يختلف|تختلف|يتشابه|تتشابه|اوجه الشبه/],
+ ['الاستنتاج',/استنتج|نستنتج|تستنتج|يستدل/],
+ ['التنبؤ',/تنبا|توقع|ماذا يحدث|ماذا سيحدث|ماذا تتوقع/],
+ ['التفسير والتعليل',/علل|فسر|لماذا|ما سبب|بسبب/],
+ ['الملاحظة',/لاحظ|الشكل المجاور|الصوره|الشكل التالي|الشكل الاتي|الرسم المجاور/]
+];
+const TOPICS=[
+ ['الطريقة العلمية',/الطريقه العلميه|فرضيه|المتغير المستقل|المتغير التابع|النظريه العلميه|القانون العلمي|الاستقصاء/],
+ ['الخلية والكائنات الحية',/خليه|خلايا|نواه|الغشاء البلازمي|عضي|ميتوكوندري|بلاستيد|انقسام|كائن|بكتيري|فيروس|فطري|طلائع|تصنيف الكائنات/],
+ ['الوراثة',/وراث|جين|كروموسوم|سائد|متنحي|مندل|dna/],
+ ['النبات',/نبات|البناء الضوئي|جذر|ساق|ازهار|بذور|ثغور|كلوروفيل|البذور/],
+ ['أجهزة جسم الإنسان',/الهضم|الدم|القلب|التنفس|الرئه|الرئتين|عظام|عضلات|اعصاب|الدماغ|المناعه|الكليه|الاخراج|غدد|هرمون|الهيكل/],
+ ['البيئة والأنظمة البيئية',/بيئ|سلسله غذائيه|شبكه غذائيه|منتج|مستهلك|محلل|الموارد|تلوث|التنوع الحيوي|التكيف/],
+ ['المادة وخواصها',/الماده|كثافه|الحجم|الكتله|صلب|سائل|غاز|انصهار|غليان|تبخر|تكثف|خواص|تغير فيزيائي|حالات الماده|طفو|يطفو|تطفو|الغمر/],
+ ['الذرة والعناصر والجدول الدوري',/ذره|ذرات|الكترون|بروتون|نيوترون|عنصر|عناصر|الجدول الدوري|نظائر|فلز|لافلز|العدد الذري/],
+ ['المركبات والتفاعلات الكيميائية',/مركب|تفاعل|معادله كيميائيه|رابطه|روابط|حمض|قاعد|محلول|مخلوط|ذائبيه|تغير كيميائي|متفاعلات|نواتج التفاعل/],
+ ['الحركة والقوى',/حركه|سرعه|تسارع|قوه|قوي|احتكاك|جاذبيه|نيوتن|زخم|ازاحه|الاله البسيطه|الشغل|الروافع/],
+ ['الطاقة والحرارة',/طاقه|حراره|درجه الحراره|حركيه|الوضع|تحولات|التوصيل|الحمل|الاشعاع/],
+ ['الكهرباء والمغناطيسية',/كهرب|تيار|الجهد|مقاومه|الدائره|مغناط|شحنه/],
+ ['الموجات والصوت والضوء',/موج|صوت|ضوء|انعكاس|انكسار|عدسه|مرآه|مراه|الطول الموجي|تردد/],
+ ['الأرض: الصخور والمعادن',/صخر|معادن|المعدن|تجويه|تعريه|تربه|القشره|زلزال|بركان|الصفائح/],
+ ['الطقس والمناخ والغلاف الجوي',/طقس|مناخ|الغلاف الجوي|الضغط الجوي|رياح|امطار|سحب|رطوبه/],
+ ['الفضاء والفلك',/الشمس|القمر|كوكب|كواكب|نجم|مجره|الفضاء|مدار|كسوف|خسوف|المجموعه الشمسيه/]
+];
+function qLevel(t){const x=' '+nAr(t)+' ';for(const[k,r]of LV_RE)if(r.test(x))return k;return 'rem'}
+function qSkill(t){const x=nAr(t);for(const[k,r]of SK_RE)if(r.test(x))return k;return QSKILLS[QSKILLS.length-1]}
+function qTopic(t){const x=nAr(t).toLowerCase();let best='',bn=0;TOPICS.forEach(([k,r])=>{const n=(x.match(new RegExp(r.source,'g'))||[]).length;if(n>bn){bn=n;best=k}});return best}
+function qType(sec,it){
+ const a=nAr(sec||''),x=nAr(it.text);
+ if(it.choices>=2||(x.match(/(^|\s)[ابجد]\s*[)\-]/g)||[]).length>=2)return 'mcq';
+ const h=a+' '+x.slice(0,60);
+ if(/صل |صلي|العمود|التوصيل|زاوج/.test(h))return 'match';
+ if(/صح|خطا|صواب|علامه|✓|×/.test(h))return 'tf';
+ if(/اكمل|الفراغ|املا|\.{4,}|_{3,}|…{2,}/.test(h)||/\.{4,}|_{3,}/.test(it.text))return 'fill';
+ if(/اختر|ظلل|ضع دائره|الاجابه الصحيحه/.test(a))return 'mcq';
+ return 'essay';
+}
+function qMark(t){const x=nAr(t);let m=x.match(/\(\s*(\d+(?:\.\d+)?)\s*(?:درج|د\b)/);if(m)return +m[1];if(/درجتان|درجتين/.test(x))return 2;return ''}
+const TOK_STOP=new Set(['التي','الذي','على','الى','عن','من','في','مع','بين','ان','او','ما','هل','كل','ذلك','هذه','هذا','عند','بعض','يكون','تكون','الطالب','يتعرف','يذكر','يوضح','يحدد','يفسر','يستنتج','يقارن','يحسب']);
+function toks(t){return [...new Set(nAr(t).replace(/[^ء-يa-zA-Z0-9\s]/g,' ').split(/\s+/).map(w=>w.replace(/^(وال|بال|فال|كال|لل|ال)/,'')).filter(w=>w.length>=3&&!TOK_STOP.has(w)))]}
+function matchOutcome(text,outs){
+ if(!outs.length)return'';const T=new Set(toks(text));let best='',bs=0;
+ outs.forEach(o=>{const ot=toks(o);if(!ot.length)return;const c=ot.filter(w=>T.has(w)||[...T].some(x=>x.length>=4&&(x.includes(w)||w.includes(x)))).length;const sc=c/Math.sqrt(ot.length);if(c>=1&&sc>bs){bs=sc;best=o}});
+ return best;
+}
+function parsePaper(text){
+ const lines=String(text||'').split(/\r?\n+/).map(l=>l.replace(/[ \t ]+/g,' ').trim()).filter(l=>l.length>1);
+ const items=[];let sec='';let cur=null;
+ const secRe=/^(السوال|السؤال|س)\s*(ال)?(اول|ثاني|ثالث|رابع|خامس|سادس|سابع|ثامن|تاسع|عاشر|\d{1,2})(?![\u0621-\u064A])/;
+ const itemRe=/^[\(\[]?\s*(\d{1,2})\s*[\)\]\-\.ـ:\/]\s*(.+)$/;
+ const chRe=/^[\(\[]?\s*([أابجده]|[a-dA-D])\s*[\)\]\-\.ـ:]\s*/;
+ lines.forEach(l=>{
+  const n=nAr(l);
+  if(secRe.test(n)&&l.length<160){sec=l;cur=null;
+   const rest=l.replace(/^[^:\/\-]*[:\/\-]\s*/,'');const m=toEn(rest).match(itemRe);if(m){cur={text:m[2],sec,choices:0};items.push(cur)}return}
+  const m=toEn(l).match(itemRe);
+  if(m&&!/^\d{3,}/.test(toEn(l))){cur={text:l.replace(/^[\(\[]?\s*[\d٠-٩]{1,2}\s*[\)\]\-\.ـ:\/]\s*/,''),sec,choices:0};items.push(cur);return}
+  if(cur&&chRe.test(l)){cur.choices++;cur.text+=' | '+l;return}
+  if(cur&&cur.text.length<600)cur.text+=' '+l;
+ });
+ let out=items;
+ if(!out.length){out=lines.filter(l=>/[؟?]|\.{4,}|_{3,}/.test(l)).map(l=>({text:l,sec:'',choices:0}))}
+ return out.map((it,i)=>{const full=(it.sec?it.sec+' ':'')+it.text;return{n:i+1,text:it.text.trim(),sec:it.sec,type:qType(it.sec,it),level:qLevel(it.text),skill:qSkill(full),topic:qTopic(full),outcome:'',mark:qMark(full)}});
+}
+function applyOutcomes(p,force){const outs=String(p.outcomes||'').split(/\n+/).map(x=>x.trim()).filter(Boolean);p.items.forEach(it=>{if(force||!it.outcome)it.outcome=matchOutcome(it.text+' '+(it.sec||''),outs)})}
+
+/* ---------- استخراج النص من الملفات ---------- */
+function fixReversedItems(items){let fw=0,rv=0;items.forEach(it=>it.s.split(/\s+/).forEach(w=>{if(/^ال[ء-ي]{2,}/.test(w))fw++;if(/[ء-ي]{2,}لا$/.test(w))rv++}));if(rv>fw*1.5&&rv>3)items.forEach(it=>{if(/[؀-ۿ]/.test(it.s))it.s=[...it.s].reverse().join('')})}
+async function paperExtract(files){
+ const jobs=[];
+ for(const f of files){
+  if(/\.pdf$/i.test(f.name)||f.type==='application/pdf'){
+   toast('جارٍ قراءة ملف PDF…');await loadPDFJS();
+   const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
+   for(let p=1;p<=pdf.numPages;p++){
+    const pg=await pdf.getPage(p);const tc=await pg.getTextContent();const items=[];
+    tc.items.forEach(it=>{const s=(it.str||'').normalize('NFKC');if(!s.trim())return;items.push({p,s,x:it.transform[4],y:it.transform[5],w:it.width||0,h:Math.abs(it.transform[3])||10})});
+    fixReversedItems(items);
+    const txt=pdfRows(items).rows.map(r=>r.join(' ')).join('\n');
+    if(txt.replace(/\s/g,'').length>=60&&/[ء-ي]/.test(txt))jobs.push({text:txt});else jobs.push({get:()=>pdfPageCanvas(pdf,p)});
+   }
+  }else if(isImg(f))jobs.push({get:()=>imageCanvas(f)});
+ }
+ const oj=jobs.filter(j=>j.get);
+ if(oj.length){
+  const r=await ocrCanvases(oj.length,p=>oj[p-1].get(),'قراءة ورقة الاختبار','تُقرأ أسئلة الاختبار من الصور. للحصول على أفضل نتيجة: صوّر الورقة مستقيمة وبإضاءة جيدة، صفحة في كل صورة.');
+  if(!r)return null;oj.forEach((j,i)=>j.text=r.pages[i]||'');
+ }
+ return jobs.map(j=>j.text||'').join('\n');
+}
+async function newPaper(files){
+ files=[...files].filter(f=>isImg(f)||/\.pdf$/i.test(f.name)||f.type==='application/pdf');
+ if(!files.length){toast('اختر صورة أو ملف PDF للاختبار');return}
+ let text;try{text=await paperExtract(files)}catch(e){console.error(e);closeModal();toast('تعذّرت قراءة الملف — تحقق من الاتصال بالإنترنت');return}
+ if(text==null)return;
+ const p={id:uid(),created:Date.now(),upd:Date.now(),name:files[0].name.replace(/\.[^.]+$/,''),subject:'العلوم',stage:'m',grade:1,type:'periodic',files:files.map(f=>f.name),text,outcomes:'',items:parsePaper(text),testId:''};
+ S.papers.push(p);save();go('paper',{paper:p.id});
+ toast(p.items.length?`✅ استُخرج ${toAr(p.items.length)} سؤالًا — راجعها وعدّل ما يلزم`:'⚠️ لم تُحدَّد أسئلة تلقائيًا — راجع النص المستخرج ثم اضغط «إعادة تحليل النص»');
+}
+function curP(){return (S.papers||[]).find(x=>x.id===UI.paper)}
+function pTouch(p){p.upd=Date.now();save()}
+function pSet(k,v){const p=curP();p[k]=v;pTouch(p);if(k==='stage'){p.grade=1;render()}}
+function pItem(i,k,v){const p=curP();p.items[i][k]=v;pTouch(p);render()}
+function pReparse(){const p=curP();const ta=$('#pp_text');if(ta)p.text=ta.value;if(p.items.length&&!confirm('إعادة التحليل تستبدل جدول الأسئلة الحالي (وتعديلاتك عليه). متابعة؟'))return;p.items=parsePaper(p.text);applyOutcomes(p,true);pTouch(p);render();toast(`تم تحديد ${toAr(p.items.length)} سؤالًا`)}
+function pMatch(){const p=curP();const ta=$('#pp_out');if(ta)p.outcomes=ta.value;applyOutcomes(p,true);pTouch(p);render();const n=p.items.filter(i=>i.outcome).length;toast(`رُبط ${toAr(n)} من ${toAr(p.items.length)} سؤالًا بنواتج التعلم`)}
+function pAdd(){const p=curP();p.items.push({n:p.items.length+1,text:'',sec:'',type:'mcq',level:'rem',skill:QSKILLS[QSKILLS.length-1],topic:'',outcome:'',mark:''});pTouch(p);render()}
+function pDelItem(i){const p=curP();p.items.splice(i,1);p.items.forEach((x,j)=>x.n=j+1);pTouch(p);render()}
+function delPaper(id){const p=S.papers.find(x=>x.id===id);if(!p||!confirm(`حذف تحليل «${p.name}»؟`))return;S.papers=S.papers.filter(x=>x.id!==id);S.deleted=S.deleted||{};S.deleted[id]=Date.now();save();go('paper',{paper:null})}
+async function addPaperFiles(files){const p=curP();files=[...files];if(!files.length)return;let t;try{t=await paperExtract(files)}catch(e){closeModal();toast('تعذّرت قراءة الملف');return}if(t==null)return;p.text=(p.text?p.text+'\n':'')+t;p.files=[...(p.files||[]),...files.map(f=>f.name)];const add=parsePaper(t);add.forEach(x=>{x.n=p.items.length+1;p.items.push(x)});applyOutcomes(p);pTouch(p);render();toast(`أُضيف ${toAr(add.length)} سؤالًا من الصفحات الجديدة`)}
+
+function paperStats(p){
+ const it=p.items,N=it.length||1;
+ const cnt=(k,keys)=>keys.map(x=>({k:x,n:it.filter(i=>i[k]===x).length}));
+ const lv=cnt('level',Object.keys(QLEVELS));
+ const dom=Object.keys(DOM_REF).map(d=>({k:d,n:it.filter(i=>QDOM[i.level]===d).length}));
+ const ty=cnt('type',Object.keys(QTYPES)).filter(x=>x.n);
+ const sk=[...new Set(it.map(i=>i.skill).filter(Boolean))].map(s=>({k:s,n:it.filter(i=>i.skill===s).length})).sort((a,b)=>b.n-a.n);
+ const keyOf=i=>i.outcome||i.topic||'غير محدد';
+ const tp=[...new Set(it.map(keyOf))].map(s=>({k:s,n:it.filter(i=>keyOf(i)===s).length,lv:Object.keys(QLEVELS).map(l=>it.filter(i=>keyOf(i)===s&&i.level===l).length)})).sort((a,b)=>b.n-a.n);
+ const marks=it.reduce((a,i)=>a+(num(i.mark)||0),0);
+ return{N:it.length,lv,dom,ty,sk,tp,marks,pct:x=>x/N*100};
+}
+function paperRecs(p,P){
+ const R=[];const pc=k=>P.pct(P.dom.find(d=>d.k===k).n);
+ const low=P.pct(P.lv.filter(l=>l.k==='rem'||l.k==='und').reduce((a,l)=>a+l.n,0));
+ if(!P.N)return[{p:'mid',ic:'ℹ️',h:'لا توجد أسئلة',x:'أضف الأسئلة أو أعد تحليل النص المستخرج.'}];
+ if(low>=70)R.push({p:'high',ic:'⚠️',h:'غلبة أسئلة المستويات الدنيا',x:`${fmt(low)}% من الأسئلة في مستوى التذكّر والفهم؛ يُقترح تحويل بعضها إلى أسئلة تطبيق وتحليل.`});
+ if(pc('الاستدلال')<15)R.push({p:'high',ic:'🧠',h:'قلة أسئلة الاستدلال',x:`نسبة الاستدلال ${fmt(pc('الاستدلال'))}% مقابل نحو ${DOM_REF['الاستدلال']}% في إطار TIMSS؛ أضف أسئلة استنتاج وتفسير بيانات وتصميم تجارب تحاكي نافس.`});
+ if(pc('التطبيق')<20)R.push({p:'mid',ic:'🔧',h:'قلة أسئلة التطبيق',x:`نسبة التطبيق ${fmt(pc('التطبيق'))}%؛ أضف مواقف حياتية ومسائل حسابية تطبّق المفاهيم.`});
+ const topT=P.ty[0]?P.ty.slice().sort((a,b)=>b.n-a.n)[0]:null;
+ if(topT&&P.pct(topT.n)>=75&&P.N>=6)R.push({p:'mid',ic:'🔀',h:'تنويع أنماط الأسئلة',x:`${fmt(P.pct(topT.n))}% من الأسئلة «${QTYPES[topT.k]}»؛ نوّع بين الاختيار من متعدد والإجابات القصيرة والمقالية.`});
+ if(!p.items.some(i=>i.skill==='تفسير البيانات والرسوم البيانية'))R.push({p:'mid',ic:'📊',h:'لا توجد أسئلة لتفسير البيانات',x:'مهارة قراءة الجداول والرسوم البيانية أساسية في نافس؛ يُقترح إضافة سؤال واحد على الأقل.'});
+ const und=p.items.filter(i=>!i.outcome&&!i.topic).length;
+ if(und)R.push({p:'low',ic:'📝',h:'أسئلة بلا ناتج تعلم',x:`${toAr(und)} سؤالًا لم يُحدَّد له ناتج تعلم أو موضوع؛ أكمله في جدول الأسئلة ليكتمل جدول المواصفات.`});
+ if(!R.length)R.push({p:'low',ic:'✅',h:'توازن جيد',x:'توزيع المستويات المعرفية وأنماط الأسئلة متوازن ومناسب.'});
+ return R;
+}
+function vPaper(){
+ const p=curP();
+ if(!p){
+  const list=(S.papers||[]).slice().sort((a,b)=>(b.created||0)-(a.created||0));
+  return `<div class="toolbar"><h2>تحليل ورقة الاختبار ونواتج التعلم</h2></div>
+  <div class="panel" style="margin-bottom:14px"><div class="pb">
+   <div class="note blue">ارفع ورقة الاختبار نفسها (صورة أو أكثر، أو ملف PDF) وتحدّد المنصة الأسئلة ونوع كل سؤال ومستواه المعرفي (بلوم ومجالات نافس/TIMSS) والمهارة العلمية والموضوع، ويمكنك ربطها بنواتج التعلم الرسمية، ثم تُصدر <b>تقريرًا مستقلًا</b> لتحليل الاختبار. التصنيف مقترح آليًا وقابل للتعديل.</div>
+   <div class="addopts" style="margin-top:12px">
+    <label class="addopt" style="--c:#7c4ddb">${ico('up')}<b>صور الاختبار</b><span>صورة لكل صفحة — يمكن اختيار عدة صور</span><input type="file" accept="image/*" multiple class="hide" onchange="newPaper(this.files);this.value=''"></label>
+    <label class="addopt" style="--c:#c22f34">${ico('file')}<b>ملف PDF</b><span>نصي أو ممسوح ضوئيًا</span><input type="file" accept=".pdf,application/pdf" class="hide" onchange="newPaper(this.files);this.value=''"></label>
+    <button class="addopt" style="--c:#123f8c" onclick="pasteQs()">${ico('copy')}<b>لصق نص الأسئلة</b><span>من ملف Word أو غيره</span></button>
+   </div></div></div>
+  ${list.length?`<div class="tests">${list.map(x=>`<div class="tcard"><div class="tt" style="background:linear-gradient(135deg,#7c4ddb,#4b2a9e)">${ico('search')}<div><b>${esc(x.name)}</b><small>${esc(x.subject)} • ${STAGES[x.stage].g[x.grade-1]} ${STAGES[x.stage].s} • ${toAr(x.items.length)} سؤال</small></div></div><div class="tf" style="padding-top:12px">${x.testId&&S.tests.some(t=>t.id===x.testId)?'<span class="tag t-grn">مربوط باختبار</span>':''}<span style="flex:1"></span><button class="btn b-blue b-sm" onclick="go('paper',{paper:'${x.id}'})">${ico('edit')}فتح</button><button class="btn b-gold b-sm" onclick="UI.paper='${x.id}';openPaperReport()">${ico('print')}التقرير</button><button class="btn b-red b-sm" onclick="delPaper('${x.id}')">${ico('trash')}</button></div></div>`).join('')}</div>`:''}`;
+ }
+ const P=paperStats(p);const R=paperRecs(p,P);
+ const outs=String(p.outcomes||'').split(/\n+/).map(x=>x.trim()).filter(Boolean);
+ const stOpts=Object.entries(STAGES).map(([k,s])=>`<option value="${k}" ${p.stage===k?'selected':''}>${s.n}</option>`).join('');
+ const grOpts=STAGES[p.stage].g.map((g,i)=>`<option value="${i+1}" ${p.grade==i+1?'selected':''}>${g} ${STAGES[p.stage].s}</option>`).join('');
+ const opt=(o,cur)=>Object.entries(o).map(([k,v])=>`<option value="${k}" ${cur===k?'selected':''}>${v}</option>`).join('');
+ return `<div class="toolbar"><h2>تحليل ورقة الاختبار</h2><button class="btn b-light" onclick="go('paper',{paper:null})">${ico('back')}كل التحليلات</button><button class="btn b-gold" onclick="openPaperReport()">${ico('print')}تقرير تحليل الاختبار</button><button class="btn b-navy" onclick="linkPaperDlg()">${ico('chart')}ربط بنتائج اختبار</button></div>
+ <div class="panel" style="margin-bottom:14px"><div class="ph">${ico('clip')}بيانات الاختبار</div><div class="pb"><div class="form" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr">
+  <div class="f">عنوان الاختبار<input class="inp" value="${esc(p.name)}" onchange="pSet('name',this.value.trim())"></div>
+  <div class="f">نوع الاختبار<select class="sel" onchange="pSet('type',this.value)">${Object.entries(TYPES).map(([k,v])=>`<option value="${k}" ${p.type===k?'selected':''}>${v.one}</option>`).join('')}</select></div>
+  <div class="f">المادة<select class="sel" onchange="pSet('subject',this.value)">${SUBJECTS.filter(x=>x!=='أخرى').map(x=>`<option ${p.subject===x?'selected':''}>${x}</option>`).join('')}</select></div>
+  <div class="f">المرحلة<select class="sel" onchange="pSet('stage',this.value)">${stOpts}</select></div>
+  <div class="f">الصف<select class="sel" onchange="pSet('grade',+this.value)">${grOpts}</select></div>
+ </div></div></div>
+ <div class="grid2">
+  <details class="panel" style="margin:0"><summary class="ph" style="cursor:pointer">${ico('file')}النص المستخرج من الاختبار (للمراجعة والتصحيح)</summary><div class="pb">
+   <textarea class="inp" id="pp_text" style="width:100%;min-height:220px;line-height:1.8" onchange="curP().text=this.value;pTouch(curP())">${esc(p.text)}</textarea>
+   <div class="flex" style="flex-wrap:wrap;margin-top:8px"><button class="btn b-gold b-sm" onclick="pReparse()">🔄 إعادة تحليل النص</button><label class="btn b-light b-sm" style="cursor:pointer">${ico('up')}إضافة صفحات أخرى<input type="file" accept="image/*,.pdf,application/pdf" multiple class="hide" onchange="addPaperFiles(this.files);this.value=''"></label></div>
+   <div class="muted" style="font-size:13px;margin-top:6px">صحّح أخطاء القراءة إن وُجدت. تُميَّز الأسئلة بالترقيم (١- ، 2) …) والخيارات بالحروف (أ- ب- ج- د-).</div></div></details>
+  <details class="panel" style="margin:0" ${outs.length?'open':''}><summary class="ph" style="cursor:pointer">${ico('star')}نواتج التعلم الرسمية (اختياري) — ${toAr(outs.length)}</summary><div class="pb">
+   <textarea class="inp" id="pp_out" style="width:100%;min-height:160px;line-height:1.8" placeholder="الصق نواتج التعلم من دليل المعلم أو وثيقة نافس — كل ناتج في سطر">${esc(p.outcomes||'')}</textarea>
+   <button class="btn b-gold b-sm" style="margin-top:8px" onclick="pMatch()">🔗 ربط الأسئلة بنواتج التعلم</button>
+   <div class="muted" style="font-size:13px;margin-top:6px">يُربط كل سؤال بأقرب ناتج حسب الكلمات المشتركة، ويمكنك تغييره من الجدول. بدون قائمة يُعرض الموضوع المستنتج من نص السؤال.</div></div></details>
+ </div>
+ <div class="stats" style="margin:14px 0">${[['عدد الأسئلة',toAr(P.N)],['مجموع الدرجات',P.marks?fmt(P.marks):'—'],...P.dom.map(d=>[d.k,fmt(P.pct(d.n))+'%']),['المهارات المقيسة',toAr(P.sk.length)],['الموضوعات / النواتج',toAr(P.tp.filter(t=>t.k!=='غير محدد').length)]].map(x=>`<div class="stat"><small>${x[0]}</small><b>${x[1]}</b></div>`).join('')}</div>
+ <div class="panel" style="margin-bottom:14px"><div class="ph">${ico('table')}أسئلة الاختبار وتصنيفها (${toAr(P.N)})</div><div class="pb" style="overflow:auto;padding:8px">
+  <table class="qtbl ptbl"><tr><th style="width:44px">م</th><th style="min-width:260px">نص السؤال</th><th>النوع</th><th>المستوى المعرفي</th><th>المجال</th><th>المهارة</th><th style="min-width:200px">ناتج التعلم / الموضوع</th><th style="width:70px">الدرجة</th><th></th></tr>
+  ${p.items.map((q,i)=>`<tr><td><b>${toAr(i+1)}</b></td><td><textarea onchange="pItem(${i},'text',this.value)">${esc(q.text)}</textarea></td>
+   <td><select onchange="pItem(${i},'type',this.value)">${opt(QTYPES,q.type)}</select></td>
+   <td><select style="color:${QLC[q.level]};font-weight:900" onchange="pItem(${i},'level',this.value)">${opt(QLEVELS,q.level)}</select></td>
+   <td><span class="tag" style="background:${DOMC[QDOM[q.level]]}18;color:${DOMC[QDOM[q.level]]};border-color:${DOMC[QDOM[q.level]]}55">${QDOM[q.level]}</span></td>
+   <td><select onchange="pItem(${i},'skill',this.value)">${QSKILLS.map(s=>`<option ${q.skill===s?'selected':''}>${s}</option>`).join('')}</select></td>
+   <td>${outs.length?`<select onchange="pItem(${i},'outcome',this.value)"><option value="">— ${esc(q.topic||'اختر الناتج')} —</option>${outs.map(o=>`<option ${q.outcome===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`:`<input value="${esc(q.outcome||q.topic)}" placeholder="اكتب ناتج التعلم" onchange="pItem(${i},'outcome',this.value.trim())">`}</td>
+   <td><input type="number" min="0" step="0.25" value="${q.mark}" onchange="pItem(${i},'mark',this.value)"></td>
+   <td><button class="btn b-red b-sm" onclick="pDelItem(${i})">${ico('trash')}</button></td></tr>`).join('')}
+  </table>
+  <div class="flex" style="flex-wrap:wrap;margin-top:8px"><button class="btn b-light b-sm" onclick="pAdd()">${ico('plus')}إضافة سؤال</button><button class="btn b-red b-sm" onclick="delPaper('${p.id}')">${ico('trash')}حذف هذا التحليل</button></div>
+ </div></div>
+ <div class="grid3">
+  <div class="panel"><div class="ph">${ico('pie')}المستويات المعرفية (بلوم)</div><div class="pb center">${pieSVG(P.lv.map(l=>({value:l.n,c:QLC[l.k]})),170)}<div class="legend">${P.lv.filter(l=>l.n).map(l=>`<span><i style="background:${QLC[l.k]}"></i>${QLEVELS[l.k]}: <b>${toAr(l.n)}</b> <small class="muted">(${fmt(P.pct(l.n))}%)</small></span>`).join('')}</div></div></div>
+  <div class="panel"><div class="ph">${ico('bars')}مجالات نافس / TIMSS</div><div class="pb">${P.dom.map(d=>hbar(`${d.k} <small class="muted">(المرجع ${DOM_REF[d.k]}%)</small>`,P.pct(d.n),DOMC[d.k])).join('')}</div></div>
+  <div class="panel"><div class="ph">${ico('star')}المهارات العلمية</div><div class="pb">${P.sk.map(s=>hbar(esc(s.k),P.pct(s.n),'#14a8b5')).join('')||'<div class="empty">—</div>'}</div></div>
+ </div>
+ <div class="panel"><div class="ph">${ico('bulb')}ملاحظات وتوصيات على ورقة الاختبار</div><div class="pb recs">${R.map(r=>`<div class="rec p-${r.p}"><span class="ic">${r.ic}</span><div><b>${r.h}</b>${r.x}</div></div>`).join('')}</div></div>`;
+}
+function pasteQs(){modal('📋 لصق نص أسئلة الاختبار',`<textarea class="inp" id="pq_t" style="width:100%;min-height:260px;line-height:1.8" placeholder="الصق أسئلة الاختبار هنا كما هي (مع الترقيم والخيارات)"></textarea>`,`<button class="btn b-gold" onclick="pasteQsGo()">تحليل الأسئلة</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`)}
+function pasteQsGo(){const t=$('#pq_t').value.trim();if(!t){toast('الصق نص الأسئلة أولًا');return}closeModal();const p={id:uid(),created:Date.now(),upd:Date.now(),name:'اختبار (نص ملصق)',subject:'العلوم',stage:'m',grade:1,type:'periodic',files:[],text:t,outcomes:'',items:parsePaper(t),testId:''};S.papers.push(p);save();go('paper',{paper:p.id});toast(`✅ تم تحديد ${toAr(p.items.length)} سؤالًا`)}
+
+/* ---------- ربط التحليل بنتائج اختبار (لتحليل الإتقان حسب ناتج التعلم) ---------- */
+function linkPaperDlg(){
+ const p=curP();if(!p.items.length){toast('لا توجد أسئلة للربط');return}
+ const ts=S.tests.slice().sort((a,b)=>(b.created||0)-(a.created||0));
+ modal('🔗 ربط بنتائج اختبار',`<div class="note blue">تُنقل أسئلة الورقة (${toAr(p.items.length)} سؤالًا) بدرجاتها ونواتج تعلمها إلى الاختبار المختار، فيظهر في تقرير النتائج <b>إتقان كل ناتج تعلم</b> ومعامل الصعوبة والتمييز لكل سؤال، وتُبنى الخطة العلاجية حسب الناتج.</div>
+ <div class="form" style="margin-top:12px"><div class="f w4">الاختبار<select class="sel" id="lk_t">${ts.map(t=>`<option value="${t.id}" ${t.id===p.testId?'selected':''}>${esc(t.name)} — ${gradeName(t)} (${toAr(t.students.length)} طالب)</option>`).join('')}<option value="__new">➕ إنشاء اختبار جديد بهذه الأسئلة</option></select></div></div>`,
+ `<button class="btn b-gold" onclick="linkPaper($('#lk_t').value)">ربط</button><button class="btn b-light" onclick="closeModal()">إلغاء</button>`);
+}
+function linkPaper(tid){
+ const p=curP();
+ const qs=p.items.map((q,i)=>({label:'س'+toAr(i+1),mark:num(q.mark)||1,skill:q.outcome||q.topic||q.skill||''}));
+ const tot=qs.reduce((a,q)=>a+q.mark,0);
+ let t;
+ if(tid==='__new'){t={id:uid(),created:Date.now(),students:[],name:p.name,type:p.type,subject:p.subject,stage:p.stage,grade:p.grade,total:tot,pass:50,date:'',term:S.settings.term||'',sections:classesOf(p.stage,p.grade).length?[...classesOf(p.stage,p.grade)]:[1],questions:qs};S.tests.push(t)}
+ else{t=S.tests.find(x=>x.id===tid);if(!t)return;
+  const hasAns=t.students.some(s=>Array.isArray(s.ans)&&s.ans.some(v=>v!==''&&v!=null));
+  if(hasAns&&t.questions.length!==qs.length&&!confirm(`في الاختبار درجات أسئلة مدخلة لعدد ${toAr(t.questions.length)} سؤالًا، والورقة فيها ${toAr(qs.length)}. ستُعدَّل الأعمدة لتطابق الورقة. متابعة؟`))return;
+  t.questions=qs;t.students.forEach(s=>{if(Array.isArray(s.ans))s.ans=qs.map((_,i)=>s.ans[i]??'');else if(!hasAns)s.ans=null});
+  if(Math.abs(tot-t.total)>0.001&&confirm(`مجموع درجات الأسئلة ${fmt(tot)} والدرجة الكلية للاختبار ${t.total}. هل تجعل الدرجة الكلية ${fmt(tot)}؟`))t.total=tot;
+ }
+ p.testId=t.id;pTouch(p);save();closeModal();toast('✅ تم الربط — أدخل درجات الأسئلة لكل طالب لتحليل الإتقان حسب ناتج التعلم');go('entry',{test:t.id});
+}
+
+/* ---------- التقرير المستقل لتحليل ورقة الاختبار ---------- */
+function openPaperReport(){
+ const p=curP();if(!p){toast('اختر تحليلًا');return}if(!p.items.length){toast('لا توجد أسئلة في التحليل');return}
+ const P=paperStats(p);const R=paperRecs(p,P);const T=TYPES[p.type]||TYPES.other;const gname=`${STAGES[p.stage].g[p.grade-1]} ${STAGES[p.stage].s}`;
+ const pages=[];
+ pages.push(`${rpHeader()}
+ <div class="rp-t"><span class="badge">تقرير تحليل ورقة الاختبار</span><h2>تحليل ${esc(p.name)} ونواتج التعلم والمهارات</h2><p>${T.one} • مادة ${esc(p.subject)} • ${gname}</p></div>
+ <div class="rp-info"><div>نوع الاختبار<b>${T.one}</b></div><div>الصف<b>${gname}</b></div><div>عدد الأسئلة<b>${toAr(P.N)}</b></div><div>مجموع الدرجات<b>${P.marks?fmt(P.marks):'—'}</b></div></div>
+ <div class="rp-k">${P.dom.map(d=>`<div style="background:${DOMC[d.k]}12;border-color:${DOMC[d.k]}44;color:${DOMC[d.k]}"><b>${fmt(P.pct(d.n))}%</b><span>${d.k} (${toAr(d.n)})</span></div>`).join('')}
+  <div style="background:#e8fafa;border-color:#bdeaea;color:#0f8f9d"><b>${toAr(P.sk.length)}</b><span>مهارة علمية</span></div>
+  <div style="background:#fff4e6;border-color:#fbdcb1;color:#b96a00"><b>${toAr(P.tp.filter(t=>t.k!=='غير محدد').length)}</b><span>ناتج / موضوع</span></div>
+  <div style="background:#eef5ff;border-color:#cfe0fb;color:#1d6fe0"><b>${toAr(P.ty.length)}</b><span>أنماط أسئلة</span></div></div>
+ <div class="two">
+  <div class="rp-sec"><h3>المستويات المعرفية (تصنيف بلوم)</h3><div class="center" style="gap:8px">${pieSVG(P.lv.map(l=>({value:l.n,c:QLC[l.k]})),140)}<table style="width:auto;min-width:170px"><tr><th>المستوى</th><th>العدد</th><th>النسبة</th></tr>${P.lv.map(l=>`<tr><td style="text-align:right"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${QLC[l.k]};margin-left:4px"></span>${QLEVELS[l.k]}</td><td>${toAr(l.n)}</td><td>${fmt(P.pct(l.n))}%</td></tr>`).join('')}</table></div></div>
+  <div class="rp-sec"><h3>مجالات نافس مقارنة بإطار TIMSS</h3><table><tr><th>المجال</th><th>العدد</th><th>النسبة</th><th>المرجع</th><th>الحكم</th></tr>${P.dom.map(d=>{const v=P.pct(d.n),df=v-DOM_REF[d.k];return `<tr><td><b>${d.k}</b></td><td>${toAr(d.n)}</td><td>${fmt(v)}%</td><td>${DOM_REF[d.k]}%</td><td>${Math.abs(df)<=10?'<span class="tag t-grn">متوازن</span>':df>0?'<span class="tag t-org">أعلى من المرجع</span>':'<span class="tag t-red">أقل من المرجع</span>'}</td></tr>`}).join('')}</table>
+  <h3 style="margin-top:10px">أنماط الأسئلة</h3><table><tr><th>النمط</th><th>العدد</th><th>النسبة</th></tr>${P.ty.map(t=>`<tr><td>${QTYPES[t.k]}</td><td>${toAr(t.n)}</td><td>${fmt(P.pct(t.n))}%</td></tr>`).join('')}</table></div>
+ </div>
+ <div class="rp-sec"><h3>المهارات العلمية المقيسة</h3>${P.sk.map(s=>hbar(esc(s.k)+` (${toAr(s.n)})`,P.pct(s.n),'#14a8b5')).join('')}</div>`);
+ // جدول المواصفات
+ const lk=Object.keys(QLEVELS);
+ pages.push(`<!--dense-->${rpHeader()}<div class="rp-sec"><h3>جدول المواصفات: نواتج التعلم / الموضوعات × المستويات المعرفية</h3><table><tr><th>م</th><th>ناتج التعلم / الموضوع</th>${lk.map(k=>`<th>${QLEVELS[k]}</th>`).join('')}<th>المجموع</th><th>الوزن</th></tr>${P.tp.map((t,i)=>`<tr><td>${toAr(i+1)}</td><td style="text-align:right">${esc(t.k)}</td>${t.lv.map(v=>`<td>${v?toAr(v):''}</td>`).join('')}<td><b>${toAr(t.n)}</b></td><td>${fmt(P.pct(t.n))}%</td></tr>`).join('')}<tr><th></th><th>المجموع</th>${lk.map(k=>`<th>${toAr(P.lv.find(l=>l.k===k).n)}</th>`).join('')}<th>${toAr(P.N)}</th><th>١٠٠%</th></tr></table></div>
+ <div class="rp-sec"><h3>ملاحظات وتوصيات على ورقة الاختبار</h3>${R.map(r=>`<p style="margin:4px 0"><b>${r.ic} ${r.h}:</b> ${r.x}</p>`).join('')}</div>
+`);
+ // تفاصيل الأسئلة
+ const PER=20;const short=s=>{s=String(s||'').replace(/\s*\|\s*/g,' ');return s.length>110?s.slice(0,108)+'…':s};
+ for(let c=0;c<p.items.length;c+=PER){const part=p.items.slice(c,c+PER);const last=c+PER>=p.items.length;
+  pages.push(`<!--dense-->${rpHeader()}<div class="rp-sec"><h3>تحليل أسئلة الاختبار سؤالًا سؤالًا${p.items.length>PER?` — الجزء ${toAr(c/PER+1)}`:''}</h3><table><tr><th>م</th><th>نص السؤال</th><th>النمط</th><th>المستوى</th><th>المجال</th><th>المهارة</th><th>ناتج التعلم / الموضوع</th><th>الدرجة</th></tr>${part.map((q,i)=>`<tr><td>${toAr(c+i+1)}</td><td style="text-align:right;font-size:11px">${esc(short(q.text))}</td><td style="font-size:11px">${QTYPES[q.type]}</td><td style="color:${QLC[q.level]};font-weight:900">${QLEVELS[q.level]}</td><td>${QDOM[q.level]}</td><td style="font-size:11px">${esc(q.skill)}</td><td style="text-align:right;font-size:11px">${esc(q.outcome||q.topic||'—')}</td><td>${q.mark===''?'—':fmt(num(q.mark))}</td></tr>`).join('')}</table>
+  ${last?'<div class="muted" style="font-size:11px;margin-top:4px">التصنيف مقترح آليًا من صياغة الأسئلة وراجعه المعلم. المجالات: المعرفة (تذكّر، فهم) — التطبيق — الاستدلال (تحليل، تقويم، إبداع).</div>':''}</div>`);
+ }
+ pages[pages.length-1]+=rpSign();
+ const title='تقرير تحليل ورقة الاختبار — '+p.name;
+ $('#rpTitle').textContent=title;
+ $('#rpBody').innerHTML=pages.map((x,i)=>`<div class="rp"><div class="rp-in${x.startsWith('<!--dense-->')?' dense':''}">${x}</div>${rpFoot(i+1,pages.length)}</div>`).join('');
+ RP_META={title,kind:'paper',test:p.testId||''};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير';
+ $('#rpOv').classList.add('show');document.title=title;fitPages();
+}
+
 /* ---------- navigation ---------- */
-const NAV={home:['الرئيسية','home'],tests:['إدارة الاختبارات','clip'],analysis:['التقارير والتحليلات','chart'],remedial:['الخطط العلاجية','heal'],settings:['إعدادات المنصة','gear'],saved:['التقارير المحفوظة','file'],help:['المساعدة والدعم','help']};
+const NAV={home:['الرئيسية','home'],tests:['إدارة الاختبارات','clip'],analysis:['التقارير والتحليلات','chart'],paper:['تحليل ورقة الاختبار','search'],remedial:['الخطط العلاجية','heal'],settings:['إعدادات المنصة','gear'],saved:['التقارير المحفوظة','file'],help:['المساعدة والدعم','help']};
 document.querySelectorAll('.nav-btn').forEach(b=>{
  const v=b.dataset.v;
  if(v){b.innerHTML=`${ico(NAV[v][1])}<span>${NAV[v][0]}</span>`;b.onclick=()=>go(v)}
@@ -520,7 +805,7 @@ function header(){
 function render(){
  header();storeInfo();
  document.querySelectorAll('.nav-btn[data-v]').forEach(b=>b.classList.toggle('active',b.dataset.v===UI.view||(UI.view==='entry'&&b.dataset.v==='tests')));
- const V={home:vHome,tests:vTests,entry:vEntry,analysis:vAnalysis,remedial:vRemedial,settings:vSettings,saved:vSaved,help:vHelp};
+ const V={home:vHome,tests:vTests,entry:vEntry,analysis:vAnalysis,remedial:vRemedial,settings:vSettings,saved:vSaved,help:vHelp,paper:vPaper};
  $('#view').innerHTML=(V[UI.view]||vHome)();
  afterRender();
 }
@@ -609,7 +894,7 @@ function testCard(t){
 }
 function vTests(){
  const ts=filtered().sort((a,b)=>(b.created||0)-(a.created||0));
- return `<div class="toolbar"><h2>إدارة الاختبارات</h2><button class="btn b-gold" onclick="testForm()">${ico('plus')}اختبار جديد</button></div>
+ return `<div class="toolbar"><h2>إدارة الاختبارات</h2><button class="btn b-light" onclick="go('paper',{paper:null})">${ico('search')}تحليل ورقة اختبار</button><button class="btn b-gold" onclick="testForm()">${ico('plus')}اختبار جديد</button></div>
  ${filterBar()}
  ${ts.length?`<div class="tests">${ts.map(testCard).join('')}</div>`:`<div class="panel"><div class="empty">${ico('clip')}<br>لا توجد اختبارات ${S.tests.length?'مطابقة للتصفية':'بعد'}.<br><button class="btn b-gold" style="margin-top:10px" onclick="testForm()">${ico('plus')}إنشاء أول اختبار</button></div></div>`}`;
 }
@@ -637,7 +922,7 @@ function testForm(id,preset={}){
  </div>
  ${id?'':`<div class="step"><span class="sn">٤</span>إضافة أسماء الطلاب ودرجاتهم <small style="font-weight:700;color:var(--muted)">(اختياري، ويمكن إضافتها لاحقًا)</small></div>
  <div class="attach2">
- <label class="attach" id="f_attachLbl">${ico('up')}<span id="f_attachTxt">إرفاق ملف الدرجات (‎.xlsx ‎.csv ‎.pdf)</span><input type="file" accept=".xlsx,.xls,.csv,.pdf,application/pdf" class="hide" onchange="pickPend(this.files[0]||null)"></label>
+ <label class="attach" id="f_attachLbl">${ico('up')}<span id="f_attachTxt">إرفاق ملف الدرجات (‎.xlsx ‎.csv ‎.pdf أو صورة)</span><input type="file" accept=".xlsx,.xls,.csv,.pdf,application/pdf,image/*" multiple class="hide" onchange="pickPend(this.files.length>1?[...this.files]:(this.files[0]||null))"></label>
  <button type="button" class="attach" id="f_manualBtn" onclick="pickManual()">${ico('edit')}<span id="f_manualTxt">إدخال الأسماء والدرجات يدويًا</span></button>
  </div>`}
  <details class="qdet" ${t.questions.length?'open':''}><summary>تحليل الأسئلة والمهارات (اختياري) — لمؤشرات الصعوبة والتمييز والخطة العلاجية حسب المهارة</summary>
@@ -730,7 +1015,7 @@ function pickPend(f){window._pend=f;if(f)window._manual=false;syncAdd()}
 function pickManual(){window._manual=!window._manual;if(window._manual){window._pend=null;const i=document.querySelector('#f_attachLbl input');if(i)i.value=''}syncAdd()}
 function syncAdd(){
  const a=$('#f_attachLbl'),m=$('#f_manualBtn');if(!a||!m)return;
- a.classList.toggle('on',!!window._pend);$('#f_attachTxt').textContent=window._pend?('📎 '+window._pend.name):'إرفاق ملف الدرجات (‎.xlsx ‎.csv ‎.pdf)';
+ a.classList.toggle('on',!!window._pend);$('#f_attachTxt').textContent=window._pend?('📎 '+(Array.isArray(window._pend)?toAr(window._pend.length)+' صور':window._pend.name)):'إرفاق ملف الدرجات (‎.xlsx ‎.csv ‎.pdf أو صورة)';
  m.classList.toggle('on',!!window._manual);$('#f_manualTxt').textContent=window._manual?'✔ إدخال يدوي — تُفتح نافذة كتابة الأسماء بعد الحفظ':'إدخال الأسماء والدرجات يدويًا';
 }
 function saveTest(id){
@@ -777,6 +1062,7 @@ function vEntry(){
  <div class="panel" style="margin-bottom:14px"><div class="pb"><div class="flex" style="flex-wrap:wrap">
   <label class="btn b-green" style="cursor:pointer">${ico('table')}رفع ملف Excel<input type="file" accept=".xlsx,.xls,.csv" class="hide" onchange="importFile(this.files[0]);this.value=''"></label>
   <label class="btn b-navy" style="cursor:pointer;background:linear-gradient(135deg,#e5484d,#b4232a)">${ico('file')}رفع ملف PDF<input type="file" accept=".pdf,application/pdf" class="hide" onchange="importFile(this.files[0]);this.value=''"></label>
+  <label class="btn b-navy" style="cursor:pointer;background:linear-gradient(135deg,#7c4ddb,#5a2fb0)">${ico('up')}رفع صورة الكشف<input type="file" accept="image/*" multiple class="hide" onchange="importFile([...this.files]);this.value=''"></label>
   <button class="btn b-gold" onclick="pasteDlg()">${ico('copy')}لصق من Excel</button>
   <button class="btn b-light" onclick="downloadTemplate()">${ico('dl')}نموذج Excel فارغ</button>
   <button class="btn b-navy" onclick="manualDlg()">${ico('edit')}إدخال يدوي للأسماء والدرجات</button>
@@ -791,6 +1077,7 @@ function vEntry(){
  :`<div class="panel" id="dropZone"><div class="pb"><div class="addopts">
   <label class="addopt" style="--c:#1b8a4b">${ico('table')}<b>ملف Excel</b><span>‎.xlsx أو ‎.csv — مثل كشف نور</span><input type="file" accept=".xlsx,.xls,.csv" class="hide" onchange="importFile(this.files[0]);this.value=''"></label>
   <label class="addopt" style="--c:#c22f34">${ico('file')}<b>ملف PDF</b><span>كشف درجات PDF (نصي أو ممسوح ضوئيًا)</span><input type="file" accept=".pdf,application/pdf" class="hide" onchange="importFile(this.files[0]);this.value=''"></label>
+  <label class="addopt" style="--c:#7c4ddb">${ico('up')}<b>صورة الكشف</b><span>صورة أو أكثر (تصوير بالجوال)</span><input type="file" accept="image/*" multiple class="hide" onchange="importFile([...this.files]);this.value=''"></label>
   <button class="addopt" style="--c:#b07d00" onclick="pasteDlg()">${ico('copy')}<b>لصق</b><span>انسخ الأعمدة والصقها</span></button>
   <button class="addopt" style="--c:#123f8c" onclick="manualDlg()">${ico('edit')}<b>إدخال يدوي</b><span>اكتب الأسماء والدرجات بنفسك</span></button>
  </div><div class="muted" style="text-align:center;margin-top:12px;font-size:14px">أو اسحب الملف وأفلته هنا • الأعمدة المقترحة: الاسم ← الفصل ← ${t.questions.length?'س1، س2 …':'الدرجة'} — <a href="#" onclick="event.preventDefault();downloadTemplate()">تحميل نموذج Excel فارغ</a></div></div></div>`}`;
@@ -956,8 +1243,11 @@ function impCommit(){
 function loadScript(src){return new Promise((res,rej)=>{if(document.querySelector(`script[src="${src}"]`)&&loadScript.ok?.[src])return res();const s=document.createElement('script');s.src=src;s.onload=()=>{(loadScript.ok=loadScript.ok||{})[src]=1;res()};s.onerror=()=>rej(new Error('load'));document.head.appendChild(s)})}
 function loadXLSX(){return window.XLSX?Promise.resolve():loadScript('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js')}
 async function loadPDFJS(){if(!window.pdfjsLib)await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'}
+const isImg=f=>f&&(/^image\//.test(f.type)||/\.(jpe?g|png|webp|heic|heif|bmp|gif)$/i.test(f.name));
 async function importFile(f){
  if(!f)return;
+ if(Array.isArray(f)){if(!f.length)return;if(f.every(isImg))return importImages(f);f=f[0]}
+ if(isImg(f))return importImages([f]);
  try{
   if(/\.pdf$/i.test(f.name)||f.type==='application/pdf')return importPDF(f);
   if(/\.csv$/i.test(f.name)){const txt=await f.text();const rows=txt.replace(/^﻿/,'').replace(/\r/g,'').split('\n').filter(l=>l.trim()).map(l=>l.split(l.includes(';')?';':(l.includes('\t')?'\t':',')).map(c=>c.replace(/^"|"$/g,'').trim()));return importWizard(rows,f.name)}
@@ -1022,9 +1312,9 @@ function pdfRows(items){
  return{rows,body};
 }
 function loadTesseract(){return window.Tesseract?Promise.resolve():loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js')}
-async function ocrPDF(pdf){
- const N=pdf.numPages;
- modal('🔎 قراءة ضوئية لملف PDF',`<div class="note blue">الملف لا يحتوي نصًا قابلًا للقراءة المباشرة (غالبًا ممسوح ضوئيًا أو مصوَّر)، لذلك تُقرأ الأسماء والدرجات من صورة الصفحات.<br>قد تستغرق العملية دقيقة أو أكثر في أول مرة — لا تغلق الصفحة.</div><div style="margin-top:12px;background:var(--line);border-radius:10px;overflow:hidden;height:14px"><div id="ocrBar" style="height:100%;width:2%;background:linear-gradient(90deg,#22a45d,#1d6fe0);transition:width .3s"></div></div><div id="ocrTxt" class="muted" style="margin-top:6px;font-weight:700">جارٍ تجهيز القارئ الضوئي…</div>`,'');
+// قراءة ضوئية عامة لعدة صفحات (صفحات PDF أو صور) — تعيد الكلمات بمواقعها ونص كل صفحة
+async function ocrCanvases(N,getCanvas,title,why){
+ modal('🔎 '+(title||'قراءة ضوئية'),`<div class="note blue">${why||'تُقرأ النصوص من صورة الصفحات.'}<br>قد تستغرق العملية دقيقة أو أكثر في أول مرة — لا تغلق الصفحة.</div><div style="margin-top:12px;background:var(--line);border-radius:10px;overflow:hidden;height:14px"><div id="ocrBar" style="height:100%;width:2%;background:linear-gradient(90deg,#22a45d,#1d6fe0);transition:width .3s"></div></div><div id="ocrTxt" class="muted" style="margin-top:6px;font-weight:700">جارٍ تجهيز القارئ الضوئي…</div>`,'');
  const bar=p=>{const e=$('#ocrBar');if(e)e.style.width=Math.max(2,Math.round(p*100))+'%'};const txt=m=>{const e=$('#ocrTxt');if(e)e.textContent=m};
  let worker;
  try{
@@ -1032,20 +1322,45 @@ async function ocrPDF(pdf){
   let page=1;
   worker=await Tesseract.createWorker('ara+eng',1,{logger:m=>{if(m.status==='recognizing text')bar(((page-1)+m.progress)/N);else if(/loading|initializ/.test(m.status||''))txt('جارٍ تحميل بيانات اللغة العربية…')}});
   await worker.setParameters({preserve_interword_spaces:'1'});
-  const items=[];
+  const items=[];items.pages=[];
   for(page=1;page<=N;page++){
    txt(`قراءة الصفحة ${toAr(page)} من ${toAr(N)}…`);
-   const pg=await pdf.getPage(page);const vp=pg.getViewport({scale:2.6});
-   const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;
-   const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);
-   await pg.render({canvasContext:cx,viewport:vp}).promise;
+   const cv=await getCanvas(page);
    const {data}=await worker.recognize(cv);
+   items.pages.push((data.text||'').normalize('NFKC'));
    (data.words||[]).forEach(w=>{const s=(w.text||'').normalize('NFKC').replace(/[|_—–\[\]{}()"'`]+/g,'').trim();if(!s||w.confidence<25)return;const b=w.bbox;const h=Math.max(8,b.y1-b.y0);items.push({p:page,s,x:b.x0,y:-((b.y0+b.y1)/2),w:b.x1-b.x0,h,ocr:1})});
    cv.width=cv.height=0;
   }
   bar(1);await worker.terminate();closeModal();
   return items;
  }catch(e){console.error(e);try{worker&&await worker.terminate()}catch(_){}closeModal();toast('تعذّرت القراءة الضوئية — تحقق من الاتصال بالإنترنت');return null}
+}
+async function pdfPageCanvas(pdf,page){
+ const pg=await pdf.getPage(page);const vp=pg.getViewport({scale:2.6});
+ const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;
+ const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);
+ await pg.render({canvasContext:cx,viewport:vp}).promise;return cv;
+}
+function ocrPDF(pdf){return ocrCanvases(pdf.numPages,p=>pdfPageCanvas(pdf,p),'قراءة ضوئية لملف PDF','الملف لا يحتوي نصًا قابلًا للقراءة المباشرة (غالبًا ممسوح ضوئيًا أو مصوَّر)، لذلك تُقرأ النصوص من صورة الصفحات.')}
+// تحويل صورة إلى لوحة رسم بحجم مناسب للقراءة الضوئية
+function imageCanvas(f){
+ return new Promise((res,rej)=>{const u=URL.createObjectURL(f);const img=new Image();
+  img.onload=()=>{const L=Math.max(img.naturalWidth,img.naturalHeight);const k=L<1600?Math.min(2.2,2400/L):L>3400?3400/L:1;
+   const cv=document.createElement('canvas');cv.width=Math.round(img.naturalWidth*k);cv.height=Math.round(img.naturalHeight*k);
+   const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(img,0,0,cv.width,cv.height);URL.revokeObjectURL(u);res(cv)};
+  img.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('img'))};img.src=u});
+}
+// استيراد الأسماء والدرجات من صورة (أو عدة صور) لكشف الدرجات
+async function importImages(files){
+ const items=await ocrCanvases(files.length,p=>imageCanvas(files[p-1]),'قراءة كشف الدرجات من الصورة','تُقرأ الأسماء والدرجات من الصورة. للحصول على أفضل نتيجة: صوّر الكشف مستقيمًا وبإضاءة جيدة.');
+ if(!items)return;
+ const res=pdfRows(items);
+ if(!res.body.length){
+  if(!res.rows.length){modal('⚠️ تعذّرت قراءة الصورة',`<div class="note">لم يُتعرَّف على أسماء أو درجات في الصورة.<br>جرّب صورة أوضح ومستقيمة، أو استخدم ملف <b>Excel</b> أو <b>اللصق</b> أو الإدخال اليدوي.</div>`,`<button class="btn b-light" onclick="closeModal()">حسنًا</button>`);return}
+  importWizard(res.rows,files[0].name+' (صورة)');return;
+ }
+ const W=Math.max(...res.body.map(r=>r.length));
+ importWizard([['الاسم',...Array.from({length:W-1},(_,i)=>'خانة '+(i+1))],...res.body],(files.length>1?toAr(files.length)+' صور':files[0].name)+' (قراءة ضوئية: راجع الأسماء والدرجات)');
 }
 async function downloadTemplate(){
  const t=curT();
@@ -1257,7 +1572,7 @@ function openReport(id,sec,named){
  }
  $('#rpTitle').textContent=`${named?'تقرير بالأسماء':'تقرير بدون أسماء'} — ${t.name}`;
  $('#rpBody').innerHTML=pages.map((p,i)=>`<div class="rp"><div class="rp-in${p.startsWith('<!--dense-->')?' dense':''}">${p}</div>${rpFoot(i+1,pages.length)}</div>`).join('');
- RP_META={title:`${named?'تقرير بالأسماء':'تقرير بدون أسماء'} — ${t.name}${sec!=='all'?' — الفصل '+secLabel(sec,t.grade):''}`,kind:named?'named':'anon',test:t.id};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير في المنصة';
+ RP_META={title:`${named?'تقرير بالأسماء':'تقرير بدون أسماء'} — ${t.name}${sec!=='all'?' — الفصل '+secLabel(sec,t.grade):''}`,kind:named?'named':'anon',test:t.id};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير';
  $('#rpOv').classList.add('show');document.title=`${named?'تقرير بالأسماء':'تقرير إحصائي'} - ${t.name}`;
  fitPages();
 }
@@ -1284,7 +1599,7 @@ function openRemedialReport(id){
  <div class="rp-sec"><h3>المهارات المستهدفة والإجراءات</h3>${remedialTable(A,weak)}</div>
  <div class="rp-sec"><h3>الطلاب المستهدفون (${low.length})</h3>${low.length?`<table><tr><th>م</th><th>الاسم</th><th>الفصل</th><th>النسبة قبل العلاج</th><th>النسبة بعد العلاج</th><th>ملاحظات</th></tr>${low.map((r,i)=>`<tr><td>${i+1}</td><td style="text-align:right">${esc(r.s.name)}</td><td>${secLabel(r.s.section,t.grade)}</td><td>${fmt(r.p)}%</td><td></td><td></td></tr>`).join('')}</table>`:'<p>لا يوجد طلاب دون حد النجاح.</p>'}</div>${rpSign()}`;
  $('#rpTitle').textContent='الخطة العلاجية — '+t.name;
- $('#rpBody').innerHTML=`<div class="rp"><div class="rp-in">${page}</div>${rpFoot(1,1)}</div>`;setTimeout(fitPages,0);RP_META={title:'الخطة العلاجية — '+t.name,kind:'plan',test:t.id};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير في المنصة';$('#rpOv').classList.add('show');
+ $('#rpBody').innerHTML=`<div class="rp"><div class="rp-in">${page}</div>${rpFoot(1,1)}</div>`;setTimeout(fitPages,0);RP_META={title:'الخطة العلاجية — '+t.name,kind:'plan',test:t.id};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير';$('#rpOv').classList.add('show');
 }
 function closeReport(){$('#rpOv').classList.remove('show');document.title='منصة تحليل نتائج الاختبارات | أبي الدرداء المتوسطة'}
 
@@ -1331,9 +1646,10 @@ function track(mark=true){
 function mergeState(L,R){
  R=migrate(R);const del=Object.assign({},R.deleted||{},L.deleted||{});
  const map={};[...R.tests,...L.tests].forEach(t=>{if(del[t.id])return;const c=map[t.id];if(!c||(t.upd||0)>(c.upd||0))map[t.id]=t});
- const rep={};[...(R.reports||[]),...(L.reports||[])].forEach(r=>{if(!del[r.id])rep[r.id]=r});
+ const rep={};[...(R.reports||[]),...(L.reports||[])].forEach(r=>{if(del[r.id])return;const c=rep[r.id];if(!c||!c.file||r.file)rep[r.id]=r});
+ const pap={};[...(R.papers||[]),...(L.papers||[])].forEach(p=>{if(del[p.id])return;const c=pap[p.id];if(!c||(p.upd||0)>=(c.upd||0))pap[p.id]=p});
  const settings=(R.settings.upd||0)>(L.settings.upd||0)?R.settings:L.settings;
- return Object.assign({},L,{settings,tests:Object.values(map).sort((a,b)=>(a.created||0)-(b.created||0)),reports:Object.values(rep),deleted:del});
+ return Object.assign({},L,{settings,tests:Object.values(map).sort((a,b)=>(a.created||0)-(b.created||0)),reports:Object.values(rep),papers:Object.values(pap).sort((a,b)=>(a.created||0)-(b.created||0)),deleted:del});
 }
 async function cloudPull(){
  const f=await ghRead(CLOUD.dir+'data.enc');
@@ -1366,41 +1682,59 @@ async function cloudEnable(){
  const p=$('#c_pass').value;if(p.length<6){toast('كلمة المرور ٦ أحرف على الأقل');return}
  lsSet(CLOUD.pk,p);Cloud.key=null;Cloud.salt=null;Cloud.sha=null;setCloud('saving','جارٍ الاتصال…');
  try{const had=await cloudPull();await cloudPush();if(Cloud.st==='err')throw new Error(Cloud.msg);
-  toast(had?'✅ تم الربط ودمج البيانات المحفوظة':'✅ تم تفعيل الحفظ في المنصة');render()}
+  const up=await uploadPendingReports();toast((had?'✅ تم الربط ودمج البيانات المحفوظة':'✅ تم تفعيل الحفظ في المنصة')+(up?` — ورُفع ${toAr(up)} تقرير`:''));render()}
  catch(e){if(e.badPass)lsSet(CLOUD.pk,null);setCloud(cloudOn()?'err':'off',e.message);toast('⚠️ '+e.message);render()}
 }
 function cloudDisable(){if(!confirm('إيقاف الحفظ السحابي على هذا الجهاز؟ تبقى البيانات المحفوظة في المنصة كما هي.'))return;lsSet(CLOUD.pk,null);Cloud.key=null;setCloud('off');render()}
-async function cloudSyncNow(){if(!cloudOn())return;setCloud('saving');try{await cloudPull();render();await cloudPush();toast(Cloud.st==='ok'?'✅ تمت المزامنة':'⚠️ '+Cloud.msg)}catch(e){setCloud('err',e.message);toast('⚠️ '+e.message)}}
+async function cloudSyncNow(){if(!cloudOn())return;setCloud('saving');try{await cloudPull();await uploadPendingReports();render();await cloudPush();toast(Cloud.st==='ok'?'✅ تمت المزامنة':'⚠️ '+Cloud.msg)}catch(e){setCloud('err',e.message);toast('⚠️ '+e.message)}}
 /* التقارير المحفوظة */
 let RP_META=null;
+/* حفظ التقارير: على هذا الجهاز دائمًا (IndexedDB)، وفي المنصة أيضًا إذا كان الحفظ السحابي مفعّلًا */
+const RDB={db:null};
+function rdb(){return RDB.db?Promise.resolve(RDB.db):new Promise((res,rej)=>{try{const q=indexedDB.open('resultsHub.reports',1);q.onupgradeneeded=()=>q.result.createObjectStore('r');q.onsuccess=()=>{RDB.db=q.result;res(q.result)};q.onerror=()=>rej(q.error)}catch(e){rej(e)}})}
+async function idbOp(mode,fn){const db=await rdb();return new Promise((res,rej)=>{const tx=db.transaction('r',mode);const st=tx.objectStore('r');const q=fn(st);tx.oncomplete=()=>res(q&&q.result);tx.onerror=()=>rej(tx.error)})}
+async function repPutLocal(id,obj){try{await idbOp('readwrite',st=>st.put(obj,id));return true}catch(e){try{localStorage.setItem('resultsHub.rep.'+id,JSON.stringify(obj));return true}catch(x){return false}}}
+async function repGetLocal(id){try{const o=await idbOp('readonly',st=>st.get(id));if(o)return o}catch(e){}try{const r=localStorage.getItem('resultsHub.rep.'+id);return r?JSON.parse(r):null}catch(e){return null}}
+async function repDelLocal(id){try{await idbOp('readwrite',st=>st.delete(id))}catch(e){}try{localStorage.removeItem('resultsHub.rep.'+id)}catch(e){}}
+async function repUpload(r,obj){const file=CLOUD.dir+'reports/'+r.id+'.enc';await ghWrite(file,await encObj(obj),null,'تحليل النتائج: حفظ تقرير (مشفّر)');r.file=file}
+async function uploadPendingReports(){
+ if(!cloudOn())return 0;let n=0;
+ for(const r of (S.reports||[]).filter(x=>!x.file)){const o=await repGetLocal(r.id);if(!o)continue;try{await repUpload(r,o);n++}catch(e){console.warn(e)}}
+ if(n)save();return n;
+}
 async function saveReportCloud(){
  if(!RP_META)return;
- if(!cloudOn()){toast('فعّل الحفظ في المنصة أولًا من الإعدادات');closeReport();go('settings');return}
  const b=$('#rpSaveBtn');b.disabled=true;b.textContent='⏳ جارٍ الحفظ…';
- try{const id=uid();const file=CLOUD.dir+'reports/'+id+'.enc';
-  await ghWrite(file,await encObj({title:RP_META.title,html:$('#rpBody').innerHTML}),null,'تحليل النتائج: حفظ تقرير (مشفّر)');
-  S.reports=S.reports||[];S.reports.push({id,file,title:RP_META.title,kind:RP_META.kind,test:RP_META.test,date:Date.now()});
-  save();b.textContent='✓ محفوظ في المنصة';toast('✅ حُفظ التقرير — تجده في «التقارير المحفوظة»');
- }catch(e){b.disabled=false;b.textContent='💾 حفظ التقرير في المنصة';toast('⚠️ '+e.message)}
+ const id=uid();const obj={title:RP_META.title,html:$('#rpBody').innerHTML};
+ if(!await repPutLocal(id,obj)){b.disabled=false;b.textContent='💾 حفظ التقرير';toast('⚠️ تعذّر الحفظ — مساحة المتصفح ممتلئة');return}
+ const r={id,title:RP_META.title,kind:RP_META.kind,test:RP_META.test,date:Date.now()};
+ S.reports=S.reports||[];S.reports.push(r);save();
+ if(cloudOn()){
+  try{await repUpload(r,obj);save();b.textContent='✓ محفوظ في الجهاز والمنصة';toast('✅ حُفظ التقرير في الجهاز والمنصة — تجده في «التقارير المحفوظة»')}
+  catch(e){b.textContent='✓ محفوظ في هذا الجهاز';toast('⚠️ حُفظ في الجهاز، وتعذّر رفعه للمنصة: '+e.message)}
+ }else{b.textContent='✓ محفوظ في هذا الجهاز';toast('✅ حُفظ التقرير — تجده في «التقارير المحفوظة»')}
 }
 async function openSaved(id){
  const r=(S.reports||[]).find(x=>x.id===id);if(!r)return;toast('جارٍ فتح التقرير…');
- try{const f=await ghRead(r.file);if(!f)throw new Error('ملف التقرير غير موجود');const o=await decObj(f.text);
+ try{let o=await repGetLocal(id);
+  if(!o&&r.file){if(!cloudOn())throw new Error('فعّل الحفظ في المنصة على هذا الجهاز لفتح هذا التقرير');const f=await ghRead(r.file);if(!f)throw new Error('ملف التقرير غير موجود');o=await decObj(f.text);repPutLocal(id,o)}
+  if(!o)throw new Error('هذا التقرير محفوظ على جهاز آخر ولم يُرفع للمنصة بعد');
   RP_META=null;$('#rpTitle').textContent=o.title;$('#rpBody').innerHTML=o.html;$('#rpSaveBtn').classList.add('hide');$('#rpOv').classList.add('show');document.title=o.title}
  catch(e){toast('⚠️ '+e.message)}
 }
 async function delSaved(id){
- const r=(S.reports||[]).find(x=>x.id===id);if(!r||!confirm(`حذف التقرير «${r.title}» من المنصة؟`))return;
- try{await ghDelete(r.file,'تحليل النتائج: حذف تقرير');}catch(e){toast('⚠️ '+e.message);return}
+ const r=(S.reports||[]).find(x=>x.id===id);if(!r||!confirm(`حذف التقرير «${r.title}»؟`))return;
+ if(r.file&&cloudOn()){try{await ghDelete(r.file,'تحليل النتائج: حذف تقرير');}catch(e){toast('⚠️ '+e.message);return}}
+ await repDelLocal(id);
  S.reports=S.reports.filter(x=>x.id!==id);S.deleted=S.deleted||{};S.deleted[id]=Date.now();save();render();toast('تم حذف التقرير');
 }
-const RKIND={named:['بالأسماء','t-blu'],anon:['بدون أسماء','t-grn'],plan:['خطة علاجية','t-org']};
+const RKIND={named:['بالأسماء','t-blu'],anon:['بدون أسماء','t-grn'],plan:['خطة علاجية','t-org'],paper:['تحليل ورقة اختبار','t-pur']};
 function vSaved(){
  const list=(S.reports||[]).slice().sort((a,b)=>b.date-a.date);
  return `<div class="toolbar"><h2>التقارير المحفوظة</h2>${cloudOn()?`<button class="btn b-light" onclick="cloudSyncNow()">🔄 مزامنة</button>`:''}</div>
- ${!cloudOn()?`<div class="panel"><div class="empty">☁️<br>لحفظ التقارير في المنصة فعّل «الحفظ في المنصة» من الإعدادات، ثم افتح أي تقرير واضغط «حفظ التقرير في المنصة».<br><button class="btn b-gold" style="margin-top:10px" onclick="go('settings')">الإعدادات</button></div></div>`
- :list.length?`<div class="tests">${list.map(r=>`<div class="tcard"><div class="tt" style="background:linear-gradient(135deg,#143f8b,#0a2a5e)">${ico('file')}<div><b>${esc(r.title)}</b><small>${new Date(r.date).toLocaleDateString('ar-SA-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'})}</small></div></div><div class="tf" style="padding-top:12px"><span class="tag ${(RKIND[r.kind]||RKIND.anon)[1]}">${(RKIND[r.kind]||RKIND.anon)[0]}</span><span style="flex:1"></span><button class="btn b-blue b-sm" onclick="openSaved('${r.id}')">${ico('eye')}فتح</button><button class="btn b-red b-sm" onclick="delSaved('${r.id}')">${ico('trash')}</button></div></div>`).join('')}</div>`
- :`<div class="panel"><div class="empty">${ico('file')}<br>لا توجد تقارير محفوظة بعد. افتح تقريرًا من «التقارير والتحليلات» واضغط «💾 حفظ التقرير في المنصة».</div></div>`}`;
+ ${!cloudOn()?`<div class="note" style="margin-bottom:14px">💾 التقارير تُحفظ في هذا الجهاز. لتظهر على أجهزتك الأخرى وتُحفظ بأمان في المنصة فعّل «الحفظ في المنصة» من <a href="#" onclick="event.preventDefault();go('settings')">الإعدادات</a> — وتُرفع التقارير الحالية تلقائيًا.</div>`:''}
+ ${list.length?`<div class="tests">${list.map(r=>`<div class="tcard"><div class="tt" style="background:linear-gradient(135deg,#143f8b,#0a2a5e)">${ico('file')}<div><b>${esc(r.title)}</b><small>${new Date(r.date).toLocaleDateString('ar-SA-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'})}</small></div></div><div class="tf" style="padding-top:12px"><span class="tag ${(RKIND[r.kind]||RKIND.anon)[1]}">${(RKIND[r.kind]||RKIND.anon)[0]}</span><span class="tag ${r.file?'t-grn':'t-gry'}">${r.file?'☁️ في المنصة':'💾 في الجهاز'}</span><span style="flex:1"></span><button class="btn b-blue b-sm" onclick="openSaved('${r.id}')">${ico('eye')}فتح</button><button class="btn b-red b-sm" onclick="delSaved('${r.id}')">${ico('trash')}</button></div></div>`).join('')}</div>`
+ :`<div class="panel"><div class="empty">${ico('file')}<br>لا توجد تقارير محفوظة بعد. افتح أي تقرير (نتائج اختبار، خطة علاجية، تحليل ورقة اختبار) واضغط «💾 حفظ التقرير».</div></div>`}`;
 }
 function cloudPanel(){
  const hasTok=!!lsGet(CLOUD.tk),on=cloudOn();
