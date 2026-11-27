@@ -187,6 +187,7 @@ td.nm{text-align:right}
 .secs input{accent-color:#0a2a5e}
 .note{background:#fff8e6;border:1px solid #f6dea0;border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.8;color:#6d5208}
 .note.blue{background:#eef5ff;border-color:#cbdcf8;color:#1f3f75}
+#rpBody.editing .rp{outline:3px dashed #f2c14e;outline-offset:-6px}#rpBody.editing [class*=rp]:hover{background:#fffbe6}
 .name-fixed{display:block;text-align:right;font-weight:800;padding:6px 8px;color:#0d2346}
 .absbtn{border:1.5px solid #cbd5e1;background:#fff;border-radius:10px;padding:5px 10px;font:inherit;font-weight:800;font-size:13px;color:#64748b;cursor:pointer;white-space:nowrap}.absbtn.on{background:#fdecec;border-color:#e5484d;color:#c22f34}
 .qtbl input{width:100%;border:1px solid #e3eaf5;border-radius:8px;padding:6px;text-align:center}
@@ -294,7 +295,7 @@ td.nm{text-align:right}
 </div>
 
 <div class="ov" id="ov"><div class="modal" id="modal"></div></div>
-<div id="rpOv"><div class="rp-bar"><b id="rpTitle">التقرير</b><button class="btn b-green b-sm" id="rpSaveBtn" onclick="saveReportCloud()">💾 حفظ التقرير</button><button class="btn b-sm" style="background:#e8f0ff;color:#0a2a5e" onclick="rpDateDlg()">📅 تاريخ التقرير</button><button class="btn b-gold b-sm" onclick="window.print()">🖨️ طباعة</button><button class="btn b-sm" style="background:#fff;color:#0a2a5e" onclick="exportReport('png')">🖼️ صورة</button><button class="btn b-sm" style="background:#e5484d;color:#fff" onclick="exportReport('pdf')">📄 PDF</button><button class="btn b-light b-sm" onclick="closeReport()">✕ إغلاق</button></div><div id="rpBody"></div></div>
+<div id="rpOv"><div class="rp-bar"><b id="rpTitle">التقرير</b><button class="btn b-green b-sm" id="rpSaveBtn" onclick="saveReportCloud()">💾 حفظ التقرير</button><button class="btn b-sm hide" id="rpEditBtn" style="background:#e8f0ff;color:#0a2a5e" onclick="rpEditToggle()">✏️ تعديل النص</button><button class="btn b-sm hide" id="rpDelBtn" style="background:#fdecec;color:#c22f34" onclick="rpDelOpen()">🗑️ حذف التقرير</button><button class="btn b-sm" style="background:#e8f0ff;color:#0a2a5e" onclick="rpDateDlg()">📅 تاريخ التقرير</button><button class="btn b-gold b-sm" onclick="window.print()">🖨️ طباعة</button><button class="btn b-sm" style="background:#fff;color:#0a2a5e" onclick="exportReport('png')">🖼️ صورة</button><button class="btn b-sm" style="background:#e5484d;color:#fff" onclick="exportReport('pdf')">📄 PDF</button><button class="btn b-light b-sm" onclick="closeReport()">✕ إغلاق</button></div><div id="rpBody"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1105,7 +1106,7 @@ function vStudents(){
  const stOpts=Object.entries(STAGES).map(([k,s])=>`<option value="${k}" ${U.stage===k?'selected':''}>${s.n}</option>`).join('');
  const grOpts=STAGES[U.stage].g.map((g,i)=>`<option value="${i+1}" ${U.grade===i+1?'selected':''}>${g} ${STAGES[U.stage].s}</option>`).join('');
  const cnt=s=>R_().filter(r=>r.stage===U.stage&&r.grade===U.grade&&r.sec===s).length;
- return `<div class="toolbar"><h2>إدارة الطلاب</h2><button class="btn b-gold" onclick="rAddDlg()">${ico('plus')}إضافة طلاب</button><label class="btn b-green" style="cursor:pointer">${ico('table')}استيراد من Excel<input type="file" accept=".xlsx,.xls,.csv" class="hide" onchange="rImportFile(this.files[0]);this.value=''"></label><button class="btn b-light" onclick="rFromTestDlg()">${ico('copy')}نسخ من اختبار سابق</button></div>
+ return `<div class="toolbar"><h2>إدارة الطلاب</h2><button class="btn b-gold" onclick="rAddDlg()">${ico('plus')}إضافة طلاب</button><label class="btn b-green" style="cursor:pointer">${ico('table')}استيراد من Excel<input type="file" accept=".xlsx,.xls,.csv" class="hide" onchange="rImportFile(this.files[0]);this.value=''"></label><button class="btn b-navy" onclick="rJourneyDlg()">🚀 استيراد من رحلة العلوم</button><button class="btn b-light" onclick="rFromTestDlg()">${ico('copy')}نسخ من اختبار سابق</button></div>
  <div class="note blue" style="margin-bottom:14px">أضف أسماء طلاب كل فصل مرة واحدة، ثم عند كل اختبار تُضاف الأسماء تلقائيًا وتكتفي بكتابة الدرجة أو اختيار «غائب». تعديل اسم الطالب هنا يُحدَّث في كل اختباراته.</div>
  <div class="filters"><label>المرحلة</label><select class="sel" onchange="rsel().stage=this.value;rsel().grade=1;rsel().sec='all';render()">${stOpts}</select>
   <label>الصف</label><select class="sel" onchange="rsel().grade=+this.value;rsel().sec='all';render()">${grOpts}</select>
@@ -1169,6 +1170,30 @@ function rMoveSel(){const ids=rChecked();if(!ids.length){toast('حدّد طال�
 function rGradeSel(){const ids=rChecked();if(!ids.length){toast('حدّد طالبًا واحدًا على الأقل');return}const g=+$('#r_tog').value;ids.forEach(id=>{const r=R_().find(x=>x.id===id);if(r){r.grade=g;rTouch(r)}});rememberClasses(rsel().stage,g,[...new Set(ids.map(id=>R_().find(x=>x.id===id).sec))]);save();render();toast(`✅ نُقل ${toAr(ids.length)} طالب إلى ${STAGES[rsel().stage].g[g-1]} ${STAGES[rsel().stage].s}`)}
 function rDel(ids){if(!confirm(ids.length>1?`حذف ${ids.length} طالب من القائمة؟ (تبقى درجاتهم في الاختبارات السابقة)`:'حذف الطالب من القائمة؟ (تبقى درجاته في الاختبارات السابقة)'))return;S.deleted=S.deleted||{};const now=Date.now();S.roster=R_().filter(r=>{if(ids.includes(r.id)){S.deleted[r.id]=now;return false}return true});save();render();toast('تم الحذف')}
 function rDelSel(){const ids=rChecked();if(!ids.length){toast('حدّد طالبًا واحدًا على الأقل');return}rDel(ids)}
+
+/* استيراد الأسماء من منصة «رحلة عالم العلوم» (نفس خادم Apps Script) */
+const JOURNEY_API='https://script.google.com/macros/s/AKfycbxp-t4JgGO5WiK6hoacjTyBqFnG-9bSWClplOpVV4VDuTV7T4tY0swB1Ll36kr_djJ7nQ/exec';
+function jsonpJ(params){return new Promise((res,rej)=>{const cb='rjcb'+Math.random().toString(36).slice(2);const sc=document.createElement('script');const t=setTimeout(()=>{done();rej(new Error('انتهت مهلة الاتصال بمنصة رحلة العلوم'))},25000);
+ function done(){clearTimeout(t);try{delete window[cb]}catch(e){window[cb]=undefined}sc.remove()}
+ window[cb]=d=>{done();res(d)};sc.onerror=()=>{done();rej(new Error('تعذّر الاتصال بمنصة رحلة العلوم — تحقق من الإنترنت'))};
+ sc.src=JOURNEY_API+'?'+new URLSearchParams({...params,callback:cb,_:Date.now()});document.body.appendChild(sc)})}
+function rJourneyDlg(){
+ const C=[1,2,3].flatMap(g=>[1,2,3,4,5].map(n=>({g,n})));const def=new Set(['1/1','2/1','3/1','4/1','1/3','2/3']);
+ modal('🚀 استيراد الأسماء من رحلة عالم العلوم',`<div class="note blue">تُجلب أسماء الطلاب من «إدارة الطلاب» في منصة رحلة عالم العلوم إلى فصولها هنا، ويُتجاهل الاسم الموجود مسبقًا.</div>
+ ${[1,2,3].map(g=>`<h4 style="margin:12px 0 6px">${STAGES.m.g[g-1]} متوسط</h4><div class="secs">${C.filter(c=>c.g===g).map(c=>`<label><input type="checkbox" class="rj" value="${c.n}/${c.g}" ${def.has(c.n+'/'+c.g)?'checked':''}>الفصل ${secLabel(c.n,c.g)}</label>`).join('')}</div>`).join('')}
+ <div id="rj_st" class="muted" style="margin-top:10px;font-weight:800"></div>`,
+ `<button class="btn b-gold" id="rj_go" onclick="rJourneyGo()">⬇️ استيراد</button><button class="btn b-light" onclick="closeModal()">إغلاق</button>`);
+}
+async function rJourneyGo(){
+ const cls=[...document.querySelectorAll('.rj:checked')].map(x=>x.value);if(!cls.length){toast('اختر فصلًا واحدًا على الأقل');return}
+ const b=$('#rj_go');b.disabled=true;const st=m=>{const e=$('#rj_st');if(e)e.textContent=m};let add=0,dup=0,fail=[];const res=[];
+ for(let i=0;i<cls.length;i++){const c=cls[i];st(`جارٍ جلب الفصل ${c.replace(/(\d+)\/(\d+)/,(m,a,g)=>secLabel(+a,+g))} (${toAr(i+1)} من ${toAr(cls.length)})…`);
+  try{const r=await jsonpJ({action:'getStudents',className:c});if(!r||r.ok===false)throw new Error(r&&r.message||'خطأ');
+   const names=(r.students||[]).map(x=>String(x.name||'').replace(/\s+/g,' ').trim()).filter(Boolean);const[sec,g]=c.split('/').map(Number);
+   const[n,d]=rAdd(names,'m',g,sec);add+=n;dup+=d;res.push(`الفصل ${secLabel(sec,g)}: ${toAr(names.length)}`)}catch(e){fail.push(c+' ('+e.message+')')}}
+ b.disabled=false;render();
+ st('');$('#rj_st').innerHTML=`✅ أُضيف <b>${toAr(add)}</b> طالبًا${dup?` — تُجوهل ${toAr(dup)} موجود مسبقًا`:''}<br>${res.join(' • ')}${fail.length?`<br><span style="color:#c22f34">تعذّر: ${esc(fail.join('، '))}</span>`:''}`;
+}
 /* ربط القائمة بالاختبار */
 function fillFromRoster(t,silent){
  const L=rosterOf(t.stage,t.grade,t.sections);if(!L.length){if(!silent)toast(`لا يوجد طلاب في قائمة ${gradeName(t)} لهذه الفصول — أضفهم من «إدارة الطلاب»`);return 0}
@@ -2010,7 +2035,20 @@ function openRemedialReport(id){
  $('#rpTitle').textContent='الخطة العلاجية — '+t.name;
  $('#rpBody').innerHTML=`<div class="rp"><div class="rp-in">${page}</div>${rpFoot(1,1)}</div>`;setTimeout(fitPages,0);RP_META={title:'الخطة العلاجية — '+t.name,kind:'plan',test:t.id};const sb=$('#rpSaveBtn');sb.classList.remove('hide');sb.disabled=false;sb.textContent='💾 حفظ التقرير';$('#rpOv').classList.add('show');
 }
-function closeReport(){$('#rpOv').classList.remove('show');document.title='منصة تحليل نتائج الاختبارات | أبي الدرداء المتوسطة'}
+let RP_SAVED=null;
+function rpEditToggle(){const b=$('#rpBody'),on=b.getAttribute('contenteditable')==='true';
+ if(!on){b.setAttribute('contenteditable','true');b.classList.add('editing');$('#rpEditBtn').textContent='💾 حفظ التعديلات';toast('✏️ اضغط على أي نص في التقرير لتعديله (الأسماء، الملاحظات…) ثم اضغط «حفظ التعديلات»');return}
+ b.removeAttribute('contenteditable');b.classList.remove('editing');$('#rpEditBtn').textContent='✏️ تعديل النص';rpSaveEdits()}
+async function rpSaveEdits(){
+ const r=(S.reports||[]).find(x=>x.id===RP_SAVED);if(!r)return;const obj={title:r.title,html:$('#rpBody').innerHTML};
+ await repPutLocal(r.id,obj);r.date=r.date||Date.now();r.upd=Date.now();save();
+ if(r.file&&cloudOn()){try{let sha=null;try{sha=(await gh('GET',r.file)).sha}catch(e){}await ghWrite(r.file,await encObj(obj),sha,'تحليل النتائج: تعديل تقرير (مشفّر)');toast('✅ حُفظت التعديلات في الجهاز والمنصة')}catch(e){cloudErr(e)}}
+ else toast('✅ حُفظت التعديلات');
+}
+async function rpDelOpen(){const id=RP_SAVED;if(!id)return;const r=(S.reports||[]).find(x=>x.id===id);if(!r||!confirm(`حذف التقرير «${r.title}» نهائيًا؟`))return;closeReport();
+ if(r.file&&cloudOn()){try{await ghDelete(r.file,'تحليل النتائج: حذف تقرير')}catch(e){toast('⚠️ '+e.message);return}}
+ await repDelLocal(id);S.reports=S.reports.filter(x=>x.id!==id);S.deleted=S.deleted||{};S.deleted[id]=Date.now();save();render();toast('تم حذف التقرير')}
+function closeReport(){const b=$('#rpBody');if(b){b.removeAttribute('contenteditable');b.classList.remove('editing')}['rpEditBtn','rpDelBtn'].forEach(i=>$('#'+i)&&$('#'+i).classList.add('hide'));RP_SAVED=null;$('#rpOv').classList.remove('show');document.title='منصة تحليل نتائج الاختبارات | أبي الدرداء المتوسطة'}
 
 /* ---------- الحفظ السحابي في مستودع المنصة (بطريقة ملف الإنجاز) ----------
    يستخدم رمز الوصول نفسه المحفوظ لملف الإنجاز (pf1448.control.ghtoken).
@@ -2144,7 +2182,7 @@ async function openSaved(id){
  try{let o=await repGetLocal(id);
   if(!o&&r.file){if(!cloudOn())throw new Error('فعّل الحفظ في المنصة على هذا الجهاز لفتح هذا التقرير');const f=await ghRead(r.file);if(!f)throw new Error('ملف التقرير غير موجود');o=await decObj(f.text);repPutLocal(id,o)}
   if(!o)throw new Error('هذا التقرير محفوظ على جهاز آخر ولم يُرفع للمنصة بعد');
-  RP_META=null;$('#rpTitle').textContent=o.title;$('#rpBody').innerHTML=o.html;$('#rpSaveBtn').classList.add('hide');$('#rpOv').classList.add('show');document.title=o.title}
+  RP_META=null;RP_SAVED=id;$('#rpTitle').textContent=o.title;$('#rpBody').innerHTML=o.html;$('#rpSaveBtn').classList.add('hide');$('#rpEditBtn').classList.remove('hide');$('#rpEditBtn').textContent='✏️ تعديل النص';$('#rpDelBtn').classList.remove('hide');$('#rpOv').classList.add('show');document.title=o.title}
  catch(e){toast('⚠️ '+e.message)}
 }
 async function delSaved(id){
@@ -2158,7 +2196,7 @@ function vSaved(){
  const list=(S.reports||[]).slice().sort((a,b)=>b.date-a.date);
  return `<div class="toolbar"><h2>التقارير المحفوظة</h2>${cloudOn()?`<button class="btn b-light" onclick="cloudSyncNow()">🔄 مزامنة</button>`:''}</div>
  ${!cloudOn()?`<div class="note" style="margin-bottom:14px">💾 التقارير تُحفظ في هذا الجهاز. لتظهر على أجهزتك الأخرى وتُحفظ بأمان في المنصة فعّل «الحفظ في المنصة» من <a href="#" onclick="event.preventDefault();go('settings')">الإعدادات</a> — وتُرفع التقارير الحالية تلقائيًا.</div>`:''}
- ${list.length?`<div class="tests">${list.map(r=>`<div class="tcard"><div class="tt" style="background:linear-gradient(135deg,#143f8b,#0a2a5e)">${ico('file')}<div><b>${esc(r.title)}</b><small>${new Date(r.date).toLocaleDateString('ar-SA-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'})}</small></div></div><div class="tf" style="padding-top:12px"><span class="tag ${(RKIND[r.kind]||RKIND.anon)[1]}">${(RKIND[r.kind]||RKIND.anon)[0]}</span><span class="tag ${r.file?'t-grn':'t-gry'}">${r.file?'☁️ في المنصة':'💾 في الجهاز'}</span>${r.file?'':`<button class="btn b-gold b-sm" onclick="uploadOne('${r.id}')">☁️ رفع للمنصة</button>`}<span style="flex:1"></span><button class="btn b-blue b-sm" onclick="openSaved('${r.id}')">${ico('eye')}فتح</button><button class="btn b-red b-sm" onclick="delSaved('${r.id}')">${ico('trash')}</button></div></div>`).join('')}</div>`
+ ${list.length?`<div class="tests">${list.map(r=>`<div class="tcard"><div class="tt" style="background:linear-gradient(135deg,#143f8b,#0a2a5e)">${ico('file')}<div><b>${esc(r.title)}</b><small>${new Date(r.date).toLocaleDateString('ar-SA-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'})}</small></div></div><div class="tf" style="padding-top:12px"><span class="tag ${(RKIND[r.kind]||RKIND.anon)[1]}">${(RKIND[r.kind]||RKIND.anon)[0]}</span><span class="tag ${r.file?'t-grn':'t-gry'}">${r.file?'☁️ في المنصة':'💾 في الجهاز'}</span>${r.file?'':`<button class="btn b-gold b-sm" onclick="uploadOne('${r.id}')">☁️ رفع للمنصة</button>`}<span style="flex:1"></span><button class="btn b-blue b-sm" onclick="openSaved('${r.id}')">${ico('eye')}فتح / تعديل</button><button class="btn b-red b-sm" onclick="delSaved('${r.id}')">${ico('trash')}</button></div></div>`).join('')}</div>`
  :`<div class="panel"><div class="empty">${ico('file')}<br>لا توجد تقارير محفوظة بعد. افتح أي تقرير (نتائج اختبار، خطة علاجية، تحليل ورقة اختبار) واضغط «💾 حفظ التقرير».</div></div>`}`;
 }
 function cloudPanel(){
