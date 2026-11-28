@@ -88,13 +88,13 @@ P3.click=()=>{try{L2.click();}catch(e){}};
 /* shared materials */
 const G={};
 function gm(){if(G.ok)return;G.ok=1;ensureShared();
-  G.glass=new THREE.MeshPhysicalMaterial({color:0xf2fafb,roughness:.04,metalness:0,transparent:true,opacity:.2,clearcoat:1,clearcoatRoughness:.03,side:THREE.DoubleSide,depthWrite:false});G.glass.userData.keepEnv=1;G.glass.envMapIntensity=1.6;
-  G.glassT=new THREE.MeshPhysicalMaterial({color:0xd4e8ec,roughness:.05,transparent:true,opacity:.34,clearcoat:1,side:THREE.DoubleSide,depthWrite:false});G.glassT.userData.keepEnv=1;G.glassT.envMapIntensity=1.6;
-  G.glassS=new THREE.MeshPhysicalMaterial({color:0xe3f0f2,roughness:.08,transparent:true,opacity:.55,clearcoat:1});G.glassS.userData.keepEnv=1;G.glassS.envMapIntensity=1.2;
+  G.glass=new THREE.MeshPhysicalMaterial({color:0xf2fafb,roughness:.04,metalness:0,transparent:true,opacity:.2,clearcoat:1,clearcoatRoughness:.03,side:THREE.DoubleSide,depthWrite:false});G.glass.userData.keepEnv=1;G.glass.userData.glass=1;G.glass.envMapIntensity=1.6;
+  G.glassT=new THREE.MeshPhysicalMaterial({color:0xd4e8ec,roughness:.05,transparent:true,opacity:.34,clearcoat:1,side:THREE.DoubleSide,depthWrite:false});G.glassT.userData.keepEnv=1;G.glassT.userData.glass=1;G.glassT.envMapIntensity=1.6;
+  G.glassS=new THREE.MeshPhysicalMaterial({color:0xe3f0f2,roughness:.08,transparent:true,opacity:.55,clearcoat:1});G.glassS.userData.keepEnv=1;G.glassS.userData.glass=1;G.glassS.envMapIntensity=1.2;
   G.brass=KIT.mat(0xc49a3a,{metalness:.85,roughness:.3});
   G.rubber=KIT.mat(0x7a2e1e,{roughness:.85});
 }
-G.water=(c=0xbfe2f0,o=.42)=>{const m=new THREE.MeshPhysicalMaterial({color:c,roughness:.06,transparent:true,opacity:o,depthWrite:false,clearcoat:.6});m.userData.keepEnv=1;m.envMapIntensity=.55;return m;};
+G.water=(c=0xbfe2f0,o=.42)=>{const m=new THREE.MeshPhysicalMaterial({color:c,roughness:.06,transparent:true,opacity:o,depthWrite:false,clearcoat:.6});m.userData.keepEnv=1;m.userData.liq=1;m.envMapIntensity=.55;return m;};
 const setCol=(m,h)=>m.color.copy($lc(h));
 
 /* readable label card in the scene */

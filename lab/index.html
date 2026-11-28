@@ -745,7 +745,7 @@ const RBox=(w,h,d,r)=>THREE.RoundedBoxGeometry?new THREE.RoundedBoxGeometry(w,h,
 /* materials */
 let M={};
 function mats(){
-  M.glass=new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:0.03,transparent:true,opacity:0.07,clearcoat:1,clearcoatRoughness:0.03,envMapIntensity:0.9,side:THREE.DoubleSide,depthWrite:false});M.glass.userData.keepEnv=1;
+  M.glass=new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:0.03,transparent:true,opacity:0.07,clearcoat:1,clearcoatRoughness:0.03,envMapIntensity:0.9,side:THREE.DoubleSide,depthWrite:false});M.glass.userData.keepEnv=1;M.glass.userData.glass=1;
   M.glassTint=new THREE.MeshPhysicalMaterial({color:0xdfeef0,metalness:0,roughness:0.05,transparent:true,opacity:0.35,clearcoat:1,envMapIntensity:2,depthWrite:false});
   M.black=new THREE.MeshStandardMaterial({color:0x15181b,roughness:0.45});
   M.plastic=new THREE.MeshStandardMaterial({color:0xf3f5f4,roughness:0.55});
@@ -4375,6 +4375,9 @@ window.addEventListener('load',()=>{if(location.hash.length>1)openExp(location.h
 <script src="lab3d-x2.js"></script>
 <script src="lab3d-x3.js"></script>
 <script src="lab3d-real.js"></script>
+<script src="lab2d-content.js"></script>
+<script src="lab3d-y1.js"></script>
+<script src="lab-clarity.js"></script>
 
 <script>
 (function(){

@@ -47,9 +47,9 @@ R.studio=(L,o={})=>{const g=new THREE.Group();
   const fill=new THREE.DirectionalLight(0xdfeaff,.45);fill.position.set(-5,4,6);L.scene.add(fill);return g;};
 /* glass with fresnel rim (bright edges like real glassware) */
 R.glass=(op=.1,tint=0xffffff)=>{const m=new THREE.MeshPhysicalMaterial({color:$lc(tint),roughness:.03,metalness:0,clearcoat:1,clearcoatRoughness:.03,transparent:true,opacity:op,side:THREE.DoubleSide,depthWrite:false});
-  m.userData.keepEnv=1;m.userData.lin=1;m.envMapIntensity=1.5;
+  m.userData.keepEnv=1;m.userData.lin=1;m.userData.glass=1;m.envMapIntensity=1.5;
   m.onBeforeCompile=sh=>{sh.fragmentShader=sh.fragmentShader.replace('#include <dithering_fragment>','float frR=pow(1.0-abs(dot(normalize(normal),normalize(vViewPosition))),2.2);gl_FragColor.rgb+=vec3(frR*.22);gl_FragColor.a=clamp(gl_FragColor.a+frR*.62,0.0,.93);\n#include <dithering_fragment>');};return m;};
-R.liquid=(col,op=.9)=>{const m=new THREE.MeshPhysicalMaterial({color:$lc(col),roughness:.18,clearcoat:.4,clearcoatRoughness:.1,transparent:true,opacity:op,emissive:$lc(col),emissiveIntensity:.42});m.userData.keepEnv=1;m.userData.lin=1;m.envMapIntensity=.45;return m;};
+R.liquid=(col,op=.9)=>{const m=new THREE.MeshPhysicalMaterial({color:$lc(col),roughness:.18,clearcoat:.4,clearcoatRoughness:.1,transparent:true,opacity:op,emissive:$lc(col),emissiveIntensity:.42});m.userData.keepEnv=1;m.userData.lin=1;m.userData.liq=1;m.envMapIntensity=.45;return m;};
 R.setLiq=(m,col)=>{setCol(m,col);m.emissive.copy(m.color);};
 /* beaker: returns {g, set(level), lm, top, r, h} — origin at bottom */
 R.beaker=(r,h,o={})=>{const g=new THREE.Group(),t=.016;
